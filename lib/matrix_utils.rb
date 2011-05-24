@@ -1,6 +1,9 @@
 require 'narray'
 
 
+#Bwconncomp old version
+#Takes matrtix as input
+#Returns label matrix with uniquely labeled regions 
 
 def bwcc (mainMatrix)
   
@@ -45,7 +48,11 @@ def bwcc (mainMatrix)
     return typeMatrix
 end
 
-def bwccP (mainMatrix) 
+
+#Takes matrtix as input
+#Returns matrix with 1's on every area that is a region boundary, 0 everywhere else 
+#NOTE: Edges of the matrix are considered boundaries
+def bwcc_Perimeter (mainMatrix) 
   
   width = mainMatrix.shape[0]
   height = mainMatrix.shape[1]
@@ -68,8 +75,9 @@ def bwccP (mainMatrix)
 end
 
 
-
-def printMatrix(matrix,width,height)
+#Takes matrix as input
+#'puts' each line of matrix into console for easy reading
+def print_Matrix(matrix,width,height)
   for y in (0...(height))
     str = ""
     for x in (0...(width))
@@ -84,8 +92,11 @@ end
 
 Output = Struct.new(:ImageSize, :NumObjects, :PixelIdxList)
 
-
-def bwccN (mainMatrix)
+#Bwconncomp new version
+#Takes matrtix as input
+#Returns output which has members ImageSize, NumObjects, PixelIdxList
+#They function the same as matlab's bwconncomp
+def bwcc_New (mainMatrix)
   newMatrix = bwcc(mainMatrix)
   #Go through once inserting into hash table so duplicates automatically overwrite. The end hash table will have N items where N is the number of different regions
   width = newMatrix.shape[0]
@@ -111,9 +122,8 @@ def bwccN (mainMatrix)
 end
 
 
-  
-  
-def bwccL (mainMatrix)
+#takes matrix as input and generates a label matrix with minium values  
+def bwcc_Label (mainMatrix)
   newMatrix = bwcc(mainMatrix)
   #Go through once inserting into hash table so duplicates automatically overwrite. The end hash table will have N items where N is the number of different regions
   width = newMatrix.shape[0]

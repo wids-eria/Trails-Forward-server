@@ -3,34 +3,34 @@ require 'narray'
 
 BirdOutput = Struct.new(:outputMatrix, :count)
 
-
-
-
 class Matrix_utils_test
   
-  
+  #tests bwcc
   def test(testMatrix)
     outputMatrix = bwcc(testMatrix)
     return outputMatrix
   end
   
-  def testN(testMatrix)
-    output = bwccN(testMatrix)
+  #tests the newer version of bwcc
+  def test_New(testMatrix)
+    output = bwcc_New(testMatrix)
     return output
   end
   
-  def testL(testMatrix)
-    outputMatrix = bwccL(testMatrix)
+  #Tests the label matrix generator
+  def test_Label(testMatrix)
+    outputMatrix = bwcc_Label(testMatrix)
     return outputMatrix
   end
   
-  def testP(testMatrix)
-    outputMatrix = bwccP(testMatrix)
+  #Tests the perimeter matrix generator
+  def test_Perimeter(testMatrix)
+    outputMatrix = bwcc_Perimeter(testMatrix)
     return outputMatrix
   end
   
-  def testC(testMatrix)
-    tempOutput = bwccN(testMatrix)
+  def test_Chickadee(testMatrix)
+    tempOutput = bwcc_New(testMatrix)
     width = testMatrix.shape[0]
     height = testMatrix.shape[1]
     outputMatrix = NArray.byte(width,height)
@@ -50,9 +50,9 @@ class Matrix_utils_test
     return output
   end
   
-  def testW(testMatrix)
-    tempOutput = bwccN(testMatrix)
-    perimOutput = bwccP(testMatrix)
+  def test_Warbler(testMatrix)
+    tempOutput = bwcc_New(testMatrix)
+    perimOutput = bwcc_Perimeter(testMatrix)
     width = testMatrix.shape[0]
     height = testMatrix.shape[1]
     outputMatrix = NArray.byte(width,height)
