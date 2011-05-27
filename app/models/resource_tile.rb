@@ -54,5 +54,8 @@ class ResourceTile < ActiveRecord::Base
     template.add :updated_at
   end
   
+  api_accessible :resource, :extend => :resource_base do |template|
+    #pass
+  end
   
 end
