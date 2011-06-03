@@ -20,7 +20,8 @@ class ResourceTile < ActiveRecord::Base
                 :dev => "Development",
                 :agriculture => "Agriculture",
                 :ag => "Agriculture",
-                :logging => "Logging"
+                :logging => "Logging",
+                :park => "Park"
               },
               :primary_uses => {
                 :pasture => "Agriculture/Pasture",
@@ -45,7 +46,7 @@ class ResourceTile < ActiveRecord::Base
     clear_resources
     save!
   end
-  
+    
   api_accessible :resource_base do |template|
     template.add :id
     template.add :x
@@ -56,6 +57,14 @@ class ResourceTile < ActiveRecord::Base
   
   api_accessible :resource, :extend => :resource_base do |template|
     #pass
+  end
+  
+  def can_be_bulldozed?
+    false
+  end
+  
+  def can_be_clearcut?
+    false
   end
   
 end

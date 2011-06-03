@@ -24,7 +24,9 @@ TrailsForwardWorld::Application.routes.draw do
         post :reject
         post :cancel
       end
-      resources :resource_tiles, :only => [:index, :show] do
+    end #megatiles
+    resources :resource_tiles, :only => [:show] do
+      member do
         post :bulldoze
         post :clearcut
         post :build

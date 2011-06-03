@@ -55,6 +55,14 @@ class Ability
       megatile.world.player_for_user(user) == megatile.owner 
     end
     
+    can :bulldoze, ResourceTile do |rt|
+      rt.megatile.world.player_for_user(user) == rt.megatile.owner 
+    end
+    
+    can :clearcut, ResourceTile do |rt|
+      rt.megatile.world.player_for_user(user) == rt.megatile.owner 
+    end
+    
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)

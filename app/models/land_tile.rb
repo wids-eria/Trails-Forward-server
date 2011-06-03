@@ -1,12 +1,45 @@
-class LandTile < ResourceTile
-  #there doesn't seem to be a way to have extension follow inheritance
-  api_accessible :resource_base do |template|
-    template.add :id
-    template.add :x
-    template.add :y
-    template.add :type
-    template.add :updated_at
+class LandTile < ResourceTile  
+  def can_be_clearcut?
+    zoned_use == Verbiage[:zoned_uses][:logging]
   end
+  
+  def clearcut!
+    if can_be_clearcut?
+      World.transaction do
+        megatile.owner.money += estimated_lumber_value
+        tree_density = 0.0
+        tree_species = nil
+        tree_size = 0.0
+        save!
+      end
+    else
+      raise "This land cannot be clearcut"
+    end
+  end
+  
+  def can_be_bulldozed?
+    true
+  end
+  
+  def bulldoze!
+    if can_be_bulldozed?
+      World.transaction do
+        clear_resources
+        save!
+      end
+    else
+      raise "This land cannot be bulldozed"
+    end
+  end
+  
+  # #there doesn't seem to be a way to have extension follow inheritance
+  # api_accessible :resource_base do |template|
+  #   template.add :id
+  #   template.add :x
+  #   template.add :y
+  #   template.add :type
+  #   template.add :updated_at
+  # end
 
   api_accessible :resource, :extend => :resource_base do |template|
     template.add :primary_use
