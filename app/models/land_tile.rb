@@ -6,11 +6,12 @@ class LandTile < ResourceTile
   def clearcut!
     if can_be_clearcut?
       World.transaction do
-        megatile.owner.money += estimated_lumber_value
+        megatile.owner.balance += estimated_lumber_value
         tree_density = 0.0
         tree_species = nil
         tree_size = 0.0
         save!
+        puts "We just cleacut something! tree_size = #{tree_size}  tree_density = #{tree_density}"
       end
     else
       raise "This land cannot be clearcut"
@@ -30,6 +31,12 @@ class LandTile < ResourceTile
     else
       raise "This land cannot be bulldozed"
     end
+  end
+  
+  def estimated_lumber_value
+    td = (tree_density or 0)
+    ts = (tree_size or 0)
+    42 * td * ts
   end
   
   # #there doesn't seem to be a way to have extension follow inheritance

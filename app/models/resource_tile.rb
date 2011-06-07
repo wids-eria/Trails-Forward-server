@@ -30,7 +30,7 @@ class ResourceTile < ActiveRecord::Base
                 :logging => "Logging",
                 :industry => "Industry",
               }
-             }
+             } #Verbiage
   
   
   def clear_resources

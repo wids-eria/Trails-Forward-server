@@ -60,7 +60,8 @@ class Ability
     end
     
     can :clearcut, ResourceTile do |rt|
-      rt.megatile.world.player_for_user(user) == rt.megatile.owner 
+      player = rt.megatile.world.player_for_user(user)
+      player && player == rt.megatile.owner 
     end
     
     # Define abilities for the passed in user here. For example:

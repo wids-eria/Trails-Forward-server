@@ -3,10 +3,10 @@ class ResourceTilesController < ApplicationController
   
 
   def clearcut
-    @resource_tile = ResourceTile.find(params[:id])
+    @resource_tile = ResourceTile.find params[:id]
     authorize! :clearcut, @resource_tile
     
-    if @resource_tile.type == "LandTile" and @resource_tile.can_be_clearcut?
+    if @resource_tile.can_be_clearcut?
       @resource_tile.clearcut!
       respond_to do |format|
         format.xml  { render_for_api :resource, :xml  => @resource_tile, :root => :resource_tile  }
@@ -24,7 +24,7 @@ class ResourceTilesController < ApplicationController
     @resource_tile = ResourceTile.find(params[:id])
     authorize! :bulldoze, @resource_tile
 
-    if @resource_tile.type == "LandTile" and @resource_tile.can_be_bulldozed?
+    if @resource_tile.can_be_bulldozed?
       @resource_tile.bulldoze!
       respond_to do |format|
         format.xml  { render_for_api :resource, :xml  => @resource_tile, :root => :resource_tile  }
