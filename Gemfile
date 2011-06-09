@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.7'
-
+gem 'rake', '0.8.7'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -15,11 +15,11 @@ group :development, :test do
 	# Deploy with Capistrano
 	# gem 'capistrano'
 	
-	gem 'cucumber-rails'
+	gem 'cucumber-rails', '~>0.4'
     gem 'database_cleaner'
 	gem "rspec"
 	gem 'rspec-rails'
-	gem 'capybara'
+	gem 'capybara', '~>0.4.1.2'
 end
 
 group :production do
