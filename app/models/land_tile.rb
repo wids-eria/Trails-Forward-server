@@ -7,11 +7,10 @@ class LandTile < ResourceTile
     if can_be_clearcut?
       World.transaction do
         megatile.owner.balance += estimated_lumber_value
-        tree_density = 0.0
-        tree_species = nil
-        tree_size = 0.0
+        self.tree_density = 0.0
+        self.tree_species = nil
+        self.tree_size = 0.0
         save!
-        puts "We just cleacut something! tree_size = #{tree_size}  tree_density = #{tree_density}"
       end
     else
       raise "This land cannot be clearcut"
