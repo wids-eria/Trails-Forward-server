@@ -8,6 +8,7 @@ end
 
 When /^I clearcut a resource tile on the megatile that I own$/ do
   @my_resource_tile = @my_megatile.resource_tiles.first
+  @old_balance = @player.balance
   @response = post clearcut_world_resource_tile_path(@world, @my_resource_tile), 
     :format => :json, 
     :auth_token => @user.authentication_token
@@ -17,11 +18,12 @@ When /^I clearcut a resource tile on the megatile that I own$/ do
 end
 
 Then /^that resource tile should have no trees$/ do
-  @my_resource_tile = ResourceTile.find @my_resource_tile.id
-  @my_resource_tile.tree_density.should be 0.0
-  @my_resource_tile.tree_size.should be 0.0
+  @my_resource_tile.reload
+  @my_resource_tile.tree_density.should == 0.0
+  @my_resource_tile.tree_size.should == 0.0
 end
 
 Then /^my bank balance should increase$/ do
-  pending # express the regexp above with the code you wish you had
+  #is this suppose to be only > or can we have no profit when clearcutting
+  @player.balance.should >= @old_balance
 end
