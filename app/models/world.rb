@@ -7,7 +7,8 @@ class World < ActiveRecord::Base
   has_many :resource_tiles
   has_many :players
   has_many :listings
-  
+  has_many :change_requests
+
   validates :height, :numericality => {:greater_than => 0}
   validates :width, :numericality => {:greater_than => 0}
   validates :megatile_width, :numericality => {:greater_than => 0}
@@ -56,6 +57,14 @@ class World < ActiveRecord::Base
   
   def player_for_user(user)
     players.where(:user_id => user.id).first
+  end
+
+  def completed_change_requests
+    change_requests.where(:complete => true)
+  end
+
+  def pending_change_requests
+    change_requests.where(:complete => false)
   end
   
   api_accessible :world_without_tiles do |template|

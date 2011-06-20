@@ -40,5 +40,7 @@ module TrailsForwardWorld
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password, :auth_token]
+    
+    config.execute_sales_immediately = false
   end
 end

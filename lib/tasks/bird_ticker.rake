@@ -5,23 +5,20 @@ namespace :trails_forward do
   namespace :birds do
     
     desc "Tick the world's bird population forward by one year"
-    task :tick_all, :world_id, :needs => [:environment] do |t, args|
+    task :tick_one_year, :world_id, :needs => [:environment] do |t, args|
       Rake::Task['trails_forward:birds:get_species_data'].invoke(args[:world_id])
       Rake::Task['trails_forward:birds:tick_x'].invoke(args[:world_id])
-      
     end
     
     desc "Tick species X forward by one year"
     task :tick_x, :world_id, :needs => [:environment, :get_species_data] do |cmd, args|
       Rake::Task['trails_forward:birds:get_species_data'].invoke(args[:world_id])
-      puts "ticking x for #{@world.id}"
-      sayhello
     end
     
     # desc "Retrieve species distribution data"
     task :get_species_data, :world_id, :needs => :environment do |t, args|
       world_id = args[:world_id]
-      puts "Getting species data for world #{world_id}..."
+      puts "Getting tree species data for world #{world_id}..."
       @world = World.find world_id
       world_size = @world.width * @world.height
       
@@ -49,7 +46,7 @@ namespace :trails_forward do
           end #case
         end #group
       end #find_in_batches
-      puts "\t coniferousness = #{coniferousness.to_f / world_size}  deciduousness = #{deciduousness.to_f / world_size}  mixedness = #{mixedness.to_f / world_size}"
+      puts "\t coniferousness = #{coniferousness.to_f / world_size} \n\t deciduousness = #{deciduousness.to_f / world_size} \n\t mixedness = #{mixedness.to_f / world_size}"
     end
     
   end
