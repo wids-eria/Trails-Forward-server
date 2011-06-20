@@ -39,6 +39,7 @@ class ResourceTile < ActiveRecord::Base
     self.housing_density = nil
     self.tree_density = nil
     self.tree_species = nil
+    self.tree_size = nil
     self.development_intensity = nil
   end
   
@@ -65,6 +66,12 @@ class ResourceTile < ActiveRecord::Base
   
   def can_be_clearcut?
     false
+  end
+
+  def grow_trees
+    if self.tree_size != nil
+      self.tree_size = Math.log(1.10 * Math::E ** self.tree_size)
+    end
   end
   
 end
