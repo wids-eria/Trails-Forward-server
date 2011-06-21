@@ -1,6 +1,8 @@
+require 'narray'
+
 class CritterTicker
   
-  attr_reader :deciduous, :coniferous, :mixed
+  attr_reader :deciduous, :coniferous, :mixed, :world
   
   SpeciesTickers = [LigerTicker]
   
