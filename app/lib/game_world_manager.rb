@@ -37,6 +37,10 @@ class GameWorldManager
     BuildTicker.tick @world
   end
   
+  def collect_rent
+    
+  end
+  
   def tick_world(times = 1)
     ActiveRecord::Base.transaction do
       #@world.lock!
@@ -45,6 +49,7 @@ class GameWorldManager
         execute_builds
         tick_trees
         tick_critters
+        collect_rent
         @world.year_current += 1
         @world.save!
       end
