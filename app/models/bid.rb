@@ -56,12 +56,17 @@ class Bid < ActiveRecord::Base
   def money_must_be_nonnegative
     errors.add(:money, "must be >= 0") unless (money >= 0) 
   end
+
+  def sale_pending
+    self.status == Verbiage[:accepted] and not self.execution_complete
+  end
   
   api_accessible :bid_public do |template|
     template.add :id
     template.add :bidder, :template => :player_public
     template.add :updated_at
     template.add :status
+    template.add :sale_pending, :as => :pending, :if => lambda{|b| b.sale_pending}
   end
   
   api_accessible :bid_private, :extend => :bid_public do |template|

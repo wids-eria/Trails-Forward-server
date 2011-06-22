@@ -8,53 +8,79 @@ class Broker
   def initialize(world)
     @world = world
   end
-  
-  def register_bid(bid)
+ 
+  def process_sale(bid)
+    if TrailsForwardWorld::Application.config.execute_sales_immediately
+      execute_sale bid
+    else
+      execute_sale_deferred bid
+    end
   end
-  
+
+  def execute_sale_deferred(bid)
+    ActiveRecord::Base.transaction do
+      lock_assets_for_bid bid
+      reject_other_bids bid
+      enqueue_bid_for_transfer bid
+    end
+  end
+
+  def enqueue_bid_for_transfer bid
+    cr = TransferChangeRequest.new do |cr|
+      cr.target = bid
+    end
+    cr.save!
+  end
+
+  # atomically processes a sale *immediately*, rejecting competing bids
   def execute_sale(bid)
     raise "Can't process a sale for an unaccepted bid" unless bid.status == Bid::Verbiage[:accepted]
         
     ActiveRecord::Base.transaction do   
       lock_assets_for_bid bid 
-      
-      transfer_assets bid
-    
-      if bid.listing  #this wasn't unsolicited
-        bid.listing.bids.each do |bid_to_reject|
-          reject_bid(bid_to_reject, "Other bid accepted") unless bid_to_reject == bid
-        end
-      end
-    
-      megatiles_purchased =  bid.requested_land.megatiles
-      
-      if bid.offered_land
-        megatiles_paid = bid.offered_land.megatiles    
-        megatiles_affected = Set.new.union(megatiles_purchased).union(megatiles_paid)
-      else
-        megatiles_affected = megatiles_purchased
-      end
-      
-      #cancel bids on other listings that contain megatiles purchased this bid
-      #and cancel bids made on land *paid* as part of this transaction
-      # then
-      #revoke listings on land paid in this transaction  
-      #and revoke other listings that include purchased land
-      megatiles_affected.each do |mt|
-        mt.bids_on.each do |other_bid|
-          cancel_bid(other_bid, TrumpedBid) unless other_bid == bid
-        end
-      
-        mt.bids_offering.each do |other_bid|
-          cancel_bid(other_bid, TrumpedBid) unless other_bid == bid
-        end
-      
-        mt.listings.each do |other_listing|
-          cancel_listing(other_listing, TrumptedListing) unless other_listing == bid.listing
-        end
-      end    
+ 
+      transfer_assets bid     
+      reject_other_bids bid
+      bid.execution_complete = true
+      bid.save!
     end #transaction
   end
+  
+  def reject_other_bids(bid)
+    if bid.listing  #this wasn't unsolicited
+      bid.listing.bids.each do |bid_to_reject|
+        reject_bid(bid_to_reject, "Other bid accepted") unless bid_to_reject == bid
+      end
+    end
+  
+    megatiles_purchased =  bid.requested_land.megatiles
+    
+    if bid.offered_land
+      megatiles_paid = bid.offered_land.megatiles    
+      megatiles_affected = Set.new.union(megatiles_purchased).union(megatiles_paid)
+    else
+      megatiles_affected = megatiles_purchased
+    end
+    
+    #cancel bids on other listings that contain megatiles purchased this bid
+    #and cancel bids made on land *paid* as part of this transaction
+    # then
+    #revoke listings on land paid in this transaction  
+    #and revoke other listings that include purchased land
+    megatiles_affected.each do |mt|
+      mt.bids_on.each do |other_bid|
+        cancel_bid(other_bid, TrumpedBid) unless other_bid == bid
+      end
+    
+      mt.bids_offering.each do |other_bid|
+        cancel_bid(other_bid, TrumpedBid) unless other_bid == bid
+      end
+    
+      mt.listings.each do |other_listing|
+        cancel_listing(other_listing, TrumpedListing) unless other_listing == bid.listing
+      end
+    end        
+  end #reject_other_bids
   
   def transfer_assets(bid)
     if bid.listing  #this wasn't unsolicited
@@ -86,7 +112,6 @@ class Broker
     end
     
     bid.save!
-    
   end
 
   def lock_assets_for_bid(bid)

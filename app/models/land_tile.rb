@@ -38,14 +38,11 @@ class LandTile < ResourceTile
     42 * td * ts
   end
   
-  # #there doesn't seem to be a way to have extension follow inheritance
-  # api_accessible :resource_base do |template|
-  #   template.add :id
-  #   template.add :x
-  #   template.add :y
-  #   template.add :type
-  #   template.add :updated_at
-  # end
+  def grow_trees
+    if self.tree_size != nil
+      self.tree_size = Math.log(1.10 * Math::E ** self.tree_size)
+    end
+  end
 
   api_accessible :resource, :extend => :resource_base do |template|
     template.add :primary_use

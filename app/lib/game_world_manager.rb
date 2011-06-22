@@ -19,6 +19,42 @@ class GameWorldManager
     @the_state = TheState.new world
     @broker = Broker.new world
   end
+  
+  def tick_critters
+    critter_ticker = CritterTicker.new @world
+    critter_ticker.tick_all
+  end
+  
+  def tick_trees
+    TreeTicker.tick @world
+  end
+  
+  def execute_trades
+    TradeTicker.tick @world
+  end
+  
+  def execute_builds
+    BuildTicker.tick @world
+  end
+  
+  def collect_rent
+    
+  end
+  
+  def tick_world(times = 1)
+    ActiveRecord::Base.transaction do
+      #@world.lock!
+      times.times do
+        execute_trades
+        execute_builds
+        tick_trees
+        tick_critters
+        collect_rent
+        @world.year_current += 1
+        @world.save!
+      end
+    end #transaction
+  end
     
 end
 

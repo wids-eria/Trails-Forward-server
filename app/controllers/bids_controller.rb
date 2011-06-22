@@ -56,7 +56,9 @@ class BidsController < ApplicationController
     
     @bid.status = Bid::Verbiage[:accepted]
     @bid.save!
-    @world.manager.broker.execute_sale(@bid)
+    
+    @world.manager.broker.process_sale(@bid)
+    
     
     respond_to do |format|
       format.json  { render_for_api :bid_private, :json => @bid, :root => :bids  }

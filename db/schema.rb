@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110510000440) do
+ActiveRecord::Schema.define(:version => 20110620174829) do
 
   create_table "bids", :force => true do |t|
     t.integer  "listing_id"
@@ -19,15 +19,31 @@ ActiveRecord::Schema.define(:version => 20110510000440) do
     t.integer  "money"
     t.integer  "offered_land_id"
     t.integer  "requested_land_id"
-    t.string   "status",            :default => "Offered"
+    t.string   "status",             :default => "Offered"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "rejection_reason"
     t.integer  "counter_to_id"
-    t.integer  "lock_version",      :default => 0
+    t.integer  "lock_version",       :default => 0
+    t.boolean  "execution_complete", :default => false
   end
 
   add_index "bids", ["listing_id"], :name => "index_bids_on_listing_id"
+
+  create_table "change_requests", :force => true do |t|
+    t.string   "type"
+    t.integer  "target_id"
+    t.string   "target_type"
+    t.string   "development_type"
+    t.string   "development_quality"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.boolean  "complete",            :default => false
+    t.integer  "world_id"
+  end
+
+  add_index "change_requests", ["complete"], :name => "index_change_requests_on_complete"
+  add_index "change_requests", ["world_id"], :name => "index_change_requests_on_world_id"
 
   create_table "listings", :force => true do |t|
     t.integer  "owner_id"
@@ -123,7 +139,7 @@ ActiveRecord::Schema.define(:version => 20110510000440) do
   end
 
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
-  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["email"], :name => "index_users_on_email"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "versions", :force => true do |t|
