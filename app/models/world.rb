@@ -12,6 +12,7 @@ class World < ActiveRecord::Base
   validates :width, :numericality => {:greater_than => 0}
   validates :megatile_width, :numericality => {:greater_than => 0}
   validates :megatile_height, :numericality => {:greater_than => 0}
+  validates :name, :presence => true
 
   validate :world_dimensions_are_consistent
 

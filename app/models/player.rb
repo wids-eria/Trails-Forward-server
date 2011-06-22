@@ -15,6 +15,7 @@ class Player < ActiveRecord::Base
   validates_presence_of :user
   validates_presence_of :world
   validates_numericality_of :balance
+  validates_presence_of :balance
   
   has_many :bids_placed, :class_name => 'Bid', :inverse_of => :bidder, :foreign_key => 'bidder_id'
   has_many :bids_received, :class_name => 'Bid', :inverse_of => :current_owner, :foreign_key => 'current_owner_id'
