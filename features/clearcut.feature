@@ -11,9 +11,28 @@ Feature: Clearcut a Resource Tile
     Then that resource tile should have no trees
 		And my bank balance should increase 
 
-	# Scenario: Bulldoze a megatile NOT owned by the user
-	#     Given I have a world
-	#     	And I have one user "riley@example.com" with password "letmein"
-	#     	And I have a player in the world
-	#     	Given I have an owned megatile in the world
-	#     When I bulldoze a resource tile on the owned megatile Then I should get an error
+	Scenario: Clearcut a resource tile NOT owned by the user
+	Given I have a world
+	     	And I have one user "riley@example.com" with password "letmein"
+	     	And I have a player in the world
+	     	Given I have an owned megatile in the world
+			And the owned megatile is completely zoned for logging
+	     When I clearcut a resource tile on the owned megatile Then I should get an error
+
+	Scenario: Clearcut a list of resource tile owned by the user
+    Given I have a world
+    	And I have one user "riley@example.com" with password "letmein"
+    	And I have a player in the world
+    	And I own a megatile in the world
+		And my megatile is completely zoned for logging
+    When I clearcut a list containing that resource tile on the megatile that I own
+    Then the list containing that resource tile should have no trees
+		And my bank balance should increase 
+
+	Scenario: Clearcut a list of resource tile NOT owned by the user
+	Given I have a world
+	     	And I have one user "riley@example.com" with password "letmein"
+	     	And I have a player in the world
+	     	Given I have an owned megatile in the world
+			And the owned megatile is completely zoned for logging
+	     When I clearcut a list containing that resource tile on the owned megatile Then I should get an error
