@@ -31,6 +31,11 @@ TrailsForwardWorld::Application.routes.draw do
         post :clearcut
         post :build
       end
+      collection do
+        post 'bulldoze', :controller => :resource_tiles, :action => :bulldoze_list
+        post 'clearcut', :controller => :resource_tiles, :action => :clearcut_list
+        post 'build', :controller => :resource_tiles, :action => :build_list
+      end
     end
   end
     
