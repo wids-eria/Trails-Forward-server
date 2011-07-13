@@ -57,6 +57,18 @@ describe Matrix_utils_test, "#outputMatrix" do
       matrix_utils_test.test_Perimeter(testMatrix).should equalMatrix(goalMatrix)
   end
   
+  
+  it "returns appropriate result for 5x5 perimeter matrix" do
+      matrix_utils_test = Matrix_utils_test.new
+      testMatrix = NArray[[7,4,4,4,4],[4,7,4,4,4],[4,4,7,4,4],[4,4,4,7,4],[4,4,4,4,7]] 
+      goalMatrix = NArray[[1,1,1,1,1],[1,0,0,0,1],[1,0,0,0,1],[1,0,0,0,1],[1,1,1,1,1]] 
+      matrix_utils_test.test_bwperim(testMatrix).should equalMatrix(goalMatrix)
+      testMatrix = NArray[[1,1,0,0,0],[1,1,1,0,0],[0,1,1,1,0],[0,0,1,1,1],[0,0,0,1,1]] 
+      goalMatrix = NArray[[1,1,0,0,0],[1,0,1,0,0],[0,1,0,1,0],[0,0,1,0,1],[0,0,0,1,1]] 
+      matrix_utils_test.test_bwperim(testMatrix).should equalMatrix(goalMatrix)
+  end
+  
+  
   it "returns approrpiate result for andvanced test output" do
     matrix_utils_test = Matrix_utils_test.new
     testMatrix = NArray[[1,1,1],[1,1,2],[2,2,2]] 
