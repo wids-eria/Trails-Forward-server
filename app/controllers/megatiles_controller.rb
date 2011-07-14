@@ -32,6 +32,7 @@ class MegatilesController < ApplicationController
     respond_to do |format|
       format.xml  { render_for_api :megatile_with_resources, :xml  => @megatiles, :root => :megatiles  }
       format.json { render_for_api :megatile_with_resources, :json => @megatiles, :root => :megatiles  }
+      format.mpac { render_for_api :megatile_with_resources, :mpac => @megatiles, :root => :megatiles }
     end
   end
 

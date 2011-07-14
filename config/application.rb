@@ -15,6 +15,7 @@ module TrailsForwardWorld
     # Custom directories with classes and modules you want to be autoloadable.
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += %W(#{config.root}/app/lib/)
+    config.autoload_paths += %W(#{config.root}/app/lib/tickers/)
     config.autoload_paths += %W(#{config.root}/lib/acts_as_api_templates)
     
     # Only load the plugins named here, in the order given (default is alphabetical).
@@ -40,5 +41,7 @@ module TrailsForwardWorld
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password, :auth_token]
-  end
+    
+    config.execute_sales_immediately = false
+      end
 end
