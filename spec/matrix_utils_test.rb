@@ -29,6 +29,14 @@ class Matrix_utils_test
     return outputMatrix
   end
   
+  
+  #Tests the bwperim matrix generator
+  def test_bwperim(testMatrix)
+    outputMatrix = bwperim(testMatrix)
+    return outputMatrix
+  end
+  
+  
   def test_Chickadee(testMatrix)
     tempOutput = bwcc_New(testMatrix)
     width = testMatrix.shape[0]
