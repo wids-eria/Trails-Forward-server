@@ -1,0 +1,24 @@
+CSV CODE = ZONING CODE
+1 = AG
+2 = AP
+3 = C-1
+4 = C-2
+5 = CB
+6 = F
+7 = GB
+8 = I
+9 = OR
+10 = PR
+11 = PUD
+12 = R-1
+13 = R-1-2
+14 = R-2
+15 = R-3
+16 = REC
+
+
+CSV CODE = OWNERSHIP CODE
+1 = COUNTY
+2 = STATE
+3 = FEDERAL
+4 = OTHER
