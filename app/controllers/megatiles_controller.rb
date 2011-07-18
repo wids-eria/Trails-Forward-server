@@ -48,5 +48,31 @@ class MegatilesController < ApplicationController
       format.json { render_for_api :megatile_with_resources, :json => @megatile, :root => :megatile  }
     end
   end
+  
+  def appraise
+    @megatile = Megatile.find(params[:id])
+    authorize! :do_things, @megatile.world
+    
+    respond_to do |format|
+      format.xml  { render_for_api :megatile_with_value, :xml  => @megatile, :root => :megatile  }
+      format.json { render_for_api :megatile_with_value, :json => @megatile, :root => :megatile  }
+    end
+    
+  end
+  
+  def appraise_list
+    @megatiles = Megatile.find(params["megatiles"])
+    
+    # TODO check if we are allowed to do things the list of megatiles
+    @megatiles.each do |megatile|
+      authorize! :do_things, megatile.world
+    end
+    
+    respond_to do |format|
+      format.xml  { render_for_api :megatiles_with_value, :xml  => @megatiles, :root => :megatiles  }
+      format.json { render_for_api :megatiles_with_value, :json => @megatiles, :root => :megatiles  }
+    end
+    
+  end
 
 end
