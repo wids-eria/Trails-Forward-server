@@ -24,6 +24,12 @@ TrailsForwardWorld::Application.routes.draw do
         post :reject
         post :cancel
       end
+      member do
+        get :appraise
+      end
+      collection do
+        get 'appraise', :controller => :megatiles, :action => :appraise_list
+      end
     end #megatiles
     resources :resource_tiles, :only => [:show] do
       member do

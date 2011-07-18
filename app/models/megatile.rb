@@ -11,7 +11,8 @@ class Megatile < ActiveRecord::Base
   
   validates_uniqueness_of :x, :scope => [:y, :world_id]
   validates_uniqueness_of :y, :scope => [:x, :world_id]
-    
+  
+  
   def width
     world.megatile_width
   end
@@ -74,7 +75,14 @@ class Megatile < ActiveRecord::Base
   end
   
   def estimated_value
-    0
+    total_price = 0
+    resource_tiles.each do |rt|
+      tmp_price = rt.estimated_value
+      if tmp_price != nil
+        total_price += tmp_price
+      end
+    end
+    return total_price
   end
   
   api_accessible :id_and_name do |template|
@@ -90,5 +98,11 @@ class Megatile < ActiveRecord::Base
   end
 
   api_accessible :megatiles_with_resources, :extend => :megatile_with_resources
+  
+  api_accessible :megatile_with_value, :extend => :id_and_name do |template|
+    template.add :estimated_value
+  end
 
+  api_accessible :megatiles_with_value, :extend => :megatile_with_value
+  
 end
