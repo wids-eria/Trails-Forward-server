@@ -24,6 +24,7 @@ end
 
 group :production do
 	gem 'mysql'
+	gem 'exceptional'
 end
 
 gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
@@ -36,6 +37,7 @@ gem 'json'
 gem 'devise'
 gem 'cancan'
 gem 'msgpack'
+
 
 
 # Bundle the extra gems:

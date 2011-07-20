@@ -83,6 +83,8 @@ GEM
     diff-lcs (1.1.2)
     erubis (2.6.6)
       abstract (>= 1.0.0)
+    exceptional (2.0.32)
+      rack
     ffi (1.0.9)
     gherkin (2.4.0)
       json (>= 1.4.6)
@@ -173,6 +175,7 @@ DEPENDENCIES
   cucumber-rails (~> 0.4)
   database_cleaner
   devise
+  exceptional
   json
   msgpack
   mysql
