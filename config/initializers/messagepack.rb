@@ -9,7 +9,7 @@ end
 module ActiveSupport
   class TimeWithZone
    def to_msgpack(out='')
-     self.as_json.to_msgpack
+     self.to_s.to_msgpack(out)
    end
   end
 end
