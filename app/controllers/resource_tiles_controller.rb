@@ -1,11 +1,11 @@
 class ResourceTilesController < ApplicationController
   before_filter :authenticate_user!
-  
+
 
   def clearcut
     @resource_tile = ResourceTile.find params[:id]
     authorize! :clearcut, @resource_tile
-    
+
     if @resource_tile.can_be_clearcut?
       @resource_tile.clearcut!
       respond_to do |format|
@@ -16,7 +16,7 @@ class ResourceTilesController < ApplicationController
       respond_to do |format|
         render :status => :forbidden, :text => "Action illegal for this land"
       end
-    end 
+    end
   end #def clearcut
 
 
@@ -33,10 +33,10 @@ class ResourceTilesController < ApplicationController
     else
       respond_to do |format|
         render :status => :forbidden, :text => "Action illegal for this land"
-      end  
+      end
     end
   end
-  
+
   def build
     #not yet implemented
   end
@@ -82,7 +82,7 @@ class ResourceTilesController < ApplicationController
 
 
   def clearcut_list
-    
+
     @resource_tiles = ResourceTile.find(params["microtiles"])
 
     #check if we are allowed to bulldoze the list of resource tile IDs
@@ -105,7 +105,7 @@ class ResourceTilesController < ApplicationController
       format.xml  { render_for_api :resource, :xml  => @resource_tiles, :root => :resource_tiles  }
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
     end
-    
+
   end #def clearcut_list
 
   def build_list
