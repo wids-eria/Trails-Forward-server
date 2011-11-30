@@ -3,34 +3,31 @@ require 'set'
 class Bid < ActiveRecord::Base
   acts_as_api
 
-  Verbiage = {:active => "Offered",
-              :offered => "Offered",
-              :accepted => "Accepted",
-              :rejected => "Rejected",
-              :cancelled => "Cancelled"
+  Verbiage = {active: "Offered",
+              offered: "Offered",
+              accepted: "Accepted",
+              rejected: "Rejected",
+              cancelled: "Cancelled"
   }
 
-  belongs_to :bidder, :class_name => 'Player', :foreign_key => 'bidder_id'
-  belongs_to :current_owner, :class_name => 'Player'
+  belongs_to :bidder, class_name: 'Player', foreign_key: 'bidder_id'
+  belongs_to :current_owner, class_name: 'Player'
   belongs_to :listing
 
-  belongs_to :counter_to, :class_name => 'Bid'
-  has_many :counter_bids, :class_name => 'Bid', :foreign_key => 'counter_to_id'
+  belongs_to :counter_to, class_name: 'Bid'
+  has_many :counter_bids, class_name: 'Bid', foreign_key: 'counter_to_id'
 
   # land offered as PAYMENT on a listing
-  belongs_to :offered_land, :class_name => "MegatileGrouping"
+  belongs_to :offered_land, class_name: "MegatileGrouping"
 
   #land that is being PURCHASED by the bidder. In the case of a fully solicited buy, this == listing.megatile_grouping.meagtiles
-  belongs_to :requested_land, :class_name => "MegatileGrouping"
+  belongs_to :requested_land, class_name: "MegatileGrouping"
 
-  validates_presence_of :requested_land
-  validates_presence_of :money
-  validates_numericality_of :money
-  validates :money, :numericality => {:greater_than_or_equal_to => 0}
+  validates :money, presence: true, numericality: {greater_than_or_equal_to: 0}
+  validates :requested_land, presence: true
   validate :requested_land_must_all_have_same_owner
 
   scope :active, lambda { where(:status => Verbiage[:active]) }
-
 
 
   def requested_land_must_all_have_same_owner
@@ -77,6 +74,5 @@ class Bid < ActiveRecord::Base
     template.add 'offered_land.megatiles', :as => :offered_land, :template => :id_and_name, :if => lambda{|b| b.offered_land != nil}
     template.add 'requested_land.megatiles', :as => :requested_land, :template => :id_and_name, :if => lambda{|b| b.requested_land != nil}
   end
-
 
 end

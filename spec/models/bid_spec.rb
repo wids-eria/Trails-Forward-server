@@ -13,8 +13,29 @@ describe Bid do
 
   it { should validate_presence_of :money }
   it { should validate_presence_of :requested_land }
-  # validates_presence_of :money
-  # validates_numericality_of :money
-  # validates :money, :numericality => {:greater_than_or_equal_to => 0}
-  # validate :requested_land_must_all_have_same_owner
+  it { should validate_numericality_of :money }
+  # it { should validate_numericality_of :money, :greater_than_or_equal_to => 0 }
+
+  describe 'validation' do
+    describe 'money' do
+      it 'disallows negative amounts' do
+        Bid.new(money: -1.50).should_not be_valid
+      end
+    end
+    describe 'requested_land' do
+      context 'with multiple owners' do
+        let(:ben_user) { User.create name: 'Ben' }
+        let(:kevin_user) { User.create name: 'Kevin' }
+        let(:ben) { Player.create user: ben_user }
+        let(:kevin) { Player.create user: kevin_user }
+        let(:bens_tile) { Megatile.create owner: ben }
+        let(:kevins_tile) { Megatile.create owner: kevin }
+        let(:requested_land) { MegatileGrouping.create(megatiles: [kevins_tile, bens_tile]) }
+
+        it 'is not valid' do
+          Bid.new(requested_land: requested_land).should_not be_valid
+        end
+      end
+    end
+  end
 end
