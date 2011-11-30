@@ -4,4 +4,7 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
+task(:default).clear
+task :default => [:spec, :cucumber]
+
 TrailsForwardWorld::Application.load_tasks

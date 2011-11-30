@@ -9,8 +9,8 @@ end
 When /^I clearcut a resource tile on the megatile that I own$/ do
   @my_resource_tile = @my_megatile.resource_tiles.first
   @old_balance = @player.balance
-  @response = post clearcut_world_resource_tile_path(@world, @my_resource_tile), 
-    :format => :json, 
+  @response = post clearcut_world_resource_tile_path(@world, @my_resource_tile),
+    :format => :json,
     :auth_token => @user.authentication_token
   decoded = ActiveSupport::JSON.decode(@response.body)
   decoded.has_key?("resource_tile").should be true
@@ -44,15 +44,16 @@ end
 
 
 When /^I clearcut a list containing that resource tile on the megatile that I own$/ do
-  @my_resource_tile = @my_megatile.resource_tiles.first
+  @my_resource_tile = @my_megatile.resource_tiles.select(&:can_be_clearcut?).first
+  @my_resource_tile.should be
   @old_balance = @player.balance
-  
 
-#  @response = post clearcut_world_resource_tile_path(@world, @my_resource_tile), 
-#    :format => :json, 
+
+#  @response = post clearcut_world_resource_tile_path(@world, @my_resource_tile),
+#    :format => :json,
 #    :auth_token => @user.authentication_token
 
-  
+
   @response = post clearcut_world_resource_tiles_path(@world),
     :format => :json,
     :auth_token => @user.authentication_token,
@@ -60,7 +61,7 @@ When /^I clearcut a list containing that resource tile on the megatile that I ow
   decoded = ActiveSupport::JSON.decode(@response.body)
   decoded.has_key?("resource_tiles").should be true
   #decoded["resource_tiles[0]"].has_key?("id").should be true
-  
+
 end
 
 Then /^the list containing that resource tile should have no trees$/ do

@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails', '3.0.7'
-gem 'rake', '0.8.7'
+gem 'rails', '3.1.1'
+gem 'rake'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
@@ -15,11 +15,13 @@ group :development, :test do
   # Deploy with Capistrano
   # gem 'capistrano'
 
-  gem 'cucumber-rails', '~>0.4'
-    gem 'database_cleaner'
+  gem 'cucumber-rails'
+  gem 'database_cleaner'
+  gem 'fuubar'
+  gem 'fuubar-cucumber'
   gem "rspec"
   gem 'rspec-rails'
-  gem 'capybara', '~>0.4.1.2'
+  gem 'capybara'
   gem 'shoulda'
 end
 
@@ -28,7 +30,7 @@ group :production do
   gem 'exceptional'
 end
 
-gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
+# gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'
 #gem 'vestal_versions', :git => 'git://github.com/carpodaster/vestal_versions.git'
 
 gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'

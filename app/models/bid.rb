@@ -1,7 +1,6 @@
 require 'set'
 
 class Bid < ActiveRecord::Base
-  versioned
   acts_as_api
 
   Verbiage = {:active => "Offered",

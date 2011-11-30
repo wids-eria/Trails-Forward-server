@@ -1,5 +1,4 @@
 class ResourceTile < ActiveRecord::Base
-  versioned
   acts_as_api
 
   belongs_to :megatile

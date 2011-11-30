@@ -1,5 +1,4 @@
 class Megatile < ActiveRecord::Base
-  versioned
   acts_as_api
 
   belongs_to :world

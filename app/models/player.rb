@@ -1,5 +1,4 @@
 class Player < ActiveRecord::Base
-  versioned
   acts_as_api
 
   DefaultBalance = 1000

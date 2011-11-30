@@ -1,7 +1,6 @@
 require 'set'
 
 class Listing < ActiveRecord::Base
-  versioned
   acts_as_api
 
   belongs_to :owner, :class_name => 'Player'

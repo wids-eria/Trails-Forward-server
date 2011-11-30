@@ -1,6 +1,4 @@
 class World < ActiveRecord::Base
-  versioned
-
   acts_as_api
 
   has_many :megatiles
