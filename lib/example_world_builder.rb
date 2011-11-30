@@ -11,25 +11,25 @@ class ExampleWorldBuilder
       w.megatile_height = 3
     end
     puts "Created '#{world.name}' with id #{world.id}" if debug
-    
+
     puts "Spawning empty tiles" if debug
     world.spawn_tiles debug
     puts "\t...done" if debug
-    
+
     self.place_resources(world, debug)
     self.create_users_and_players(world, debug)
     self.create_starter_property(world, debug)
-    
+
     return world
   end  #build_example_world
-  
+
   private
   def self.place_resources(world, debug=false)
-    
+
     how_many_trees = (world.width * world.height * 0.40).round
     print "Placing resources" if debug
     STDOUT.flush
-    
+
     world.width.times do |x|
       world.height.times do |y|
         resource_tile = world.resource_tile_at x,y
@@ -62,7 +62,7 @@ class ExampleWorldBuilder
     end
     puts '' if debug
   end #place_resources
-  
+
   def self.create_users_and_players(world, debug)
     #puts "Creating users and players..."
     players = []
@@ -85,10 +85,10 @@ class ExampleWorldBuilder
       puts "\tPlayer id #{p.id} (#{p.type}) created" if debug
     end
   end #create_users
-  
+
   def self.create_starter_property(world, debug)
     print "Assigning starter property" if debug
-    ((world.width / 6) * (world.height / 6)).times do 
+    ((world.width / 6) * (world.height / 6)).times do
       x = rand world.width
       y = rand world.height
       megatile = world.megatile_at x,y

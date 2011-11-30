@@ -1,7 +1,7 @@
-class WorldsController < ApplicationController  
-  
+class WorldsController < ApplicationController
+
   before_filter :authenticate_user!
-  
+
   # GET /worlds
   # GET /worlds.xml
   def index
@@ -20,7 +20,7 @@ class WorldsController < ApplicationController
   def show
     @world = World.find(params[:id])
     authorize! :show_world, @world
-    
+
     respond_to do |format|
       format.xml  { render_for_api :world_without_tiles, :xml  => @world, :root => :world  }
       format.json { render_for_api :world_without_tiles, :json => @world, :root => :world  }
@@ -31,23 +31,23 @@ class WorldsController < ApplicationController
   # # GET /worlds/new.xml
   # def new
   #   @world = World.new
-  # 
+  #
   #   respond_to do |format|
   #     format.html # new.html.erb
   #     format.xml  { render :xml => @world }
   #   end
   # end
-  # 
+  #
   # # GET /worlds/1/edit
   # def edit
   #   @world = World.find(params[:id])
   # end
-  # 
+  #
   # # POST /worlds
   # # POST /worlds.xml
   # def create
   #   @world = World.new(params[:world])
-  # 
+  #
   #   respond_to do |format|
   #     if @world.save
   #       format.html { redirect_to(@world, :notice => 'World was successfully created.') }
@@ -58,12 +58,12 @@ class WorldsController < ApplicationController
   #     end
   #   end
   # end
-  # 
+  #
   # # PUT /worlds/1
   # # PUT /worlds/1.xml
   # def update
   #   @world = World.find(params[:id])
-  # 
+  #
   #   respond_to do |format|
   #     if @world.update_attributes(params[:world])
   #       format.html { redirect_to(@world, :notice => 'World was successfully updated.') }
@@ -74,13 +74,13 @@ class WorldsController < ApplicationController
   #     end
   #   end
   # end
-  # 
+  #
   # # DELETE /worlds/1
   # # DELETE /worlds/1.xml
   # def destroy
   #   @world = World.find(params[:id])
   #   @world.destroy
-  # 
+  #
   #   respond_to do |format|
   #     format.html { redirect_to(worlds_url) }
   #     format.xml  { head :ok }

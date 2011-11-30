@@ -18,7 +18,7 @@ module TrailsForwardWorld
     config.autoload_paths += %W(#{config.root}/app/lib/tickers/)
     config.autoload_paths += %W(#{config.root}/lib/acts_as_api_templates)
     config.autoload_paths += %W(#{config.root}/app/presenters/)
-    
+
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
@@ -42,7 +42,7 @@ module TrailsForwardWorld
 
     # Configure sensitive parameters which will be filtered from the log file.
     config.filter_parameters += [:password, :auth_token]
-    
+
     config.execute_sales_immediately = false
       end
 end
