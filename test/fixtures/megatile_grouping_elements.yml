@@ -1,9 +1,0 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
-one:
-  megatile_grouping_id: 1
-  megatile_id: 1
-
-two:
-  megatile_grouping_id: 1
-  megatile_id: 1
