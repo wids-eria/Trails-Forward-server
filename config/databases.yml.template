@@ -1,0 +1,17 @@
+test:
+  adapter: mysql
+  database: trails_test
+  username: root
+  password: 
+
+production:
+  adapter: mysql
+  database: trails_prod
+  username: root
+  password: 
+
+development:
+  adapter: mysql
+  database: trails_development
+  username: root
+  password: 
