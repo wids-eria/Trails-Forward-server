@@ -23,6 +23,7 @@ class Bid < ActiveRecord::Base
   #land that is being PURCHASED by the bidder. In the case of a fully solicited buy, this == listing.megatile_grouping.meagtiles
   belongs_to :requested_land, :class_name => "MegatileGrouping"
 
+  validates_presence_of :requested_land
   validates_presence_of :money
   validates_numericality_of :money
   validates :money, :numericality => {:greater_than_or_equal_to => 0}
@@ -33,14 +34,16 @@ class Bid < ActiveRecord::Base
 
 
   def requested_land_must_all_have_same_owner
-    owners = Set.new
+    if requested_land.present?
+      owners = Set.new
 
-    requested_land.megatiles.each do |mt|
-      owners << mt.owner
-    end
+      requested_land.megatiles.each do |mt|
+        owners << mt.owner
+      end
 
-    if owners.count > 1
-      errors.add(:requested_land, "must all have the same current owner")
+      if owners.count > 1
+        errors.add(:requested_land, "must all have the same current owner")
+      end
     end
   end
 
