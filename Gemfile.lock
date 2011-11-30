@@ -158,7 +158,7 @@ GEM
       ffi (~> 1.0.9)
       multi_json (~> 1.0.4)
       rubyzip
-    shoulda (2.11.3)
+    shoulda-matchers (1.0.0)
     sprockets (2.0.3)
       hike (~> 1.2)
       rack (~> 1.0)
@@ -199,5 +199,5 @@ DEPENDENCIES
   rspec
   rspec-rails
   ruby-debug19
-  shoulda
+  shoulda-matchers
   sqlite3
