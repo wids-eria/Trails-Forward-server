@@ -1,4 +1,4 @@
-class WelcomeController < ApplicationController  
+class WelcomeController < ApplicationController
   # GET /   (this is the default route)
   def index
 

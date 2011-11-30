@@ -1,15 +1,15 @@
 class ResourceTile < ActiveRecord::Base
   versioned
   acts_as_api
-  
+
   belongs_to :megatile
   belongs_to :world
-  
+
   validates_uniqueness_of :x, :scope => [:y, :world_id]
   validates_uniqueness_of :y, :scope => [:x, :world_id]
-  
+
   #todo: Add validations for tree_species, zoned_use, and primary_use to be sure that they're in one of the below
-  
+
   Verbiage = {:tree_species => {
                 :coniferous => "Coniferous",
                 :deciduous => "Deciduous",
@@ -31,8 +31,8 @@ class ResourceTile < ActiveRecord::Base
                 :industry => "Industry",
               }
              } #Verbiage
-  
-  
+
+
   def clear_resources
     self.primary_use = nil
     self.people_density = nil
@@ -42,12 +42,12 @@ class ResourceTile < ActiveRecord::Base
     self.tree_size = nil
     self.development_intensity = nil
   end
-  
+
   def clear_resources!
     clear_resources
     save!
   end
-    
+
   api_accessible :resource_base do |template|
     template.add :id
     template.add :x
@@ -55,21 +55,21 @@ class ResourceTile < ActiveRecord::Base
     template.add :type
     template.add :updated_at
   end
-  
+
   api_accessible :resource, :extend => :resource_base do |template|
     #pass
   end
-  
+
   def can_be_bulldozed?
     false
   end
-  
+
   def can_be_clearcut?
     false
   end
-  
+
   def estimated_value
     return nil
   end
-  
+
 end

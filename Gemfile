@@ -6,25 +6,26 @@ gem 'rake', '0.8.7'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 group :development, :test do
-	gem 'sqlite3'
-	
-	# To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
-	# gem 'ruby-debug'
-	gem 'ruby-debug19', :require => 'ruby-debug'
-	
-	# Deploy with Capistrano
-	# gem 'capistrano'
-	
-	gem 'cucumber-rails', '~>0.4'
+  gem 'sqlite3'
+
+  # To use debugger (ruby-debug for Ruby 1.8.7+, ruby-debug19 for Ruby 1.9.2+)
+  # gem 'ruby-debug'
+  gem 'ruby-debug19', :require => 'ruby-debug'
+
+  # Deploy with Capistrano
+  # gem 'capistrano'
+
+  gem 'cucumber-rails', '~>0.4'
     gem 'database_cleaner'
-	gem "rspec"
-	gem 'rspec-rails'
-	gem 'capybara', '~>0.4.1.2'
+  gem "rspec"
+  gem 'rspec-rails'
+  gem 'capybara', '~>0.4.1.2'
+  gem 'shoulda'
 end
 
 group :production do
-	gem 'mysql'
-	gem 'exceptional'
+  gem 'mysql'
+  gem 'exceptional'
 end
 
 gem 'vestal_versions', :git => 'git://github.com/adamcooper/vestal_versions'

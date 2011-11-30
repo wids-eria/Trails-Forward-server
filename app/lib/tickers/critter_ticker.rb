@@ -1,27 +1,27 @@
 require 'narray'
 
 class CritterTicker
-  
+
   attr_reader :land, :world
-  
+
   SpeciesTickers = [ChickadeeTicker, CuckooTicker, FlycatcherTicker, WarblerTicker, WoodthrushTicker]
-  
+
   def initialize(world)
     @world = world
     get_species_data
   end
-  
+
   def tick_all
     SpeciesTickers.each do |st|
       st.tick self
     end
-  end  
-  
+  end
+
   def get_species_data
-  
+
     @land = NArray.byte(@world.width, @world.height)
     @land.fill!(0)
-    
+
     ResourceTile.where(:world_id => @world.id).find_in_batches do |group|
       group.each do |rt|
         x = rt.x
@@ -36,7 +36,7 @@ class CritterTicker
         end #case
       end #group
     end #find_in_batches
-    
+
   end
-    
+
 end

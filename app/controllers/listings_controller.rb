@@ -1,32 +1,32 @@
-class ListingsController < ApplicationController  
+class ListingsController < ApplicationController
   before_filter :authenticate_user!
 
-  def index    
+  def index
     @world = World.find(params[:world_id], :include => [:players])
     authorize! :index_listings, @world
-    
+
     @listings = Listing.where(:owner_id => @world.players)
     if params[:active_only]
       @listings = @listings.where(:status => Listing::Verbiage[:active])
     end
-    
+
     respond_to do |format|
       format.json  { render_for_api :listing, :json => @listings, :root => :listings  }
       format.xml   { render_for_api :listing, :xml  => @listings, :root => :listings  }
     end
   end #index
-  
+
   def index_active
     # @world = World.find(params[:world_id], :include => [:players])
     # authorize! :index_listings, @world
     params[:active_only] = true
     index
   end
-  
+
   def create
     @world = World.find params[:world_id]
     authorize! :list_megatiles_for_sale, @world
-    
+
     mtg = MegatileGrouping.create
     params["megatiles"].each do |mt_id|
       megatile = Megatile.find mt_id
@@ -42,7 +42,7 @@ class ListingsController < ApplicationController
       l.price = params[:price]
       l.megatile_grouping = mtg
     end
-    
+
     if @listing.save
       respond_to do |format|
         format.json  { render_for_api :listing, :json => @listing, :root => :listing  }

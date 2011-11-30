@@ -3,8 +3,8 @@ require 'matrix_utils'
 
 class TreeTicker
   def self.tick(world)
-  
-    # get tree data for world 
+
+    # get tree data for world
     @old_tree_size = NArray.float(world.width, world.height)
     @decid = NArray.float(world.width, world.height)
     @conifer = NArray.float(world.width, world.height)
@@ -13,7 +13,7 @@ class TreeTicker
     @decid.fill!(0.0)
     @conifer.fill!(0.0)
     @mixed.fill!(0.0)
-    
+
     ResourceTile.where(:world_id => world.id).find_in_batches do |group|
       group.each do |rt|
         x = rt.x
@@ -35,14 +35,14 @@ class TreeTicker
 
     # compute the tree growth
     result = compute_timber @decid, @conifer, @mixed, 1
-    
+
     # debug code
     #puts "Old Tree Size"
     #print_Matrix @old_tree_size, @old_tree_size.shape[0], @old_tree_size.shape[1]
     #puts "New Tree Size"
     #print_Matrix result.tree_size, result.tree_size.shape[0], result.tree_size.shape[0]
-    
-    
+
+
     # update the trees
     LandTile.where(:world_id => world.id).find_in_batches do |group|
       group.each do |rt|
@@ -61,8 +61,8 @@ class TreeTicker
     end
 
   end
-  
-  
+
+
   #Code to estimate boardfeet of timber for each cell
   # matrix contain the size of the trees
   TimberOutput = Struct.new(:bfdt, :bfct, :bfmt, :tree_size)
@@ -71,8 +71,8 @@ class TreeTicker
     mx_decid = decid.dup.to_f
     mx_conifer = conifer.dup.to_f
     mx_mixed = mixed.dup.to_f
-      
-    #%%%%%Set number of trees per cell%%%%%%%%%% Numbers from FIA data 
+
+    #%%%%%Set number of trees per cell%%%%%%%%%% Numbers from FIA data
 
     #DenseDS=(Decid<8&Decid>=5)*350;  %%%Density of small trees decid
     dense_ds = (mx_decid.lt(8) & mx_decid.ge(5)).to_f * 350
@@ -113,7 +113,7 @@ class TreeTicker
     #BFM=exp(log(Mixed)*2.77922-2.70244);%%%%%%Board Feet per tree Mixed
     bfm = NMath.exp( NMath.log( mx_mixed ) * 2.77922 - 2.70244 )
 
-    
+
     #%%%%%%%%%%%%Estimate total board feet per cell
     #BFDT=BFD.*DenseD;
     bfdt = bfd * dense_d
@@ -128,18 +128,18 @@ class TreeTicker
     #puts "--------------\n"
     #print_Matrix bfmt, 5, 5
     #puts "--------------\n"
-    
-    
-    
+
+
+
     width = mx_decid.shape[0]
-    height = mx_decid.shape[1]	
+    height = mx_decid.shape[1]
     #%%%%%%%%%%%%%%%%%%%%%%%%Time step%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
     #%%%%%%loop through and estimate for each cell incremental growth in DBH
     #%%%%%Loop is used as 0 values go to infinity otherwise - there is probably
     #%%%%%a much better way to do this. Values are estiamted values of PRI
     #for T=1:35;
-    for t in (1..years) 
+    for t in (1..years)
 
       #for j=1:n
       #for q=1:n
@@ -181,8 +181,8 @@ class TreeTicker
           end
         end
       end
-    
-    
+
+
       #%%%%%%%%%%%%%%%%Estimate Board Feet Per Tree
       #BFD=exp(log(Decid)*2.77922-2.70244+.008);%%%%%%Board Feet per tree Decid
       bfd = NMath.exp( NMath.log( mx_decid ) * 2.77922 - 2.70244 + 0.008 )
@@ -203,13 +203,13 @@ class TreeTicker
 
       #end
       end
-      
+
     #Treesize=Conifer+Mixed+Decid;
     tree_size =  mx_conifer + mx_mixed + mx_decid
-   
+
     output = TimberOutput.new(bfdt, bfcf, bfmt, tree_size)
     return output
-    
+
 
   end
 

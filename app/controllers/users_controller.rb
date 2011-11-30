@@ -1,8 +1,8 @@
 class UsersController < ApplicationController
-  
+
   before_filter :authenticate_user!, :except => [:authenticate_for_token]
   skip_authorization_check :only => :authenticate_for_token
-  
+
   # POST /users/authenticate_for_token
   def authenticate_for_token
     @user = User.find_by_email params[:email]
@@ -17,7 +17,7 @@ class UsersController < ApplicationController
       render :nothing => true, :status => :forbidden
     end
   end
-  
+
   # GET /users
   # GET /users.xml
   def index
