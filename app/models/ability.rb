@@ -2,68 +2,68 @@ class Ability
   include CanCan::Ability
 
   def initialize(user)
-    
+
     can :index_worlds, World do
       true
     end
-    
+
     can :show_world, World do
       true
     end
-    
+
     can :access_private_data, Player, :user_id => user.id
     can :access_private_data, User, :id => user.id
-    
+
     can :create_player, User, :id => user.id
     can :update_player, Player, :user_id => user.id
-    
+
     can :index_user_players, :all
     can :show_player, :all
-    
+
     #users can only do things in worlds they inhabit
     can :do_things, World do |world|
       world.player_for_user(user)
     end
-    
+
     can :index_listings, World do |world|
       can? :do_things, world
     end
-    
+
     can :list_megatiles_for_sale, World do |world|
       can? :do_things, world
     end
-    
+
     can :list_for_sale, Megatile do |megatile|
       megatile.world.player_for_user(user) == megatile.owner
     end
-    
+
     can :bid, Megatile do |megatile|
       #the user doesn't already own the tile
       (can? :do_things, megatile.world) and ( megatile.owner != megatile.world.player_for_user(user) )
     end
-    
+
     can :see_bids, Megatile do |megatile|
       (megatile.world.player_for_user(user) == megatile.owner) or (megatile.owner == nil)
     end
-    
+
     can :see_bids, Player, :user_id => user.id
-    
+
     can :accept_bid, Bid do |bid|
       #assumes that all requested land in the bid has the same owner
       megatiles = bid.requested_land.megatiles
       megatile = megatiles.first
-      megatile.world.player_for_user(user) == megatile.owner 
+      megatile.world.player_for_user(user) == megatile.owner
     end
-    
+
     can :bulldoze, ResourceTile do |rt|
-      rt.megatile.world.player_for_user(user) == rt.megatile.owner 
+      rt.megatile.world.player_for_user(user) == rt.megatile.owner
     end
-    
+
     can :clearcut, ResourceTile do |rt|
       player = rt.megatile.world.player_for_user(user)
-      player && player == rt.megatile.owner 
+      player && player == rt.megatile.owner
     end
-    
+
     # Define abilities for the passed in user here. For example:
     #
     #   user ||= User.new # guest user (not logged in)

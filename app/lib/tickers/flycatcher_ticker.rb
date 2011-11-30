@@ -3,10 +3,10 @@ require 'matrix_utils'
 
 class FlycatcherTicker < SpeciesTicker
   def self.tick(ct)
-    
+
     result = compute_habitat ct.land
     puts "The count of resource tile with flycatchers habitat is #{result}"
-  
+
 =begin
     ct.world.width.times do |x|
       ct.world.height.times do |y|
@@ -21,9 +21,9 @@ class FlycatcherTicker < SpeciesTicker
       end
     end
 =end
-    
+
   end
-  
+
   #compute the habitat for flycatchers
   def self.compute_habitat(matrix)
 
@@ -32,11 +32,11 @@ class FlycatcherTicker < SpeciesTicker
   #lfstats=regionprops(LF,'Area'); %%calcualte size of patches
   #idLF = find([lfstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
   #LF2 = ismember(labelmatrix(LF), idLF);%%%%%%%%%%%put those on a new matrix
-  #PLF2=bwperim(LF2);%%%%%%%%%%%%%%Take off parameters 
+  #PLF2=bwperim(LF2);%%%%%%%%%%%%%%Take off parameters
   #LF= PLF2==0 & LF2==1;%%%%Core area for Flycatcher
   #LFsize=sum(LF);
   #LFsize=sum(LFsize); %%%%%%Amount of flycatcher forest
-    
+
     mx_decid = matrix.eq(1)
     mx_mixed = matrix.eq(3)
 
@@ -44,11 +44,11 @@ class FlycatcherTicker < SpeciesTicker
 
     mx_bwcc = bwcc_New(mx_decid_mixed)
     mx_perim = bwperim(mx_decid_mixed)
-    
+
     mx_habitat = NArray.byte(matrix.shape[0], matrix.shape[1])
     mx_habitat.fill!(0)
     count = 0
-      
+
     mx_bwcc.PixelIdxList.each{ |val|
       #puts "length = #{val.length}\n"
       if(val.length>0 && mx_decid_mixed[val[0][0],val[0][1]]!=0)
@@ -61,8 +61,8 @@ class FlycatcherTicker < SpeciesTicker
         }
       end
     }
-    
-    
+
+
     #density 15p/10ha
     population = count * 0.404 * 15 / 10 * 2;
     #puts "Count = #{count}\n"

@@ -3,10 +3,10 @@ require 'matrix_utils'
 
 class CuckooTicker < SpeciesTicker
   def self.tick(ct)
-    
+
     result = compute_habitat ct.land
     puts "The count of resource tile with cuckoo habitat is #{result}"
-  
+
 =begin
     ct.world.width.times do |x|
       ct.world.height.times do |y|
@@ -21,10 +21,10 @@ class CuckooTicker < SpeciesTicker
       end
     end
 =end
-    
+
   end
-  
-  
+
+
   #compute the habitat for black-billed cuckoo
   def self.compute_habitat(matrix)
 
@@ -38,7 +38,7 @@ class CuckooTicker < SpeciesTicker
   #BBC=BBC3==1&BBC==1; %%%%%%suitable habitat + Parameter
   #BBCsize=sum(BBC);
   #BBCsize=sum(BBCsize,2);  %%%%%%%%%%%amount of habitat for BBCrequire 'matrix_utils'
-    
+
     mx_decid = matrix.eq(1)
     mx_conifer = matrix.eq(2)
     mx_mixed = matrix.eq(3)
@@ -49,16 +49,16 @@ class CuckooTicker < SpeciesTicker
 
     mx_bwcc = bwcc_New(mx_trees)
     mx_perim = bwperim(mx_trees)
-    
-    
+
+
     mx_habitat = NArray.byte(matrix.shape[0], matrix.shape[1])
     mx_habitat.fill!(0)
     count = 0
-    
-    
+
+
     #print_Matrix perim, 5, 5
     #puts "--------------\n"
-    
+
     mx_bwcc.PixelIdxList.each{ |val|
       #puts "length = #{val.length}\n"
       if(val.length>1 && mx_trees[val[0][0],val[0][1]]!=0)
@@ -71,7 +71,7 @@ class CuckooTicker < SpeciesTicker
         }
       end
     }
-    
+
     #density 0.25 p/10 ha
     population = count * 0.404 * 0.25 / 10 * 2;
     #puts "Count = #{count}\n"

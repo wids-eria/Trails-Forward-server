@@ -3,10 +3,10 @@ require 'matrix_utils'
 
 class WoodthrushTicker < SpeciesTicker
   def self.tick(ct)
-    
+
     result = compute_habitat ct.land
     puts "The count of resource tile with woodthursh habitat is #{result}"
-  
+
 =begin
     ct.world.width.times do |x|
       ct.world.height.times do |y|
@@ -21,10 +21,10 @@ class WoodthrushTicker < SpeciesTicker
       end
     end
 =end
-    
+
   end
-  
-  
+
+
   #compute the habitat for woodthursh
   def self.compute_habitat(matrix)
 
@@ -36,15 +36,15 @@ class WoodthrushTicker < SpeciesTicker
   #WTsize=sum(WT);
   #WTsize=sum(WTsize);
 
-    mx_lf = FlycatcherTicker.compute_habitat(matrix) 
+    mx_lf = FlycatcherTicker.compute_habitat(matrix)
     mx_bwcc = bwcc_New(mx_lf.habitat)
     #mx_perim = bwperim(mx_decid_mixed)
-    
-    
+
+
     mx_habitat = NArray.byte(matrix.shape[0], matrix.shape[1])
     mx_habitat.fill!(0)
     count = 0
-      
+
     mx_bwcc.PixelIdxList.each{ |val|
       #puts "length = #{val.length}\n"
       if(val.length>2 && mx_lf.habitat[val[0][0],val[0][1]]!=0)
@@ -55,7 +55,7 @@ class WoodthrushTicker < SpeciesTicker
         }
       end
     }
-    
+
     #density 2.3p/10ha
     population = count * 0.404 * 2.3 / 10 * 2;
     #puts "Count = #{count}\n"
