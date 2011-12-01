@@ -10,10 +10,9 @@ gem 'json'
 gem 'devise'
 gem 'cancan'
 gem 'msgpack'
+gem 'pg'
 
 group :development, :test do
-  gem 'sqlite3'
-
   gem 'ruby-debug19', :require => 'ruby-debug'
 
   gem 'cucumber-rails'
@@ -27,6 +26,5 @@ group :development, :test do
 end
 
 group :production do
-  gem 'pg'
   gem 'exceptional'
 end
