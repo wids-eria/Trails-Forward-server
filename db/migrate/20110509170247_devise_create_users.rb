@@ -14,12 +14,12 @@ class DeviseCreateUsers < ActiveRecord::Migration
       t.token_authenticatable
 
     end
-    
+
     #adapter = User.connection.instance_variable_get("@config")[:adapter]
     #if adapter != "sqlite3"
       add_index :users, :email #,                :unique => true
     #end
-    
+
     add_index :users, :reset_password_token, :unique => true
     # add_index :users, :confirmation_token,   :unique => true
     # add_index :users, :unlock_token,         :unique => true

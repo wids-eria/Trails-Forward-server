@@ -4,7 +4,7 @@ class CreateChangeRequests < ActiveRecord::Migration
       t.string :type
       t.integer :target_id
       t.string :target_type
-      
+
       #for development requests
       t.string :development_type
       t.string :development_quality

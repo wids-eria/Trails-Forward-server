@@ -6,9 +6,9 @@ class CreateResourceTiles < ActiveRecord::Migration
       t.integer :y
       t.string :type
       t.string :zoned_use
-      
+
       t.integer :quality
-      
+
       t.string :species
 
       t.timestamps
