@@ -95,10 +95,10 @@ GEM
     mime-types (1.17.2)
     msgpack (0.4.5)
     multi_json (1.0.4)
-    mysql (2.8.1)
     narray (0.5.9.9)
     nokogiri (1.5.0)
     orm_adapter (0.0.5)
+    pg (0.11.0)
     polyglot (0.3.3)
     rack (1.3.5)
     rack-cache (1.1)
@@ -192,8 +192,8 @@ DEPENDENCIES
   fuubar-cucumber
   json
   msgpack
-  mysql
   narray
+  pg
   rails (= 3.1.1)
   rake
   rspec

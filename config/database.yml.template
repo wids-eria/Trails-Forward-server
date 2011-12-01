@@ -1,17 +1,21 @@
-test:
-  adapter: mysql
-  database: trails_test
-  username: root
-  password: 
+# You must use a local username for the project.  If you can create custom
+# users in postgresql, create the "trailsforward" user with database create
+# permissions.  Otherwise, set the username to your system username
 
-production:
-  adapter: mysql
-  database: trails_prod
-  username: root
-  password: 
+defaults: &DEFAULTS
+  adapter: postgresql
+  encoding: unicode
+  pool: 5
+  username: trailsforward
+  password:
 
 development:
-  adapter: mysql
-  database: trails_development
-  username: root
-  password: 
+  <<: *DEFAULTS
+  database: trails_forward_development
+
+test: &TEST
+  <<: *DEFAULTS
+  database: trails_forward_test
+
+cucumber:
+  <<: *TEST
