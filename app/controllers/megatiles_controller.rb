@@ -21,7 +21,7 @@ class MegatilesController < ApplicationController
       end
 
       @megatiles = Megatile.where(:world_id => @world.id).where("x >= :x_min AND x<= :x_max AND y >= :y_min AND y <= :y_max",
-       {:x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max})
+                                                                {:x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max})
     else
       if @world.width * @world.height > 2000
         render :status => :request_entity_too_large, :text => "Request too large"

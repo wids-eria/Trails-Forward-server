@@ -63,15 +63,15 @@ Autocompleter.Base = Class.create({
     this.options.minChars     = this.options.minChars || 1;
     this.options.onShow       = this.options.onShow ||
       function(element, update){
-        if(!update.style.position || update.style.position=='absolute') {
-          update.style.position = 'absolute';
-          Position.clone(element, update, {
-            setHeight: false,
-            offsetTop: element.offsetHeight
-          });
-        }
-        Effect.Appear(update,{duration:0.15});
-      };
+      if(!update.style.position || update.style.position=='absolute') {
+        update.style.position = 'absolute';
+        Position.clone(element, update, {
+          setHeight: false,
+          offsetTop: element.offsetHeight
+        });
+      }
+      Effect.Appear(update,{duration:0.15});
+    };
     this.options.onHide = this.options.onHide ||
       function(element, update){ new Effect.Fade(update,{duration:0.15}) };
 
@@ -94,13 +94,13 @@ Autocompleter.Base = Class.create({
   show: function() {
     if(Element.getStyle(this.update, 'display')=='none') this.options.onShow(this.element, this.update);
     if(!this.iefix &&
-      (Prototype.Browser.IE) &&
-      (Element.getStyle(this.update, 'position')=='absolute')) {
+       (Prototype.Browser.IE) &&
+         (Element.getStyle(this.update, 'position')=='absolute')) {
       new Insertion.After(this.update,
-       '<iframe id="' + this.update.id + '_iefix" '+
-       'style="display:none;position:absolute;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" ' +
-       'src="javascript:false;" frameborder="0" scrolling="no"></iframe>');
-      this.iefix = $(this.update.id+'_iefix');
+                          '<iframe id="' + this.update.id + '_iefix" '+
+                            'style="display:none;position:absolute;filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);" ' +
+                            'src="javascript:false;" frameborder="0" scrolling="no"></iframe>');
+                          this.iefix = $(this.update.id+'_iefix');
     }
     if(this.iefix) setTimeout(this.fixIEOverlapping.bind(this), 50);
   },
@@ -129,39 +129,39 @@ Autocompleter.Base = Class.create({
   onKeyPress: function(event) {
     if(this.active)
       switch(event.keyCode) {
-       case Event.KEY_TAB:
-       case Event.KEY_RETURN:
-         this.selectEntry();
-         Event.stop(event);
-       case Event.KEY_ESC:
-         this.hide();
-         this.active = false;
-         Event.stop(event);
-         return;
-       case Event.KEY_LEFT:
-       case Event.KEY_RIGHT:
-         return;
-       case Event.KEY_UP:
-         this.markPrevious();
-         this.render();
-         Event.stop(event);
-         return;
-       case Event.KEY_DOWN:
-         this.markNext();
-         this.render();
-         Event.stop(event);
-         return;
+        case Event.KEY_TAB:
+          case Event.KEY_RETURN:
+          this.selectEntry();
+        Event.stop(event);
+        case Event.KEY_ESC:
+          this.hide();
+        this.active = false;
+        Event.stop(event);
+        return;
+        case Event.KEY_LEFT:
+          case Event.KEY_RIGHT:
+          return;
+        case Event.KEY_UP:
+          this.markPrevious();
+        this.render();
+        Event.stop(event);
+        return;
+        case Event.KEY_DOWN:
+          this.markNext();
+        this.render();
+        Event.stop(event);
+        return;
       }
-     else
-       if(event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN ||
-         (Prototype.Browser.WebKit > 0 && event.keyCode == 0)) return;
+      else
+        if(event.keyCode==Event.KEY_TAB || event.keyCode==Event.KEY_RETURN ||
+           (Prototype.Browser.WebKit > 0 && event.keyCode == 0)) return;
 
-    this.changed = true;
-    this.hasFocus = true;
+          this.changed = true;
+          this.hasFocus = true;
 
-    if(this.observer) clearTimeout(this.observer);
-      this.observer =
-        setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
+          if(this.observer) clearTimeout(this.observer);
+          this.observer =
+            setTimeout(this.onObserverEvent.bind(this), this.options.frequency*1000);
   },
 
   activate: function() {
@@ -173,11 +173,11 @@ Autocompleter.Base = Class.create({
   onHover: function(event) {
     var element = Event.findElement(event, 'LI');
     if(this.index != element.autocompleteIndex)
-    {
+      {
         this.index = element.autocompleteIndex;
         this.render();
-    }
-    Event.stop(event);
+      }
+      Event.stop(event);
   },
 
   onClick: function(event) {
@@ -197,9 +197,9 @@ Autocompleter.Base = Class.create({
   render: function() {
     if(this.entryCount > 0) {
       for (var i = 0; i < this.entryCount; i++)
-        this.index==i ?
-          Element.addClassName(this.getEntry(i),"selected") :
-          Element.removeClassName(this.getEntry(i),"selected");
+      this.index==i ?
+        Element.addClassName(this.getEntry(i),"selected") :
+        Element.removeClassName(this.getEntry(i),"selected");
       if(this.hasFocus) {
         this.show();
         this.active = true;
@@ -212,13 +212,13 @@ Autocompleter.Base = Class.create({
 
   markPrevious: function() {
     if(this.index > 0) this.index--;
-      else this.index = this.entryCount-1;
+    else this.index = this.entryCount-1;
     this.getEntry(this.index).scrollIntoView(true);
   },
 
   markNext: function() {
     if(this.index < this.entryCount-1) this.index++;
-      else this.index = 0;
+    else this.index = 0;
     this.getEntry(this.index).scrollIntoView(false);
   },
 
@@ -337,8 +337,8 @@ Autocompleter.Base = Class.create({
 Autocompleter.Base.prototype.getTokenBounds.getFirstDifferencePos = function(newS, oldS) {
   var boundary = Math.min(newS.length, oldS.length);
   for (var index = 0; index < boundary; ++index)
-    if (newS[index] != oldS[index])
-      return index;
+  if (newS[index] != oldS[index])
+    return index;
   return boundary;
 };
 
@@ -430,7 +430,7 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
         var count     = 0;
 
         for (var i = 0; i < instance.options.array.length &&
-          ret.length < instance.options.choices ; i++) {
+             ret.length < instance.options.choices ; i++) {
 
           var elem = instance.options.array[i];
           var foundPos = instance.options.ignoreCase ?
@@ -440,14 +440,14 @@ Autocompleter.Local = Class.create(Autocompleter.Base, {
           while (foundPos != -1) {
             if (foundPos == 0 && elem.length != entry.length) {
               ret.push("<li><strong>" + elem.substr(0, entry.length) + "</strong>" +
-                elem.substr(entry.length) + "</li>");
+                       elem.substr(entry.length) + "</li>");
               break;
             } else if (entry.length >= instance.options.partialChars &&
-              instance.options.partialSearch && foundPos != -1) {
+                       instance.options.partialSearch && foundPos != -1) {
               if (instance.options.fullSearch || /\s/.test(elem.substr(foundPos-1,1))) {
                 partial.push("<li>" + elem.substr(0, foundPos) + "<strong>" +
-                  elem.substr(foundPos, entry.length) + "</strong>" + elem.substr(
-                  foundPos + entry.length) + "</li>");
+                             elem.substr(foundPos, entry.length) + "</strong>" + elem.substr(
+                               foundPos + entry.length) + "</li>");
                 break;
               }
             }
@@ -861,9 +861,9 @@ Ajax.InPlaceEditor.prototype.initialize.dealWithDeprecatedOptions = function(opt
     options[name] = expr;
   };
   fallback('cancelControl', (options.cancelLink ? 'link' : (options.cancelButton ? 'button' :
-    options.cancelLink == options.cancelButton == false ? false : undefined)));
+                                                            options.cancelLink == options.cancelButton == false ? false : undefined)));
   fallback('okControl', (options.okLink ? 'link' : (options.okButton ? 'button' :
-    options.okLink == options.okButton == false ? false : undefined)));
+                                                    options.okLink == options.okButton == false ? false : undefined)));
   fallback('highlightColor', options.highlightcolor);
   fallback('highlightEndColor', options.highlightendcolor);
 };

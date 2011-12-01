@@ -74,12 +74,12 @@ class LandTile < ResourceTile
 
     sone = stwo = szero = 0.0
     case self.soil
-      when 0
-        szero = 1.0
-      when 1
-        sone = 1.0
-      when 2
-        stwo = 1.0
+    when 0
+      szero = 1.0
+    when 1
+      sone = 1.0
+    when 2
+      stwo = 1.0
     end
 
     lntotalprice = bdum*coeff[0]+lntotalacres*coeff[1]+lntot2*coeff[2]+lnfrontage*coeff[3]+lnf2*coeff[4]+lnlakesize*coeff[5]+lnlake2*coeff[6]+sone*coeff[7]+stwo*coeff[8]+szero*coeff[9]+10.24;

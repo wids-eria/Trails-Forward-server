@@ -30,7 +30,7 @@ TrailsForwardWorld::Application.routes.draw do
       collection do
         get 'appraise', :controller => :megatiles, :action => :appraise_list
       end
-    end #megatiles
+    end
     resources :resource_tiles, :only => [:show] do
       member do
         post :bulldoze

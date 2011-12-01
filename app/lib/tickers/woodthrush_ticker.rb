@@ -28,13 +28,13 @@ class WoodthrushTicker < SpeciesTicker
   #compute the habitat for woodthursh
   def self.compute_habitat(matrix)
 
-  #WT=LF; %%%%%%%wood thursh has same properties as Flycather but bigger minimum size
-  #WT=bwconncomp(WT,4);%%designate patches
-  #wfstats=regionprops(WT,'Area'); %%calcualte size of patches
-  #idWT = find([wfstats.Area] > 2);%%%%%%%%%%%%select patches greater than 2 acres needed as minimum core patch size
-  #WT = ismember(labelmatrix(WT), idWT);%%%%%%%%%%%put those on a new matrix
-  #WTsize=sum(WT);
-  #WTsize=sum(WTsize);
+    #WT=LF; %%%%%%%wood thursh has same properties as Flycather but bigger minimum size
+    #WT=bwconncomp(WT,4);%%designate patches
+    #wfstats=regionprops(WT,'Area'); %%calcualte size of patches
+    #idWT = find([wfstats.Area] > 2);%%%%%%%%%%%%select patches greater than 2 acres needed as minimum core patch size
+    #WT = ismember(labelmatrix(WT), idWT);%%%%%%%%%%%put those on a new matrix
+    #WTsize=sum(WT);
+    #WTsize=sum(WTsize);
 
     mx_lf = FlycatcherTicker.compute_habitat(matrix)
     mx_bwcc = bwcc_New(mx_lf.habitat)

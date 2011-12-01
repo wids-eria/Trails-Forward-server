@@ -5,7 +5,7 @@ namespace :trails_forward do
     task :execute_pending, [:world_id] => [:environment] do |t, args|
       world = World.find args[:world_id]
       world.manager.execute_trades
-    end     #task
+    end
 
   end
 end

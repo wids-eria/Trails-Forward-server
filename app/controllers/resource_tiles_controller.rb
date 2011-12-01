@@ -17,8 +17,7 @@ class ResourceTilesController < ApplicationController
         render :status => :forbidden, :text => "Action illegal for this land"
       end
     end
-  end #def clearcut
-
+  end
 
   def bulldoze
     @resource_tile = ResourceTile.find(params[:id])
@@ -78,7 +77,7 @@ class ResourceTilesController < ApplicationController
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
     end
 
-  end #def bulldoze_list
+  end
 
 
   def clearcut_list
@@ -106,10 +105,10 @@ class ResourceTilesController < ApplicationController
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
     end
 
-  end #def clearcut_list
+  end
 
   def build_list
     #not yet implemented
-  end # def build_list
+  end
 
 end

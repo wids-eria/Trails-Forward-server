@@ -19,18 +19,18 @@ class TreeTicker
         x = rt.x
         y = rt.y
         case rt.tree_species
-          when ResourceTile::Verbiage[:tree_species][:deciduous]
-            @decid[x,y] = rt.tree_size
-            @old_tree_size[x,y] = rt.tree_size
-          when ResourceTile::Verbiage[:tree_species][:coniferous]
-            @conifer[x,y] = rt.tree_size
-            @old_tree_size[x,y] = rt.tree_size
-          when ResourceTile::Verbiage[:tree_species][:mixed]
-            @mixed[x,y] = rt.tree_size
-            @old_tree_size[x,y] = rt.tree_size
-        end #case
-      end #group
-    end #find_in_batches
+        when ResourceTile::Verbiage[:tree_species][:deciduous]
+          @decid[x,y] = rt.tree_size
+          @old_tree_size[x,y] = rt.tree_size
+        when ResourceTile::Verbiage[:tree_species][:coniferous]
+          @conifer[x,y] = rt.tree_size
+          @old_tree_size[x,y] = rt.tree_size
+        when ResourceTile::Verbiage[:tree_species][:mixed]
+          @mixed[x,y] = rt.tree_size
+          @old_tree_size[x,y] = rt.tree_size
+        end
+      end
+    end
 
 
     # compute the tree growth
@@ -49,15 +49,15 @@ class TreeTicker
         x = rt.x
         y = rt.y
         case rt.tree_species
-          when ResourceTile::Verbiage[:tree_species][:deciduous]
-            rt.tree_size = result.tree_size[x,y]
-          when ResourceTile::Verbiage[:tree_species][:coniferous]
-            rt.tree_size = result.tree_size[x,y]
-          when ResourceTile::Verbiage[:tree_species][:mixed]
-            rt.tree_size = result.tree_size[x,y]
-        end #case
+        when ResourceTile::Verbiage[:tree_species][:deciduous]
+          rt.tree_size = result.tree_size[x,y]
+        when ResourceTile::Verbiage[:tree_species][:coniferous]
+          rt.tree_size = result.tree_size[x,y]
+        when ResourceTile::Verbiage[:tree_species][:mixed]
+          rt.tree_size = result.tree_size[x,y]
+        end
         rt.save!
-      end #group
+      end
     end
 
   end
@@ -202,7 +202,7 @@ class TreeTicker
 
 
       #end
-      end
+    end
 
     #Treesize=Conifer+Mixed+Decid;
     tree_size =  mx_conifer + mx_mixed + mx_decid

@@ -22,25 +22,25 @@ describe do
     goalCount = 3;
     FlycatcherTicker.compute_habitat(testMatrix).count.should == goalCount
   end
-  
+
   it "test woodthursh" do
     testMatrix = NArray[[1,3,3,4,2],[1,3,3,4,2],[1,3,3,4,1],[1,3,3,4,2],[1,3,3,4,2]]
     goalCount = 3; #TODO check this and double check with MATLAB
     WoodthrushTicker.compute_habitat(testMatrix).count.should == goalCount
   end
-  
+
   it "test chickadees" do
     testMatrix = NArray[[2,2,2,4,2],[2,2,2,4,2],[2,2,2,4,2],[2,2,2,4,2],[1,2,1,4,1]]
     goalCount = 13;
     ChickadeeTicker.compute_habitat(testMatrix).count.should == goalCount
   end
-  
+
   it "test warbler" do
     testMatrix = NArray[[2,3,2,4,1],[2,3,2,4,1],[2,3,2,4,1],[2,3,2,4,1],[2,2,2,4,1]]
     goalCount = 3; #TODO check this
     WarblerTicker.compute_habitat(testMatrix).count.should == goalCount
   end
-  
+
   it "test timber" do
     testMatrix1 = NArray[[12,13,12,14,11],[8,9,8,9,8],[5,6,7,6,5],[2,3,2,4,1],[2,2,2,4,1]]
     testMatrix2 = NArray[[12,13,12,14,11],[8,9,8,9,8],[5,6,7,6,5],[2,3,2,4,1],[2,2,2,4,1]]
@@ -53,5 +53,5 @@ describe do
     result.bfmt.should approxEqualMatrix(goalMatrix2)
     result.bfct.should approxEqualMatrix(goalMatrix3)
   end
-  
+
 end

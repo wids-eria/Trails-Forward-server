@@ -42,7 +42,7 @@ class Broker
       reject_other_bids bid
       bid.execution_complete = true
       bid.save!
-    end #transaction
+    end
   end
 
   def reject_other_bids(bid)
@@ -79,7 +79,7 @@ class Broker
         cancel_listing(other_listing, TrumpedListing) unless other_listing == bid.listing
       end
     end
-  end #reject_other_bids
+  end
 
   def transfer_assets(bid)
     if bid.listing  #this wasn't unsolicited

@@ -28,16 +28,16 @@ class CuckooTicker < SpeciesTicker
   #compute the habitat for black-billed cuckoo
   def self.compute_habitat(matrix)
 
-  #BBC=(decid+conifer+mixed); %%%Make landscape that is not water
-  #BBC=bwconncomp(BBC,4);%%%%%%%find edge of this landscape
-  #bbcstats=regionprops(BBC,'Area');%%%find the area
-  #idBBC=find([bbcstats.Area]>1);%%%see if area exist
-  #BBC2=ismember(labelmatrix(BBC),idBBC);%%%label matrix of BBC2
-  #BBC=bwperim(BBC2);%%find paramters
-  #BBC3=(decid+mixed);%%%%make landscape of just suitable habitat
-  #BBC=BBC3==1&BBC==1; %%%%%%suitable habitat + Parameter
-  #BBCsize=sum(BBC);
-  #BBCsize=sum(BBCsize,2);  %%%%%%%%%%%amount of habitat for BBCrequire 'matrix_utils'
+    #BBC=(decid+conifer+mixed); %%%Make landscape that is not water
+    #BBC=bwconncomp(BBC,4);%%%%%%%find edge of this landscape
+    #bbcstats=regionprops(BBC,'Area');%%%find the area
+    #idBBC=find([bbcstats.Area]>1);%%%see if area exist
+    #BBC2=ismember(labelmatrix(BBC),idBBC);%%%label matrix of BBC2
+    #BBC=bwperim(BBC2);%%find paramters
+    #BBC3=(decid+mixed);%%%%make landscape of just suitable habitat
+    #BBC=BBC3==1&BBC==1; %%%%%%suitable habitat + Parameter
+    #BBCsize=sum(BBC);
+    #BBCsize=sum(BBCsize,2);  %%%%%%%%%%%amount of habitat for BBCrequire 'matrix_utils'
 
     mx_decid = matrix.eq(1)
     mx_conifer = matrix.eq(2)

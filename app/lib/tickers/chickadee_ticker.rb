@@ -28,13 +28,13 @@ class ChickadeeTicker < SpeciesTicker
   #compute the habitat for chickadees
   def self.compute_habitat(matrix)
 
-  #C=bwconncomp(Conifer,4);%%%%%%create patches for Conifer
-  #cstats=regionprops(C,'Area');%%%%%Measure of patch area conifer
-  #idC = find([cstats.Area] > 5);%%%%%%%%%%%%select patches greater than 5 acres
-  #C2 = ismember(labelmatrix(C), idC);%%%%%%%%%%%put those on a new matrix
-  #BC=C2;
-  #BCsize=sum(C2);
-  #BCsize=sum(BCsize); %%% Amout of land with Chickadees on it
+    #C=bwconncomp(Conifer,4);%%%%%%create patches for Conifer
+    #cstats=regionprops(C,'Area');%%%%%Measure of patch area conifer
+    #idC = find([cstats.Area] > 5);%%%%%%%%%%%%select patches greater than 5 acres
+    #C2 = ismember(labelmatrix(C), idC);%%%%%%%%%%%put those on a new matrix
+    #BC=C2;
+    #BCsize=sum(C2);
+    #BCsize=sum(BCsize); %%% Amout of land with Chickadees on it
 
     mx_conifer = matrix.eq(2)
     mx_bwcc = bwcc_New(mx_conifer)

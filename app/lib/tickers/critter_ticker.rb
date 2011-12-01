@@ -27,15 +27,15 @@ class CritterTicker
         x = rt.x
         y = rt.y
         case rt.tree_species
-          when ResourceTile::Verbiage[:tree_species][:deciduous]
-            @land[x,y] = 1
-          when ResourceTile::Verbiage[:tree_species][:coniferous]
-            @land[x,y] = 2
-          when ResourceTile::Verbiage[:tree_species][:mixed]
-            @land[x,y] = 3
-        end #case
-      end #group
-    end #find_in_batches
+        when ResourceTile::Verbiage[:tree_species][:deciduous]
+          @land[x,y] = 1
+        when ResourceTile::Verbiage[:tree_species][:coniferous]
+          @land[x,y] = 2
+        when ResourceTile::Verbiage[:tree_species][:mixed]
+          @land[x,y] = 3
+        end
+      end
+    end
 
   end
 

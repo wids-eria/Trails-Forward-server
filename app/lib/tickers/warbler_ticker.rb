@@ -28,15 +28,15 @@ class WarblerTicker < SpeciesTicker
   #compute the habitat for warbler
   def self.compute_habitat(matrix)
 
-  #CW=conifer+mixed;%%%%%%%%%CW uses mixed and conifer
-  #CW=bwconncomp(CW,4);%%%%%%%%%%Designate patches
-  #cwstats=regionprops(CW,'Area'); %%calcualte size of patches
-  #idCW = find([cwstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
-  #CW2 = ismember(labelmatrix(CW), idCW);%%%%%%%%%%%put those on a new matrix
-  #PCW2=bwperim(CW2);%%%%%%%%%%%%%%Take off parameters
-  #CW= PCW2==0 & CW2==1;%%%%Core area for Warbler
-  #CWsize=sum(CW);
-  #CWsize=sum(CWsize); %%%%%%Amount of Warbler forest
+    #CW=conifer+mixed;%%%%%%%%%CW uses mixed and conifer
+    #CW=bwconncomp(CW,4);%%%%%%%%%%Designate patches
+    #cwstats=regionprops(CW,'Area'); %%calcualte size of patches
+    #idCW = find([cwstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
+    #CW2 = ismember(labelmatrix(CW), idCW);%%%%%%%%%%%put those on a new matrix
+    #PCW2=bwperim(CW2);%%%%%%%%%%%%%%Take off parameters
+    #CW= PCW2==0 & CW2==1;%%%%Core area for Warbler
+    #CWsize=sum(CW);
+    #CWsize=sum(CWsize); %%%%%%Amount of Warbler forest
 
 
     mx_conifer = matrix.eq(2)

@@ -14,7 +14,7 @@ class ListingsController < ApplicationController
       format.json  { render_for_api :listing, :json => @listings, :root => :listings  }
       format.xml   { render_for_api :listing, :xml  => @listings, :root => :listings  }
     end
-  end #index
+  end
 
   def index_active
     # @world = World.find(params[:world_id], :include => [:players])
@@ -54,7 +54,7 @@ class ListingsController < ApplicationController
         format.xml   { render :xml => @listing.errors, :status => :not_acceptable  }
       end
       mtg.destroy
-    end #if @listing.save
-  end #create
+    end
+  end
 
 end

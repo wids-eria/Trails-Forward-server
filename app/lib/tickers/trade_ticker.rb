@@ -13,7 +13,7 @@ class TradeTicker
           tr.complete = true
           tr.save!
         end
-      end #tr.each
-    end   #transaction
+      end
+    end
   end
 end

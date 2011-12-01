@@ -5,7 +5,7 @@ namespace :trails_forward do
     task :create_world_img, [:world_id] => [:environment] do |t, args|
       world = World.find args[:world_id]
       WorldPresenter.new(world).save_png
-    end #task
+    end
 
   end
 end

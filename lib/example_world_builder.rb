@@ -21,7 +21,7 @@ class ExampleWorldBuilder
     self.create_starter_property(world, debug)
 
     return world
-  end  #build_example_world
+  end
 
   private
   def self.place_resources(world, debug=false)
@@ -35,25 +35,25 @@ class ExampleWorldBuilder
         resource_tile = world.resource_tile_at x,y
         resource_tile.type = 'LandTile'
         case rand 9
-          when 0
-            resource_tile.clear_resources
-            resource_tile.type = 'WaterTile'
-          when 1..6
-            resource_tile.primary_use = nil
-            resource_tile.people_density = 0
-            resource_tile.housing_density = resource_tile.people_density
-            resource_tile.tree_density = 0.5 + rand()/2.0
-            resource_tile.tree_species = "Deciduous"
-            resource_tile.development_intensity = 0.0
-            resource_tile.zoned_use = "Logging" if (rand(10) == 0)
-          when 7..8
-            resource_tile.primary_use = "Residential"
-            resource_tile.zoned_use = "Development"
-            resource_tile.people_density = 0.5 + rand()/2.0
-            resource_tile.housing_density = resource_tile.people_density
-            resource_tile.tree_density = rand() * 0.1
-            resource_tile.tree_species = nil
-            resource_tile.development_intensity = resource_tile.housing_density
+        when 0
+          resource_tile.clear_resources
+          resource_tile.type = 'WaterTile'
+        when 1..6
+          resource_tile.primary_use = nil
+          resource_tile.people_density = 0
+          resource_tile.housing_density = resource_tile.people_density
+          resource_tile.tree_density = 0.5 + rand()/2.0
+          resource_tile.tree_species = "Deciduous"
+          resource_tile.development_intensity = 0.0
+          resource_tile.zoned_use = "Logging" if (rand(10) == 0)
+        when 7..8
+          resource_tile.primary_use = "Residential"
+          resource_tile.zoned_use = "Development"
+          resource_tile.people_density = 0.5 + rand()/2.0
+          resource_tile.housing_density = resource_tile.people_density
+          resource_tile.tree_density = rand() * 0.1
+          resource_tile.tree_species = nil
+          resource_tile.development_intensity = resource_tile.housing_density
         end
         resource_tile.save
         print '.' if debug
@@ -61,7 +61,7 @@ class ExampleWorldBuilder
       end
     end
     puts '' if debug
-  end #place_resources
+  end
 
   def self.create_users_and_players(world, debug)
     #puts "Creating users and players..."
@@ -84,7 +84,7 @@ class ExampleWorldBuilder
       players << p
       puts "\tPlayer id #{p.id} (#{p.type}) created" if debug
     end
-  end #create_users
+  end
 
   def self.create_starter_property(world, debug)
     print "Assigning starter property" if debug
@@ -99,5 +99,5 @@ class ExampleWorldBuilder
     end
     puts "" if debug
   end
-end #class
+end
 

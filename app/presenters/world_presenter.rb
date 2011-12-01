@@ -16,8 +16,8 @@ class WorldPresenter
         x = rt.x
         y = rt.y
         case rt.type
-          when WaterTile.to_s
-            canvas[x,y] = ChunkyPNG::Color::WHITE
+        when WaterTile.to_s
+          canvas[x,y] = ChunkyPNG::Color::WHITE
         end
       end
     end

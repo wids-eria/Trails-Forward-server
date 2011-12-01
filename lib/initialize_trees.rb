@@ -1,7 +1,7 @@
 require 'stats_utilities'
 
 def seed_trees(world)
-  
+
   tree_size_values = [10, 8, 5]
   deciduous_tree_size_class_weights = [0.43, 0.37, 0.2]
   coniferous_tree_size_class_weights = [0.556035896, 0.258728096, 0.185236008]
@@ -27,18 +27,18 @@ def seed_trees(world)
       else
         #nothing to do here
       end
-    
+
       if rt.tree_species != nil
         rt.tree_size = random_element tree_size_class_weights, tree_size_values
         #puts "Base tree_size = #{rt.tree_size}"
       else
         rt.tree_size = nil
       end
-    
+
       #puts "#{rt.x}, #{rt.y}: tree size = #{rt.tree_size}"
-      if 10 == rt.tree_size 
+      if 10 == rt.tree_size
         rt.tree_size += random_element big_weights, big_tree_size_values
-      end # if 10 == rt.tree_size
+      end
       #puts "\t#{rt.x}, #{rt.y}: #{rt.tree_size}"
       rt.save
     end

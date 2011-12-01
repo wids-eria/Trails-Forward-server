@@ -53,7 +53,7 @@ class GameWorldManager
         @world.year_current += 1
         @world.save!
       end
-    end #transaction
+    end
   end
 
 end

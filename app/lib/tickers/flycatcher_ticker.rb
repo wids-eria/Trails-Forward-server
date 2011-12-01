@@ -27,15 +27,15 @@ class FlycatcherTicker < SpeciesTicker
   #compute the habitat for flycatchers
   def self.compute_habitat(matrix)
 
-  #LF=(decid+mixed); %%%flycatchers can live in decid and mixed forest
-  #LF=bwconncomp(LF,4);%%%%%%%%%%Designate patches
-  #lfstats=regionprops(LF,'Area'); %%calcualte size of patches
-  #idLF = find([lfstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
-  #LF2 = ismember(labelmatrix(LF), idLF);%%%%%%%%%%%put those on a new matrix
-  #PLF2=bwperim(LF2);%%%%%%%%%%%%%%Take off parameters
-  #LF= PLF2==0 & LF2==1;%%%%Core area for Flycatcher
-  #LFsize=sum(LF);
-  #LFsize=sum(LFsize); %%%%%%Amount of flycatcher forest
+    #LF=(decid+mixed); %%%flycatchers can live in decid and mixed forest
+    #LF=bwconncomp(LF,4);%%%%%%%%%%Designate patches
+    #lfstats=regionprops(LF,'Area'); %%calcualte size of patches
+    #idLF = find([lfstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
+    #LF2 = ismember(labelmatrix(LF), idLF);%%%%%%%%%%%put those on a new matrix
+    #PLF2=bwperim(LF2);%%%%%%%%%%%%%%Take off parameters
+    #LF= PLF2==0 & LF2==1;%%%%Core area for Flycatcher
+    #LFsize=sum(LF);
+    #LFsize=sum(LFsize); %%%%%%Amount of flycatcher forest
 
     mx_decid = matrix.eq(1)
     mx_mixed = matrix.eq(3)

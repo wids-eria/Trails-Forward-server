@@ -18,8 +18,8 @@ describe World do
       world.megatiles.should be_empty
       world.players.should be_empty
     end
-  end #context: when first created
-  
+  end
+
   context "when initialized with dummy data" do
     before :all do
       @world = ExampleWorldBuilder.build_example_world 6, 6
@@ -33,5 +33,5 @@ describe World do
     it "has players" do
       @world.players.should_not be_empty
     end
-  end #context: when initialized with dummy data
+  end
 end

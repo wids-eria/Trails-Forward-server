@@ -1,6 +1,5 @@
 When /^I bulldoze a resource tile on the megatile that I own$/ do
-  @my_resource_tile = @my_megatile.resource_tiles.select(&:can_be_bulldozed?).first
-  @my_resource_tile.should be
+  @my_resource_tile = get_bulldozable_tile @my_megatile
   @response = post bulldoze_world_resource_tile_path(@world, @my_resource_tile),
     :format => :json,
     :auth_token => @user.authentication_token
@@ -16,12 +15,12 @@ Then /^that megatile should be empty$/ do
 end
 
 When /^I bulldoze a resource tile on the owned megatile Then I should get an error$/ do
-  @owned_resource_tile = @owned_megatile.resource_tiles.first
+  @owned_resource_tile = get_bulldozable_tile @owned_megatile
   lambda {post bulldoze_world_resource_tile_path(@world, @owned_resource_tile), :format => :json, :auth_token => @user.authentication_token}.should raise_error
 end
 
 When /^I bulldoze a list containing that resource tile on the megatile that I own$/ do
-  @my_resource_tile = @my_megatile.resource_tiles.first
+  @my_resource_tile = get_bulldozable_tile @my_megatile
 
   @response = post bulldoze_world_resource_tiles_path(@world),
     :format => :json,
@@ -42,4 +41,10 @@ end
 When /^I bulldoze a list containing that resource tile on the owned megatile Then I should get an error$/ do
   @owned_resource_tile = @owned_megatile.resource_tiles.first
   lambda {post bulldoze_world_resource_tiles_path(@world), :format => :json, :auth_token => @user.authentication_token, :microtiles => [@owned_resource_tile.id]}.should raise_error
+end
+
+def get_bulldozable_tile megatile
+  resource_tile = megatile.resource_tiles.select(&:can_be_bulldozed?).first
+  resource_tile.should be
+  resource_tile
 end

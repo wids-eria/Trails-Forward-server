@@ -6,5 +6,5 @@ namespace :trails_forward do
     task :create_random_world, [:width, :height] => [:environment] do |t, args|
       ExampleWorldBuilder.build_example_world args[:width], args[:height], true
     end
-  end #namespace :init
-end #namespace :trails_forward
+  end
+end
