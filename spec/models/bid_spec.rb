@@ -24,10 +24,13 @@ describe Bid do
     end
     describe 'requested_land' do
       context 'with multiple owners' do
+        before :all do
+          Player.count.should == 0
+        end
         let(:ben_user) { create :user, name: 'Ben' }
         let(:kevin_user) { create :user, name: 'Kevin' }
-        let(:ben) { Player.create user: ben_user }
-        let(:kevin) { Player.create user: kevin_user }
+        let(:ben) { create :player, user: ben_user }
+        let(:kevin) { create :player, user: kevin_user }
         let(:bens_tile) { Megatile.create owner: ben }
         let(:kevins_tile) { Megatile.create owner: kevin }
         let(:requested_land) { MegatileGrouping.create(megatiles: [kevins_tile, bens_tile]) }

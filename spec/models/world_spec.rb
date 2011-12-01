@@ -21,17 +21,10 @@ describe World do
   end
 
   context "when initialized with dummy data" do
-    before :all do
-      @world = ExampleWorldBuilder.build_example_world 6, 6
-    end
-    it "has resource tiles" do
-      @world.resource_tiles.should_not be_empty
-    end
-    it "has megatiles" do
-      @world.megatiles.should_not be_empty
-    end
-    it "has players" do
-      @world.players.should_not be_empty
-    end
+    let(:world) { ExampleWorldBuilder.build_example_world 6, 6 }
+    subject { world }
+    its(:resource_tiles) { should_not be_empty }
+    its(:megatiles) { should_not be_empty }
+    its(:players) { should_not be_empty }
   end
 end
