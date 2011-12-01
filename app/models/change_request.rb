@@ -8,7 +8,4 @@ class ChangeRequest < ActiveRecord::Base
   validates_numericality_of :world_id
 
   scope :pending, where(:complete => false)
-
-  belongs_to :world
-
 end
