@@ -128,22 +128,22 @@ class Broker
   end
 
   def reject_bid(rejected_bid, explanation)
-    if bid.is_active?
-      bid.status = Bid::Verbiage[:rejected]
-      bid.rejection_reason = explanation
+    if rejected_bid.is_active?
+      rejected_bid.status = Bid::Verbiage[:rejected]
+      rejected_bid.rejection_reason = explanation
       #any hooks and such go here
 
-      bid.save!
+      rejected_bid.save!
     end
   end
 
   def cancel_bid(cancelled_bid, explanation)
-    if bid.is_active?
-      bid.status = Bid::Verbiage[:cancelled]
-      bid.rejection_reason = explanation
+    if cancelled_bid.is_active?
+      cancelled_bid.status = Bid::Verbiage[:cancelled]
+      cancelled_bid.rejection_reason = explanation
       #any hooks and such go here
 
-      bid.save!
+      cancelled_bid.save!
     end
   end
 

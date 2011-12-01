@@ -96,7 +96,8 @@ Then /^the bidder should get an email notification of the bids acceptance$/ do
 end
 
 Then /^losing bids should be rejected$/ do
-  pending # express the regexp above with the code you wish you had
+  Bid.count.should > 1
+  Bid.all.reject {|b| b.rejection_reason}.count.should == 1
 end
 
 Then /^the losing bidders should be notified$/ do
