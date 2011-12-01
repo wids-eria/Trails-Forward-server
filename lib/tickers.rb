@@ -13,7 +13,7 @@ module Tickers
 
   HabitatOutput = Struct.new(:count, :population, :habitat)
 
-  Dir[Rails.root.join("lib/tickers/*.rb")].each {|f| require f}
+  Dir[File.expand_path(File.join(File.dirname(__FILE__), 'tickers/*.rb'))].each {|f| require f}
 
   class CritterTicker
     attr_reader :land, :world

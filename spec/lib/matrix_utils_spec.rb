@@ -7,7 +7,7 @@ RSpec::Matchers.define :equalMatrix do |goal|
   end
 end
 
-describe MatrixUtilsTest, "#outputMatrix" do
+describe MatrixUtilsTest, :fast, "#outputMatrix" do
   it "returns appropriate result for uniform matrix" do
     matrix_utils_test = MatrixUtilsTest.new
     testMatrix = NArray.byte(5,5)

@@ -15,11 +15,12 @@ gem 'pg'
 group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
 
+  gem 'factory_girl_rails'
   gem 'cucumber-rails'
   gem 'database_cleaner'
   gem 'fuubar'
   gem 'fuubar-cucumber'
-  gem "rspec"
+  gem 'rspec'
   gem 'rspec-rails'
   gem 'capybara'
   gem 'shoulda-matchers'
