@@ -24,8 +24,8 @@ describe Bid do
     end
     describe 'requested_land' do
       context 'with multiple owners' do
-        let(:ben_user) { User.create name: 'Ben' }
-        let(:kevin_user) { User.create name: 'Kevin' }
+        let(:ben_user) { create :user, name: 'Ben' }
+        let(:kevin_user) { create :user, name: 'Kevin' }
         let(:ben) { Player.create user: ben_user }
         let(:kevin) { Player.create user: kevin_user }
         let(:bens_tile) { Megatile.create owner: ben }
