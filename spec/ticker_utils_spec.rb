@@ -1,6 +1,5 @@
 require 'spec_helper'
 
-
 RSpec::Matchers.define :approxEqualMatrix do |goal|
   match do |target|
     diff = target - goal

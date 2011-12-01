@@ -7,7 +7,7 @@ end
 
 
 When /^I clearcut a resource tile on the megatile that I own$/ do
-  @my_resource_tile = @my_megatile.resource_tiles.first
+  @my_resource_tile = get_clearcuttable_tile @my_megatile
   @old_balance = @player.balance
   @response = post clearcut_world_resource_tile_path(@world, @my_resource_tile),
     :format => :json,
@@ -37,22 +37,19 @@ end
 
 
 When /^I clearcut a resource tile on the owned megatile Then I should get an error$/ do
-  @owned_resource_tile = @owned_megatile.resource_tiles.first
+  @owned_resource_tile = get_clearcuttable_tile @owned_megatile
   lambda {post clearcut_world_resource_tile_path(@world, @owned_resource_tile), :format => :json, :auth_token => @user.authentication_token}.should raise_error
 end
 
 
 
 When /^I clearcut a list containing that resource tile on the megatile that I own$/ do
-  @my_resource_tile = @my_megatile.resource_tiles.select(&:can_be_clearcut?).first
-  @my_resource_tile.should be
+  @my_resource_tile = get_clearcuttable_tile @my_megatile
   @old_balance = @player.balance
-
 
 #  @response = post clearcut_world_resource_tile_path(@world, @my_resource_tile),
 #    :format => :json,
 #    :auth_token => @user.authentication_token
-
 
   @response = post clearcut_world_resource_tiles_path(@world),
     :format => :json,
@@ -71,8 +68,12 @@ Then /^the list containing that resource tile should have no trees$/ do
 end
 
 When /^I clearcut a list containing that resource tile on the owned megatile Then I should get an error$/ do
-  @owned_resource_tile = @owned_megatile.resource_tiles.first
+  @owned_resource_tile = get_clearcuttable_tile @owned_megatile
   lambda {post clearcut_world_resource_tiles_path(@world), :format => :json, :auth_token => @user.authentication_token, :microtiles => [@my_resource_tile.id]}.should raise_error
 end
 
-
+def get_clearcuttable_tile megatile
+  resource_tile = megatile.resource_tiles.select(&:can_be_clearcut?).first
+  resource_tile.should be
+  resource_tile
+end

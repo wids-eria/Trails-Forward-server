@@ -3,7 +3,7 @@ require 'narray'
 
 BirdOutput = Struct.new(:outputMatrix, :count)
 
-class Matrix_utils_test
+class MatrixUtilsTest
 
   #tests bwcc
   def test(testMatrix)
@@ -35,7 +35,6 @@ class Matrix_utils_test
     outputMatrix = bwperim(testMatrix)
     return outputMatrix
   end
-
 
   def test_Chickadee(testMatrix)
     tempOutput = bwcc_New(testMatrix)
