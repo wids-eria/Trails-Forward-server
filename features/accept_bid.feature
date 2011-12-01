@@ -7,6 +7,7 @@ Feature: Bid on a megatile
       And I have a player in the world
       And I own a megatile in the world
       And a bid has been placed on that owned megatile
+      And a bid has been placed on that owned megatile
       And I can see the bids on that owned megatile
     When I accept the highest dollar bid on that megatile
     Then the bidder should own the megatile
