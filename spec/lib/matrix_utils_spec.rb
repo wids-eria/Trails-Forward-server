@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'matrix_utils_test'
+require 'lib/matrix_utils_test'
 
 RSpec::Matchers.define :equalMatrix do |goal|
   match do |target|
