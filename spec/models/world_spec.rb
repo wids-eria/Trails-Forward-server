@@ -12,7 +12,7 @@ describe World do
   end
 
   context "when initialized with dummy data" do
-    let(:world) { ExampleWorldBuilder.build_example_world 6, 6 }
+    let(:world) { ExampleWorldBuilder.build_example_world }
     subject { world }
     its(:resource_tiles) { should_not be_empty }
     its(:megatiles) { should_not be_empty }

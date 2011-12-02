@@ -21,18 +21,11 @@ class World < ActiveRecord::Base
   end
 
 
-  def spawn_tiles(display_progress = false)
+  def spawn_tiles
     raise "Can't spawn tiles for an invalid World" unless valid?
     each_megatile_coord do |x,y|
       mt = Megatile.create(:x => x, :y => y, :world => self)
       mt.spawn_resources
-      if display_progress
-        print "."
-        STDOUT.flush
-      end
-    end
-    if display_progress
-      puts ""
     end
   end
 

@@ -1,34 +1,20 @@
-
 class ExampleWorldBuilder
-  def self.build_example_world(width, height, debug=false)
-    world = World.create do |w|
-      w.name = "Example World #{rand(100000)}"
-      w.year_start = 1880
-      w.year_current = 1880
-      w.width = width
-      w.height = height
-      w.megatile_width = 3
-      w.megatile_height = 3
-    end
-    puts "Created '#{world.name}' with id #{world.id}" if debug
+  def self.build_example_world(args = {})
+    world = Factory :world, args
 
-    puts "Spawning empty tiles" if debug
-    world.spawn_tiles debug
-    puts "\t...done" if debug
+    world.spawn_tiles
 
-    self.place_resources(world, debug)
-    self.create_users_and_players(world, debug)
-    self.create_starter_property(world, debug)
+    self.place_resources(world)
+    self.create_users_and_players(world)
+    self.create_starter_property(world)
 
     return world
   end
 
   private
-  def self.place_resources(world, debug=false)
+  def self.place_resources(world)
 
     how_many_trees = (world.width * world.height * 0.40).round
-    print "Placing resources" if debug
-    STDOUT.flush
 
     world.width.times do |x|
       world.height.times do |y|
@@ -56,15 +42,11 @@ class ExampleWorldBuilder
           resource_tile.development_intensity = resource_tile.housing_density
         end
         resource_tile.save
-        print '.' if debug
-        STDOUT.flush if debug
       end
     end
-    puts '' if debug
   end
 
-  def self.create_users_and_players(world, debug)
-    #puts "Creating users and players..."
+  def self.create_users_and_players(world)
     players = []
     player_types = [Lumberjack, Developer, Conserver]
     3.times do |i|
@@ -82,22 +64,16 @@ class ExampleWorldBuilder
       # p.type = player_types[i]
       #   p.save
       players << p
-      puts "\tPlayer id #{p.id} (#{p.type}) created" if debug
     end
   end
 
-  def self.create_starter_property(world, debug)
-    print "Assigning starter property" if debug
+  def self.create_starter_property(world)
     ((world.width / 6) * (world.height / 6)).times do
       x = rand world.width
       y = rand world.height
       megatile = world.megatile_at x,y
       megatile.owner = world.players[rand(world.players.count)]
       megatile.save
-      print "." if debug
-      STDOUT.flush
     end
-    puts "" if debug
   end
 end
-

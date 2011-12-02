@@ -3,7 +3,7 @@ require 'spec_helper'
 require Rails.root.join("lib/example_world_builder")
 
 describe WorldPresenter do
-  let(:world) { ExampleWorldBuilder.build_example_world 6, 6 }
+  let(:world) { ExampleWorldBuilder.build_example_world }
 
   describe "#to_png" do
     let(:canvas) { WorldPresenter.new(world) }
