@@ -128,13 +128,13 @@ class World < ActiveRecord::Base
 
   def create_users_and_players
     player_types = [Lumberjack, Developer, Conserver]
-    player_types.each_with_index do |player_type, i|
+    player_types.each_with_index do |player_type, idx|
       password = "letmein"
-      email = "u#{id}-#{i+1}@example.com"
+      email = "u#{id}-#{idx+1}@example.com"
 
       user = User.create!(email: email,
                           password: password,
-                          name: "User #{id}-#{i+1}")
+                          name: "User #{id}-#{idx+1}")
 
       player_type.create!(user: user,
                           world: self,

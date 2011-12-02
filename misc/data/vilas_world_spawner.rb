@@ -1,4 +1,3 @@
-
 world = World.create do |w|
   w.name = "Vilas County, WI - #{rand(100000)}"
   w.year_start = 2000
@@ -12,7 +11,7 @@ end
 puts "Created '#{world.name}' with id #{world.id}"
 
 puts "Spawning empty tiles"
-ExampleWorldBuilder.spawn_tiles(world)
+world.spawn_tiles
 puts "\t...done"
 
 # how_many_trees = (world.width * world.height * 0.80).round
