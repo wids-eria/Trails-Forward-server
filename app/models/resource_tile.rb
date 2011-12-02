@@ -3,34 +3,30 @@ class ResourceTile < ActiveRecord::Base
 
   belongs_to :megatile
   belongs_to :world
+  has_many :agents
 
   validates_uniqueness_of :x, :scope => [:y, :world_id]
   validates_uniqueness_of :y, :scope => [:x, :world_id]
 
-  #todo: Add validations for tree_species, zoned_use, and primary_use to be sure that they're in one of the below
+  # todo: Add validations for tree_species, zoned_use, and primary_use to be sure that they're in one of the below
 
-  Verbiage = {:tree_species => {
-                :coniferous => "Coniferous",
-                :deciduous => "Deciduous",
-                :mixed => "Mixed"
-               },
-              :zoned_uses => {
-                :development => "Development",
-                :dev => "Development",
-                :agriculture => "Agriculture",
-                :ag => "Agriculture",
-                :logging => "Logging",
-                :park => "Park"
-              },
-              :primary_uses => {
-                :pasture => "Agriculture/Pasture",
-                :crops => "Agriculture/Cultivated Crops",
-                :housing => "Housing",
-                :logging => "Logging",
-                :industry => "Industry",
-              }
-             } #Verbiage
-
+  Verbiage = { :tree_species => {
+                 :coniferous => "Coniferous",
+                 :deciduous => "Deciduous",
+                 :mixed => "Mixed" },
+               :zoned_uses => {
+                 :development => "Development",
+                 :dev => "Development",
+                 :agriculture => "Agriculture",
+                 :ag => "Agriculture",
+                 :logging => "Logging",
+                 :park => "Park" },
+               :primary_uses => {
+                 :pasture => "Agriculture/Pasture",
+                 :crops => "Agriculture/Cultivated Crops",
+                 :housing => "Housing",
+                 :logging => "Logging",
+                 :industry => "Industry" } }
 
   def clear_resources
     self.primary_use = nil

@@ -3,7 +3,7 @@ class Player < ActiveRecord::Base
 
   DefaultBalance = 1000
 
-  attr_accessible :name
+  attr_accessible :name, :user, :world, :balance
 
   validates_uniqueness_of :user_id, :scope => :world_id
 

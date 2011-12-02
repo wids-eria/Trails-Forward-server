@@ -38,7 +38,7 @@ module Tickers
       #BCsize=sum(BCsize); %%% Amout of land with Chickadees on it
 
       mx_conifer = matrix.eq(2)
-      mx_bwcc = bwcc_New(mx_conifer)
+      mx_bwcc = MatrixUtils.bwcc_New(mx_conifer)
 
       mx_habitat = NArray.byte(matrix.shape[0], matrix.shape[1])
       mx_habitat.fill!(0)

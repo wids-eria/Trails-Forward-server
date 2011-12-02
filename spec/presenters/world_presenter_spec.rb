@@ -1,22 +1,18 @@
 require 'spec_helper'
 
-require Rails.root.join("lib/example_world_builder")
-
 describe WorldPresenter do
-  let(:world) { ExampleWorldBuilder.build_example_world 6, 6 }
+  let(:world) { create :world_with_properties }
 
   describe "#to_png" do
     let(:canvas) { WorldPresenter.new(world) }
     subject { canvas.to_png }
 
     it 'colors water and land correctly' do
-      (0...world.width).each do |x|
-        (0...world.height).each do |y|
-          subject[x,y].should == case world.resource_tile_at(x,y).type
-                                 when WaterTile.to_s then ChunkyPNG::Color::WHITE
-                                 when LandTile.to_s  then ChunkyPNG::Color::BLACK
-                                 end
-        end
+      world.each_resource_tile do |tile|
+        subject[tile.x, tile.y].should == case tile.type
+                                          when WaterTile.to_s then ChunkyPNG::Color::WHITE
+                                          when LandTile.to_s  then ChunkyPNG::Color::BLACK
+                                          end
       end
     end
 
