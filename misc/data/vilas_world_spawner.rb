@@ -12,7 +12,7 @@ end
 puts "Created '#{world.name}' with id #{world.id}"
 
 puts "Spawning empty tiles"
-world.spawn_tiles true #make true for debug output
+ExampleWorldBuilder.spawn_tiles(world)
 puts "\t...done"
 
 # how_many_trees = (world.width * world.height * 0.80).round
