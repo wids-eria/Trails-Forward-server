@@ -22,22 +22,45 @@ class World < ActiveRecord::Base
 
 
   def spawn_tiles(display_progress = false)
-    if valid?
-      Range.new(0,width-1).step(megatile_width) do |x|
-        Range.new(0,height-1).step(megatile_height) do |y|
-          mt = Megatile.create(:x => x, :y => y, :world => self)
-          mt.spawn_resources
-          if display_progress
-            print "."
-            STDOUT.flush
-          end
-        end
-      end
+    raise "Can't spawn tiles for an invalid World" unless valid?
+    each_megatile_coord do |x,y|
+      mt = Megatile.create(:x => x, :y => y, :world => self)
+      mt.spawn_resources
       if display_progress
-        puts ""
+        print "."
+        STDOUT.flush
       end
-    else
-      raise "Can't spawn tiles for an invalid World"
+    end
+    if display_progress
+      puts ""
+    end
+  end
+
+  def each_coord &blk
+    (0...width).each do |x|
+      (0...height).each do |y|
+        yield x, y
+      end
+    end
+  end
+
+  def each_megatile_coord &blk
+    (0...width).step(megatile_width) do |x|
+      (0...height).step(megatile_height) do |y|
+        yield x, y
+      end
+    end
+  end
+
+  def each_resource_tile &blk
+    each_coord do |x,y|
+      yield resource_tile_at(x,y)
+    end
+  end
+
+  def each_megatile &blk
+    each_megatile_coord do |x, y|
+      yield megatile_at(x, y)
     end
   end
 
@@ -46,11 +69,11 @@ class World < ActiveRecord::Base
   end
 
   def resource_tile_at(x,y)
-    ResourceTile.where(:world_id => self.id).where(:x => x).where(:y => y).limit(1)[0]
+    ResourceTile.where(x: x, y: y, world_id: id).first
   end
 
   def manager
-    GameWorldManager.for_world(self)
+    @manager ||= GameWorldManager.for_world(self)
   end
 
   def player_for_user(user)
