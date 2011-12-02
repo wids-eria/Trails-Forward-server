@@ -48,8 +48,8 @@ module Tickers
       mx_decid_mixed = mx_decid + mx_mixed
 
 
-      mx_bwcc = bwcc_New(mx_trees)
-      mx_perim = bwperim(mx_trees)
+      mx_bwcc = MatrixUtils.bwcc_New(mx_trees)
+      mx_perim = MatrixUtils.bwperim(mx_trees)
 
 
       mx_habitat = NArray.byte(matrix.shape[0], matrix.shape[1])

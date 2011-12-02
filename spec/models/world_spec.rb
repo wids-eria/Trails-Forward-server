@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require Rails.root.join("lib/example_world_builder")
-
 describe World do
   context "when first created" do
     let(:world) { create :world }
@@ -12,7 +10,7 @@ describe World do
   end
 
   context "when initialized with dummy data" do
-    let(:world) { ExampleWorldBuilder.build_example_world 6, 6 }
+    let(:world) { create :world_with_properties }
     subject { world }
     its(:resource_tiles) { should_not be_empty }
     its(:megatiles) { should_not be_empty }

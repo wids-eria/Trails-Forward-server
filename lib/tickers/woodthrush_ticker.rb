@@ -38,7 +38,7 @@ module Tickers
       #WTsize=sum(WTsize);
 
       mx_lf = FlycatcherTicker.compute_habitat(matrix)
-      mx_bwcc = bwcc_New(mx_lf.habitat)
+      mx_bwcc = MatrixUtils.bwcc_New(mx_lf.habitat)
       #mx_perim = bwperim(mx_decid_mixed)
 
 
