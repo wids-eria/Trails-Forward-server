@@ -1,0 +1,2 @@
+class Tribble < Agent
+end
