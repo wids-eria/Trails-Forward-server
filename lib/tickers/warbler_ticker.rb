@@ -45,8 +45,8 @@ module Tickers
 
       mx_conifer_mixed = mx_conifer + mx_mixed
 
-      mx_bwcc = bwcc_New(mx_conifer_mixed)
-      mx_perim = bwperim(mx_conifer_mixed)
+      mx_bwcc = MatrixUtils.bwcc_New(mx_conifer_mixed)
+      mx_perim = MatrixUtils.bwperim(mx_conifer_mixed)
 
       mx_habitat = NArray.byte(matrix.shape[0], matrix.shape[1])
       mx_habitat.fill!(0)
