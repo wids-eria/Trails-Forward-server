@@ -1,5 +1,8 @@
 FactoryGirl.define do
-  factory :bid do
-    money 100
+  factory :listing do
+  end
+
+  factory :listing_with_multiple_megatile_owners do
+
   end
 end

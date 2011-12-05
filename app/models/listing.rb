@@ -21,7 +21,7 @@ class Listing < ActiveRecord::Base
   validate :at_least_one_megatile_must_be_present
 
   def megatiles
-    megatile_grouping.megatiles
+    megatile_grouping.try(:megatiles)
   end
 
   def is_active?
@@ -29,7 +29,9 @@ class Listing < ActiveRecord::Base
   end
 
   def at_least_one_megatile_must_be_present
-    errors.add(:megatiles, "must contain at least one megatile") unless megatiles.count > 0
+    unless megatiles && megatiles.count > 0
+      errors.add(:megatiles, "must contain at least one megatile")
+    end
   end
 
   def all_megatiles_are_owned_by_owner
