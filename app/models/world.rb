@@ -51,17 +51,14 @@ class World < ActiveRecord::Base
     end
   end
 
-  # TODO: make scope
   def megatile_at(x,y)
     resource_tile_at(x,y).megatile
   end
 
-  # TODO: make scope
   def resource_tile_at(x,y)
     ResourceTile.where(x: x, y: y, world_id: id).first
   end
 
-  # TODO: make scope
   def player_for_user(user)
     players.where(:user_id => user.id).first
   end
