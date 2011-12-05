@@ -2,9 +2,21 @@ module TrailsForward
   module WorldGeneration
     def spawn_tiles
       raise "Can't spawn tiles for an invalid World" unless valid?
-      each_megatile_coord do |x,y|
-        mt = Megatile.create(:x => x, :y => y, :world => self)
-        mt.spawn_resources
+      ActiveRecord::Base.transaction do
+        puts
+        resource_tile_attrs = []
+        each_megatile_coord do |x,y|
+          puts "#{((100.0 * x) / width).round(2)}% done                    \e[1A".green
+          mt = Megatile.create(:x => x, :y => y, :world => self)
+          (0..2).each do |x_minor|
+            (0..2).each do |y_minor|
+              resource_tile_attrs << [x_minor + x, y_minor + y, id, mt.id]
+            end
+          end
+        end
+        resource_tile_attrs.in_groups_of 1000 do |rta|
+          ResourceTile.import([:x, :y, :world_id, :megatile_id], rta.compact, :timestamps => false, :validate => false)
+        end
       end
       self
     end

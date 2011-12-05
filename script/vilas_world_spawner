@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 world = World.create do |w|
   w.name = "Vilas County, WI - #{rand(100000)}"
   w.year_start = 2000

@@ -1,4 +1,4 @@
-
+%%%%%%%% MATLAB CODE (assumed to be a reference) %%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%Code to assign starting DBH(i.e. tree size)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -14,9 +14,9 @@ Lmixed=zeros(n,n); %%%%%Large trees in mixed forest
 %%%%%%%%%%populate landscape with one of 3 forest classes and weater(we will do this
 %%%%%%%%%%with real data in the game$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 for j=1:n
-    
-ls=randsample(4,n,true); %%% populate landscape with random integers 1,2,or 3;
-LS(:,j)=ls;  %%%%%%LS is the landscape composistion 1=decid, 2=conifer, 3=mixed
+
+  ls=randsample(4,n,true); %%% populate landscape with random integers 1,2,or 3;
+  LS(:,j)=ls;  %%%%%%LS is the landscape composistion 1=decid, 2=conifer, 3=mixed
 end;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -27,20 +27,20 @@ end;
 treesize=[10,8,5]; %%% 10=large 8=medium 5=small
 largesize=[0,2,4,6,8,10,15,20];%% what is added to 10 inch trees
 for j=1:n
-decid=randsample(treesize,n,true,[0.431943972,0.369903847,0.198152181]);%%%Matrix of size large medium small decidous. Numbers are estiamted percent in each class from FIA data
-conifer=randsample(treesize,n,true,[0.556035896, 0.258728096,0.185236008]);%%% matrix of % size large, meadium small conifer. Numbers are estiamted percent in each class from FIA data
-mixed=randsample(treesize,n,true,[0.424745355,	0.350450241,	0.224804403]);%%% matrix of % size large, meadium small mixed. Numbers are estiamted percent in each class from FIA data
+  decid=randsample(treesize,n,true,[0.431943972,0.369903847,0.198152181]);%%%Matrix of size large medium small decidous. Numbers are estiamted percent in each class from FIA data
+  conifer=randsample(treesize,n,true,[0.556035896, 0.258728096,0.185236008]);%%% matrix of % size large, meadium small conifer. Numbers are estiamted percent in each class from FIA data
+  mixed=randsample(treesize,n,true,[0.424745355,  0.350450241,  0.224804403]);%%% matrix of % size large, meadium small mixed. Numbers are estiamted percent in each class from FIA data
 
-largedecid=randsample(largesize,n,true,[0.473433437,0.271229523,0.127051152,0.068338135,0.029715297,0.011826016,0.01840644,0]);%%%Matrix of size large decidous. Numbers are estiamted percent in each class from FIA data
-largeconifer=randsample(largesize,n,true,[0.372470808,0.216336587,0.104601339,0.107220868,0.063811891,0.053101396,0.079521954,0.002935158]);%%%Matrix of large conifer. Numbers are estiamted percent in each class from FIA data
-largemixed=randsample(largesize,n,true,[0.369033307,0.232593812,0.114078886,0.10555826,0.061401365,	0.046739204,0.068313732,0.002281434]);%%%Matrix of large mixed. Numbers are estiamted percent in each class from FIA data
+  largedecid=randsample(largesize,n,true,[0.473433437,0.271229523,0.127051152,0.068338135,0.029715297,0.011826016,0.01840644,0]);%%%Matrix of size large decidous. Numbers are estiamted percent in each class from FIA data
+  largeconifer=randsample(largesize,n,true,[0.372470808,0.216336587,0.104601339,0.107220868,0.063811891,0.053101396,0.079521954,0.002935158]);%%%Matrix of large conifer. Numbers are estiamted percent in each class from FIA data
+  largemixed=randsample(largesize,n,true,[0.369033307,0.232593812,0.114078886,0.10555826,0.061401365, 0.046739204,0.068313732,0.002281434]);%%%Matrix of large mixed. Numbers are estiamted percent in each class from FIA data
 
-Ldecid(:,j)=largedecid;
-Lconifer(:,j)=largeconifer;
-Lmixed(:,j)=largemixed;
-Decid(:,j)=decid;  %%%%Decidous tree size
-Conifer(:,j)=conifer;%%%%Conifer tree size
-Mixed(:,j)=mixed;%%%%Mixed tree size
+  Ldecid(:,j)=largedecid;
+  Lconifer(:,j)=largeconifer;
+  Lmixed(:,j)=largemixed;
+  Decid(:,j)=decid;  %%%%Decidous tree size
+  Conifer(:,j)=conifer;%%%%Conifer tree size
+  Mixed(:,j)=mixed;%%%%Mixed tree size
 
 end;
 
@@ -177,39 +177,39 @@ TMBFDT=[];
 TCBFDT=[];
 
 for T=1:35;
-    
 
-for j=1:n
-for q=1:n
-    if Decid(j,q)==0
+
+  for j=1:n
+    for q=1:n
+      if Decid(j,q)==0
         Decid(j,q)==0;
     else
-Decid(j,q)=2.7072.*Decid(j,q).^-.5431.*.97829.^Decid(j,q)+Decid(j,q); %%%%incremental gain in dbh Decid
-BFD=exp(log(Decid)*2.77922-2.70244+.008);%%%%%%Board Feet per tree Decid
-DenseD(j,q)=(1-(.03336-.0018*Decid(j,q)-.00018*Decid(j,q)+.0001*(Decid(j,q)^2)))*DenseD(q,j);%%%Tree density update due to mortality
+      Decid(j,q)=2.7072.*Decid(j,q).^-.5431.*.97829.^Decid(j,q)+Decid(j,q); %%%%incremental gain in dbh Decid
+      BFD=exp(log(Decid)*2.77922-2.70244+.008);%%%%%%Board Feet per tree Decid
+      DenseD(j,q)=(1-(.03336-.0018*Decid(j,q)-.00018*Decid(j,q)+.0001*(Decid(j,q)^2)))*DenseD(q,j);%%%Tree density update due to mortality
     end
 end
 end
 
 for j=1:n
-for q=1:n
+  for q=1:n
     if Conifer(j,q)==0
         Conifer(j,q)==0;
     else
-Conifer(j,q)=2.980519.*Conifer(j,q).^-.53609.*.96803.^Conifer(j,q)+Conifer(j,q);%%%%%incremental gain in dbh Cprams
-   BFC=exp(log(Conifer)*2.77922-2.70244+.008);%%%%%%Board Feet per tree conifer
-DenseC(j,q)=(1-(.03336-.0018*Conifer(j,q)-.00018*Conifer(j,q)+.0001*(Conifer(j,q)^2)))*DenseC(q,j);%%%Tree density update due to mortality
+      Conifer(j,q)=2.980519.*Conifer(j,q).^-.53609.*.96803.^Conifer(j,q)+Conifer(j,q);%%%%%incremental gain in dbh Cprams
+      BFC=exp(log(Conifer)*2.77922-2.70244+.008);%%%%%%Board Feet per tree conifer
+      DenseC(j,q)=(1-(.03336-.0018*Conifer(j,q)-.00018*Conifer(j,q)+.0001*(Conifer(j,q)^2)))*DenseC(q,j);%%%Tree density update due to mortality
     end
 end
 end
 for j=1:n
-for q=1:n
+  for q=1:n
     if Mixed(j,q)==0
         Mixed(j,q)==0;
     else
-Mixed(j,q)=2.844009.*Mixed(j,q).^-.543955.*.97316.^Mixed(j,q)+Mixed(j,q);%%%%%%% incrmental gain in Mixed
-BFD=exp(log(Decid)*2.77922-2.70244+.008);%%%%%%Board Feet per tree mixed
-DenseM(j,q)=(1-(.03336-.0018*Mixed(j,q)-.00018*Mixed(j,q)+.0001*(Mixed(j,q)^2)))*DenseM(q,j);%%%Tree density update due to mortality
+      Mixed(j,q)=2.844009.*Mixed(j,q).^-.543955.*.97316.^Mixed(j,q)+Mixed(j,q);%%%%%%% incrmental gain in Mixed
+      BFD=exp(log(Decid)*2.77922-2.70244+.008);%%%%%%Board Feet per tree mixed
+      DenseM(j,q)=(1-(.03336-.0018*Mixed(j,q)-.00018*Mixed(j,q)+.0001*(Mixed(j,q)^2)))*DenseM(q,j);%%%Tree density update due to mortality
     end
 end
 end

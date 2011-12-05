@@ -10,8 +10,8 @@ class Megatile < ActiveRecord::Base
 
   validates_presence_of :world
 
-  validates_uniqueness_of :x, :scope => [:y, :world_id]
-  validates_uniqueness_of :y, :scope => [:x, :world_id]
+  # validates_uniqueness_of :x, :scope => [:y, :world_id]
+  # validates_uniqueness_of :y, :scope => [:x, :world_id]
 
 
   def width
