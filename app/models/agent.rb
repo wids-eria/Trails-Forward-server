@@ -13,9 +13,11 @@ class Agent < ActiveRecord::Base
 
   def move distance
     if self.heading == 90
-      self.x += distance
+      self.x = (self.x + distance).round(3)
+    elsif self.heading == 180
+      self.y = (self.y - distance).round(3)
     else
-      self.y += distance
+      self.y = (self.y + distance).round(3)
     end
   end
 end

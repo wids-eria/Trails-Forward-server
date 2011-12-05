@@ -72,20 +72,29 @@ describe Tribble do
 
     end
 
-    context 'starting at location [0, 3.7]' do
-      let(:location) { [0, 3.7] }
+    context 'starting at location [5.5, 3.7]' do
+      let(:location) { [5.5, 3.7] }
 
       context 'with heading 0' do
         let(:heading) { 0 }
 
         context 'passed a distance of 1' do
           let(:distance) { 1 }
-          its(:location) { should == [0, 4.7] }
+          its(:location) { should == [5.5, 4.7] }
         end
 
         context 'passed a distance of -1' do
           let(:distance) { -1 }
-          its(:location) { should == [0, 2.7] }
+          its(:location) { should == [5.5, 2.7] }
+        end
+      end
+
+      context 'with heading 180' do
+        let(:heading) { 180 }
+
+        context 'passed a distance of 3.4' do
+          let(:distance) { 3.4 }
+          its(:location) { should == [5.5, 0.3] }
         end
       end
 
