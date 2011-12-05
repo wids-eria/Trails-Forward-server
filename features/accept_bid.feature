@@ -13,5 +13,6 @@ Feature: Bid on a megatile
     Then the bidder should own the megatile
       And my balance should increase by the amount of the bid
       And losing bids should be rejected
-      And the bidder should get an email notification of the bids acceptance
-      And the losing bidders should be notified
+      # TODO: Determine email system and implement:
+      # And the bidder should get an email notification of the bids acceptance
+      # And the losing bidders should be notified
