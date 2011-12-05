@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Tribble do
+  it { should have_db_column(:heading).of_type(:float) }
+
   let(:tribble) { Tribble.new }
 
   describe 'location' do
