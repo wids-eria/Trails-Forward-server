@@ -84,7 +84,7 @@ class LandTile < ResourceTile
 
     lntotalprice = bdum*coeff[0]+lntotalacres*coeff[1]+lntot2*coeff[2]+lnfrontage*coeff[3]+lnf2*coeff[4]+lnlakesize*coeff[5]+lnlake2*coeff[6]+sone*coeff[7]+stwo*coeff[8]+szero*coeff[9]+10.24;
     totalprice = Math.exp(lntotalprice)
-    return totalprice
+    totalprice
   end
 
   api_accessible :resource, :extend => :resource_base do |template|

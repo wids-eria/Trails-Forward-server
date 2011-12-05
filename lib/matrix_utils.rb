@@ -59,6 +59,7 @@ module MatrixUtils
 
     perim_matrix = NArray.byte(width,height)
     perim_matrix.fill!(0)
+
     # First pass
     for y in (0...(height))
       for x in (0...(width))
@@ -71,7 +72,7 @@ module MatrixUtils
 
       end
     end
-    return perim_matrix
+    perim_matrix
   end
 
 
@@ -95,8 +96,6 @@ module MatrixUtils
       end
     end
 
-
-
     for y in (0...(height))
       for x in (0...(width))
 
@@ -110,10 +109,8 @@ module MatrixUtils
       end
     end
 
-    return perim_matrix
+    perim_matrix
   end
-
-
 
   # Takes matrix as input
   # 'puts' each line of matrix into console for easy reading
@@ -127,8 +124,6 @@ module MatrixUtils
       puts str
     end
   end
-
-
 
   Output = Struct.new(:ImageSize, :NumObjects, :PixelIdxList)
 
@@ -157,8 +152,7 @@ module MatrixUtils
     unique_hash_table.each_key{ |key|
       id_list.push(unique_hash_table[key])
     }
-    output = Output.new(new_matrix.shape, unique_hash_table.length, id_list)
-    return output
+    Output.new(new_matrix.shape, unique_hash_table.length, id_list)
   end
 
 
@@ -171,6 +165,7 @@ module MatrixUtils
     unique_hash_table = Hash.new()
 
     newIndex = 0
+
     # First pass
     for y in (0...(height))
       for x in (0...(width))
@@ -188,6 +183,6 @@ module MatrixUtils
       end
     end
 
-    return new_matrix
+    new_matrix
   end
 end

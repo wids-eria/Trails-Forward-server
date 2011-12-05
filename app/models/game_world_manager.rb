@@ -76,10 +76,10 @@ class GameWorldManagerFactory
 
   def manager_for_world_id(world_id)
     if @managers.has_key? world_id
-      return @managers[world_id]
+      @managers[world_id]
     else
       world = World.find(world_id)
-      return manager_for_world(world)
+      manager_for_world(world)
     end
   end
 end

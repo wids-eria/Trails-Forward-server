@@ -7,27 +7,23 @@ class MatrixUtilsTest
 
   # tests the newer version of bwcc
   def test_New(testMatrix)
-    output = MatrixUtils.bwcc_New(testMatrix)
-    return output
+    MatrixUtils.bwcc_New(testMatrix)
   end
 
   # Tests the label matrix generator
   def test_Label(testMatrix)
-    outputMatrix = MatrixUtils.bwcc_Label(testMatrix)
-    return outputMatrix
+    MatrixUtils.bwcc_Label(testMatrix)
   end
 
   # Tests the perimeter matrix generator
   def test_Perimeter(testMatrix)
-    outputMatrix = MatrixUtils.bwcc_Perimeter(testMatrix)
-    return outputMatrix
+    MatrixUtils.bwcc_Perimeter(testMatrix)
   end
 
 
   # Tests the bwperim matrix generator
   def test_bwperim(testMatrix)
-    outputMatrix = MatrixUtils.bwperim(testMatrix)
-    return outputMatrix
+    MatrixUtils.bwperim(testMatrix)
   end
 
   def test_Chickadee(testMatrix)
@@ -47,8 +43,7 @@ class MatrixUtilsTest
       end
     }
 
-    output = BirdOutput.new(outputMatrix, count)
-    return output
+    BirdOutput.new(outputMatrix, count)
   end
 
   def test_Warbler(testMatrix)
@@ -71,8 +66,6 @@ class MatrixUtilsTest
       end
     }
 
-    output = BirdOutput.new(outputMatrix, count)
-    return output
+    BirdOutput.new(outputMatrix, count)
   end
-
 end

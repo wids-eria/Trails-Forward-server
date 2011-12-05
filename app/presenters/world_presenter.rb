@@ -7,10 +7,10 @@ class WorldPresenter
 
   # create the immutable properties for the world into an image
   def to_png
-
     # create the image
     # land tile = black, water tile = white
     canvas = ChunkyPNG::Image.new @world.width, @world.height, ChunkyPNG::Color::BLACK
+
     ResourceTile.where(:world_id => @world.id).find_in_batches do |group|
       group.each do |rt|
         x = rt.x
@@ -22,8 +22,7 @@ class WorldPresenter
       end
     end
 
-    return canvas
-
+    canvas
   end
 
   # save the immutable properties for the world into an image to
@@ -40,8 +39,5 @@ class WorldPresenter
     # save the image
     filename = "#{path}/world.png"
     canvas.save filename, :best_compression
-
   end
-
-
 end

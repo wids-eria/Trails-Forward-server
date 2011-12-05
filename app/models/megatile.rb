@@ -42,7 +42,7 @@ class Megatile < ActiveRecord::Base
         ret << l
       end
     end
-    return ret
+    ret
   end
 
   def bids_on(active_only = true)
@@ -57,7 +57,7 @@ class Megatile < ActiveRecord::Base
         ret << b
       end
     end
-    return ret
+    ret
   end
 
   def bids_offering(active_only = true)
@@ -72,7 +72,7 @@ class Megatile < ActiveRecord::Base
         ret << b
       end
     end
-    return ret
+    ret
   end
 
   def estimated_value
@@ -83,7 +83,7 @@ class Megatile < ActiveRecord::Base
         total_price += tmp_price
       end
     end
-    return total_price
+    total_price
   end
 
   api_accessible :id_and_name do |template|

@@ -64,7 +64,6 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def estimated_value
-    return nil
+    nil
   end
-
 end
