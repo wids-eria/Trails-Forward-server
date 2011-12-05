@@ -2,8 +2,6 @@ class WorldsController < ApplicationController
 
   before_filter :authenticate_user!
 
-  # GET /worlds
-  # GET /worlds.xml
   def index
     @worlds = World.all
     authorize! :index_worlds, World
@@ -15,8 +13,6 @@ class WorldsController < ApplicationController
     end
   end
 
-  # GET /worlds/1
-  # GET /worlds/1.xml
   def show
     @world = World.find(params[:id])
     authorize! :show_world, @world
@@ -27,8 +23,6 @@ class WorldsController < ApplicationController
     end
   end
 
-  # # GET /worlds/new
-  # # GET /worlds/new.xml
   # def new
   #   @world = World.new
   #
@@ -38,13 +32,10 @@ class WorldsController < ApplicationController
   #   end
   # end
   #
-  # # GET /worlds/1/edit
   # def edit
   #   @world = World.find(params[:id])
   # end
   #
-  # # POST /worlds
-  # # POST /worlds.xml
   # def create
   #   @world = World.new(params[:world])
   #
@@ -59,8 +50,6 @@ class WorldsController < ApplicationController
   #   end
   # end
   #
-  # # PUT /worlds/1
-  # # PUT /worlds/1.xml
   # def update
   #   @world = World.find(params[:id])
   #
@@ -75,8 +64,6 @@ class WorldsController < ApplicationController
   #   end
   # end
   #
-  # # DELETE /worlds/1
-  # # DELETE /worlds/1.xml
   # def destroy
   #   @world = World.find(params[:id])
   #   @world.destroy
