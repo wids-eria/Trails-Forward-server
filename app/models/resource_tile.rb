@@ -52,7 +52,7 @@ class ResourceTile < ActiveRecord::Base
   end
 
   api_accessible :resource, :extend => :resource_base do |template|
-    #pass
+    # pass
   end
 
   def can_be_bulldozed?

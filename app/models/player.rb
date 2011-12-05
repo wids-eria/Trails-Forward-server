@@ -28,7 +28,7 @@ class Player < ActiveRecord::Base
   end
 
   api_accessible :player_public, :extend => :id_and_name do |template|
-    #template.add :megatiles, :template => :id_and_name
+    # template.add :megatiles, :template => :id_and_name
   end
 
   api_accessible :player_private, :extend => :player_public do |template|

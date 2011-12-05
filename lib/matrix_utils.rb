@@ -1,7 +1,7 @@
 require 'narray'
 
 module MatrixUtils
-  #Returns label matrix with uniquely labeled regions
+  # Returns label matrix with uniquely labeled regions
   def self.connected_component_regions(main_matrix)
     width = main_matrix.shape[0]
     height = main_matrix.shape[1]
@@ -10,7 +10,7 @@ module MatrixUtils
     linked = []
     type_matrix = NArray.byte(width,height)
 
-    #First pass
+    # First pass
     (0...height).each do |y|
       (0...width).each do |x|
         here = main_matrix[x, y]
@@ -38,7 +38,7 @@ module MatrixUtils
       end
     end
 
-    #Second pass
+    # Second pass
     (0...height).each do |y|
       (0...width).each do |x|
         type_matrix[x,y] = linked[type_matrix[x, y]].min
@@ -49,9 +49,9 @@ module MatrixUtils
   end
 
 
-  #Takes matrix as input
-  #Returns matrix with 1's on every area that is a region boundary, 0 everywhere else
-  #NOTE: Edges of the matrix are considered boundaries
+  # Takes matrix as input
+  # Returns matrix with 1's on every area that is a region boundary, 0 everywhere else
+  # NOTE: Edges of the matrix are considered boundaries
   def self.bwcc_Perimeter (main_matrix)
 
     width = main_matrix.shape[0]
@@ -59,7 +59,7 @@ module MatrixUtils
 
     perim_matrix = NArray.byte(width,height)
     perim_matrix.fill!(0)
-    #First pass
+    # First pass
     for y in (0...(height))
       for x in (0...(width))
         if((x>0 && main_matrix[(x-1),y]!=main_matrix[x,y]) ||
@@ -75,9 +75,9 @@ module MatrixUtils
   end
 
 
-  #Takes matrtix as input
-  #Returns matrix with 1's only on the perimeter, 0 everywhere else
-  #NOTE: Edges of the matrix are considered boundaries
+  # Takes matrtix as input
+  # Returns matrix with 1's only on the perimeter, 0 everywhere else
+  # NOTE: Edges of the matrix are considered boundaries
   def self.bwperim (main_matrix)
 
     width = main_matrix.shape[0]
@@ -115,8 +115,8 @@ module MatrixUtils
 
 
 
-  #Takes matrix as input
-  #'puts' each line of matrix into console for easy reading
+  # Takes matrix as input
+  # 'puts' each line of matrix into console for easy reading
   def self.print__matrix(matrix,width,height)
     for y in (0...(height))
       str = ""
@@ -132,18 +132,18 @@ module MatrixUtils
 
   Output = Struct.new(:ImageSize, :NumObjects, :PixelIdxList)
 
-  #Bwconncomp new version
-  #Takes matrtix as input
-  #Returns output which has members ImageSize, NumObjects, PixelIdxList
-  #They function the same as matlab's bwconncomp
+  # Bwconncomp new version
+  # Takes matrtix as input
+  # Returns output which has members ImageSize, NumObjects, PixelIdxList
+  # They function the same as matlab's bwconncomp
   def self.bwcc_New (main_matrix)
     new_matrix = connected_component_regions(main_matrix)
-    #Go through once inserting into hash table so duplicates automatically overwrite. The end hash table will have N items where N is the number of different regions
+    # Go through once inserting into hash table so duplicates automatically overwrite. The end hash table will have N items where N is the number of different regions
     width = new_matrix.shape[0]
     height = new_matrix.shape[1]
     unique_hash_table = Hash.new()
 
-    #First pass
+    # First pass
     for y in (0...(height))
       for x in (0...(width))
         if(!unique_hash_table[new_matrix[x,y]])
@@ -162,16 +162,16 @@ module MatrixUtils
   end
 
 
-  #takes matrix as input and generates a label matrix with minium values
+  # takes matrix as input and generates a label matrix with minium values
   def self.bwcc_Label (main_matrix)
     new_matrix = connected_component_regions(main_matrix)
-    #Go through once inserting into hash table so duplicates automatically overwrite. The end hash table will have N items where N is the number of different regions
+    # Go through once inserting into hash table so duplicates automatically overwrite. The end hash table will have N items where N is the number of different regions
     width = new_matrix.shape[0]
     height = new_matrix.shape[1]
     unique_hash_table = Hash.new()
 
     newIndex = 0
-    #First pass
+    # First pass
     for y in (0...(height))
       for x in (0...(width))
         if(!unique_hash_table[new_matrix[x,y]])
@@ -181,7 +181,7 @@ module MatrixUtils
       end
     end
 
-    #Replacement pass
+    # Replacement pass
     for y in (0...(height))
       for x in (0...(width))
         new_matrix[x,y] = unique_hash_table[new_matrix[x,y]]

@@ -45,24 +45,20 @@ module Tickers
       count = 0
 
       mx_bwcc.PixelIdxList.each{ |val|
-        #puts "length = #{val.length}\n"
+        # puts "length = #{val.length}\n"
         if(val.length>5 && mx_conifer[val[0][0],val[0][1]]!=0)
           val.each{ |point|
-            #puts "point #{point[0]}, #{point[1]}\n"
+            # puts "point #{point[0]}, #{point[1]}\n"
             count = count + 1
             mx_habitat[point[0],point[1]] = 1
           }
         end
       }
 
-      #density 0.4 p/10 ha
+      # density 0.4 p/10 ha
       population = count * 0.404 * 0.4 / 10 * 2;
-      #puts "Count = #{count}\n"
-      output = HabitatOutput.new(count, population, mx_habitat)
-      return output
-
+      # puts "Count = #{count}\n"
+      HabitatOutput.new(count, population, mx_habitat)
     end
-
-
   end
 end

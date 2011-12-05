@@ -7,7 +7,7 @@ class MegatilesController < ApplicationController
     authorize! :do_things, @world
 
     if params.has_key? :x_min
-      #if @megatiles.count * @world.megatile_width > 1000
+      # if @megatiles.count * @world.megatile_width > 1000
       x_min = params[:x_min].to_i
       x_max = params[:x_max].to_i
       y_min = params[:y_min].to_i

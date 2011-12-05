@@ -7,7 +7,7 @@ def handle_row(row, indices, world)
 
   resource_tile = world.resource_tile_at x,y
 
-  resource_tile.skip_version! do #speed things up... since it's Genesis, we should't ever need to rollback
+  resource_tile.skip_version! do # speed things up... since it's Genesis, we should't ever need to rollback
 
     frontage = row[ indices[:frontage] ].to_f
     resource_tile.frontage = frontage

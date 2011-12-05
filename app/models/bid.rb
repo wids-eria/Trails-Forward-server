@@ -20,7 +20,7 @@ class Bid < ActiveRecord::Base
   # land offered as PAYMENT on a listing
   belongs_to :offered_land, class_name: "MegatileGrouping"
 
-  #land that is being PURCHASED by the bidder. In the case of a fully solicited buy, this == listing.megatile_grouping.meagtiles
+  # land that is being PURCHASED by the bidder. In the case of a fully solicited buy, this == listing.megatile_grouping.meagtiles
   belongs_to :requested_land, class_name: "MegatileGrouping"
 
   validates :money, presence: true, numericality: {greater_than_or_equal_to: 0}

@@ -20,4 +20,3 @@ ResourceTile.where(:world_id => world.id).find_in_batches do |group|
 end
 
 canvas.save ARGV[1]
-

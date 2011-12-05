@@ -37,7 +37,7 @@ class ResourceTilesController < ApplicationController
   end
 
   def build
-    #not yet implemented
+    # not yet implemented
   end
 
   # GET /world/:world_id/resource_tiles/1
@@ -56,7 +56,7 @@ class ResourceTilesController < ApplicationController
 
     @resource_tiles = ResourceTile.find(params["microtiles"])
 
-    #check if we are allowed to bulldoze the list of resource tile IDs
+    # check if we are allowed to bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       authorize! :bulldoze, resource_tile
       if not resource_tile.can_be_bulldozed?
@@ -66,12 +66,12 @@ class ResourceTilesController < ApplicationController
       end
     end
 
-    #bulldoze the list of resource tile IDs
+    # bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       resource_tile.bulldoze!
     end
 
-    #send the response
+    # send the response
     respond_to do |format|
       format.xml  { render_for_api :resource, :xml  => @resource_tiles, :root => :resource_tiles  }
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
@@ -84,7 +84,7 @@ class ResourceTilesController < ApplicationController
 
     @resource_tiles = ResourceTile.find(params["microtiles"])
 
-    #check if we are allowed to bulldoze the list of resource tile IDs
+    # check if we are allowed to bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       authorize! :clearcut, resource_tile
       if not resource_tile.can_be_clearcut?
@@ -94,12 +94,12 @@ class ResourceTilesController < ApplicationController
       end
     end
 
-    #clearcut the list of resource tile IDs
+    # clearcut the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       resource_tile.clearcut!
     end
 
-    #send the response
+    # send the response
     respond_to do |format|
       format.xml  { render_for_api :resource, :xml  => @resource_tiles, :root => :resource_tiles  }
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
@@ -108,7 +108,7 @@ class ResourceTilesController < ApplicationController
   end
 
   def build_list
-    #not yet implemented
+    # not yet implemented
   end
 
 end

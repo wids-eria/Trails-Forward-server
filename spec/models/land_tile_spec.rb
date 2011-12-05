@@ -21,7 +21,7 @@ describe LandTile do
       tile.tree_density = 1
       tile.tree_size = 1
     end
- 
+
     it "clear cuts the land" do
       lambda {
         tile.clearcut!
@@ -64,5 +64,5 @@ describe LandTile do
       }.should change(tile, :tree_size)
     end
   end
-  
+
 end

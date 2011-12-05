@@ -4,7 +4,6 @@ require 'matrix_utils'
 module Tickers
   class FlycatcherTicker < SpeciesTicker
     def self.tick(ct)
-
       result = compute_habitat ct.land
       puts "The count of resource tile with flycatchers habitat is #{result}"
 
@@ -25,18 +24,18 @@ module Tickers
 
     end
 
-    #compute the habitat for flycatchers
+    # compute the habitat for flycatchers
     def self.compute_habitat(matrix)
 
-      #LF=(decid+mixed); %%%flycatchers can live in decid and mixed forest
-      #LF=bwconncomp(LF,4);%%%%%%%%%%Designate patches
-      #lfstats=regionprops(LF,'Area'); %%calcualte size of patches
-      #idLF = find([lfstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
-      #LF2 = ismember(labelmatrix(LF), idLF);%%%%%%%%%%%put those on a new matrix
-      #PLF2=bwperim(LF2);%%%%%%%%%%%%%%Take off parameters
-      #LF= PLF2==0 & LF2==1;%%%%Core area for Flycatcher
-      #LFsize=sum(LF);
-      #LFsize=sum(LFsize); %%%%%%Amount of flycatcher forest
+      # LF=(decid+mixed); %%%flycatchers can live in decid and mixed forest
+      # LF=bwconncomp(LF,4);%%%%%%%%%%Designate patches
+      # lfstats=regionprops(LF,'Area'); %%calcualte size of patches
+      # idLF = find([lfstats.Area] > 0);%%%%%%%%%%%%select patches greater than a given size
+      # LF2 = ismember(labelmatrix(LF), idLF);%%%%%%%%%%%put those on a new matrix
+      # PLF2=bwperim(LF2);%%%%%%%%%%%%%%Take off parameters
+      # LF= PLF2==0 & LF2==1;%%%%Core area for Flycatcher
+      # LFsize=sum(LF);
+      # LFsize=sum(LFsize); %%%%%%Amount of flycatcher forest
 
       mx_decid = matrix.eq(1)
       mx_mixed = matrix.eq(3)
@@ -51,10 +50,10 @@ module Tickers
       count = 0
 
       mx_bwcc.PixelIdxList.each{ |val|
-        #puts "length = #{val.length}\n"
+        # puts "length = #{val.length}\n"
         if(val.length>0 && mx_decid_mixed[val[0][0],val[0][1]]!=0)
           val.each{ |point|
-            #puts "point #{point[0]}, #{point[1]}\n"
+            # puts "point #{point[0]}, #{point[1]}\n"
             if(mx_perim[point[0],point[1]]==0)
               count = count + 1
               mx_habitat[point[0],point[1]] = 1
@@ -63,15 +62,10 @@ module Tickers
         end
       }
 
-
-      #density 15p/10ha
+      # density 15p/10ha
       population = count * 0.404 * 15 / 10 * 2;
-      #puts "Count = #{count}\n"
-      output = HabitatOutput.new(count, population, mx_habitat)
-      return output
-
+      # puts "Count = #{count}\n"
+      HabitatOutput.new(count, population, mx_habitat)
     end
-
-
   end
 end

@@ -6,7 +6,7 @@ class GameWorldManager
   attr_reader :broker
 
   def self.for_world(world)
-    #see end of this file
+    # see end of this file
     GameWorldManagerFactory.instance.manager_for_world(world)
   end
 
@@ -43,7 +43,7 @@ class GameWorldManager
 
   def tick_world(times = 1)
     ActiveRecord::Base.transaction do
-      #@world.lock!
+      # @world.lock!
       times.times do
         execute_trades
         execute_builds

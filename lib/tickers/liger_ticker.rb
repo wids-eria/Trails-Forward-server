@@ -2,7 +2,7 @@ module Tickers
   class LigerTicker < SpeciesTicker
     def self.tick(ct)
       ct.world.each_coord do |x, y|
-        #ligers breed like bunnies in mixed forest!
+        # ligers breed like bunnies in mixed forest!
         if 1 == ct.deciduous[x,y]
           puts "\tLigers breeding at #{x}, #{y}"
           ### If this were for real, we might do something like the below ###

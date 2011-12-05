@@ -20,7 +20,7 @@ class Ability
     can :index_user_players, :all
     can :show_player, :all
 
-    #users can only do things in worlds they inhabit
+    # users can only do things in worlds they inhabit
     can :do_things, World do |world|
       world.player_for_user(user)
     end
@@ -38,7 +38,7 @@ class Ability
     end
 
     can :bid, Megatile do |megatile|
-      #the user doesn't already own the tile
+      # the user doesn't already own the tile
       (can? :do_things, megatile.world) and ( megatile.owner != megatile.world.player_for_user(user) )
     end
 
@@ -49,7 +49,7 @@ class Ability
     can :see_bids, Player, :user_id => user.id
 
     can :accept_bid, Bid do |bid|
-      #assumes that all requested land in the bid has the same owner
+      # assumes that all requested land in the bid has the same owner
       megatiles = bid.requested_land.megatiles
       megatile = megatiles.first
       megatile.world.player_for_user(user) == megatile.owner

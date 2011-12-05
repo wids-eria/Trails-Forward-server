@@ -1,4 +1,4 @@
-#Superclass for species specific tickers
+# Superclass for species specific tickers
 module Tickers
   class SpeciesTicker
     # def self.tick(critter_ticker)

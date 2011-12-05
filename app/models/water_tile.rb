@@ -7,7 +7,7 @@ class WaterTile < ResourceTile
     errors.add(:development_intensity, "illegal for water tiles") unless [nil,0,0.0].include? development_intensity
   end
 
-  #there doesn't seem to be a way to have extension follow inheritance
+  # there doesn't seem to be a way to have extension follow inheritance
   api_accessible :resource do |template|
     template.add :id
     template.add :x

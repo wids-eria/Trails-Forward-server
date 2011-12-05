@@ -12,4 +12,3 @@ namespace :trails_forward do
 
   end
 end
-

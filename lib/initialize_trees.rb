@@ -25,21 +25,21 @@ def seed_trees(world)
         tree_size_class_weights = mixed_tree_size_class_weights
         big_weights = mixed_tree_size_weights
       else
-        #nothing to do here
+        # nothing to do here
       end
 
       if rt.tree_species != nil
         rt.tree_size = random_element tree_size_class_weights, tree_size_values
-        #puts "Base tree_size = #{rt.tree_size}"
+        # puts "Base tree_size = #{rt.tree_size}"
       else
         rt.tree_size = nil
       end
 
-      #puts "#{rt.x}, #{rt.y}: tree size = #{rt.tree_size}"
+      # puts "#{rt.x}, #{rt.y}: tree size = #{rt.tree_size}"
       if 10 == rt.tree_size
         rt.tree_size += random_element big_weights, big_tree_size_values
       end
-      #puts "\t#{rt.x}, #{rt.y}: #{rt.tree_size}"
+      # puts "\t#{rt.x}, #{rt.y}: #{rt.tree_size}"
       rt.save
     end
   end

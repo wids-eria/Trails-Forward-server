@@ -46,7 +46,7 @@ class Broker
   end
 
   def reject_other_bids(bid)
-    if bid.listing  #this wasn't unsolicited
+    if bid.listing  # this wasn't unsolicited
       bid.listing.bids.each do |bid_to_reject|
         reject_bid(bid_to_reject, "Other bid accepted") unless bid_to_reject == bid
       end
@@ -61,11 +61,11 @@ class Broker
       megatiles_affected = megatiles_purchased
     end
 
-    #cancel bids on other listings that contain megatiles purchased this bid
-    #and cancel bids made on land *paid* as part of this transaction
+    # cancel bids on other listings that contain megatiles purchased this bid
+    # and cancel bids made on land *paid* as part of this transaction
     # then
-    #revoke listings on land paid in this transaction
-    #and revoke other listings that include purchased land
+    # revoke listings on land paid in this transaction
+    # and revoke other listings that include purchased land
     megatiles_affected.each do |mt|
       mt.bids_on.each do |other_bid|
         cancel_bid(other_bid, TrumpedBid) unless other_bid == bid
@@ -82,22 +82,22 @@ class Broker
   end
 
   def transfer_assets(bid)
-    if bid.listing  #this wasn't unsolicited
+    if bid.listing  # this wasn't unsolicited
       bid.listing.status = Listing::Verbiage[:sold]
       bid.listing.save!
-      #any hooks to notify listing owner go here
+      # any hooks to notify listing owner go here
     end
 
-    #any hooks to notify buyer go here
+    # any hooks to notify buyer go here
 
-    #I gotsta get paid
+    # I gotsta get paid
     bid.bidder.balance -= bid.money
     bid.bidder.save!
 
     bid.current_owner.balance += bid.money
     bid.current_owner.save!
 
-    #transfer property
+    # transfer property
     if bid.offered_land
       bid.offered_land.megatiles.each do |mt|
         mt.owner = bid.current_owner
@@ -116,8 +116,8 @@ class Broker
   def lock_assets_for_bid(bid)
     world = bid.bidder.world.lock!
 
-    #If the above really slows things down, then we can tack on:
-    #    unless ActiveRecord::Base.connection.adapter_name == 'MySQL'   #assumes InnoDB
+    # If the above really slows things down, then we can tack on:
+    #    unless ActiveRecord::Base.connection.adapter_name == 'MySQL'   # assumes InnoDB
 
     # Alas, we can't be more fine-grained than this because we can't
     # release a lock once we have it other than by ending the transaction
@@ -131,7 +131,7 @@ class Broker
     if rejected_bid.is_active?
       rejected_bid.status = Bid::Verbiage[:rejected]
       rejected_bid.rejection_reason = explanation
-      #any hooks and such go here
+      # any hooks and such go here
 
       rejected_bid.save!
     end
@@ -141,7 +141,7 @@ class Broker
     if cancelled_bid.is_active?
       cancelled_bid.status = Bid::Verbiage[:cancelled]
       cancelled_bid.rejection_reason = explanation
-      #any hooks and such go here
+      # any hooks and such go here
 
       cancelled_bid.save!
     end
@@ -150,7 +150,7 @@ class Broker
   def cancel_listing(listing, explanation)
     if listing.is_active?
       listing.status = Listing::Verbiage[:cancelled]
-      #hooks go here
+      # hooks go here
 
       listing.save!
     end

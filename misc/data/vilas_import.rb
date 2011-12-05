@@ -5,13 +5,13 @@ def handle_row(row, indices, world)
   y = row[ indices[:row] ].to_i
   print "Handling #{x}, #{y}: "
 
-  possibly_dirty_water = false #is there a chance we'll need to do a second pass?
-  dirty_water = false #second pass needed if true
+  possibly_dirty_water = false # is there a chance we'll need to do a second pass?
+  dirty_water = false # second pass needed if true
 
   resource_tile = world.resource_tile_at x,y
 
 
-  resource_tile.skip_version! do #speed things up... since it's Genesis, we should't ever need to rollback
+  resource_tile.skip_version! do # speed things up... since it's Genesis, we should't ever need to rollback
     resource_tile.type = LandTile.to_s
     resource_tile.clear_resources
 
@@ -38,18 +38,18 @@ def handle_row(row, indices, world)
     print "class_code=#{class_code} tree_density=#{resource_tile.tree_density} housing_density=#{resource_tile.housing_density} imperviousness=#{resource_tile.imperviousness} "
 
 
-    case class_code  #most significant digit of class code
-    when 11,95  #open water or emergent herbaceous wetlands
+    case class_code  # most significant digit of class code
+    when 11,95  # open water or emergent herbaceous wetlands
       if resource_tile.housing_density and resource_tile.housing_density > 0
-        #not really open water, let's treat it as housing
+        # not really open water, let's treat it as housing
         resource_tile.zoned_use = "Development"
         resource_tile.primary_use = "Housing"
         possibly_dirty_water = true
       else
         resource_tile.type = WaterTile.to_s
       end
-    when 21..24 #developed
-      #resource_tile.primary_use = ???
+    when 21..24 # developed
+      # resource_tile.primary_use = ???
       resource_tile.zoned_use = "Development"
       resource_tile.development_intensity = (class_code - 20)/4.0
       if (resource_tile.development_intensity >= 0.5 or resource_tile.imperviousness >= 0.5) and (resource_tile.housing_density == nil or resource_tile.housing_density <= 0.75)
@@ -59,7 +59,7 @@ def handle_row(row, indices, world)
       end
 
       possibly_dirty_water = true
-    when 41..71,90 #forest, scrub, herbaceous
+    when 41..71,90 # forest, scrub, herbaceous
       resource_tile.primary_use = "Forest"
       resource_tile.tree_species = case class_code
                                    when 41 then ResourceTile::Verbiage[:tree_species][:deciduous]
@@ -67,14 +67,14 @@ def handle_row(row, indices, world)
                                    when 43 then ResourceTile::Verbiage[:tree_species][:mixed]
                                    end
       possibly_dirty_water = true
-    when 81..82 #pasture or crops
+    when 81..82 # pasture or crops
       resource_tile.primary_use = case class_code
                                   when 81 then "Agriculture/Pasture"
                                   when 82 then "Agriculture/Cultivated Crops"
                                   end
       resource_tile.zoned_use = "Agriculture"
       possibly_dirty_water = true
-    when 255 #no data, lots of this at the edges, so let's just call it water... island county :-)
+    when 255 # no data, lots of this at the edges, so let's just call it water... island county :-)
       resource_tile.type = WaterTile.to_s
     end
     puts "#{resource_tile.type}"
@@ -87,7 +87,7 @@ def handle_row(row, indices, world)
 
   end
 
-  if dirty_water #do a second pass
+  if dirty_water # do a second pass
     handle_row(row, indices, world)
   end
 

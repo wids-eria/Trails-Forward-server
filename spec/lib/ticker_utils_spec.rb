@@ -4,9 +4,9 @@ require 'tickers'
 RSpec::Matchers.define :approxEqualMatrix do |goal|
   match do |target|
     diff = target - goal
-    #print_Matrix diff.abs, 5, 5
+    # print_Matrix diff.abs, 5, 5
     diff.abs.lt(0.1).all?
-    #diff.lt(Float::EPSILON).all?
+    # diff.lt(Float::EPSILON).all?
   end
 end
 
@@ -25,7 +25,7 @@ describe do
 
   it "test woodthursh" do
     testMatrix = NArray[[1,3,3,4,2],[1,3,3,4,2],[1,3,3,4,1],[1,3,3,4,2],[1,3,3,4,2]]
-    goalCount = 3; #TODO check this and double check with MATLAB
+    goalCount = 3; # TODO check this and double check with MATLAB
     Tickers::WoodthrushTicker.compute_habitat(testMatrix).count.should == goalCount
   end
 
@@ -37,7 +37,7 @@ describe do
 
   it "test warbler" do
     testMatrix = NArray[[2,3,2,4,1],[2,3,2,4,1],[2,3,2,4,1],[2,3,2,4,1],[2,2,2,4,1]]
-    goalCount = 3; #TODO check this
+    goalCount = 3; # TODO check this
     Tickers::WarblerTicker.compute_habitat(testMatrix).count.should == goalCount
   end
 
