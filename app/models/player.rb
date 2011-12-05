@@ -1,7 +1,7 @@
 class Player < ActiveRecord::Base
   acts_as_api
 
-  DefaultBalance = 1000
+  DEFAULT_BALANCE = 1000
 
   attr_accessible :name, :user, :world, :balance
 
