@@ -14,6 +14,12 @@ gem 'pg'
 
 group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'guard'
+  gem 'guard-rspec'
+  gem 'guard-cucumber'
+  gem 'guard-rails'
+  gem 'guard-bundler'
+  gem 'guard-migrate'
 
   gem 'factory_girl_rails'
   gem 'cucumber-rails'
