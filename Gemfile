@@ -22,6 +22,7 @@ group :development, :test do
     gem 'guard-migrate'
     gem 'guard-rails'
     gem 'guard-rspec'
+    gem 'guard-spork'
     gem 'rb-fsevent'
 
   gem 'capybara'
@@ -33,6 +34,7 @@ group :development, :test do
   gem 'rspec'
   gem 'rspec-rails'
   gem 'shoulda-matchers'
+  gem 'spork', '0.9.0.rc9'
 end
 
 group :production do
