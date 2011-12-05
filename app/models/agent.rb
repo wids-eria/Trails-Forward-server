@@ -12,12 +12,15 @@ class Agent < ActiveRecord::Base
   end
 
   def move distance
-    if self.heading == 90
-      self.x = (self.x + distance).round(3)
-    elsif self.heading == 180
-      self.y = (self.y - distance).round(3)
-    else
-      self.y = (self.y + distance).round(3)
-    end
+    offset_coordinates = Agent.calculate_offset_coordinates(heading, distance)
+    self.x = (self.x + offset_coordinates[0]).round(2)
+    self.y = (self.y + offset_coordinates[1]).round(2)
+  end
+
+  def self.calculate_offset_coordinates heading, distance
+    heading_in_radians = heading * (Math::PI / 180)
+    x_offset = (distance * Math.sin(heading_in_radians)).round(2)
+    y_offset = (distance * Math.cos(heading_in_radians)).round(2)
+    [x_offset, y_offset]
   end
 end

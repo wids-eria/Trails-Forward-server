@@ -42,6 +42,15 @@ describe Tribble do
     context 'starting at location [0, 0]' do
       let(:location) { [0, 0] }
 
+      context 'with heading 45' do
+        let(:heading) { 45 }
+
+        context 'passed a distance of 1' do
+          let(:distance) { 1 }
+          its(:location) { should == [0.71, 0.71] }
+        end
+      end
+
       context 'with heading 0' do
         let(:heading) { 0 }
 
@@ -100,5 +109,18 @@ describe Tribble do
 
     end
 
+  end
+
+  describe '#calculate_offset_coordinates' do
+    subject { Agent.calculate_offset_coordinates(heading, distance) }
+
+    context 'with heading 45' do
+      let(:heading) { 45 }
+
+      context 'passed a distance of 1' do
+        let(:distance) { 1 }
+        it { should == [0.71, 0.71] }
+      end
+    end
   end
 end
