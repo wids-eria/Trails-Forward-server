@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111202221903) do
+ActiveRecord::Schema.define(:version => 20111205195720) do
 
   create_table "agents", :force => true do |t|
     t.string  "type"
@@ -20,6 +20,7 @@ ActiveRecord::Schema.define(:version => 20111202221903) do
     t.decimal "y"
     t.integer "world_id"
     t.integer "resource_tile_id"
+    t.float   "heading"
   end
 
   add_index "agents", ["resource_tile_id"], :name => "index_agents_on_resource_tile_id"
