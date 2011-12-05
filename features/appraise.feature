@@ -15,7 +15,7 @@ Feature: Appraise a MegaTile
     Given I have a world
       And I have one user "riley@example.com" with password "letmein"
       And I have a player in the world
-    Given I have an owned megatile in the world
+      And I have an owned megatile in the world
       And at least one resource tile on the owned megatile is a land type
     # When I appraise the megatile on the owned megatile Then I should get an error
     When I appraise the megatile on the owned megatile
@@ -34,7 +34,7 @@ Feature: Appraise a MegaTile
     Given I have a world
       And I have one user "riley@example.com" with password "letmein"
       And I have a player in the world
-    Given I have an owned megatile in the world
+      And I have an owned megatile in the world
       And at least one resource tile on the owned megatile is a land type
     # When I appraise a list containing that megatile on the owned megatile Then I should get an error
     When I appraise a list containing that megatile on the owned megatile

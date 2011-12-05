@@ -1,6 +1,6 @@
 Feature: See bids placed
   Players should be able to see bids they have placed or received
-  
+
   Scenario: See bids placed
     Given I have a world
       And I have one user "riley@example.com" with password "letmein"
@@ -9,7 +9,7 @@ Feature: See bids placed
     When I bid 42 on the unowned megatile
     Then I should get a bid id
       And I should see that I have placed that bid
-  
+
   Scenario: See bids received
     Given I have a world
       And I have one user "riley@example.com" with password "letmein"

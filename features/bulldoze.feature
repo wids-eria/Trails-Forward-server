@@ -13,7 +13,7 @@ Feature: Bulldoze a Resource Tile
     Given I have a world
       And I have one user "riley@example.com" with password "letmein"
       And I have a player in the world
-      Given I have an owned megatile in the world
+      And I have an owned megatile in the world
     When I bulldoze a resource tile on the owned megatile Then I should get an error
 
   Scenario: Bulldoze a list of megatiles owned by the user
@@ -28,5 +28,5 @@ Feature: Bulldoze a Resource Tile
     Given I have a world
       And I have one user "riley@example.com" with password "letmein"
       And I have a player in the world
-      Given I have an owned megatile in the world
+      And I have an owned megatile in the world
     When I bulldoze a list containing that resource tile on the owned megatile Then I should get an error
