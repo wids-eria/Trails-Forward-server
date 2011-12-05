@@ -100,8 +100,6 @@ class PlayersController < ApplicationController
   #   end
   # end
 
-  # PUT /players/1
-  # PUT /players/1.xml
   def update
     @player = Player.find(params[:id])
     authorize! :update_player, @player
@@ -117,8 +115,6 @@ class PlayersController < ApplicationController
     end
   end
 
-  # DELETE /players/1
-  # DELETE /players/1.xml
   def destroy
     @player = Player.find(params[:id])
     authorize! :destroy_player, @player

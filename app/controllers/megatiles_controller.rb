@@ -1,8 +1,6 @@
 class MegatilesController < ApplicationController
   before_filter :authenticate_user!
 
-  # GET /megatiles
-  # GET /megatiles.xml
   def index
     @world = World.find(params[:world_id])
 
@@ -36,8 +34,6 @@ class MegatilesController < ApplicationController
     end
   end
 
-  # GET /megatiles/1
-  # GET /megatiles/1.xml
   def show
     @megatile = Megatile.find(params[:id])
     authorize! :do_things, @megatile.world
@@ -63,7 +59,7 @@ class MegatilesController < ApplicationController
   def appraise_list
     @megatiles = Megatile.find(params["megatiles"])
 
-    # TODO check if we are allowed to do things the list of megatiles
+    # TODO check if we are allowed to do things to the list of megatiles
     @megatiles.each do |megatile|
       authorize! :do_things, megatile.world
     end
@@ -72,7 +68,5 @@ class MegatilesController < ApplicationController
       format.xml  { render_for_api :megatiles_with_value, :xml  => @megatiles, :root => :megatiles  }
       format.json { render_for_api :megatiles_with_value, :json => @megatiles, :root => :megatiles  }
     end
-
   end
-
 end
