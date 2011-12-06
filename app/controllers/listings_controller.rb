@@ -7,7 +7,7 @@ class ListingsController < ApplicationController
 
     @listings = Listing.where(:owner_id => @world.players)
     if params[:active_only]
-      @listings = @listings.where(:status => Listing::Verbiage[:active])
+      @listings = @listings.where(:status => Listing.verbiage[:active])
     end
 
     respond_to do |format|

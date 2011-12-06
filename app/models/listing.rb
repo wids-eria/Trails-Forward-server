@@ -11,10 +11,11 @@ class Listing < ActiveRecord::Base
   has_many :bids
   has_one :accepted_bid, :class_name => "Bid"
 
-  Verbiage = {:active => "Active",
-              :cancelled => "Cancelled",
-              :sold => "Sold"
-  }
+  def self.verbiage
+    { active: "Active",
+      cancelled: "Cancelled",
+      sold: "Sold" }
+  end
 
   validates :price, :numericality => {:greater_than_or_equal_to => 0}
   validate :all_megatiles_are_owned_by_owner
@@ -25,7 +26,7 @@ class Listing < ActiveRecord::Base
   end
 
   def is_active?
-    self.status == Verbiage[:active]
+    self.status == Listing.verbiage[:active]
   end
 
   def at_least_one_megatile_must_be_present

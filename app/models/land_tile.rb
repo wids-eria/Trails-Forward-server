@@ -1,6 +1,6 @@
 class LandTile < ResourceTile
   def can_be_clearcut?
-    zoned_use == Verbiage[:zoned_uses][:logging]
+    zoned_use == ResourceTile.verbiage[:zoned_uses][:logging]
   end
 
   def clearcut!

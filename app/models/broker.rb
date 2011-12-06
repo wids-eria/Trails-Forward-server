@@ -2,8 +2,13 @@ require 'set'
 
 class Broker
 
-  TrumpedBid = "Another transaction affected the land included in this bid"
-  TrumpedListing = "Another transaction affected the land included in this listing"
+  def self.trumped_bid
+    "Another transaction affected the land included in this bid"
+  end
+
+  def self.trumped_listing
+    "Another transaction affected the land included in this listing"
+  end
 
   attr_reader :world
 
@@ -33,7 +38,7 @@ class Broker
 
   # atomically processes a sale *immediately*, rejecting competing bids
   def execute_sale(bid)
-    raise "Can't process a sale for an unaccepted bid" unless bid.status == Bid::Verbiage[:accepted]
+    raise "Can't process a sale for an unaccepted bid" unless bid.status == Bid.verbiage[:accepted]
 
     ActiveRecord::Base.transaction do
       lock_assets_for_bid bid
@@ -68,22 +73,22 @@ class Broker
     # and revoke other listings that include purchased land
     megatiles_affected.each do |mt|
       mt.bids_on.each do |other_bid|
-        cancel_bid(other_bid, TrumpedBid) unless other_bid == bid
+        cancel_bid(other_bid, Broker.trumped_bid) unless other_bid == bid
       end
 
       mt.bids_offering.each do |other_bid|
-        cancel_bid(other_bid, TrumpedBid) unless other_bid == bid
+        cancel_bid(other_bid, Broker.trumped_bid) unless other_bid == bid
       end
 
       mt.listings.each do |other_listing|
-        cancel_listing(other_listing, TrumpedListing) unless other_listing == bid.listing
+        cancel_listing(other_listing, Broker.trumped_listing) unless other_listing == bid.listing
       end
     end
   end
 
   def transfer_assets(bid)
     if bid.listing  # this wasn't unsolicited
-      bid.listing.status = Listing::Verbiage[:sold]
+      bid.listing.status = Listing.verbiage[:sold]
       bid.listing.save!
       # any hooks to notify listing owner go here
     end
@@ -129,7 +134,7 @@ class Broker
 
   def reject_bid(rejected_bid, explanation)
     if rejected_bid.is_active?
-      rejected_bid.status = Bid::Verbiage[:rejected]
+      rejected_bid.status = Bid.verbiage[:rejected]
       rejected_bid.rejection_reason = explanation
       # any hooks and such go here
 
@@ -139,7 +144,7 @@ class Broker
 
   def cancel_bid(cancelled_bid, explanation)
     if cancelled_bid.is_active?
-      cancelled_bid.status = Bid::Verbiage[:cancelled]
+      cancelled_bid.status = Bid.verbiage[:cancelled]
       cancelled_bid.rejection_reason = explanation
       # any hooks and such go here
 
@@ -149,7 +154,7 @@ class Broker
 
   def cancel_listing(listing, explanation)
     if listing.is_active?
-      listing.status = Listing::Verbiage[:cancelled]
+      listing.status = Listing.verbiage[:cancelled]
       # hooks go here
 
       listing.save!

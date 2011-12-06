@@ -54,7 +54,7 @@ class BidsController < ApplicationController
 
     authorize! :accept_bid, @bid
 
-    @bid.status = Bid::Verbiage[:accepted]
+    @bid.status = Bid.verbiage[:accepted]
     @bid.save!
 
     @world.manager.broker.process_sale(@bid)

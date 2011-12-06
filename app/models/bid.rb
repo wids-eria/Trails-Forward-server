@@ -3,12 +3,13 @@ require 'set'
 class Bid < ActiveRecord::Base
   acts_as_api
 
-  Verbiage = {active: "Offered",
-              offered: "Offered",
-              accepted: "Accepted",
-              rejected: "Rejected",
-              cancelled: "Cancelled"
-  }
+  def self.verbiage
+    { active: "Offered",
+      offered: "Offered",
+      accepted: "Accepted",
+      rejected: "Rejected",
+      cancelled: "Cancelled" }
+  end
 
   belongs_to :bidder, class_name: 'Player', foreign_key: 'bidder_id'
   belongs_to :current_owner, class_name: 'Player'
@@ -27,7 +28,7 @@ class Bid < ActiveRecord::Base
   validates :requested_land, presence: true
   validate :requested_land_must_all_have_same_owner
 
-  scope :active, lambda { where(:status => Verbiage[:active]) }
+  scope :active, lambda { where(:status => Bid.verbiage[:active]) }
 
 
   def requested_land_must_all_have_same_owner
@@ -45,7 +46,7 @@ class Bid < ActiveRecord::Base
   end
 
   def is_active?
-    self.status == Verbiage[:active]
+    self.status == Bid.verbiage[:active]
   end
 
   def is_counter_bid?
@@ -57,7 +58,7 @@ class Bid < ActiveRecord::Base
   end
 
   def sale_pending
-    self.status == Verbiage[:accepted] and not self.execution_complete
+    self.status == Bid.verbiage[:accepted] and not self.execution_complete
   end
 
   api_accessible :bid_public do |template|

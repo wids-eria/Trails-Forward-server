@@ -1,7 +1,9 @@
 class Player < ActiveRecord::Base
   acts_as_api
 
-  DEFAULT_BALANCE = 1000
+  def self.default_balance
+    1000
+  end
 
   attr_accessible :name, :user, :world, :balance
 
