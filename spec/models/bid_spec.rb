@@ -15,6 +15,13 @@ describe Bid do
   it { should validate_presence_of :requested_land }
   it { should validate_numericality_of :money }
 
+  describe 'factory' do
+    it 'should produce multiple valid bids' do
+      create(:bid).should be_valid
+      build(:bid).should be_valid
+    end
+  end
+
   describe 'validation' do
     describe 'money' do
       it 'disallows negative amounts' do

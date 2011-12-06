@@ -1,8 +1,6 @@
 FactoryGirl.define do
-  factory :listing do
-  end
-
-  factory :listing_with_multiple_megatile_owners do
-
+  factory :bid do
+    requested_land_id { Factory.create :megatile_grouping }
+    money 100
   end
 end

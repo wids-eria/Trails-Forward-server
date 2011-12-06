@@ -9,6 +9,13 @@ describe Listing do
 
   it { should validate_numericality_of :price }
 
+  describe 'factory' do
+    it 'should produce multiple valid listings' do
+      create(:listing).should be_valid
+      build(:listing).should be_valid
+    end
+  end
+
   describe 'validation' do
     describe '#price' do
       it 'disallows negative amounts' do
@@ -17,10 +24,11 @@ describe Listing do
     end
 
     context 'with multiple megatile owners' do
-      subject { build(:listing_with_multiple_megatile_owners) }
-      it 'is not valid' do
-        it { should not be_valid }
-      end
+      let(:listing) { create :listing }
+      subject { listing }
+      before { listing.megatiles.last.update_attributes owner: create(:player) }
+
+      it { should_not be_valid }
     end
   end
 

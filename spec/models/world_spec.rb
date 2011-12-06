@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe World do
+  describe 'factory' do
+    it 'should produce multiple valid worlds' do
+      create(:world).should be_valid
+      build(:world).should be_valid
+    end
+  end
+
   context "when first created" do
     let(:world) { create :world }
     subject { world }
