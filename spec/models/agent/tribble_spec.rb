@@ -56,7 +56,11 @@ describe Tribble do
 
         context 'passed a distance of 1' do
           let(:distance) { 1 }
-          its(:location) { should == [0, 1] }
+          its(:location) { should == [0.0, 1.0] }
+          it 'changes associated resource tile' do
+            new_tile = tribble.resource_tile
+            new_tile.location.should == [0, 1]
+          end
         end
 
         context 'passed a distance of -1' do
