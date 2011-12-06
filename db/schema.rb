@@ -11,16 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111205195720) do
+ActiveRecord::Schema.define(:version => 20111206210102) do
 
   create_table "agents", :force => true do |t|
     t.string  "type"
+    t.text    "properties"
+    t.float   "x"
+    t.float   "y"
     t.integer "world_id"
     t.integer "resource_tile_id"
-    t.decimal "x"
-    t.decimal "y"
-    t.text    "properties"
-    t.float   "heading"
+    t.integer "heading"
   end
 
   add_index "agents", ["resource_tile_id"], :name => "index_agents_on_resource_tile_id"

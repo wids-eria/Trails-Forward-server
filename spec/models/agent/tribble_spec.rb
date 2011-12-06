@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Tribble do
-  it { should have_db_column(:heading).of_type(:float) }
+  it { should have_db_column(:heading).of_type(:integer) }
 
   let(:tribble) { build(:tribble) }
 
