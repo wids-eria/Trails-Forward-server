@@ -33,10 +33,11 @@ describe Tribble do
   end
 
   describe '#move' do
-    let(:tribble) { build(:tribble, location: location, heading: heading) }
-    subject do
+    let(:world) { create :world_with_tiles }
+    let(:tribble) { build(:tribble, world: world, location: location, heading: heading) }
+    subject { tribble }
+    before do
       tribble.move(distance)
-      tribble
     end
 
     context 'starting at location [0, 0]' do
@@ -57,6 +58,7 @@ describe Tribble do
         context 'passed a distance of 1' do
           let(:distance) { 1 }
           its(:location) { should == [0.0, 1.0] }
+
           it 'changes associated resource tile' do
             new_tile = tribble.resource_tile
             new_tile.location.should == [0, 1]

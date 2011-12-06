@@ -5,6 +5,7 @@ class Agent < ActiveRecord::Base
   def location= coords
     self.x = coords[0]
     self.y = coords[1]
+    self.resource_tile = world.resource_tile_at(self.x.floor, self.y.floor)
   end
 
   def location
@@ -15,6 +16,7 @@ class Agent < ActiveRecord::Base
     offset_coordinates = Agent.calculate_offset_coordinates(heading, distance)
     self.x = (self.x + offset_coordinates[0]).round(2)
     self.y = (self.y + offset_coordinates[1]).round(2)
+    self.resource_tile = world.resource_tile_at(self.x.floor, self.y.floor)
   end
 
   def self.calculate_offset_coordinates heading, distance
