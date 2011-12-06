@@ -29,11 +29,16 @@ class Listing < ActiveRecord::Base
     self.status == Listing.verbiage[:active]
   end
 
-  def at_least_one_megatile_must_be_present
-    unless megatiles && megatiles.count > 0
-      errors.add(:megatiles, "must contain at least one megatile")
-    end
+  api_accessible :listing do |template|
+    template.add :id
+    template.add :owner, :template => :player_public
+    template.add :status
+    template.add :price
+    template.add 'bids.count', :as => :bid_count
+    template.add :megatiles, :template => :id_and_name
   end
+
+  private
 
   def all_megatiles_are_owned_by_owner
     if megatile_grouping
@@ -51,13 +56,10 @@ class Listing < ActiveRecord::Base
     end
   end
 
-  api_accessible :listing do |template|
-    template.add :id
-    template.add :owner, :template => :player_public
-    template.add :status
-    template.add :price
-    template.add 'bids.count', :as => :bid_count
-    template.add :megatiles, :template => :id_and_name
+  def at_least_one_megatile_must_be_present
+    unless megatiles && megatiles.count > 0
+      errors.add(:megatiles, "must contain at least one megatile")
+    end
   end
 
 end

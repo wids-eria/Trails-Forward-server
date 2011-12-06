@@ -23,6 +23,14 @@ describe Listing do
       end
     end
 
+    context 'with no megatiles' do
+      let(:listing) { build :listing, megatile_grouping: create(:megatile_grouping) }
+      subject { listing }
+
+      its(:megatiles) { should be_empty }
+      it { should_not be_valid }
+    end
+
     context 'with multiple megatile owners' do
       let(:listing) { create :listing }
       subject { listing }
@@ -32,5 +40,4 @@ describe Listing do
     end
   end
 
-  # validate :at_least_one_megatile_must_be_present
 end
