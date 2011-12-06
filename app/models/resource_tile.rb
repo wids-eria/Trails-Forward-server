@@ -28,6 +28,15 @@ class ResourceTile < ActiveRecord::Base
                  :logging => "Logging",
                  :industry => "Industry" } }
 
+  def location= coords
+    self.x = coords[0]
+    self.y = coords[1]
+  end
+
+  def location
+    [x, y]
+  end
+
   def clear_resources
     self.primary_use = nil
     self.people_density = nil
