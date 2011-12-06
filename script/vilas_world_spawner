@@ -1,13 +1,5 @@
 #!/usr/bin/env ruby
-world = World.create do |w|
-  w.name = "Vilas County, WI - #{rand(100000)}"
-  w.year_start = 2000
-  w.year_current = 2001
-  w.width = 1353
-  w.height = 714
-  w.megatile_width = 3
-  w.megatile_height = 3
-end
+world = Factory :vilas
 
 puts "Created '#{world.name}' with id #{world.id}"
 
