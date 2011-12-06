@@ -34,6 +34,41 @@ describe Agent do
     end
   end
 
+  context 'multiple agents on one resource tile' do
+    let(:world) { create :world_with_tiles }
+    let(:agent1) { create :agent, :world => world, :location => location1 }
+    let(:agent2) { create :agent, :world => world, :location => location2 }
+    let(:location1) { [0.5, 0.5] }
+    context 'different actual coordinates' do
+      let(:location2) { [0.6, 0.4] }
+      example 'agent 1 is valid' do
+        agent1.should be_valid
+      end
+      example 'agent 2 is valid' do
+        agent2.should be_valid
+      end
+      example 'agent 1 and agent 2 share the tile' do
+        agent1.resource_tile.should == agent2.resource_tile
+      end
+    end
+
+    context 'exactly the same position' do
+      let(:location2) { [0.5, 0.5] }
+      example 'agent 1 is valid' do
+        agent1.should be_valid
+      end
+      example 'agent 2 is valid' do
+        agent2.should be_valid
+      end
+      example 'agent 1 and agent 2 share the tile' do
+        agent1.resource_tile.should == agent2.resource_tile
+      end
+      example 'agent 1 and agent 2 have the same location' do
+        agent1.location.should == agent2.location
+      end
+    end
+  end
+
   describe '#move' do
     let(:world) { create :world_with_tiles }
     let(:agent) { build(:agent, world: world, location: location, heading: heading) }
