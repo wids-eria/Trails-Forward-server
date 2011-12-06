@@ -2,6 +2,15 @@ class Agent < ActiveRecord::Base
   belongs_to :resource_tile
   belongs_to :world
 
+  def max_view_distance
+    10
+  end
+
+  def nearby_agents opts = {}
+    opts = { radius: max_view_distance }.merge opts
+    []
+  end
+
   def location= coords
     self.x = coords[0]
     self.y = coords[1]

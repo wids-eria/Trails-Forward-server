@@ -69,6 +69,32 @@ describe Agent do
     end
   end
 
+  context 'multiple agents in proximity can see each other' do
+    let(:world) { create :world_with_tiles }
+    let(:agent1) { create :agent, :world => world, :location => location1 }
+    let(:agent2) { create :agent, :world => world, :location => location2 }
+    let(:location1) { [0.5, 0.5] }
+    context 'near enough to see' do
+      let(:location2) { [0.6, 0.4] }
+      example 'agent 1 can see agent 2' do
+        agent1.nearby_agents(radius: 1).should == [agent2]
+      end
+    end
+    context 'too far away' do
+      let(:location2) { [2.6, 2.4] }
+      example 'agent 1 can not see agent 2' do
+        agent1.nearby_agents(radius: 1).should == []
+      end
+    end
+    context 'farther than max view distance' do
+      let(:location2) { [2.6, 2.4] }
+      before { Agent.any_instance.stub(:max_view_distance, 2) }
+      example 'agent 1 can not see agent 2' do
+        agent1.nearby_agents(radius: 10).should == []
+      end
+    end
+  end
+
   describe '#move' do
     let(:world) { create :world_with_tiles }
     let(:agent) { build(:agent, world: world, location: location, heading: heading) }
