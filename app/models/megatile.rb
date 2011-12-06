@@ -50,7 +50,7 @@ class Megatile < ActiveRecord::Base
     megatile_groupings.each do |mg|
       bids = mg.bids_on
       if active_only
-        bids = bids.where(:status => Bid::Verbiage[:offered])
+        bids = bids.where(:status => Bid.verbiage[:offered])
       end
 
       bids.each do |b|
@@ -65,7 +65,7 @@ class Megatile < ActiveRecord::Base
     megatile_groupings.each do |mg|
       bids = mg.bids_offering
       if active_only
-        bids = bids.where(:status => Bid::Verbiage[:offered])
+        bids = bids.where(:status => Bid.verbiage[:offered])
       end
 
       bids.each do |b|

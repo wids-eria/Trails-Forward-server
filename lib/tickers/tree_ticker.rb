@@ -20,13 +20,13 @@ module Tickers
           x = rt.x
           y = rt.y
           case rt.tree_species
-          when ResourceTile::Verbiage[:tree_species][:deciduous]
+          when ResourceTile.verbiage[:tree_species][:deciduous]
             @decid[x,y] = rt.tree_size
             @old_tree_size[x,y] = rt.tree_size
-          when ResourceTile::Verbiage[:tree_species][:coniferous]
+          when ResourceTile.verbiage[:tree_species][:coniferous]
             @conifer[x,y] = rt.tree_size
             @old_tree_size[x,y] = rt.tree_size
-          when ResourceTile::Verbiage[:tree_species][:mixed]
+          when ResourceTile.verbiage[:tree_species][:mixed]
             @mixed[x,y] = rt.tree_size
             @old_tree_size[x,y] = rt.tree_size
           end
@@ -50,11 +50,11 @@ module Tickers
           x = rt.x
           y = rt.y
           case rt.tree_species
-          when ResourceTile::Verbiage[:tree_species][:deciduous]
+          when ResourceTile.verbiage[:tree_species][:deciduous]
             rt.tree_size = result.tree_size[x,y]
-          when ResourceTile::Verbiage[:tree_species][:coniferous]
+          when ResourceTile.verbiage[:tree_species][:coniferous]
             rt.tree_size = result.tree_size[x,y]
-          when ResourceTile::Verbiage[:tree_species][:mixed]
+          when ResourceTile.verbiage[:tree_species][:mixed]
             rt.tree_size = result.tree_size[x,y]
           end
           rt.save!

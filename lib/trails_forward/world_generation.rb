@@ -52,7 +52,7 @@ module TrailsForward
 
                             player_type.create!(user: user,
                                                 world: self,
-                                                balance: Player::DEFAULT_BALANCE)
+                                                balance: Player.default_balance)
       end
       self
     end

@@ -28,11 +28,11 @@ module Tickers
 #           x = rt.x
 #           y = rt.y
 #           case rt.tree_species
-#           when ResourceTile::Verbiage[:tree_species][:deciduous]
+#           when ResourceTile.verbiage[:tree_species][:deciduous]
 #             @land[x,y] = 1
-#           when ResourceTile::Verbiage[:tree_species][:coniferous]
+#           when ResourceTile.verbiage[:tree_species][:coniferous]
 #             @land[x,y] = 2
-#           when ResourceTile::Verbiage[:tree_species][:mixed]
+#           when ResourceTile.verbiage[:tree_species][:mixed]
 #             @land[x,y] = 3
 #           end
 #         end

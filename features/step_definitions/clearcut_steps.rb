@@ -1,6 +1,6 @@
 Given /^my megatile is completely zoned for logging$/ do
   @my_megatile.resource_tiles.each do |rt|
-    rt.zoned_use = ResourceTile::Verbiage[:zoned_uses][:logging]
+    rt.zoned_use = ResourceTile.verbiage[:zoned_uses][:logging]
     rt.save!
   end
 end
@@ -30,7 +30,7 @@ end
 
 Given /^the owned megatile is completely zoned for logging$/ do
   @owned_megatile.resource_tiles.each do |rt|
-    rt.zoned_use = ResourceTile::Verbiage[:zoned_uses][:logging]
+    rt.zoned_use = ResourceTile.verbiage[:zoned_uses][:logging]
     rt.save!
   end
 end

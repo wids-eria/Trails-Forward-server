@@ -53,7 +53,7 @@ class PlayersController < ApplicationController
 
     @bids = @player.bids_placed
     if params.has_key? :active
-      @bids = @bids.where(:status => Bid::Verbiage[:active])
+      @bids = @bids.where(:status => Bid.verbiage[:active])
     end
 
     respond_to do |format|
@@ -69,7 +69,7 @@ class PlayersController < ApplicationController
     @bids = @player.bids_received
 
     if params.has_key? :active
-      @bids = @bids.where(:status => Bid::Verbiage[:active])
+      @bids = @bids.where(:status => Bid.verbiage[:active])
     end
 
     respond_to do |format|
@@ -87,7 +87,7 @@ class PlayersController < ApplicationController
   #
   #   @player = Player.new(params[:player])
   #   @player.user = @user
-  #   @player.balance = Player::DEFAULT_BALANCE #in case people get clever
+  #   @player.balance = Player.default_balance #in case people get clever
   #
   #   respond_to do |format|
   #     if @player.save
