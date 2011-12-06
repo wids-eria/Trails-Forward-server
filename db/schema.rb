@@ -15,11 +15,11 @@ ActiveRecord::Schema.define(:version => 20111205195720) do
 
   create_table "agents", :force => true do |t|
     t.string  "type"
-    t.text    "properties"
-    t.decimal "x"
-    t.decimal "y"
     t.integer "world_id"
     t.integer "resource_tile_id"
+    t.decimal "x"
+    t.decimal "y"
+    t.text    "properties"
     t.float   "heading"
   end
 
