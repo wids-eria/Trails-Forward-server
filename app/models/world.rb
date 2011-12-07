@@ -29,11 +29,17 @@ class World < ActiveRecord::Base
     end
   end
 
-  def each_coord &blk
-    (0...width).each do |x|
-      (0...height).each do |y|
-        yield x, y
+  def coords
+    (0...width).collect do |x|
+      (0...height).collect do |y|
+        [x,y]
       end
+    end.inject(:+)
+  end
+
+  def each_coord &blk
+    coords.each do |x, y|
+      yield x, y
     end
   end
 
@@ -43,11 +49,17 @@ class World < ActiveRecord::Base
     end
   end
 
-  def each_megatile_coord &blk
-    (0...width).step(megatile_width) do |x|
-      (0...height).step(megatile_height) do |y|
-        yield x, y
+  def megatile_coords
+    (0...width).step(megatile_width).collect do |x|
+      (0...height).step(megatile_height).collect do |y|
+        [x, y]
       end
+    end.inject(:+)
+  end
+
+  def each_megatile_coord &blk
+    megatile_coords.each do |x, y|
+      yield x, y
     end
   end
 
