@@ -11,6 +11,7 @@ gem 'json'
 gem 'msgpack'
 gem 'narray'
 gem 'pg'
+gem 'postgis_adapter'
 
 group :development, :test do
   gem 'ruby-debug19', :require => 'ruby-debug'

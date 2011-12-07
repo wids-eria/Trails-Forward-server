@@ -1,0 +1,2 @@
+class GenericAgent < Agent
+end

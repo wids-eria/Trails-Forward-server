@@ -5,7 +5,7 @@ describe Agent do
   it { should belong_to :world }
   it { should have_db_column(:heading).of_type(:integer) }
 
-  let(:agent) { build(:agent) }
+  let(:agent) { build(:generic_agent) }
 
   describe 'x' do
     it 'defaults to nil' do
@@ -29,15 +29,15 @@ describe Agent do
 
   describe '#location' do
     it 'returns array of [x,y] values' do
-      agent = build(:agent, x: 1.5, y:3.7)
+      agent = build(:generic_agent, x: 1.5, y:3.7)
       agent.location.should == [1.5, 3.7]
     end
   end
 
   context 'multiple agents on one resource tile' do
     let(:world) { create :world_with_tiles }
-    let(:agent1) { create :agent, :world => world, :location => location1 }
-    let(:agent2) { create :agent, :world => world, :location => location2 }
+    let(:agent1) { create :generic_agent, world: world, location: location1 }
+    let(:agent2) { create :generic_agent, world: world, location: location2 }
     let(:location1) { [0.5, 0.5] }
     context 'different actual coordinates' do
       let(:location2) { [0.6, 0.4] }
@@ -69,9 +69,48 @@ describe Agent do
     end
   end
 
+  describe '#nearby_agents' do
+    let(:world) { create :world_with_tiles }
+    let!(:agent1) { create :generic_agent, world: world, location: location1 }
+    let!(:agent2) { create :generic_agent, world: world, location: location2 }
+    let!(:tribble) { create :tribble, world: world, location: location1 }
+    let(:location1) { [0.5, 0.5] }
+    context 'near enough to see' do
+      let(:location2) { [0.6, 0.4] }
+      example 'agent 1 can see agent 2' do
+        agent1.nearby_agents(radius: 1).to_set.should == [tribble, agent2].to_set
+      end
+    end
+    context 'too far away' do
+      let(:location2) { [2.6, 2.4] }
+      example 'agent 1 can not see agent 2' do
+        agent1.nearby_agents(radius: 1).should == [tribble]
+      end
+    end
+    context 'farther than max view distance' do
+      let(:location2) { [2.6, 2.4] }
+      before { GenericAgent.any_instance.stub(max_view_distance: 2) }
+      example 'agent 1 can not see agent 2' do
+        agent1.nearby_agents(radius: 10).should == [tribble]
+      end
+    end
+    context 'requesting specific agent type' do
+      let(:location2) { [0.6, 0.4] }
+      example 'agent 1 can request to only see tribbles' do
+        agent1.nearby_agents(types: [:tribble], radius: 1).should == [tribble]
+      end
+      example 'agent 1 can request to only see agents' do
+        agent1.nearby_agents(types: [:generic_agent], radius: 1).should == [agent2]
+      end
+      example 'agent 1 can request to see agents and tribbles' do
+        agent1.nearby_agents(types: [:generic_agent, :tribble], radius: 1).to_set.should == [agent2, tribble].to_set
+      end
+    end
+  end
+
   describe '#move' do
     let(:world) { create :world_with_tiles }
-    let(:agent) { build(:agent, world: world, location: location, heading: heading) }
+    let(:agent) { build(:generic_agent, world: world, location: location, heading: heading) }
     subject { agent }
     before do
       agent.move(distance)
