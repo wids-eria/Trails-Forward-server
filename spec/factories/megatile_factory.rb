@@ -1,5 +1,7 @@
 FactoryGirl.define do
   factory :megatile do
-    world { Factory.create :world_with_properties }
+    sequence(:x) { |n| n }
+    sequence(:y) { |n| n }
+    world { Factory.create :world }
   end
 end

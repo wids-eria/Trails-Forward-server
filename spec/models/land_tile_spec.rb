@@ -12,9 +12,10 @@ describe LandTile do
   end
 
   context "with world" do
-    let(:megatile) { create :megatile, owner: player }
+    let(:world) { create :world_with_resources }
+    let(:player) { create :player, world: world }
+    let(:megatile) { world.megatiles.first }
     let(:tile) { megatile.world.resource_tiles.select{|tile| tile.kind_of?(LandTile)}.first }
-    let(:player) { create :player }
     before do
       tile.megatile.owner = player
       tile.zoned_use = "Logging"

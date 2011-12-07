@@ -15,11 +15,11 @@ ActiveRecord::Schema.define(:version => 20111206210102) do
 
   create_table "agents", :force => true do |t|
     t.string  "type"
-    t.text    "properties"
-    t.float   "x"
-    t.float   "y"
     t.integer "world_id"
     t.integer "resource_tile_id"
+    t.float   "x"
+    t.float   "y"
+    t.text    "properties"
     t.integer "heading"
   end
 
@@ -98,11 +98,6 @@ ActiveRecord::Schema.define(:version => 20111206210102) do
     t.integer  "lock_version", :default => 0
   end
 
-  add_index "megatiles", ["owner_id"], :name => "index_megatiles_on_owner_id"
-  add_index "megatiles", ["world_id"], :name => "index_megatiles_on_world_id"
-  add_index "megatiles", ["x"], :name => "index_megatiles_on_x"
-  add_index "megatiles", ["y"], :name => "index_megatiles_on_y"
-
   create_table "players", :force => true do |t|
     t.integer  "user_id"
     t.datetime "created_at"
@@ -135,11 +130,6 @@ ActiveRecord::Schema.define(:version => 20111206210102) do
     t.float    "lakesize"
     t.integer  "soil"
   end
-
-  add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
-  add_index "resource_tiles", ["world_id"], :name => "index_resource_tiles_on_world_id"
-  add_index "resource_tiles", ["x"], :name => "index_resource_tiles_on_x"
-  add_index "resource_tiles", ["y"], :name => "index_resource_tiles_on_y"
 
   create_table "users", :force => true do |t|
     t.string   "name"

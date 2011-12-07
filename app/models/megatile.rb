@@ -13,18 +13,17 @@ class Megatile < ActiveRecord::Base
   validates_uniqueness_of :x, :scope => [:y, :world_id]
   validates_uniqueness_of :y, :scope => [:x, :world_id]
 
-
   def width
-    world.megatile_width
+    world.try(:megatile_width)
   end
 
   def height
-    world.megatile_height
+    world.try(:megatile_height)
   end
 
   def spawn_resources
-    (x..(x + width - 1)).each do |x|
-      (y..(y + height - 1)).each do |y|
+    (x...(x + width)).each do |x|
+      (y...(y + height)).each do |y|
         ResourceTile.create(:x => x, :y => y, :world => world, :megatile => self)
       end
     end
