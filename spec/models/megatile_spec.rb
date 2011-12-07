@@ -47,4 +47,24 @@ describe Megatile do
     end
   end
 
+  describe '#listings' do
+    let!(:listing) { create :listing }
+    let!(:listing2) { create :listing, megatile_grouping: listing.megatile_grouping, owner: listing.owner}
+    let!(:dead_listing) { create :listing, megatile_grouping: listing.megatile_grouping, owner: listing.owner, status: 'Dead'}
+    let(:megatile) { listing.megatile_grouping.megatiles.first }
+    it "returns listings" do
+      megatile.listings.to_set.should == [listing, listing2, dead_listing].to_set
+    end
+  end
+
+  describe '#active_listings' do
+    let!(:listing) { create :listing }
+    let!(:listing2) { create :listing, megatile_grouping: listing.megatile_grouping, owner: listing.owner}
+    let!(:dead_listing) { create :listing, megatile_grouping: listing.megatile_grouping, owner: listing.owner, status: 'Dead'}
+    let(:megatile) { listing.megatile_grouping.megatiles.first }
+    it "returns listings" do
+      megatile.active_listings.to_set.should == [listing, listing2].to_set
+    end
+  end
+
 end

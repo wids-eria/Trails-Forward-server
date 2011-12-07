@@ -7,6 +7,7 @@ class Megatile < ActiveRecord::Base
 
   has_many :megatile_grouping_megatiles
   has_many :megatile_groupings, :through => :megatile_grouping_megatiles
+  has_many :listings, :through => :megatile_groupings
 
   validates_presence_of :world
 
@@ -29,19 +30,8 @@ class Megatile < ActiveRecord::Base
     end
   end
 
-  def listings(active_only = false)
-    ret = Set.new
-    megatile_groupings.each do |mg|
-      listings = mg.listings
-      if active_only
-        listings = listings.where(:status => "Active")
-      end
-
-      listings.each do |l|
-        ret << l
-      end
-    end
-    ret
+  def active_listings
+    listings.where(status: 'Active')
   end
 
   def bids_on(active_only = true)
