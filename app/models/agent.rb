@@ -6,6 +6,9 @@ class Agent < ActiveRecord::Base
 
   after_create :setup_geom
 
+  scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
+  scope :for_type, lambda { |type| where(type: type.to_s.classify) }
+
   def max_view_distance
     10
   end
@@ -13,9 +16,10 @@ class Agent < ActiveRecord::Base
   def nearby_agents opts = {}
     opts = {}.merge opts
     opts[:radius] = [opts[:radius], max_view_distance].compact.min
-    conditions = {}
-    conditions[:type] = opts[:types].map {|t| t.to_s.classify} if opts[:types]
-    Agent.where(conditions).all_dwithin(geom, opts[:radius]).reject {|a| a.id == id}
+
+    scope = Agent.scoped
+    scope = scope.for_types(opts[:types]) if opts[:types]
+    scope.all_dwithin(geom, opts[:radius]).reject{|a| a.id == id}
   end
 
   def location= coords
@@ -43,6 +47,7 @@ class Agent < ActiveRecord::Base
   end
 
   private
+
   def setup_geom
     return unless x && y
     self.geom = Point.from_x_y(x, y)

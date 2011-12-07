@@ -7,6 +7,32 @@ describe Agent do
 
   let(:agent) { build(:generic_agent) }
 
+  describe 'scope: ' do
+    describe '.for_types (or .for_type alias' do
+      let!(:tribble) { create :tribble }
+      let!(:generic) { create :generic_agent }
+
+      context 'passed a single type' do
+        it 'returns agents of that type' do
+          Agent.for_types([:tribble]).should == [tribble]
+        end
+        it 'has for_type convenience alias' do
+          Agent.for_type(:tribble).should == [tribble]
+        end
+      end
+      context 'passed multiple types' do
+        it 'returns agents of those types' do
+          Agent.for_types([:tribble, :generic_agent]).to_set.should == [tribble, generic].to_set
+        end
+      end
+      context 'passed no types' do
+        it 'returns no agents' do
+          Agent.for_types([]).should be_empty
+        end
+      end
+    end
+  end
+
   describe 'x' do
     it 'defaults to nil' do
       agent.x.should be_nil
