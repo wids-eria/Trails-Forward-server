@@ -1,14 +1,21 @@
 class Agent < ActiveRecord::Base
+  has_geom :geom => :point
+
   belongs_to :resource_tile
   belongs_to :world
+
+  after_create :setup_geom
 
   def max_view_distance
     10
   end
 
   def nearby_agents opts = {}
-    opts = { radius: max_view_distance }.merge opts
-    []
+    opts = {}.merge opts
+    opts[:radius] = [opts[:radius], max_view_distance].compact.min
+    conditions = {}
+    conditions[:type] = opts[:types].map {|t| t.to_s.classify} if opts[:types]
+    Agent.where(conditions).all_dwithin(geom, opts[:radius]).reject {|a| a.id == id}
   end
 
   def location= coords
@@ -33,5 +40,12 @@ class Agent < ActiveRecord::Base
     x_offset = (distance * Math.sin(heading_in_radians)).round(2)
     y_offset = (distance * Math.cos(heading_in_radians)).round(2)
     [x_offset, y_offset]
+  end
+
+  private
+  def setup_geom
+    return unless x && y
+    self.geom = Point.from_x_y(x, y)
+    save
   end
 end
