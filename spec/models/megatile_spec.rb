@@ -32,10 +32,10 @@ describe Megatile do
   describe 'geometry' do
     let(:megatile) { build :megatile }
     it "is the worlds megatile width" do
-       megatile.width.should == megatile.world.megatile_width
+      megatile.width.should == megatile.world.megatile_width
     end
     it "is the worlds megatile height" do
-       megatile.height.should == megatile.world.megatile_height
+      megatile.height.should == megatile.world.megatile_height
     end
   end
 
@@ -47,23 +47,21 @@ describe Megatile do
     end
   end
 
-  describe '#listings' do
+  context 'Listings' do
     let!(:listing) { create :listing }
     let!(:listing2) { create :listing, megatile_grouping: listing.megatile_grouping, owner: listing.owner}
     let!(:dead_listing) { create :listing, megatile_grouping: listing.megatile_grouping, owner: listing.owner, status: 'Dead'}
     let(:megatile) { listing.megatile_grouping.megatiles.first }
-    it "returns listings" do
-      megatile.listings.to_set.should == [listing, listing2, dead_listing].to_set
+    describe '#listings' do
+      it "returns listings" do
+        megatile.listings.to_set.should == [listing, listing2, dead_listing].to_set
+      end
     end
-  end
 
-  describe '#active_listings' do
-    let!(:listing) { create :listing }
-    let!(:listing2) { create :listing, megatile_grouping: listing.megatile_grouping, owner: listing.owner}
-    let!(:dead_listing) { create :listing, megatile_grouping: listing.megatile_grouping, owner: listing.owner, status: 'Dead'}
-    let(:megatile) { listing.megatile_grouping.megatiles.first }
-    it "returns listings" do
-      megatile.active_listings.to_set.should == [listing, listing2].to_set
+    describe '#active_listings' do
+      it "returns listings" do
+        megatile.active_listings.to_set.should == [listing, listing2].to_set
+      end
     end
   end
 
