@@ -100,11 +100,6 @@ ActiveRecord::Schema.define(:version => 20111206223945) do
     t.column "lock_version", :integer, :default => 0
   end
 
-  add_index "megatiles", ["owner_id"], :name => "index_megatiles_on_owner_id"
-  add_index "megatiles", ["world_id"], :name => "index_megatiles_on_world_id"
-  add_index "megatiles", ["x"], :name => "index_megatiles_on_x"
-  add_index "megatiles", ["y"], :name => "index_megatiles_on_y"
-
   create_table "players", :force => true do |t|
     t.column "user_id", :integer
     t.column "created_at", :datetime
@@ -137,11 +132,6 @@ ActiveRecord::Schema.define(:version => 20111206223945) do
     t.column "lakesize", :float
     t.column "soil", :integer
   end
-
-  add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
-  add_index "resource_tiles", ["world_id"], :name => "index_resource_tiles_on_world_id"
-  add_index "resource_tiles", ["x"], :name => "index_resource_tiles_on_x"
-  add_index "resource_tiles", ["y"], :name => "index_resource_tiles_on_y"
 
   create_table "users", :force => true do |t|
     t.column "name", :string

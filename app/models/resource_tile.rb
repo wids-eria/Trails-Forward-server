@@ -5,8 +5,8 @@ class ResourceTile < ActiveRecord::Base
   belongs_to :world
   has_many :agents
 
-  validates_uniqueness_of :x, :scope => [:y, :world_id]
-  validates_uniqueness_of :y, :scope => [:x, :world_id]
+  # validates_uniqueness_of :x, :scope => [:y, :world_id]
+  # validates_uniqueness_of :y, :scope => [:x, :world_id]
 
   # todo: Add validations for tree_species, zoned_use, and primary_use to be sure that they're in one of the below
 

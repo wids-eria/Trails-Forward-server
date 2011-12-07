@@ -2,11 +2,72 @@ module TrailsForward
   module WorldGeneration
     def spawn_tiles
       raise "Can't spawn tiles for an invalid World" unless valid?
-      each_megatile_coord do |x,y|
-        mt = Megatile.create(:x => x, :y => y, :world => self)
-        mt.spawn_resources
+      ActiveRecord::Base.transaction do
+        megatile_list = megatile_coords.collect do |x, y|
+          [x, y, id]
+        end
+        
+        mt_count = 0
+        mt_total = (megatile_list.count / 1000)
+        megatile_list.each_slice(1000) do |megatile_slice|
+          mt_percent = (100.0 * mt_count) / mt_total
+          puts("Megatiles: %.2f%%       \e[1A".green % mt_percent) if Rails.env.development?
+
+          Megatile.import %w(x y world_id), megatile_slice,
+            validate: false, timestamps: false
+
+          mt_count += 1
+        end
+        puts "Megatiles: 100%        ".green if Rails.env.development?
+        
+        rt_count = 0
+        rt_total = mt_total
+        Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 1000) do |megatile_batch|
+          rt_percent = (100.0 * rt_count) / rt_total
+          puts("Resource tiles: %.2f%%       \e[1A".green % rt_percent) if Rails.env.development?
+
+          batch_tiles = megatile_batch.collect do |tile_info|
+            (0...megatile_width).collect do |x_offset|
+              (0...megatile_height).collect do |y_offset|
+                [tile_info.x + x_offset, tile_info.y + y_offset, tile_info.id, id]
+              end
+            end.inject(:+)
+          end.inject(:+)
+
+          ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
+
+          rt_count += 1
+        end
+        puts "Resource tiles: 100%         ".green if Rails.env.development?
+
       end
+
       self
+    end
+
+    def resource_gen
+      case rand(9)
+      when 0
+        WaterTile.new world_id: id
+      when 1..6
+        LandTile.new world_id: id,
+          primary_use: nil,
+          people_density: 0,
+          housing_density: 0,
+          tree_density: 0.5 + rand / 2.0,
+          tree_species: 'Deciduous',
+          development_intensity: 0.0,
+          zoned_use: (rand(10) == 0) ? "Logging" : ""
+      else
+        people_density = 0.5 + rand / 2.0
+        LandTile.new world_id: id,
+          primary_use: "Residential",
+          zoned_use: "Development",
+          people_density: people_density,
+          housing_density: people_density,
+          tree_density: rand * 0.1,
+          development_intensity: people_density
+      end
     end
 
     def place_resources

@@ -38,4 +38,14 @@ FactoryGirl.define do
       world.create_starter_properties
     end
   end
+
+  factory :vilas, parent: :world do
+    name { "Vilas County, WI - #{rand(100000)}" }
+    year_start 2000
+    year_current 2001
+    width 1353
+    height 714
+    megatile_width 3
+    megatile_height 3
+  end
 end

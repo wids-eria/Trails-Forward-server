@@ -4,8 +4,10 @@ gem 'rails', '3.1.1'
 gem 'rake'
 
 gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
+gem 'activerecord-import'
 gem 'cancan'
 gem 'chunky_png'
+gem 'colorful'
 gem 'devise'
 gem 'json'
 gem 'msgpack'
@@ -36,6 +38,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'spork', '0.9.0.rc9'
+  gem 'tattletail'
 end
 
 group :production do
