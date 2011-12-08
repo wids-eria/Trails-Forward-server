@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111206223945) do
+ActiveRecord::Schema.define(:version => 20111208091241) do
 
   create_table "agents", :force => true do |t|
     t.column "type", :string
@@ -78,16 +78,14 @@ ActiveRecord::Schema.define(:version => 20111206223945) do
 
   add_index "listings", ["owner_id"], :name => "index_listings_on_owner_id"
 
-  create_table "megatile_grouping_megatiles", :force => true do |t|
-    t.column "megatile_grouping_id", :integer
-    t.column "megatile_id", :integer
+  create_table "megatile_groupings", :force => true do |t|
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
   end
 
-  create_table "megatile_groupings", :force => true do |t|
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
+  create_table "megatile_groupings_megatiles", :force => true do |t|
+    t.column "megatile_id", :integer
+    t.column "megatile_grouping_id", :integer
   end
 
   create_table "megatiles", :force => true do |t|
