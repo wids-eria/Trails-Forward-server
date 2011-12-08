@@ -52,4 +52,14 @@ describe Bid do
       end
     end
   end
+
+  context "Scopes" do
+    describe ".active" do
+      let!(:bid1) { Factory :bid, status: Bid.verbiage[:active] }
+      let!(:bid2) { Factory :bid, status: Bid.verbiage[:cancelled] }
+      it "returns active bids" do
+        Bid.active.should == [bid1]
+      end
+    end
+  end
 end

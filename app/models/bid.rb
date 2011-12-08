@@ -28,8 +28,7 @@ class Bid < ActiveRecord::Base
   validates :requested_land, presence: true
   validate :requested_land_must_all_have_same_owner
 
-  scope :active, lambda { where(:status => Bid.verbiage[:active]) }
-
+  scope :active, conditions: { status: Bid.verbiage[:active] }
 
   def requested_land_must_all_have_same_owner
     if requested_land.present?
@@ -63,17 +62,17 @@ class Bid < ActiveRecord::Base
 
   api_accessible :bid_public do |template|
     template.add :id
-    template.add :bidder, :template => :player_public
+    template.add :bidder, template: :player_public
     template.add :updated_at
     template.add :status
-    template.add :sale_pending, :as => :pending, :if => lambda{|b| b.sale_pending}
+    template.add :sale_pending, as: :pending, if: lambda{|b| b.sale_pending}
   end
 
-  api_accessible :bid_private, :extend => :bid_public do |template|
+  api_accessible :bid_private, extend: :bid_public do |template|
     template.add :money
-    template.add :counter_to, :template => :bid_public, :if => :is_counter_bid?
-    template.add 'offered_land.megatiles', :as => :offered_land, :template => :id_and_name, :if => lambda{|b| b.offered_land != nil}
-    template.add 'requested_land.megatiles', :as => :requested_land, :template => :id_and_name, :if => lambda{|b| b.requested_land != nil}
+    template.add :counter_to, template: :bid_public, if: :is_counter_bid?
+    template.add 'offered_land.megatiles', as: :offered_land, template: :id_and_name, if: lambda{|b| b.offered_land != nil}
+    template.add 'requested_land.megatiles', as: :requested_land, template: :id_and_name, if: lambda{|b| b.requested_land != nil}
   end
 
 end
