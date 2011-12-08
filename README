@@ -1,0 +1,27 @@
+To install PostgreSQL:
+
+$ brew install postgresql
+  or
+$ brew upgrade postgresql
+
+
+To install PostGIS:
+
+$ brew install postgis --enable-ruby
+
+
+To create a user:
+
+$ createuser <username_from_database.yaml>
+
+Be sure to make them a super-user
+
+
+To setup the database:
+
+$ rake db:create:all db:reset
+
+
+To run the tests:
+
+$ rake
