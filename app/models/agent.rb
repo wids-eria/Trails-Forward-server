@@ -22,6 +22,10 @@ class Agent < ActiveRecord::Base
     scope.all_dwithin(geom, opts[:radius]).reject{|a| a.id == id}
   end
 
+  def nearby_peers opts = {}
+    nearby_agents(opts.merge({types: [self.class]}))
+  end
+
   def location= coords
     self.x = coords[0]
     self.y = coords[1]

@@ -134,6 +134,18 @@ describe Agent do
     end
   end
 
+  describe '#nearby_peers' do
+    let(:world) { create :world_with_tiles }
+    let!(:agent1) { create :generic_agent, world: world, location: location1 }
+    let!(:tribble1) { create :tribble, world: world, location: location1 }
+    let!(:tribble2) { create :tribble, world: world, location: location1 }
+    let(:location1) { [0.5, 0.5] }
+
+    example 'only returns agents of same type' do
+      tribble1.nearby_peers(radius: 1).should == [tribble2]
+    end
+  end
+
   describe '#move' do
     let(:world) { create :world_with_tiles }
     let(:agent) { build(:generic_agent, world: world, location: location, heading: heading) }
