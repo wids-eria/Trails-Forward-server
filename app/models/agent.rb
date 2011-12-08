@@ -17,9 +17,9 @@ class Agent < ActiveRecord::Base
     opts = {}.merge opts
     opts[:radius] = [opts[:radius], max_view_distance].compact.min
 
-    scope = Agent.scoped
-    scope = scope.for_types(opts[:types]) if opts[:types]
-    scope.all_dwithin(geom, opts[:radius]).reject{|a| a.id == id}
+    local_search = Agent.scoped
+    local_search = local_search.for_types(opts[:types]) if opts[:types]
+    local_search.all_dwithin(geom, opts[:radius]).reject{|a| a.id == id}
   end
 
   def nearby_peers opts = {}
