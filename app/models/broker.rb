@@ -45,8 +45,7 @@ class Broker
 
       transfer_assets bid
       reject_other_bids bid
-      bid.execution_complete = true
-      bid.save!
+      bid.complete_execution!
     end
   end
 

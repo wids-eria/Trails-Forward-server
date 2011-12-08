@@ -30,34 +30,23 @@ class Bid < ActiveRecord::Base
 
   scope :active, conditions: { status: Bid.verbiage[:active] }
 
-  def requested_land_must_all_have_same_owner
-    if requested_land.present?
-      owners = Set.new
-
-      requested_land.megatiles.each do |mt|
-        owners << mt.owner
-      end
-
-      if owners.count > 1
-        errors.add(:requested_land, "must all have the same current owner")
-      end
+  Bid.verbiage.keys.each do |key|
+    define_method "is_#{key}?" do
+      self.status == Bid.verbiage[key]
     end
-  end
-
-  def is_active?
-    self.status == Bid.verbiage[:active]
   end
 
   def is_counter_bid?
     counter_to != nil
   end
 
-  def money_must_be_nonnegative
-    errors.add(:money, "must be >= 0") unless (money >= 0)
+  def complete_execution!
+    self.execution_complete = true
+    save!
   end
 
   def sale_pending
-    self.status == Bid.verbiage[:accepted] and not self.execution_complete
+    self.status == Bid.verbiage[:accepted] and not self.execution_complete?
   end
 
   api_accessible :bid_public do |template|
@@ -73,6 +62,22 @@ class Bid < ActiveRecord::Base
     template.add :counter_to, template: :bid_public, if: :is_counter_bid?
     template.add 'offered_land.megatiles', as: :offered_land, template: :id_and_name, if: lambda{|b| b.offered_land != nil}
     template.add 'requested_land.megatiles', as: :requested_land, template: :id_and_name, if: lambda{|b| b.requested_land != nil}
+  end
+
+private
+
+  def requested_land_must_all_have_same_owner
+    if requested_land.present?
+      owners = Set.new
+
+      requested_land.megatiles.each do |mt|
+        owners << mt.owner
+      end
+
+      if owners.count > 1
+        errors.add(:requested_land, "must all have the same current owner")
+      end
+    end
   end
 
 end
