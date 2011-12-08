@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111208195115) do
+ActiveRecord::Schema.define(:version => 20111208200210) do
 
   create_table "agents", :force => true do |t|
     t.column "type", :string
@@ -43,7 +43,6 @@ ActiveRecord::Schema.define(:version => 20111208195115) do
     t.column "updated_at", :datetime
     t.column "rejection_reason", :string
     t.column "counter_to_id", :integer
-    t.column "lock_version", :integer, :default => 0
     t.column "execution_complete", :boolean, :default => false
   end
 
@@ -73,7 +72,6 @@ ActiveRecord::Schema.define(:version => 20111208195115) do
     t.column "updated_at", :datetime
     t.column "status", :string, :default => "Active"
     t.column "bid_id", :integer
-    t.column "lock_version", :integer, :default => 0
   end
 
   add_index "listings", ["owner_id"], :name => "index_listings_on_owner_id"
@@ -91,7 +89,6 @@ ActiveRecord::Schema.define(:version => 20111208195115) do
     t.column "x", :integer
     t.column "y", :integer
     t.column "owner_id", :integer
-    t.column "lock_version", :integer, :default => 0
   end
 
   create_table "players", :force => true do |t|
@@ -99,7 +96,6 @@ ActiveRecord::Schema.define(:version => 20111208195115) do
     t.column "world_id", :integer
     t.column "balance", :integer
     t.column "type", :string
-    t.column "lock_version", :integer, :default => 0
   end
 
   create_table "resource_tiles", :force => true do |t|
@@ -109,7 +105,6 @@ ActiveRecord::Schema.define(:version => 20111208195115) do
     t.column "type", :string
     t.column "zoned_use", :string
     t.column "world_id", :integer
-    t.column "lock_version", :integer, :default => 0
     t.column "primary_use", :string
     t.column "people_density", :float
     t.column "housing_density", :float
@@ -143,27 +138,6 @@ ActiveRecord::Schema.define(:version => 20111208195115) do
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
-
-  create_table "versions", :force => true do |t|
-    t.column "versioned_id", :integer
-    t.column "versioned_type", :string
-    t.column "user_id", :integer
-    t.column "user_type", :string
-    t.column "user_name", :string
-    t.column "modifications", :text
-    t.column "number", :integer
-    t.column "reverted_from", :integer
-    t.column "tag", :string
-    t.column "created_at", :datetime
-    t.column "updated_at", :datetime
-  end
-
-  add_index "versions", ["created_at"], :name => "index_versions_on_created_at"
-  add_index "versions", ["number"], :name => "index_versions_on_number"
-  add_index "versions", ["tag"], :name => "index_versions_on_tag"
-  add_index "versions", ["user_id", "user_type"], :name => "index_versions_on_user_id_and_user_type"
-  add_index "versions", ["user_name"], :name => "index_versions_on_user_name"
-  add_index "versions", ["versioned_id", "versioned_type"], :name => "index_versions_on_versioned_id_and_versioned_type"
 
   create_table "worlds", :force => true do |t|
     t.column "name", :string
