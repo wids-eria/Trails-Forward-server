@@ -44,5 +44,4 @@ class Player < ActiveRecord::Base
   api_accessible :player_public_with_megatiles, :extend => :player_public do |template|
     template.add :megatiles, :template => :id_and_name
   end
-
 end
