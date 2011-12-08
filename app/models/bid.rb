@@ -18,15 +18,15 @@ class Bid < ActiveRecord::Base
   belongs_to :counter_to, class_name: 'Bid'
   has_many :counter_bids, class_name: 'Bid', foreign_key: 'counter_to_id'
 
-  belongs_to :offered_land, class_name: "MegatileGrouping" # Listing Payment
   belongs_to :requested_land, class_name: "MegatileGrouping" # Listing Purchase (tiles being sold)
+  belongs_to :offered_land, class_name: "MegatileGrouping" # Listing Payment
 
-  has_many :requested_megatiles, through: :requested_land
-  has_many :offered_watertiles, through: :offered_land
+  has_many :requested_megatiles, through: :requested_land, source: :megatiles
+  has_many :offered_megatiles, through: :offered_land, source: :megatiles
 
   validates :money,
     presence: true,
-    numericality: {greater_than_or_equal_to: 0}
+    numericality: { greater_than_or_equal_to: 0 }
   validates :requested_land,
     presence: true
 
@@ -70,11 +70,7 @@ private
 
   def requested_land_must_all_have_same_owner
     if requested_land.present?
-      owners = Set.new
-
-      requested_land.megatiles.each do |mt|
-        owners << mt.owner
-      end
+      owners = requested_megatiles.collect(&:owner).uniq
 
       if owners.count > 1
         errors.add(:requested_land, "must all have the same current owner")
