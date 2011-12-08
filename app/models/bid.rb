@@ -18,32 +18,22 @@ class Bid < ActiveRecord::Base
   belongs_to :counter_to, class_name: 'Bid'
   has_many :counter_bids, class_name: 'Bid', foreign_key: 'counter_to_id'
 
-  # land offered as PAYMENT on a listing
-  belongs_to :offered_land, class_name: "MegatileGrouping"
+  belongs_to :offered_land, class_name: "MegatileGrouping" # Listing Payment
+  belongs_to :requested_land, class_name: "MegatileGrouping" # Listing Purchase (tiles being sold)
 
-  # land that is being PURCHASED by the bidder. In the case of a fully solicited buy, this == listing.megatile_grouping.meagtiles
-  belongs_to :requested_land, class_name: "MegatileGrouping"
+  has_many :requested_megatiles, through: :requested_land
+  has_many :offered_watertiles, through: :offered_land
 
-  validates :money, presence: true, numericality: {greater_than_or_equal_to: 0}
-  validates :requested_land, presence: true
+  validates :money,
+    presence: true,
+    numericality: {greater_than_or_equal_to: 0}
+  validates :requested_land,
+    presence: true
+
   validate :requested_land_must_all_have_same_owner
 
-  scope :active, lambda { where(:status => Bid.verbiage[:active]) }
+  scope :active, conditions: { status: Bid.verbiage[:active] }
 
-
-  def requested_land_must_all_have_same_owner
-    if requested_land.present?
-      owners = Set.new
-
-      requested_land.megatiles.each do |mt|
-        owners << mt.owner
-      end
-
-      if owners.count > 1
-        errors.add(:requested_land, "must all have the same current owner")
-      end
-    end
-  end
 
   def is_active?
     self.status == Bid.verbiage[:active]
@@ -74,6 +64,22 @@ class Bid < ActiveRecord::Base
     template.add :counter_to, :template => :bid_public, :if => :is_counter_bid?
     template.add 'offered_land.megatiles', :as => :offered_land, :template => :id_and_name, :if => lambda{|b| b.offered_land != nil}
     template.add 'requested_land.megatiles', :as => :requested_land, :template => :id_and_name, :if => lambda{|b| b.requested_land != nil}
+  end
+
+private
+
+  def requested_land_must_all_have_same_owner
+    if requested_land.present?
+      owners = Set.new
+
+      requested_land.megatiles.each do |mt|
+        owners << mt.owner
+      end
+
+      if owners.count > 1
+        errors.add(:requested_land, "must all have the same current owner")
+      end
+    end
   end
 
 end

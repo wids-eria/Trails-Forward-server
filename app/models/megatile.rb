@@ -5,8 +5,7 @@ class Megatile < ActiveRecord::Base
   belongs_to :owner, :class_name => 'Player'
   has_many :resource_tiles
 
-  has_many :megatile_grouping_megatiles
-  has_many :megatile_groupings, :through => :megatile_grouping_megatiles
+  has_and_belongs_to_many :megatile_groupings
   has_many :listings, :through => :megatile_groupings
 
   validates_presence_of :world
