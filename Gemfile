@@ -1,7 +1,7 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.1.1'
-gem 'rake'
+gem 'rake', '0.8.7'
 
 gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
 gem 'activerecord-import'

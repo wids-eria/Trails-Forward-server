@@ -6,7 +6,7 @@ module TrailsForward
         megatile_list = megatile_coords.collect do |x, y|
           [x, y, id]
         end
-        
+
         mt_count = 0
         mt_total = (megatile_list.count / 1000)
         megatile_list.each_slice(1000) do |megatile_slice|
@@ -19,7 +19,7 @@ module TrailsForward
           mt_count += 1
         end
         puts "Megatiles: 100%        ".green if Rails.env.development?
-        
+
         rt_count = 0
         rt_total = mt_total
         Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 1000) do |megatile_batch|
