@@ -65,4 +65,21 @@ describe Megatile do
     end
   end
 
+  context "Bids" do
+    let!(:bid) { create :bid }
+    let!(:bid_without_offer) { create :bid, requested_land: bid.requested_land, status: 'Rejected' }
+    let(:megatile) { bid.requested_land.megatiles.first}
+
+    describe "#bids_on" do
+      it "returns bids" do
+        megatile.bids_on.to_set.should == [bid, bid_without_offer].to_set
+      end
+    end
+
+    describe "#active_bids_on" do
+      it "returns bids on with offers" do
+        megatile.active_bids_on.to_set.should == [bid].to_set
+      end
+    end
+  end
 end

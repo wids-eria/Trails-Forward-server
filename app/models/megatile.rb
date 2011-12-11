@@ -7,6 +7,7 @@ class Megatile < ActiveRecord::Base
 
   has_and_belongs_to_many :megatile_groupings
   has_many :listings, :through => :megatile_groupings
+  has_many :bids_on, :through => :megatile_groupings
 
   validates_presence_of :world
 
@@ -33,20 +34,10 @@ class Megatile < ActiveRecord::Base
     listings.where(status: 'Active')
   end
 
-  def bids_on(active_only = true)
-    ret = Set.new
-    megatile_groupings.each do |mg|
-      bids = mg.bids_on
-      if active_only
-        bids = bids.where(:status => Bid.verbiage[:offered])
-      end
-
-      bids.each do |b|
-        ret << b
-      end
-    end
-    ret
+  def active_bids_on
+    bids_on.where(status: 'Offered')
   end
+
 
   def bids_offering(active_only = true)
     ret = Set.new
