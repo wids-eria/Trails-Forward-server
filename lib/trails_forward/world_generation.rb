@@ -1,48 +1,63 @@
 module TrailsForward
   module WorldGeneration
-    def spawn_tiles
+    def spawn_blank_tiles
       raise "Can't spawn tiles for an invalid World" unless valid?
       ActiveRecord::Base.transaction do
-        megatile_list = megatile_coords.collect do |x, y|
-          [x, y, id]
-        end
-        
-        mt_count = 0
-        mt_total = (megatile_list.count / 1000)
-        megatile_list.each_slice(1000) do |megatile_slice|
-          mt_percent = (100.0 * mt_count) / mt_total
-          puts("Megatiles: %.2f%%       \e[1A".green % mt_percent) if Rails.env.development?
-
-          Megatile.import %w(x y world_id), megatile_slice,
-            validate: false, timestamps: false
-
-          mt_count += 1
-        end
-        puts "Megatiles: 100%        ".green if Rails.env.development?
-        
-        rt_count = 0
-        rt_total = mt_total
-        Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 1000) do |megatile_batch|
-          rt_percent = (100.0 * rt_count) / rt_total
-          puts("Resource tiles: %.2f%%       \e[1A".green % rt_percent) if Rails.env.development?
-
-          batch_tiles = megatile_batch.collect do |tile_info|
-            (0...megatile_width).collect do |x_offset|
-              (0...megatile_height).collect do |y_offset|
-                [tile_info.x + x_offset, tile_info.y + y_offset, tile_info.id, id]
-              end
-            end.inject(:+)
-          end.inject(:+)
-
-          ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
-
-          rt_count += 1
-        end
-        puts "Resource tiles: 100%         ".green if Rails.env.development?
-
+        spawn_megatiles unless megatiles.any?
+        spawn_resource_tiles
       end
 
       self
+    end
+
+    def spawn_megatiles
+      megatile_list = megatile_coords.collect do |x, y|
+        [x, y, id]
+      end
+
+      mt_count = 0
+      mt_total = (megatile_list.count / 1000)
+      megatile_list.each_slice(1000) do |megatile_slice|
+        report_percent("Megatiles", mt_total, mt_count)
+
+        Megatile.import %w(x y world_id), megatile_slice,
+          validate: false, timestamps: false
+
+        mt_count += 1
+      end
+      self.reload
+
+      puts "Megatiles: 100%        ".green if Rails.env.development?
+    end
+
+    def spawn_resource_tiles
+      rt_count = 0
+      rt_total = megatiles.count / 1000
+      Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 1000) do |megatile_batch|
+        report_percent("Resource tiles", rt_total, rt_count)
+
+        batch_tiles = megatile_batch.collect do |tile_info|
+          (0...megatile_width).collect do |x_offset|
+            (0...megatile_height).collect do |y_offset|
+              [tile_info.x + x_offset, tile_info.y + y_offset, tile_info.id, id]
+            end
+          end.inject(:+)
+        end.inject(:+)
+
+        ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
+
+        rt_count += 1
+      end
+      self.reload
+
+      puts "Resource tiles: 100%         ".green if Rails.env.development?
+    end
+
+    def report_percent title, total, current
+      if Rails.env.development?
+        percent = (100.0 * current) / total
+        puts("#{title}: %.2f%%       ".green.and_go_up(1) % percent)
+      end
     end
 
     def resource_gen

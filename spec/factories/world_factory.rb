@@ -11,20 +11,20 @@ FactoryGirl.define do
 
   factory :world_with_tiles, parent: :world do
     after_create do |world, proxy|
-      world.spawn_tiles
+      world.spawn_blank_tiles
     end
   end
 
   factory :world_with_resources, parent: :world do
     after_create do |world, proxy|
-      world.spawn_tiles
+      world.spawn_blank_tiles
       world.place_resources
     end
   end
 
   factory :world_with_players, parent: :world do
     after_create do |world, proxy|
-      world.spawn_tiles
+      world.spawn_blank_tiles
       world.place_resources
       world.create_users_and_players
     end
@@ -32,7 +32,7 @@ FactoryGirl.define do
 
   factory :world_with_properties, parent: :world do
     after_create do |world, proxy|
-      world.spawn_tiles
+      world.spawn_blank_tiles
       world.place_resources
       world.create_users_and_players
       world.create_starter_properties
