@@ -60,30 +60,57 @@ module TrailsForward
       end
     end
 
-    def resource_gen
-      case rand(9)
-      when 0
-        WaterTile.new world_id: id
-      when 1..6
-        LandTile.new world_id: id,
-          primary_use: nil,
-          people_density: 0,
-          housing_density: 0,
-          tree_density: 0.5 + rand / 2.0,
-          tree_species: 'Deciduous',
-          development_intensity: 0.0,
-          zoned_use: (rand(10) == 0) ? "Logging" : ""
-      else
-        people_density = 0.5 + rand / 2.0
-        LandTile.new world_id: id,
-          primary_use: "Residential",
-          zoned_use: "Development",
-          people_density: people_density,
-          housing_density: people_density,
-          tree_density: rand * 0.1,
-          development_intensity: people_density
+    def create_users_and_players
+      player_types = [Lumberjack, Developer, Conserver]
+      player_types.each_with_index do |player_type, idx|
+        password = "letmein"
+        email = "u#{id}-#{idx+1}@example.com"
+
+        user = User.create!(email: email,
+                            password: password,
+                            name: "User #{id}-#{idx+1}")
+
+                            player_type.create!(user: user,
+                                                world: self,
+                                                balance: Player.default_balance)
       end
+      self
     end
+
+    def create_starter_properties
+      ((width / 6) * (height / 6)).times do
+        x = rand width
+        y = rand height
+        megatile = megatile_at x,y
+        megatile.update_attributes(owner: players[rand(players.count)])
+      end
+      self
+    end
+
+    # def resource_gen
+    #   case rand(9)
+    #   when 0
+    #     WaterTile.new world_id: id
+    #   when 1..6
+    #     LandTile.new world_id: id,
+    #       primary_use: nil,
+    #       people_density: 0,
+    #       housing_density: 0,
+    #       tree_density: 0.5 + rand / 2.0,
+    #       tree_species: 'Deciduous',
+    #       development_intensity: 0.0,
+    #       zoned_use: (rand(10) == 0) ? "Logging" : ""
+    #   else
+    #     people_density = 0.5 + rand / 2.0
+    #     LandTile.new world_id: id,
+    #       primary_use: "Residential",
+    #       zoned_use: "Development",
+    #       people_density: people_density,
+    #       housing_density: people_density,
+    #       tree_density: rand * 0.1,
+    #       development_intensity: people_density
+    #   end
+    # end
 
     def place_resources
       how_many_trees = (width * height * 0.40).round
@@ -116,31 +143,5 @@ module TrailsForward
       self
     end
 
-    def create_users_and_players
-      player_types = [Lumberjack, Developer, Conserver]
-      player_types.each_with_index do |player_type, idx|
-        password = "letmein"
-        email = "u#{id}-#{idx+1}@example.com"
-
-        user = User.create!(email: email,
-                            password: password,
-                            name: "User #{id}-#{idx+1}")
-
-                            player_type.create!(user: user,
-                                                world: self,
-                                                balance: Player.default_balance)
-      end
-      self
-    end
-
-    def create_starter_properties
-      ((width / 6) * (height / 6)).times do
-        x = rand width
-        y = rand height
-        megatile = megatile_at x,y
-        megatile.update_attributes(owner: players[rand(players.count)])
-      end
-      self
-    end
   end
 end

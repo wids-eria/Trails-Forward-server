@@ -1,5 +1,5 @@
 
-Vilas County is broken down into 963,976 square single acre tiles (cells).  This amounts to 713 rows (y) and 1352 columns (x).  
+Vilas County is broken down into 963,976 square single acre tiles (cells).  This amounts to 713 rows (y) and 1352 columns (x).
 The CSV file references tiles by it's x,y coordinate pair, stored as "ROW" and "COL" in the file, starting in the upper left corner (NW) and moving right (E).
 Including the header, the CSV file has 963,977 lines and is roughly 50MB in size.
 
@@ -48,11 +48,11 @@ http://www.mrlc.gov/nlcd_definitions.php
 
 HOUSING DENSITY CLASS CODES
 ===========================
-0 = No housing / Uninhabited	(0 houses per sq. km)
-1 = Very Low Housing Density	(>0 to 2 houses per sq. km)
-2 = Low Housing Density	(>2 to 4 houses per sq. km)
-3 = Medium Housing Density	(>4 to 8 houses per sq. km)
-4 = High Housing Density	(>8 to 16 houses per sq. km)
-5 = Very High Housing Density	(>16 to 128 houses per sq. km)
-6 = Intensely High Housing Density	(>128 houses per sq. km)
+0 = No housing / Uninhabited  (0 houses per sq. km)
+1 = Very Low Housing Density  (>0 to 2 houses per sq. km)
+2 = Low Housing Density (>2 to 4 houses per sq. km)
+3 = Medium Housing Density  (>4 to 8 houses per sq. km)
+4 = High Housing Density  (>8 to 16 houses per sq. km)
+5 = Very High Housing Density (>16 to 128 houses per sq. km)
+6 = Intensely High Housing Density  (>128 houses per sq. km)
 99 = Open Water

@@ -7,22 +7,6 @@ puts "Spawning empty tiles"
 world.spawn_blank_tiles
 puts "\t...done"
 
-# how_many_trees = (world.width * world.height * 0.80).round
-# print "Placing  trees"
-# STDOUT.flush
-
-# how_many_trees.times do |i|
-#   x = rand world.width
-#   y = rand world.height
-#   resource_tile = world.resource_tile_at x,y
-#   resource_tile.type = 'TreeTile'
-#   resource_tile.quality = rand(40)
-#   resource_tile.save
-#   print '.'
-#   STDOUT.flush
-# end
-# puts ''
-
 puts "Creating users and players..."
 players = []
 player_types = [Lumberjack, Developer, Conserver]
@@ -33,8 +17,6 @@ player_types = [Lumberjack, Developer, Conserver]
   u.password_confirmation = "letmein"
   u.save!
   p = player_types[i].create :user => u, :world => world, :balance => 1000
-  # p.type = player_types[i]
-  #   p.save
   players << p
   puts "\tPlayer id #{p.id} (#{p.type}) created"
 end

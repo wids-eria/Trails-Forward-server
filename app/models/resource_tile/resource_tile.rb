@@ -12,9 +12,10 @@ class ResourceTile < ActiveRecord::Base
 
   def self.verbiage
     { :tree_species => {
-      :coniferous => "Coniferous",
-      :deciduous => "Deciduous",
-      :mixed => "Mixed" },
+        :coniferous => "Coniferous",
+        :deciduous => "Deciduous",
+        :mixed => "Mixed",
+        :unknown => "Unknown" },
       :zoned_uses => {
         :development => "Development",
         :dev => "Development",
@@ -22,12 +23,12 @@ class ResourceTile < ActiveRecord::Base
         :ag => "Agriculture",
         :logging => "Logging",
         :park => "Park" },
-        :primary_uses => {
-          :pasture => "Agriculture/Pasture",
-          :crops => "Agriculture/Cultivated Crops",
-          :housing => "Housing",
-          :logging => "Logging",
-          :industry => "Industry" } }
+      :primary_uses => {
+        :pasture => "Agriculture/Pasture",
+        :crops => "Agriculture/Cultivated Crops",
+        :housing => "Housing",
+        :logging => "Logging",
+        :industry => "Industry" } }
   end
 
   def location= coords

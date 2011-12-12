@@ -5,6 +5,7 @@ gem 'rake'
 
 gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
 gem 'activerecord-import'
+gem 'bamfcsv'
 gem 'cancan'
 gem 'chunky_png'
 gem 'colorful'
