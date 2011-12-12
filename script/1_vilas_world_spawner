@@ -4,7 +4,7 @@ world = Factory :vilas
 puts "Created '#{world.name}' with id #{world.id}"
 
 puts "Spawning empty tiles"
-world.spawn_blank_tiles
+world.spawn_megatiles
 puts "\t...done"
 
 puts "Creating users and players..."

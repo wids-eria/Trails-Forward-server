@@ -18,8 +18,13 @@ def imperviousness_percent density
   density / 100.0
 end
 
+def soil_amount amount
+  return nil if amount == 255
+  amount
+end
+
 puts 'Parsing CSV...'
-rows = BAMFCSV.read("script/data/vilas_conserv_game_spatial_1_acre_inputs.csv")
+rows = BAMFCSV.read("script/data/vilas_conserv_game_spatial_1_acre_inputs_combined.csv")
 puts '  CSV parsed!'.green
 
 header = rows.shift
@@ -28,9 +33,12 @@ header = rows.shift
                 :cover_class => header.index("LANDCOV2001"),
                 :imperviousness => header.index("IMPERV%2001"),
                 :devel_density => header.index("HDEN00"),
-                :forest_density => header.index("CANOPY%2001")}
-x_col = @col_numbers[:col]
-y_col = @col_numbers[:row]
+                :forest_density => header.index("CANOPY%2001"),
+                :frontage => header.index("FRONTAGE"),
+                :lakesize => header.index("LAKESIZE"),
+                :soil => header.index("SOIL")}
+x_col = @col_numbers[:row]
+y_col = @col_numbers[:col]
 row_hash = rows.index_by { |row| "#{row[x_col]}:#{row[y_col]}" }
 
 world_id = ARGV[0]
@@ -60,13 +68,13 @@ def developed_but_not_lived_in? tile_hash
   (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_density] <= 0.75
 end
 
-batch_size = 12000
+batch_size = 2000
 r_count = 0
 r_total = rows.count / batch_size
 @start_time = Time.now
 
 puts 'Starting Resource Tile Generation...'
-rows.in_groups_of batch_size do |row_batch|
+rows.each_slice(batch_size) do |row_batch|
   tiles_to_import = []
 
   row_batch.each do |row|
@@ -89,6 +97,9 @@ rows.in_groups_of batch_size do |row_batch|
     tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
     tile_hash[:housing_density] = housing_density_percent(row_hash[:devel_density].to_f)
     tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
+    tile_hash[:frontage] = row_hash[:frontage].to_f
+    tile_hash[:lakesize] = row_hash[:lakesize].to_f
+    tile_hash[:soil] = soil_amount(row_hash[:soil].to_i)
 
     case class_code
 
@@ -142,6 +153,12 @@ rows.in_groups_of batch_size do |row_batch|
   ResourceTile.import tiles_to_import, validate: false, timestamps: false
 
   r_count += 1
-  puts "Resource tiles: %.2f%% (%.2f tiles/sec)".green.and_go_up(1) % [((r_count * 100.0) / r_total), (r_count * batch_size) / (Time.now - @start_time) ]
+  r_percent = ((r_count * 100.0) / r_total)
+  total_time = Time.now - @start_time
+  tiles_per_sec = (r_count.to_f * batch_size) / total_time
+  remaining_tiles = (r_total - r_count.to_f) * batch_size
+  remaining_time = remaining_tiles / tiles_per_sec
+  remaining_min, remaining_sec = remaining_time.divmod(60)
+  puts "  Resource tiles: %.2f%% (%.2f tiles/sec, ~%2d:%02d remaining)".green.and_go_up(1) % [r_percent, tiles_per_sec, remaining_min, remaining_sec]
 end
-puts '  Generation finished!'.green
+puts '  Generation finished!                                               '.green

@@ -6,8 +6,8 @@ canvas = ChunkyPNG::Image.new world.width, world.height, ChunkyPNG::Color(139,69
 
 ResourceTile.where(:world_id => world.id).find_in_batches do |group|
   group.each do |rt|
-    x = rt.x
-    y = rt.y
+    x = rt.y
+    y = rt.x
     case rt.type
     when WaterTile.to_s
       canvas[x,y] = ChunkyPNG::Color :blue

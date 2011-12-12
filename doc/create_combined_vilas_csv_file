@@ -1,0 +1,4 @@
+We used these unix commands to join 2 CSV files:
+
+cat script/data/vilas_conserv_game_spatial_1_acre_inputs2.csv | sed -e 's/[^,]*,[^,]*,//' > /tmp/vilas_data
+lam script/data/vilas_conserv_game_spatial_1_acre_inputs.csv -s ',' /tmp/vilas_data > script/data/vilas_conserv_game_spatial_1_acre_inputs_combined.csv
