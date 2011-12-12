@@ -77,9 +77,31 @@ describe Megatile do
     end
 
     describe "#active_bids_on" do
-      it "returns bids on with offers" do
+      it "returns bids with offers" do
         megatile.active_bids_on.to_set.should == [bid].to_set
       end
     end
+  end
+
+  context "Bid offers" do
+    let!(:bid) { create :bid_with_offered_land }
+    let!(:bid_without_offer) { create :bid, offered_land: bid.offered_land, status: 'Rejected' }
+    let(:megatile) { bid.offered_land.megatiles.first }
+    describe "#bid_offers" do
+      it "returns bids" do
+        megatile.bids_offering.to_set.should == [bid, bid_without_offer].to_set
+      end
+    end
+
+    describe "#active_bid_offers" do
+      it "returns offered bids" do
+        megatile.active_bids_offering.to_set.should == [bid].to_set
+      end
+    end
+
+  end
+
+  describe "#estimated_value" do
+    it "is based on the estimated value of its resource tiles"
   end
 end
