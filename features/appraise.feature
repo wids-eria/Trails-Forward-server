@@ -10,7 +10,6 @@ Feature: Appraise a MegaTile
     When I appraise a megatile that I own
     Then the estimated value for the megatile should be greater than zero
 
-
   Scenario: Appraise a megatile NOT owned by the user
     Given I have a world
       And I have one user "riley@example.com" with password "letmein"
