@@ -1,7 +1,6 @@
 class ResourceTilesController < ApplicationController
   before_filter :authenticate_user!
 
-
   def clearcut
     @resource_tile = ResourceTile.find params[:id]
     authorize! :clearcut, @resource_tile
@@ -53,10 +52,8 @@ class ResourceTilesController < ApplicationController
 
 
   def bulldoze_list
-
     @resource_tiles = ResourceTile.find(params["microtiles"])
 
-    # check if we are allowed to bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       authorize! :bulldoze, resource_tile
       if not resource_tile.can_be_bulldozed?
@@ -67,25 +64,20 @@ class ResourceTilesController < ApplicationController
       end
     end
 
-    # bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       resource_tile.bulldoze!
     end
 
-    # send the response
     respond_to do |format|
       format.xml  { render_for_api :resource, :xml  => @resource_tiles, :root => :resource_tiles  }
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
     end
-
   end
 
 
   def clearcut_list
-
     @resource_tiles = ResourceTile.find(params["microtiles"])
 
-    # check if we are allowed to bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       authorize! :clearcut, resource_tile
       if not resource_tile.can_be_clearcut?
@@ -96,21 +88,17 @@ class ResourceTilesController < ApplicationController
       end
     end
 
-    # clearcut the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       resource_tile.clearcut!
     end
 
-    # send the response
     respond_to do |format|
       format.xml  { render_for_api :resource, :xml  => @resource_tiles, :root => :resource_tiles  }
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
     end
-
   end
 
   def build_list
     # not yet implemented
   end
-
 end
