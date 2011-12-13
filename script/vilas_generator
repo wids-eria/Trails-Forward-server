@@ -23,6 +23,16 @@ def soil_amount amount
   amount
 end
 
+puts 'Creating world...'
+world = Factory :vilas
+world_id = world.id
+puts "  World created! '#{world.name}' ##{world_id}".green
+
+puts "Spawning empty Megatiles..."
+world.spawn_megatiles
+puts "  Megatiles created!".green
+
+
 puts 'Parsing CSV...'
 rows = BAMFCSV.read("script/data/vilas_conserv_game_spatial_1_acre_inputs_combined.csv")
 puts '  CSV parsed!'.green
@@ -40,9 +50,6 @@ header = rows.shift
 x_col = @col_numbers[:row]
 y_col = @col_numbers[:col]
 row_hash = rows.index_by { |row| "#{row[x_col]}:#{row[y_col]}" }
-
-world_id = ARGV[0]
-world = World.find(world_id)
 
 puts 'Deleting existing Resource Tiles...'
 # world.resource_tiles.delete_all
@@ -73,7 +80,7 @@ r_count = 0
 r_total = rows.count / batch_size
 @start_time = Time.now
 
-puts 'Starting Resource Tile Generation...'
+puts 'Generating Resource Tiles...'
 rows.each_slice(batch_size) do |row_batch|
   tiles_to_import = []
 
@@ -104,7 +111,7 @@ rows.each_slice(batch_size) do |row_batch|
     case class_code
 
     # Open Water, Emergent Herbaceous Wetlands
-    when 11, 95 
+    when 11, 95
       if tile_hash[:housing_density] > 0
         tile_hash[:zoned_use] = "Development"
         tile_hash[:primary_use] = "Housing"
@@ -113,7 +120,7 @@ rows.each_slice(batch_size) do |row_batch|
       end
 
     # Developed
-    when 21..24 
+    when 21..24
       tile_hash[:zoned_use] = "Development"
       tile_hash[:development_intensity] = (class_code - 20.0 / 4.0)
       tile_hash[:primary_use] = developed_but_not_lived_in?(tile_hash) ? "Industry" : "Housing"
@@ -140,7 +147,7 @@ rows.each_slice(batch_size) do |row_batch|
       tile_hash[:zoned_use] = "Agriculture"
 
     # Off the end of the world, Water for now
-    when 255 
+    when 255
       tile_class = WaterTile
 
     else
@@ -159,6 +166,15 @@ rows.each_slice(batch_size) do |row_batch|
   remaining_tiles = (r_total - r_count.to_f) * batch_size
   remaining_time = remaining_tiles / tiles_per_sec
   remaining_min, remaining_sec = remaining_time.divmod(60)
-  puts "  Resource tiles: %.2f%% (%.2f tiles/sec, ~%2d:%02d remaining)".green.and_go_up(1) % [r_percent, tiles_per_sec, remaining_min, remaining_sec]
+  puts "  Resource Tiles: %.2f%% (%.2f tiles/sec, ~%2d:%02d remaining)".green.and_go_up(1) % [r_percent, tiles_per_sec, remaining_min, remaining_sec]
 end
-puts '  Generation finished!                                               '.green
+puts '  Resource Tiles created!                                               '.green
+
+puts "Creating Users and Players..."
+[Lumberjack, Developer, Conserver].each_with_index do |player_klass, idx|
+  user = Factory :user,
+    name: "User #{world_id}-#{idx}",
+    email: "u#{world.id}-#{idx}@example.com"
+  player = player_klass.create :user => user, :world => world, :balance => 1000
+  puts "  Player ##{player.id} (#{player_klass}) created!".green
+end

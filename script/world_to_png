@@ -1,10 +1,18 @@
 #!/usr/bin/env ruby
 require 'chunky_png'
 
-world = World.find ARGV[0]
+world = ARGV[0].nil? ? World.last : World.find(ARGV[0])
+file_name = ARGV[1] || "doc/world_pngs/#{world.id}-#{world.name.gsub(/\s/, '_')}.png"
+
 canvas = ChunkyPNG::Image.new world.width, world.height, ChunkyPNG::Color(139,69,19)
 
+tile_total = world.width * world.height
+batches = tile_total / 1000
+batch_count = 0
+puts 'Generating PNG...'
 ResourceTile.where(:world_id => world.id).find_in_batches do |group|
+  batch_count += 1
+  puts("  PNG %d%%".green.and_go_up(1) % ((batch_count * 100.0) / batches))
   group.each do |rt|
     y, x = rt.location
     case rt.type
@@ -18,5 +26,8 @@ ResourceTile.where(:world_id => world.id).find_in_batches do |group|
     end
   end
 end
+puts "  PNG 100%             ".green
 
-canvas.save ARGV[1]
+canvas.save file_name
+puts file_name
+system("open #{file_name}")

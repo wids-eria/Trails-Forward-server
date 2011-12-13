@@ -8,6 +8,6 @@ FactoryGirl.define do
   factory :user do
     name "Bob Dole"
     email
-    password "password"
+    password "letmein"
   end
 end

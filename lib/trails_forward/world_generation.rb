@@ -27,7 +27,7 @@ module TrailsForward
       end
       self.reload
 
-      puts "Megatiles: 100%        ".green if Rails.env.development?
+      puts "  Megatiles: 100%        ".green if Rails.env.development?
     end
 
     def spawn_resource_tiles
@@ -50,13 +50,13 @@ module TrailsForward
       end
       self.reload
 
-      puts "Resource tiles: 100%         ".green if Rails.env.development?
+      puts "  Resource tiles: 100%         ".green if Rails.env.development?
     end
 
     def report_percent title, total, current
       if Rails.env.development?
         percent = (100.0 * current) / total
-        puts("#{title}: %.2f%%       ".green.and_go_up(1) % percent)
+        puts("  #{title}: %.2f%%       ".green.and_go_up(1) % percent)
       end
     end
 
