@@ -50,6 +50,10 @@ class Agent < ActiveRecord::Base
     [x_offset, y_offset]
   end
 
+  def tick
+    raise NotImplementedError
+  end
+
   private
 
   def setup_geom
