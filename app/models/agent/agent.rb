@@ -17,7 +17,7 @@ class Agent < ActiveRecord::Base
     opts = {}.merge opts
     opts[:radius] = [opts[:radius], max_view_distance].compact.min
 
-    local_search = Agent.scoped
+    local_search = Agent.where(world_id: world_id)
     local_search = local_search.for_types(opts[:types]) if opts[:types]
     local_search.all_dwithin(geom, opts[:radius]).reject{|a| a.id == id}
   end
@@ -36,6 +36,11 @@ class Agent < ActiveRecord::Base
     [x, y]
   end
 
+  def turn degrees
+    heading += degrees
+    heading %= 360
+  end
+
   def move distance
     offset_coordinates = Agent.calculate_offset_coordinates(heading, distance)
     new_x = (self.x + offset_coordinates[0]).round(2)
@@ -48,6 +53,11 @@ class Agent < ActiveRecord::Base
     x_offset = (distance * Math.sin(heading_in_radians)).round(2)
     y_offset = (distance * Math.cos(heading_in_radians)).round(2)
     [x_offset, y_offset]
+  end
+
+  def tick!
+    tick
+    save!
   end
 
   def tick

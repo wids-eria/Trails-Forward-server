@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+require 'benchmark'
+require "tattletail"
+
+num_ticks = 100
+num_tribbles = 100
+
+world = if ARGV[0]
+          World.find(ARGV[0])
+        else
+          Factory :world_with_resources, width: 99, height: 99
+        end
+
+puts 'Generating tribbles...'
+num_tribbles.times { Factory :tribble, world: world, location: [rand(100), rand(100)], heading: rand(360).round }
+puts '  Tribbles generated!'.green
+
+time = Benchmark.realtime do
+  num_ticks.times do |n|
+    n += 1
+    percent = (n * 100.0) / num_ticks.to_f
+    puts "%.2f%%".green.and_go_up(1) % percent
+    Tribble.where(world_id: world.id).each_with_index do |tribble, idx|
+      tribble.tick!
+    end
+  end
+end
+
+min, sec = time.divmod(60)
+puts "%d ticks, %d tribbles = %2d:%02d".green % [num_ticks, num_tribbles, min, sec]
