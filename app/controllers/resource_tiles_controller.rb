@@ -5,7 +5,7 @@ class ResourceTilesController < ApplicationController
     @resource_tile = ResourceTile.find params[:id]
     authorize! :clearcut, @resource_tile
 
-    if @resource_tile.can_be_clearcut?
+    if @resource_tile.can_clearcut?
       @resource_tile.clearcut!
       respond_to do |format|
         format.xml  { render_for_api :resource, :xml  => @resource_tile, :root => :resource_tile  }
@@ -22,7 +22,7 @@ class ResourceTilesController < ApplicationController
     @resource_tile = ResourceTile.find(params[:id])
     authorize! :bulldoze, @resource_tile
 
-    if @resource_tile.can_be_bulldozed?
+    if @resource_tile.can_bulldoze?
       @resource_tile.bulldoze!
       respond_to do |format|
         format.xml  { render_for_api :resource, :xml  => @resource_tile, :root => :resource_tile  }
@@ -56,7 +56,7 @@ class ResourceTilesController < ApplicationController
 
     @resource_tiles.each do |resource_tile|
       authorize! :bulldoze, resource_tile
-      if not resource_tile.can_be_bulldozed?
+      if not resource_tile.can_bulldoze?
         respond_to do |format|
           format.json { render :status => :forbidden, :text => "Action illegal for this land" }
           return
@@ -80,7 +80,7 @@ class ResourceTilesController < ApplicationController
 
     @resource_tiles.each do |resource_tile|
       authorize! :clearcut, resource_tile
-      if not resource_tile.can_be_clearcut?
+      if not resource_tile.can_clearcut?
         respond_to do |format|
           format.json { render :status => :forbidden, :text => "Action illegal for this land" }
           return

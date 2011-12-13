@@ -66,7 +66,7 @@ When /^I clearcut a list containing that resource tile on the owned megatile The
 end
 
 def get_clearcuttable_tile megatile
-  resource_tile = megatile.resource_tiles.select(&:can_be_clearcut?).first
+  resource_tile = megatile.resource_tiles.select(&:can_clearcut?).first
   resource_tile.should be
   resource_tile
 end

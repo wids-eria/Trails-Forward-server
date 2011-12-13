@@ -14,7 +14,7 @@ describe WaterTile do
     build(:water_tile, zoned_use: "Logging").should_not be_valid
   end
 
-  its(:can_be_bulldozed?) { should be_false }
+  its(:can_bulldoze?) { should be_false }
   its(:estimated_value) { should be_nil }
 
   describe 'validation' do

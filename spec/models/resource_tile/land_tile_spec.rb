@@ -10,12 +10,12 @@ describe LandTile do
 
   it "can be clearcut if zoned for logging" do
     tile = LandTile.new zoned_use: "Logging"
-    tile.can_be_clearcut?.should be_true
+    tile.can_clearcut?.should be_true
   end
 
   it "cant be clearcut if not zoned for logging" do
     tile = LandTile.new zoned_use: "Park"
-    tile.can_be_clearcut?.should_not be_true
+    tile.can_clearcut?.should_not be_true
   end
 
   context "with world" do
@@ -45,7 +45,7 @@ describe LandTile do
 
   it "can be bulldozed" do
     tile = LandTile.new
-    tile.can_be_bulldozed?.should be_true
+    tile.can_bulldoze?.should be_true
   end
 
   it "bulldozes the land" do

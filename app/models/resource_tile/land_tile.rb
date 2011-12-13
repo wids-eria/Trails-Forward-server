@@ -1,10 +1,10 @@
 class LandTile < ResourceTile
-  def can_be_clearcut?
+  def can_clearcut?
     zoned_use == ResourceTile.verbiage[:zoned_uses][:logging]
   end
 
   def clearcut!
-    if can_be_clearcut?
+    if can_clearcut?
       World.transaction do
         megatile.owner.balance += estimated_lumber_value
         self.tree_density = 0.0
@@ -17,12 +17,12 @@ class LandTile < ResourceTile
     end
   end
 
-  def can_be_bulldozed?
+  def can_bulldoze?
     true
   end
 
   def bulldoze!
-    if can_be_bulldozed?
+    if can_bulldoze?
       World.transaction do
         clear_resources
         save!

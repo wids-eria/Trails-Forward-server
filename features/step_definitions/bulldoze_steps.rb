@@ -44,7 +44,7 @@ When /^I bulldoze a list containing that resource tile on the owned megatile The
 end
 
 def get_bulldozable_tile megatile
-  resource_tile = megatile.resource_tiles.select(&:can_be_bulldozed?).first
+  resource_tile = megatile.resource_tiles.select(&:can_bulldoze?).first
   resource_tile.should be
   resource_tile
 end

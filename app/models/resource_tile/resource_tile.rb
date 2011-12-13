@@ -75,11 +75,11 @@ class ResourceTile < ActiveRecord::Base
     # pass
   end
 
-  def can_be_bulldozed?
+  def can_bulldoze?
     false
   end
 
-  def can_be_clearcut?
+  def can_clearcut?
     false
   end
 
