@@ -25,38 +25,23 @@ describe ResourceTilesController do
       end
     end
 
-    context 'passed a water tile' do
+    context 'passed a resource tile that cannot be clearcut' do
       let(:passed_tile) { water_tile }
       let(:megatile_owner) { player }
       subject { response }
-
-      before do
-        post :clearcut, :world_id => world.id, :id => passed_tile.id, format: 'json'
-      end
+      before { post :clearcut, :world_id => world.id, :id => passed_tile.id, format: 'json' }
 
       it { should be_forbidden }
       its(:body) { should =~ /Action illegal for this land/ }
     end
 
-    context 'passed a land tile' do
-      let(:passed_tile) { create :land_tile, world: world, megatile: megatile, zoned_use: zoned_use }
+    context 'passed a resource tile that can be clearcut' do
+      let(:passed_tile) { create :land_tile, world: world, megatile: megatile, zoned_use: 'Logging' }
       let(:megatile_owner) { player }
       subject { response }
+      before { post :clearcut, :world_id => world.id, :id => passed_tile.id, format: 'json' }
 
-      before do
-        post :clearcut, :world_id => world.id, :id => passed_tile.id, format: 'json'
-      end
-
-      context 'whose zoned_use is "Logging"' do
-        let(:zoned_use) { 'Logging' }
-        it { should be_success }
-      end
-
-      context 'whose zoned_use is "Development"' do
-        let(:zoned_use) { 'Development' }
-        it { should be_forbidden }
-        its(:body) { should =~ /Action illegal for this land/ }
-      end
+      it { should be_success }
     end
   end
 end
