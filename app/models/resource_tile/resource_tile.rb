@@ -40,6 +40,14 @@ class ResourceTile < ActiveRecord::Base
     [x, y]
   end
 
+  def zone_allowed? zone
+    not disallowed_zoned_uses.include? zone
+  end
+
+  def disallowed_zoned_uses
+    []
+  end
+
   def clear_resources
     self.primary_use = nil
     self.people_density = nil
