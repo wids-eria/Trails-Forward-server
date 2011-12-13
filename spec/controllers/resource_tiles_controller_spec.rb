@@ -14,75 +14,48 @@ describe ResourceTilesController do
 
   before { sign_in user }
 
-  describe '#clearcut' do
+  shared_examples_for 'resource tile changing action' do
 
     context 'passed an unowned tile' do
-      let(:passed_tile) { water_tile }
+      let(:passed_tile) { land_tile }
       let(:megatile_owner) { create :player }
 
       it 'raises an access denied error' do
         lambda{
-          post :clearcut, :world_id => world.id, :id => passed_tile.id, format: 'json'
+          post action, :world_id => world.id, :id => passed_tile.id, format: 'json'
         }.should raise_error(CanCan::AccessDenied, 'You are not authorized to access this page.')
       end
     end
 
-    context 'passed a resource tile that cannot be clearcut' do
+    context "passed a resource tile the user cannot perform action on" do
       let(:passed_tile) { water_tile }
       let(:megatile_owner) { player }
       subject { response }
-      before { post :clearcut, :world_id => world.id, :id => passed_tile.id, format: 'json' }
+      before { post action, :world_id => world.id, :id => passed_tile.id, format: 'json' }
 
       it { should be_forbidden }
       its(:body) { should =~ /Action illegal for this land/ }
     end
 
-    context 'passed a resource tile that can be clearcut' do
+    context "passed a resource tile the user can perform action on" do
       let(:passed_tile) { land_tile }
       let(:megatile_owner) { player }
-      before { post :clearcut, :world_id => world.id, :id => passed_tile.id, format: 'json' }
 
-      it 'responds with success' do
+      it "calls action on the passed in tile" do
+        LandTile.any_instance.should_receive("#{action}!".to_sym)
+        post action, :world_id => world.id, :id => passed_tile.id, format: 'json'
         response.should be_success
-      end
-      it 'clearcuts the resource tile' do
-        passed_tile.reload.tree_density.should == 0
       end
     end
   end
 
+  describe '#clearcut' do
+    let(:action) { :clearcut }
+    it_should_behave_like "resource tile changing action"
+  end
+
   describe '#bulldoze' do
-
-    context 'passed an unowned tile' do
-      let(:passed_tile) { land_tile }
-      let(:megatile_owner) { create :player }
-
-      it 'raises an access denied error' do
-        lambda{
-          post :bulldoze, :world_id => world.id, :id => passed_tile.id, format: 'json'
-        }.should raise_error(CanCan::AccessDenied, 'You are not authorized to access this page.')
-      end
-    end
-
-    context 'passed a resource tile that cannot be bulldozed' do
-      let(:passed_tile) { water_tile }
-      let(:megatile_owner) { player }
-      subject { response }
-      before { post :bulldoze, :world_id => world.id, :id => passed_tile.id, format: 'json' }
-
-      it { should be_forbidden }
-      its(:body) { should =~ /Action illegal for this land/ }
-    end
-
-    context 'passed a resource tile that can be bulldozed' do
-      let(:passed_tile) { land_tile }
-      let(:megatile_owner) { player }
-
-      it 'bulldozes the passed in tile' do
-        LandTile.any_instance.should_receive(:bulldoze!)
-        post :bulldoze, :world_id => world.id, :id => passed_tile.id, format: 'json'
-        response.should be_success
-      end
-    end
+    let(:action) { :bulldoze }
+    it_should_behave_like "resource tile changing action"
   end
 end
