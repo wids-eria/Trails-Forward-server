@@ -1,7 +1,6 @@
 class ResourceTilesController < ApplicationController
   before_filter :authenticate_user!
 
-
   def clearcut
     @resource_tile = ResourceTile.find params[:id]
     authorize! :clearcut, @resource_tile
@@ -14,7 +13,7 @@ class ResourceTilesController < ApplicationController
       end
     else
       respond_to do |format|
-        render :status => :forbidden, :text => "Action illegal for this land"
+        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
       end
     end
   end
@@ -31,7 +30,7 @@ class ResourceTilesController < ApplicationController
       end
     else
       respond_to do |format|
-        render :status => :forbidden, :text => "Action illegal for this land"
+        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
       end
     end
   end
@@ -53,62 +52,53 @@ class ResourceTilesController < ApplicationController
 
 
   def bulldoze_list
-
     @resource_tiles = ResourceTile.find(params["microtiles"])
 
-    # check if we are allowed to bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       authorize! :bulldoze, resource_tile
       if not resource_tile.can_be_bulldozed?
         respond_to do |format|
-          return render :status => :forbidden, :text => "Action illegal for this land"
+          format.json { render :status => :forbidden, :text => "Action illegal for this land" }
+          return
         end
       end
     end
 
-    # bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       resource_tile.bulldoze!
     end
 
-    # send the response
     respond_to do |format|
       format.xml  { render_for_api :resource, :xml  => @resource_tiles, :root => :resource_tiles  }
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
     end
-
   end
 
 
   def clearcut_list
-
     @resource_tiles = ResourceTile.find(params["microtiles"])
 
-    # check if we are allowed to bulldoze the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       authorize! :clearcut, resource_tile
       if not resource_tile.can_be_clearcut?
         respond_to do |format|
-          return render :status => :forbidden, :text => "Action illegal for this land"
+          format.json { render :status => :forbidden, :text => "Action illegal for this land" }
+          return
         end
       end
     end
 
-    # clearcut the list of resource tile IDs
     @resource_tiles.each do |resource_tile|
       resource_tile.clearcut!
     end
 
-    # send the response
     respond_to do |format|
       format.xml  { render_for_api :resource, :xml  => @resource_tiles, :root => :resource_tiles  }
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
     end
-
   end
 
   def build_list
     # not yet implemented
   end
-
 end
