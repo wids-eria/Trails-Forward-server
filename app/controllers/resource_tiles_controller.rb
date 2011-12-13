@@ -14,7 +14,7 @@ class ResourceTilesController < ApplicationController
       end
     else
       respond_to do |format|
-        render :status => :forbidden, :text => "Action illegal for this land"
+        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
       end
     end
   end
@@ -31,7 +31,7 @@ class ResourceTilesController < ApplicationController
       end
     else
       respond_to do |format|
-        render :status => :forbidden, :text => "Action illegal for this land"
+        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
       end
     end
   end
@@ -61,7 +61,8 @@ class ResourceTilesController < ApplicationController
       authorize! :bulldoze, resource_tile
       if not resource_tile.can_be_bulldozed?
         respond_to do |format|
-          return render :status => :forbidden, :text => "Action illegal for this land"
+          format.json { render :status => :forbidden, :text => "Action illegal for this land" }
+          return
         end
       end
     end
@@ -89,7 +90,8 @@ class ResourceTilesController < ApplicationController
       authorize! :clearcut, resource_tile
       if not resource_tile.can_be_clearcut?
         respond_to do |format|
-          return render :status => :forbidden, :text => "Action illegal for this land"
+          format.json { render :status => :forbidden, :text => "Action illegal for this land" }
+          return
         end
       end
     end

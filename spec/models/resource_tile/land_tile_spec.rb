@@ -1,6 +1,13 @@
 require 'spec_helper'
 
 describe LandTile do
+  describe 'factory' do
+    it 'should produce multiple valid land tiles' do
+      create(:land_tile).should be_valid
+      build(:land_tile).should be_valid
+    end
+  end
+
   it "can be clearcut if zoned for logging" do
     tile = LandTile.new zoned_use: "Logging"
     tile.can_be_clearcut?.should be_true
