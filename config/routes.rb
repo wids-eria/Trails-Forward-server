@@ -48,6 +48,7 @@ TrailsForwardWorld::Application.routes.draw do
         post 'bulldoze', :controller => :resource_tiles, :action => :bulldoze_list
         post 'clearcut', :controller => :resource_tiles, :action => :clearcut_list
         post 'build', :controller => :resource_tiles, :action => :build_list
+        get 'permitted_actions', :controller => :resource_tiles, :action => :permitted_actions
       end
     end
   end

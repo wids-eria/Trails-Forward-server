@@ -10,6 +10,18 @@ class ResourceTile < ActiveRecord::Base
 
   # todo: Add validations for tree_species, zoned_use, and primary_use to be sure that they're in one of the below
 
+  scope :within_rectangle, lambda{|opts|
+    min_x = opts[:x].to_i
+    min_y = opts[:y].to_i
+    width = opts[:width].to_i
+    height = opts[:height].to_i
+    max_x = min_x + width - 1
+    max_y = min_y + height - 1
+
+    where(x: min_x..max_x, y: min_y..max_y)
+  }
+  # scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
+
   def self.verbiage
     { :tree_species => {
         :coniferous => "Coniferous",
@@ -68,7 +80,6 @@ class ResourceTile < ActiveRecord::Base
     template.add :x
     template.add :y
     template.add :type
-    template.add :updated_at
   end
 
   api_accessible :resource, :extend => :resource_base do |template|

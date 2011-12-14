@@ -57,8 +57,8 @@ class PlayersController < ApplicationController
     end
 
     respond_to do |format|
-      format.json  { render_for_api :bid_private, :json => @bids, :root => :bids  }
-      format.xml  { render_for_api :bid_private, :xml  => @bids, :root => :bids  }
+      format.json { render_for_api :bid_private, :json => @bids, :root => :bids }
+      format.xml  { render_for_api :bid_private, :xml  => @bids, :root => :bids }
     end
   end
 
@@ -73,8 +73,8 @@ class PlayersController < ApplicationController
     end
 
     respond_to do |format|
-      format.json  { render_for_api :bid_private, :json => @bids, :root => :bids  }
-      format.xml  { render_for_api :bid_private, :xml  => @bids, :root => :bids  }
+      format.json { render_for_api :bid_private, :json => @bids, :root => :bids }
+      format.xml  { render_for_api :bid_private, :xml  => @bids, :root => :bids }
     end
   end
 

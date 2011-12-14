@@ -1,5 +1,23 @@
 class ResourceTilesController < ApplicationController
-  before_filter :authenticate_user!
+  before_filter :authenticate_user!, :except => [:permitted_actions]
+  skip_authorization_check :only => :permitted_actions
+
+  def permitted_actions
+    # min_x = params[:x].to_i
+    # min_y = params[:y].to_i
+    # width = params[:width].to_i
+    # height = params[:height].to_i
+    # max_x = min_x + width
+    # max_y = min_y + height
+
+    # resource_tiles = ResourceTile.all conditions: {x: min_x...max_x, y: min_y...max_y}
+    resource_tiles = ResourceTile.within_rectangle x: params[:x], y: params[:y], width: params[:width], height: params[:height]
+
+    respond_to do |format|
+      format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
+      format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
+    end
+  end
 
   def clearcut
     @resource_tile = ResourceTile.find params[:id]
@@ -73,7 +91,6 @@ class ResourceTilesController < ApplicationController
       format.json { render_for_api :resource, :json => @resource_tiles, :root => :resource_tiles  }
     end
   end
-
 
   def clearcut_list
     @resource_tiles = ResourceTile.find(params["microtiles"])

@@ -4,15 +4,60 @@ describe ResourceTilesController do
   include Devise::TestHelpers
   render_views
 
-  shared_examples_for 'resource tile changing action' do
+  let(:player) { create :lumberjack, world: world }
+  let(:user) { player.user }
 
+  before { sign_in user }
+
+  describe '#permitted_actions' do
+    let(:world) { create :world_with_resources }
+    let(:json) { JSON.parse(response.body) }
+
+    context 'with signed in player' do
+      context 'passed "microtiles"' do
+
+      end
+
+      context 'passed x, y, width and height' do
+        it 'returns JSON representing set of resource_tiles' do
+          # get :permitted_actions, world_id: world.id, x: 0, y: 1, width: 2, height: 1, format: 'json'
+          get :permitted_actions, world_id: world.id, x: 2, y: 1, width: 2, height: 2, format: 'json'
+
+          json['resource_tiles'].size.should == 4
+
+          json['resource_tiles'].first['x'].should == 2
+          json['resource_tiles'].first['y'].should == 1
+
+          json['resource_tiles'].last['x'].should == 3
+          json['resource_tiles'].last['y'].should == 2
+
+          # json['resource_tiles'].should == [ {"id" => 1,
+                                              # "x" => 0,
+                                              # "y" => 0,
+                                              # "type" => "LandTile",
+                                              # "primary_use" => "Residential",
+                                              # "zoned_use" => "Development",
+                                              # "people_density" => 0.849164505154221,
+                                              # "housing_density" => 0.849164505154221,
+                                              # "tree_density" => 0.0373858952433272,
+                                              # "tree_species" => nil,
+                                              # "tree_size" => nil,
+                                              # "development_intensity" => 0.849164505154221,
+                                              # "imperviousness" => nil}]
+        end
+
+        # example 'each resource_tile contains a list of permitted actions'
+      end
+      context 'passed top left and lower right locations' do
+      end
+    end
+  end
+
+  shared_examples_for 'resource tile changing action' do
     let(:world) { create :world }
-    let(:player) { create :lumberjack, world: world }
-    let(:user) { player.user }
+
     let(:megatile) { create :megatile, world: world, owner: megatile_owner }
     let!(:resource_tile) { create :resource_tile, world: world, megatile: megatile }
-
-    before { sign_in user }
 
     context 'passed an unowned tile' do
       let(:megatile_owner) { create :player }
