@@ -101,7 +101,8 @@ describe Megatile do
 
   end
 
-  describe "#estimated_value" do
-    it "is based on the estimated value of its resource tiles"
-  end
+  # TODO: uncomment, and make this pass
+  # describe "#estimated_value" do
+    # it "is based on the estimated value of its resource tiles"
+  # end
 end
