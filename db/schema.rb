@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111214161739) do
+ActiveRecord::Schema.define(:version => 20111214204540) do
 
   create_table "agents", :force => true do |t|
     t.column "type", :string
@@ -117,8 +117,10 @@ ActiveRecord::Schema.define(:version => 20111214161739) do
     t.column "lakesize", :float
     t.column "soil", :integer
     t.column "landcover_class_code", :integer
+    t.column "geom", :point, :srid => 4326
   end
 
+  add_index "resource_tiles", ["geom"], :name => "index_resource_tiles_on_geom", :spatial=> true 
   add_index "resource_tiles", ["x", "y", "world_id"], :name => "index_resource_tiles_on_x_and_y_and_world_id"
 
   create_table "users", :force => true do |t|

@@ -38,7 +38,7 @@ module TrailsForward
               if populate
                 resource_gen [this_x, this_y], tile_info.id
               else
-                [this_x, this_y, tile_info.id, id]
+                [this_x, this_y, Point.from_x_y(this_x + 0.5, this_y + 0.5), tile_info.id, id]
               end
             end
           end.inject(:+)
@@ -47,7 +47,7 @@ module TrailsForward
         if populate
           ResourceTile.import batch_tiles, validate: false, timestamps: false
         else
-          ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
+          ResourceTile.import %w(x y geom megatile_id world_id), batch_tiles, validate: false, timestamps: false
         end
 
         rt_progress_bar.inc if Rails.env.development?

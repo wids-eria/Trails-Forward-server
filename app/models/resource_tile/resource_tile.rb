@@ -1,9 +1,13 @@
 class ResourceTile < ActiveRecord::Base
   acts_as_api
 
+  has_geom :geom => :point
+
   belongs_to :megatile
   belongs_to :world
   has_many :agents
+
+  after_create :setup_geom
 
   # validates_uniqueness_of :x, :scope => [:y, :world_id]
   # validates_uniqueness_of :y, :scope => [:x, :world_id]
@@ -34,6 +38,9 @@ class ResourceTile < ActiveRecord::Base
   def location= coords
     self.x = coords[0]
     self.y = coords[1]
+    unless self.new_record?
+      self.geom = get_geom
+    end
   end
 
   def location
@@ -85,5 +92,17 @@ class ResourceTile < ActiveRecord::Base
 
   def estimated_value
     nil
+  end
+
+private
+  def get_geom
+    return unless x && y
+    Point.from_x_y(x + 0.5, y + 0.5)
+  end
+
+  def setup_geom
+    return unless x && y
+    self.geom = Point.from_x_y(x + 0.5, y + 0.5)
+    save
   end
 end

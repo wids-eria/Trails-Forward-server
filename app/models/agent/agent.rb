@@ -13,23 +13,34 @@ class Agent < ActiveRecord::Base
     10
   end
 
-  def nearby_agents opts = {}
+  def nearby_stuff opts = {}
     opts = {}.merge opts
     opts[:radius] = [opts[:radius], max_view_distance].compact.min
 
-    local_search = Agent.where(world_id: world_id)
+    local_search = opts[:class].where(world_id: world_id)
     local_search = local_search.for_types(opts[:types]) if opts[:types]
     local_search.all_dwithin(geom, opts[:radius]).reject{|a| a.id == id}
   end
 
+  def nearby_tiles opts = {}
+    nearby_stuff opts.merge(class: ResourceTile)
+  end
+
+  def nearby_agents opts = {}
+    nearby_stuff opts.merge(class: Agent)
+  end
+
   def nearby_peers opts = {}
-    nearby_agents(opts.merge({types: [self.class]}))
+    nearby_agents opts.merge({types: [self.class]})
   end
 
   def location= coords
     self.x = coords[0]
     self.y = coords[1]
     self.resource_tile = world.resource_tile_at(self.x.floor, self.y.floor)
+    unless self.new_record?
+      self.geom = get_geom
+    end
   end
 
   def location
@@ -64,7 +75,11 @@ class Agent < ActiveRecord::Base
     raise NotImplementedError
   end
 
-  private
+private
+  def get_geom
+    return unless x && y
+    Point.from_x_y(x, y)
+  end
 
   def setup_geom
     return unless x && y

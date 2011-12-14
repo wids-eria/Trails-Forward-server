@@ -46,10 +46,38 @@ describe Agent do
   end
 
   describe '#location=' do
-    it 'assigns coords to x and y' do
-      agent.location = [4.4, 5.5]
-      agent.x.should == 4.4
-      agent.y.should == 5.5
+    context 'on an existing record' do
+      before do
+        agent.save
+        agent.location = [4.4, 5.5]
+      end
+
+      it 'assigns coords to x and y' do
+        agent.x.should == 4.4
+        agent.y.should == 5.5
+      end
+
+      it 'assigns geometry point' do
+        agent.geom.x.should == 4.4
+        agent.geom.y.should == 5.5
+      end
+    end
+
+    context 'on a new record' do
+      before do
+        agent.location = [4.4, 5.5]
+        agent.save
+      end
+
+      it 'assigns coords to x and y' do
+        agent.x.should == 4.4
+        agent.y.should == 5.5
+      end
+
+      it 'assigns geometry point' do
+        agent.geom.x.should == 4.4
+        agent.geom.y.should == 5.5
+      end
     end
   end
 
@@ -143,6 +171,24 @@ describe Agent do
 
     example 'only returns agents of same type' do
       tribble1.nearby_peers(radius: 1).should == [tribble2]
+    end
+  end
+
+  describe '#nearby_tiles' do
+    let(:world) { create :world_with_tiles }
+    let!(:agent) { create :generic_agent, world: world, location: location }
+    let(:location) { [3.5, 3.5] }
+
+    example 'radius 1' do
+      agent.nearby_tiles(radius: 1).map(&:location).to_set.should == [[2,3], [3,2], [3,3], [3,4], [4,3]].to_set
+    end
+
+    example 'radius 1.5' do
+      agent.nearby_tiles(radius: 1.5).map(&:location).to_set.should == [[2,2], [2,3], [2,4], [3,2], [3,3], [3,4], [4,2], [4,3], [4,4]].to_set
+    end
+
+    example 'radius 2' do
+      agent.nearby_tiles(radius: 2).map(&:location).to_set.should == [[1,3], [2,2], [2,3], [2,4], [3,1], [3,2], [3,3], [3,4], [3,5], [4,2], [4,3], [4,4], [5,3]].to_set
     end
   end
 
