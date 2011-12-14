@@ -107,6 +107,7 @@ rows.each_slice(batch_size) do |row_batch|
     tile_hash[:frontage] = row_hash[:frontage].to_f
     tile_hash[:lakesize] = row_hash[:lakesize].to_f
     tile_hash[:soil] = soil_amount(row_hash[:soil].to_i)
+    tile_hash[:landcover_class_code] = class_code
 
     case class_code
 
