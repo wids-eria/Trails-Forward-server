@@ -1,10 +1,10 @@
 module TrailsForward
   module WorldGeneration
-    def spawn_blank_tiles
+    def spawn_blank_tiles populate = false
       raise "Can't spawn tiles for an invalid World" unless valid?
       ActiveRecord::Base.transaction do
         spawn_megatiles unless megatiles.any?
-        spawn_resource_tiles
+        spawn_resource_tiles populate
       end
 
       self
@@ -15,49 +15,46 @@ module TrailsForward
         [x, y, id]
       end
 
-      mt_count = 0
-      mt_total = (megatile_list.count / 1000)
+      mt_progress_bar = ProgressBar.new('Megatiles', megatile_list.count / 1000) if Rails.env.development?
       megatile_list.each_slice(1000) do |megatile_slice|
-        report_percent("Megatiles", mt_total, mt_count)
-
         Megatile.import %w(x y world_id), megatile_slice,
           validate: false, timestamps: false
 
-        mt_count += 1
+        mt_progress_bar.inc if Rails.env.development?
       end
       self.reload
 
-      puts "  Megatiles: 100%        ".green if Rails.env.development?
+      mt_progress_bar.finish if Rails.env.development?
     end
 
-    def spawn_resource_tiles
-      rt_count = 0
-      rt_total = megatiles.count / 1000
+    def spawn_resource_tiles populate = false
+      rt_progress_bar = ProgressBar.new('Resource Tiles', megatiles.count / 1000) if Rails.env.development?
       Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 1000) do |megatile_batch|
-        report_percent("Resource tiles", rt_total, rt_count)
-
         batch_tiles = megatile_batch.collect do |tile_info|
           (0...megatile_width).collect do |x_offset|
             (0...megatile_height).collect do |y_offset|
-              [tile_info.x + x_offset, tile_info.y + y_offset, tile_info.id, id]
+              this_x = tile_info.x + x_offset
+              this_y = tile_info.y + y_offset
+              if populate
+                resource_gen [this_x, this_y], tile_info.id
+              else
+                [this_x, this_y, tile_info.id, id]
+              end
             end
           end.inject(:+)
         end.inject(:+)
 
-        ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
+        if populate
+          ResourceTile.import batch_tiles, validate: false, timestamps: false
+        else
+          ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
+        end
 
-        rt_count += 1
+        rt_progress_bar.inc if Rails.env.development?
       end
       self.reload
 
-      puts "  Resource tiles: 100%         ".green if Rails.env.development?
-    end
-
-    def report_percent title, total, current
-      if Rails.env.development?
-        percent = (100.0 * current) / total
-        puts("  #{title}: %.2f%%       ".green.and_go_up(1) % percent)
-      end
+      rt_progress_bar.finish if Rails.env.development?
     end
 
     def create_users_and_players
@@ -87,34 +84,41 @@ module TrailsForward
       self
     end
 
-    # def resource_gen
-    #   case rand(9)
-    #   when 0
-    #     WaterTile.new world_id: id
-    #   when 1..6
-    #     LandTile.new world_id: id,
-    #       primary_use: nil,
-    #       people_density: 0,
-    #       housing_density: 0,
-    #       tree_density: 0.5 + rand / 2.0,
-    #       tree_species: 'Deciduous',
-    #       development_intensity: 0.0,
-    #       zoned_use: (rand(10) == 0) ? "Logging" : ""
-    #   else
-    #     people_density = 0.5 + rand / 2.0
-    #     LandTile.new world_id: id,
-    #       primary_use: "Residential",
-    #       zoned_use: "Development",
-    #       people_density: people_density,
-    #       housing_density: people_density,
-    #       tree_density: rand * 0.1,
-    #       development_intensity: people_density
-    #   end
-    # end
+    def resource_gen location, megatile_id
+      case rand(9)
+      when 0
+        WaterTile.new world_id: id,
+          location: location,
+          megatile_id: megatile_id
+      when 1..6
+        LandTile.new world_id: id,
+          location: location,
+          megatile_id: megatile_id,
+          primary_use: nil,
+          people_density: 0,
+          housing_density: 0,
+          tree_density: 0.5 + rand / 2.0,
+          tree_species: 'Deciduous',
+          development_intensity: 0.0,
+          zoned_use: (rand(10) == 0) ? "Logging" : ""
+      else
+        people_density = 0.5 + rand / 2.0
+        LandTile.new world_id: id,
+          location: location,
+          megatile_id: megatile_id,
+          primary_use: "Residential",
+          zoned_use: "Development",
+          people_density: people_density,
+          housing_density: people_density,
+          tree_density: rand * 0.1,
+          development_intensity: people_density
+      end
+    end
 
     def place_resources
       how_many_trees = (width * height * 0.40).round
 
+      resource_progress_bar = ProgressBar.new('Resources', resource_tiles.count) if Rails.env.development?
       each_resource_tile do |resource_tile|
         resource_tile.type = 'LandTile'
         case rand 9
@@ -139,7 +143,9 @@ module TrailsForward
           resource_tile.development_intensity = resource_tile.housing_density
         end
         resource_tile.save
+        resource_progress_bar.inc if Rails.env.development?
       end
+      resource_progress_bar.finish if Rails.env.development?
       self
     end
 

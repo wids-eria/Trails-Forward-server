@@ -3,28 +3,36 @@ require 'benchmark'
 require "tattletail"
 
 num_ticks = 100
-num_tribbles = 100
+num_tribbles = 20
+world_width = 330
+world_height = 330
 
 world = if ARGV[0]
           World.find(ARGV[0])
         else
-          Factory :world_with_resources, width: 99, height: 99
+          Factory :world_with_resources, width: world_width, height: world_height
         end
 
-puts 'Generating tribbles...'
-num_tribbles.times { Factory :tribble, world: world, location: [rand(100), rand(100)], heading: rand(360).round }
-puts '  Tribbles generated!'.green
+tribble_pb = ProgressBar.new('Tribbles', num_tribbles) if Rails.env.development?
+num_tribbles.times do
+  Factory :tribble, world: world, location: [rand(100), rand(100)], heading: rand(360).round
+  tribble_pb.inc if Rails.env.development?
+end
+tribble_pb.finish if Rails.env.development?
 
+tick_pb = ProgressBar.new('Tribble Ticks', num_tribbles * num_ticks) if Rails.env.development?
 time = Benchmark.realtime do
   num_ticks.times do |n|
     n += 1
     percent = (n * 100.0) / num_ticks.to_f
-    puts "%.2f%%".green.and_go_up(1) % percent
     Tribble.where(world_id: world.id).each_with_index do |tribble, idx|
       tribble.tick!
+      tick_pb.inc if Rails.env.development?
     end
   end
 end
+tick_pb.finish if Rails.env.development?
 
 min, sec = time.divmod(60)
-puts "%d ticks, %d tribbles = %2d:%02d".green % [num_ticks, num_tribbles, min, sec]
+puts "(%d,%d) world, %d ticks, %d tribbles = %2d:%02d".green % [world_width, world_height, num_ticks, num_tribbles, min, sec]
+puts "%.2f individual ticks per second".green % [(num_tribbles * num_ticks) / time]
