@@ -12,7 +12,7 @@ batch_count = 0
 puts 'Generating PNG...'
 ResourceTile.where(:world_id => world.id).find_in_batches do |group|
   batch_count += 1
-  puts("  PNG %d%%".green.and_go_up(1) % ((batch_count * 100.0) / batches))
+  print("  PNG %d%%".green.and_go_to(0) % ((batch_count * 100.0) / batches))
   group.each do |rt|
     y, x = rt.location
     case rt.type
@@ -20,7 +20,7 @@ ResourceTile.where(:world_id => world.id).find_in_batches do |group|
       canvas[x,y] = ChunkyPNG::Color :blue
     when LandTile.to_s
       if rt.tree_density > 0.01
-        color = ChunkyPNG::Color.rgba(0, 160, 0, (rt.tree_density * 255).to_i)
+        color = ChunkyPNG::Color.rgba(139 - (rt.tree_density * 139).to_i, (rt.tree_density * 100).to_i + 69, 19, 255)
         canvas[x,y] = color
       end
     end
