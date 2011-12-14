@@ -200,15 +200,15 @@ describe Agent do
       agent.move(distance)
     end
 
-    context 'starting at location [0, 0]' do
-      let(:location) { [0, 0] }
+    context 'starting at location [1, 1]' do
+      let(:location) { [1, 1] }
 
       context 'with heading 45' do
         let(:heading) { 45 }
 
         context 'passed a distance of 1' do
           let(:distance) { 1 }
-          its(:location) { should == [0.71, 0.71] }
+          its(:location) { should == [1.71, 1.71] }
         end
       end
 
@@ -217,17 +217,21 @@ describe Agent do
 
         context 'passed a distance of 1' do
           let(:distance) { 1 }
-          its(:location) { should == [0.0, 1.0] }
+          its(:location) { should == [1.0, 2.0] }
 
           it 'changes associated resource tile' do
-            new_tile = agent.resource_tile
-            new_tile.location.should == [0, 1]
+            agent.resource_tile.location.should == [1, 2]
           end
         end
 
         context 'passed a distance of -1' do
           let(:distance) { -1 }
-          its(:location) { should == [0, -1] }
+          its(:location) { should == [1, 0] }
+        end
+
+        context 'passed a distance of -2' do
+          let(:distance) { -2 }
+          its(:location) { should == [1, 0] }
         end
       end
 
@@ -236,12 +240,12 @@ describe Agent do
 
         context 'passed a distance of 1' do
           let(:distance) { 1 }
-          its(:location) { should == [1, 0] }
+          its(:location) { should == [2, 1] }
         end
 
         context 'passed a distance of -1' do
           let(:distance) { -1 }
-          its(:location) { should == [-1, 0] }
+          its(:location) { should == [0, 1] }
         end
       end
 

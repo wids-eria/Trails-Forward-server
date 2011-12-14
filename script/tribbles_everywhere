@@ -2,20 +2,26 @@
 require 'benchmark'
 require "tattletail"
 
-num_ticks = 100
-num_tribbles = 20
-world_width = 330
-world_height = 330
+num_ticks = 50
+num_tribbles = 200
+world_width = 198
+world_height = 198
 
 world = if ARGV[0]
           World.find(ARGV[0])
         else
           Factory :world_with_resources, width: world_width, height: world_height
         end
+world_width = world.width
+world_height = world.height
+
+world.agents.delete_all
+tick_count = 0
+ind_tick_count = 0
 
 tribble_pb = ProgressBar.new('Tribbles', num_tribbles) if Rails.env.development?
 num_tribbles.times do
-  Factory :tribble, world: world, location: [rand(100), rand(100)], heading: rand(360).round
+  Factory :tribble, world: world, location: [rand(world_width), rand(world_height)], heading: rand(360).round
   tribble_pb.inc if Rails.env.development?
 end
 tribble_pb.finish if Rails.env.development?
@@ -23,16 +29,21 @@ tribble_pb.finish if Rails.env.development?
 tick_pb = ProgressBar.new('Tribble Ticks', num_tribbles * num_ticks) if Rails.env.development?
 time = Benchmark.realtime do
   num_ticks.times do |n|
-    n += 1
-    percent = (n * 100.0) / num_ticks.to_f
     Tribble.where(world_id: world.id).each_with_index do |tribble, idx|
       tribble.tick!
+      ind_tick_count += 1
       tick_pb.inc if Rails.env.development?
+      print Tribble.where(world_id: world.id).count.to_s.and_go_to(0)
     end
+    tick_count += 1
+    tribble_count = Tribble.where(world_id: world.id).count
+    remaining_ticks = num_ticks - tick_count
+    remaining_ind_ticks = remaining_ticks * tribble_count
+    tick_pb.instance_variable_set('@total', tick_pb.current + remaining_ind_ticks)
   end
 end
 tick_pb.finish if Rails.env.development?
 
 min, sec = time.divmod(60)
-puts "(%d,%d) world, %d ticks, %d tribbles = %2d:%02d".green % [world_width, world_height, num_ticks, num_tribbles, min, sec]
-puts "%.2f individual ticks per second".green % [(num_tribbles * num_ticks) / time]
+puts "(%d,%d) world, %d ticks, %d tribbles = %2d:%02d".green % [world_width, world_height, num_ticks, world.agents.count, min, sec]
+puts "%.2f individual ticks per second".green % [(ind_tick_count) / time]

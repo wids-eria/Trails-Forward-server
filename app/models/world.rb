@@ -10,6 +10,7 @@ class World < ActiveRecord::Base
   has_many :players
   has_many :listings
   has_many :change_requests
+  has_many :agents
 
   validates :height, :numericality => {:greater_than => 0}
   validates :width, :numericality => {:greater_than => 0}
