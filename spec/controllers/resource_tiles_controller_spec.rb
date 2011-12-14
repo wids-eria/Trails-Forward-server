@@ -1,4 +1,3 @@
-
 require 'spec_helper'
 
 describe ResourceTilesController do
@@ -25,7 +24,7 @@ describe ResourceTilesController do
       end
     end
 
-    context "passed a resource tile the user can perform action on" do
+    context "passed a resource tile the user can perform the action on" do
       let(:megatile_owner) { player }
 
       it "calls action on the passed in tile" do
@@ -36,7 +35,7 @@ describe ResourceTilesController do
       end
     end
 
-    context "passed a resource tile the user cannot perform action on" do
+    context "passed a resource tile the user cannot perform the action on" do
       let(:megatile_owner) { player }
       subject { response }
       before do
