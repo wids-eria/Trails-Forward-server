@@ -28,8 +28,8 @@ module TrailsForward
     end
 
     def spawn_resource_tiles populate = false
-      rt_progress_bar = ProgressBar.new('Resource Tiles', megatiles.count / 1000) if Rails.env.development?
-      Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 1000) do |megatile_batch|
+      rt_progress_bar = ProgressBar.new('Resource Tiles', megatiles.count / 100) if Rails.env.development?
+      Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 100) do |megatile_batch|
         batch_tiles = megatile_batch.collect do |tile_info|
           (0...megatile_width).collect do |x_offset|
             (0...megatile_height).collect do |y_offset|

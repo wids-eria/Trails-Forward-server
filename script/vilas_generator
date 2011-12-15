@@ -98,8 +98,8 @@ rows.each_slice(batch_size) do |row_batch|
     tile_class = LandTile
     tile_hash = { world_id: world_id,
                   megatile_id: megatile_id,
-                  x: tile_x,
-                  y: tile_y }
+                  location: [tile_x, tile_y],
+                  geom: Point.from_x_y(tile_x + 0.5, tile_y + 0.5) }
 
     tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
     tile_hash[:housing_density] = housing_density_percent(row_hash[:devel_density].to_f)
@@ -167,7 +167,7 @@ rows.each_slice(batch_size) do |row_batch|
   remaining_tiles = (r_total - r_count.to_f) * batch_size
   remaining_time = remaining_tiles / tiles_per_sec
   remaining_min, remaining_sec = remaining_time.divmod(60)
-  puts "  Resource Tiles: %.2f%% (%.2f tiles/sec, ~%2d:%02d remaining)".green.and_go_up(1) % [r_percent, tiles_per_sec, remaining_min, remaining_sec]
+  print "  Resource Tiles: %.2f%% (%.2f tiles/sec, ~%2d:%02d remaining)".green.and_go_to(0) % [r_percent, tiles_per_sec, remaining_min, remaining_sec]
 end
 puts '  Resource Tiles created!                                               '.green
 

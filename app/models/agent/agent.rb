@@ -4,6 +4,10 @@ class Agent < ActiveRecord::Base
   belongs_to :resource_tile
   belongs_to :world
 
+  validates_presence_of :x
+  validates_presence_of :y
+  validates_presence_of :heading
+
   after_create :setup_geom
 
   scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
@@ -48,19 +52,37 @@ class Agent < ActiveRecord::Base
   end
 
   def turn degrees
-    heading += degrees
-    heading %= 360
+    self.heading += degrees
   end
 
   def move distance
-    offset_coordinates = Agent.calculate_offset_coordinates(heading, distance)
+    offset_coordinates = Agent.calculate_offset_coordinates(self.heading, distance)
     new_x = (self.x + offset_coordinates[0]).round(2)
     new_y = (self.y + offset_coordinates[1]).round(2)
+
+    if new_x < 0 || new_x >= world.width
+      if new_x < 0
+        new_x = 0
+      else
+        new_x = world.width - 1
+      end
+      self.heading = (360 - self.heading)
+    end
+
+    if new_y < 0 || new_y >= world.height
+      if new_y < 0
+        new_y = 0
+      else
+        new_y = world.height - 1
+      end
+      self.heading = (180 - self.heading)
+    end
+
     self.location = [new_x, new_y]
   end
 
   def self.calculate_offset_coordinates heading, distance
-    heading_in_radians = heading * (Math::PI / 180)
+    heading_in_radians = heading * (Math::PI / 180.0)
     x_offset = (distance * Math.sin(heading_in_radians)).round(2)
     y_offset = (distance * Math.cos(heading_in_radians)).round(2)
     [x_offset, y_offset]

@@ -2,14 +2,17 @@ require 'spec_helper'
 
 describe Tribble do
   let(:world) { create(:world_with_properties) }
-  let(:agent) { build(:tribble, world: world) }
+  let(:agent) { create(:tribble, world: world) }
   subject { agent }
 
   describe '#tick' do
     after { agent.tick }
 
     context 'given it should move' do
-      before { agent.stub(:should_move? => true) }
+      before do
+        agent.stub(:should_die => false)
+        agent.stub(:should_move? => true)
+      end
       it('moves') { agent.should_receive(:move).and_return(true) }
     end
 
