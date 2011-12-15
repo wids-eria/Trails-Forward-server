@@ -101,8 +101,15 @@ describe Megatile do
 
   end
 
-  # TODO: uncomment, and make this pass
-  # describe "#estimated_value" do
-    # it "is based on the estimated value of its resource tiles"
-  # end
+  describe "#estimated_value" do
+    let(:resource_tile1) { build :resource_tile }
+    let(:resource_tile2) { build :resource_tile }
+    let(:megatile) { build :megatile, resource_tiles: [resource_tile1, resource_tile2] }
+
+    it "is based on the estimated value of its resource tiles" do
+      resource_tile1.should_receive(:estimated_value).once.and_return(5)
+      resource_tile2.should_receive(:estimated_value).once.and_return(6)
+      megatile.estimated_value.should be(11)
+    end
+  end
 end
