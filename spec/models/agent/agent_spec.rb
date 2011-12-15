@@ -33,18 +33,6 @@ describe Agent do
     end
   end
 
-  describe 'x' do
-    it 'defaults to nil' do
-      agent.x.should be_nil
-    end
-  end
-
-  describe 'y' do
-    it 'defaults to nil' do
-      agent.y.should be_nil
-    end
-  end
-
   describe '#location=' do
     context 'on an existing record' do
       before do

@@ -4,6 +4,10 @@ class Agent < ActiveRecord::Base
   belongs_to :resource_tile
   belongs_to :world
 
+  validates_presence_of :x
+  validates_presence_of :y
+  validates_presence_of :heading
+
   after_create :setup_geom
 
   scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
