@@ -80,6 +80,7 @@ class ResourceTile < ActiveRecord::Base
     template.add :x
     template.add :y
     template.add :type
+    template.add :permitted_actions
   end
 
   api_accessible :resource, :extend => :resource_base do |template|
@@ -94,7 +95,42 @@ class ResourceTile < ActiveRecord::Base
     false
   end
 
+  def clearcut!
+
+  end
+
+  def bulldoze!
+
+  end
+
   def estimated_value
     nil
+  end
+
+  def all_actions
+    %w(bulldoze clearcut)
+  end
+
+  def permitted_actions player = nil
+    return non_owner_permitted_actions unless player
+    if megatile.owner == player
+      owner_permitted_actions
+    else
+      non_owner_permitted_actions
+    end
+  end
+
+  def owner_permitted_actions
+    self.all_actions.select {|action| send("can_#{action}?") }
+  end
+
+  def non_owner_permitted_actions
+    self.all_actions.select {|action| send("can_#{action}?") }.map do |action|
+      "request_#{action}"
+    end
+  end
+
+  def <=> other
+    self.location <=> other.location
   end
 end

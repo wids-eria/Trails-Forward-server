@@ -8,6 +8,66 @@ describe LandTile do
     end
   end
 
+  describe '#permitted_actions' do
+    let(:land_tile) { create :land_tile }
+    let(:owner) { create :player, world_id: land_tile.world_id }
+    let(:other_player) { create :player, world_id: land_tile.world_id }
+    before { land_tile.megatile.update_attributes owner: owner }
+
+    subject { land_tile.permitted_actions target_player }
+
+    context 'when all actions are permitted' do
+      before do
+        land_tile.stub(can_bulldoze?: true)
+        land_tile.stub(can_clearcut?: true)
+      end
+
+      context 'on an owned tile' do
+        let(:target_player) { owner }
+        it { should == ['bulldoze', 'clearcut'] }
+      end
+
+      context 'on an unowned tile' do
+        let(:target_player) { other_player }
+        it { should == ['request_bulldoze', 'request_clearcut'] }
+      end
+    end
+
+    context 'some actions are permitted' do
+      before do
+        land_tile.stub(can_bulldoze?: true)
+        land_tile.stub(can_clearcut?: false)
+      end
+
+      context 'on an owned tile' do
+        let(:target_player) { owner }
+        it { should == ['bulldoze'] }
+      end
+
+      context 'on an unowned tile' do
+        let(:target_player) { other_player }
+        it { should == ['request_bulldoze'] }
+      end
+    end
+
+    context 'when no actions are permitted' do
+      before do
+        land_tile.stub(can_bulldoze?: false)
+        land_tile.stub(can_clearcut?: false)
+      end
+
+      context 'on an owned tile' do
+        let(:target_player) { owner }
+        it { should == [] }
+      end
+
+      context 'on an unowned tile' do
+        let(:target_player) { other_player }
+        it { should == [] }
+      end
+    end
+  end
+
   it "can be clearcut if zoned for logging" do
     tile = LandTile.new zoned_use: "Logging"
     tile.can_clearcut?.should be_true
