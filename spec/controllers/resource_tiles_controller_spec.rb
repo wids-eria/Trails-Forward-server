@@ -18,18 +18,14 @@ describe ResourceTilesController do
 
       end
 
-      context 'passed x, y, width and height' do
-        it 'returns JSON representing set of resource_tiles' do
+      context 'passed a world, x, y, width and height' do
+        it 'returns JSON representing the set of resource_tiles' do
           # get :permitted_actions, world_id: world.id, x: 0, y: 1, width: 2, height: 1, format: 'json'
           get :permitted_actions, world_id: world.id, x: 2, y: 1, width: 2, height: 2, format: 'json'
 
-          json['resource_tiles'].size.should == 4
-
-          json['resource_tiles'].first['x'].should == 2
-          json['resource_tiles'].first['y'].should == 1
-
-          json['resource_tiles'].last['x'].should == 3
-          json['resource_tiles'].last['y'].should == 2
+          tile_hashes = json['resource_tiles']
+          locations = tile_hashes.map {|tile| [tile['x'].to_i, tile['y'].to_i]}
+          locations.should == [[2,1], [2,2], [3,1], [3,2]]
 
           # json['resource_tiles'].should == [ {"id" => 1,
                                               # "x" => 0,

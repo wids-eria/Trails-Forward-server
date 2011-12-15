@@ -6,13 +6,15 @@ describe ResourceTile do
 
   describe 'scope' do
     describe '.within_rectangle' do
-      it 'returns resource tiles withing the passed in rectangle coordinates' do
-        tiles = ResourceTile.within_rectangle x: 2, y: 10, width: 2, height: 3
-        tiles.count = 6
-        tiles.first.x.should == 2
-        tiles.first.y.should == 10
-        tiles.first.x.should == 3
-        tiles.first.x.should == 12
+      let(:world) { create :world_with_tiles }
+      before do
+        ResourceTile.delete_all
+        world
+      end
+      it 'returns resource tiles within the passed in rectangle coordinates' do
+        tiles = ResourceTile.within_rectangle x: 2, y: 1, width: 2, height: 3
+        tiles.count.should == 6
+        tiles.map(&:location).should == [[2,1], [2,2], [2,3], [3,1], [3,2], [3,3]]
       end
     end
   end
