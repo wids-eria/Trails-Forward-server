@@ -59,7 +59,6 @@ class Megatile < ActiveRecord::Base
     template.add :id
     template.add :x
     template.add :y
-    template.add :updated_at
   end
 
   api_accessible :megatile_with_resources, :extend => :id_and_name do |template|

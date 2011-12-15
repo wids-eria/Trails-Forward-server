@@ -11,7 +11,6 @@ class WaterTile < ResourceTile
     template.add :tree_species
     template.add :tree_size
     template.add :type
-    template.add :updated_at
   end
 
   private

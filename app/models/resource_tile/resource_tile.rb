@@ -14,6 +14,18 @@ class ResourceTile < ActiveRecord::Base
 
   # todo: Add validations for tree_species, zoned_use, and primary_use to be sure that they're in one of the below
 
+  scope :within_rectangle, lambda{|opts|
+    min_x = opts[:x].to_i
+    min_y = opts[:y].to_i
+    width = opts[:width].to_i
+    height = opts[:height].to_i
+    max_x = min_x + width - 1
+    max_y = min_y + height - 1
+
+    where(x: min_x..max_x, y: min_y..max_y)
+  }
+  # scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
+
   def self.verbiage
     { :tree_species => {
         :coniferous => "Coniferous",
@@ -75,7 +87,7 @@ class ResourceTile < ActiveRecord::Base
     template.add :x
     template.add :y
     template.add :type
-    template.add :updated_at
+    template.add :permitted_actions
   end
 
   api_accessible :resource, :extend => :resource_base do |template|
@@ -90,11 +102,46 @@ class ResourceTile < ActiveRecord::Base
     false
   end
 
+  def clearcut!
+
+  end
+
+  def bulldoze!
+
+  end
+
   def estimated_value
     nil
   end
 
-private
+  def all_actions
+    %w(bulldoze clearcut)
+  end
+
+  def permitted_actions player = nil
+    return non_owner_permitted_actions unless player
+    if megatile.owner == player
+      owner_permitted_actions
+    else
+      non_owner_permitted_actions
+    end
+  end
+
+  def owner_permitted_actions
+    self.all_actions.select {|action| send("can_#{action}?") }
+  end
+
+  def non_owner_permitted_actions
+    self.all_actions.select {|action| send("can_#{action}?") }.map do |action|
+      "request_#{action}"
+    end
+  end
+
+  def <=> other
+    self.location <=> other.location
+  end
+
+  private
   def get_geom
     return unless x && y
     Point.from_x_y(x + 0.5, y + 0.5)
