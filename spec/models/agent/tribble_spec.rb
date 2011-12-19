@@ -33,6 +33,7 @@ describe Tribble do
 
     context "with less neighbors than the move threshold" do
       let(:peer_count) { move_threshold - 1 }
+      before { agent.stub(rand: 1.0) }
       it { should == false }
     end
 

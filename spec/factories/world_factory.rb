@@ -1,8 +1,8 @@
 FactoryGirl.define do
   factory :world do
     sequence(:name) {|n| "Example World #{n}"}
-    year_start 1880
-    year_current 1880
+    start_date Date.new(1800, 1, 1)
+    current_date { |w| w.start_date }
     width 6
     height 6
     megatile_width 3
@@ -38,8 +38,7 @@ FactoryGirl.define do
 
   factory :vilas, parent: :world do
     name { "Vilas County, WI - #{rand(100000)}" }
-    year_start 2000
-    year_current 2001
+    start_date Date.new(2000, 1, 1)
     width 1353
     height 714
     megatile_width 3
