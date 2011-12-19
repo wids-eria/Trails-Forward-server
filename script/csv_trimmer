@@ -1,0 +1,36 @@
+#!/usr/bin/env ruby
+require 'bamfcsv'
+
+BASE_DIR = "script/data/"
+BASE_FILENAME = "#{BASE_DIR}vilas_conserv_game_spatial_1_acre_inputs_combined.csv"
+
+name = ARGV[0]
+filename = "#{BASE_DIR}#{name}.csv"
+
+start_x = ARGV[1].to_i
+start_y = ARGV[2].to_i
+width = ARGV[3].to_i
+height = ARGV[4].to_i
+
+rows = BAMFCSV.read(BASE_FILENAME)
+header = rows.shift
+
+rows.select! do |row|
+  (start_y...(start_y + width)).include?(row[0].to_i) &&
+    (start_x...(start_x + width)).include?(row[1].to_i)
+end
+
+rows.each do |row|
+  row[0] = (row[0].to_i - start_y).to_s
+  row[1] = (row[1].to_i - start_x).to_s
+end
+
+rows.unshift header
+
+File.delete filename if File.exists? filename
+File.open filename, 'w' do |f|
+  rows.each_with_index do |row, idx|
+    f.write row.join(',')
+    f.write "\n" if idx < rows.count - 1
+  end
+end
