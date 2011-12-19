@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 gem 'rails', '3.1.1'
 gem 'rake'
 
-gem 'acts_as_api', :git => 'git://github.com/fabrik42/acts_as_api.git'
+gem 'acts_as_api', git: 'git://github.com/fabrik42/acts_as_api.git'
 gem 'activerecord-import'
 gem 'bamfcsv'
 gem 'cancan'
@@ -16,10 +16,10 @@ gem 'msgpack'
 gem 'narray'
 gem 'pg'
 gem 'postgis_adapter'
-gem 'progressbar'
+gem 'progressbar', git: 'git://github.com/randland/progressbar'
 
 group :development, :test do
-  gem 'ruby-debug19', :require => 'ruby-debug'
+  gem 'ruby-debug19', require: 'ruby-debug'
 
   gem 'guard'
     gem 'growl_notify'
