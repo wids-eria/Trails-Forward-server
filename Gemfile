@@ -17,6 +17,7 @@ gem 'narray'
 gem 'pg'
 gem 'postgis_adapter'
 gem 'progressbar', git: 'git://github.com/randland/progressbar'
+gem 'state_machine'
 
 group :development, :test do
   gem 'ruby-debug19', require: 'ruby-debug'
