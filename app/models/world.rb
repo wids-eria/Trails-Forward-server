@@ -1,7 +1,9 @@
 require 'trails_forward/world_generation'
+require 'trails_forward/map_maker'
 
 class World < ActiveRecord::Base
   include TrailsForward::WorldGeneration
+  include TrailsForward::MapMaker
 
   acts_as_api
 

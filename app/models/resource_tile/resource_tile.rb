@@ -26,6 +26,8 @@ class ResourceTile < ActiveRecord::Base
   }
   # scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
 
+  scope :with_agents, include: [:agents]
+
   def self.verbiage
     { :tree_species => {
         :coniferous => "Coniferous",

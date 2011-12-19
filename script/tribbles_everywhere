@@ -1,49 +1,102 @@
-#!/usr/bin/env ruby
+#!/usr/bin/env ./script/rails runner
 require 'benchmark'
 require "tattletail"
 
-num_ticks = 50
-num_tribbles = 200
+num_ticks = 256
+num_tribbles = 8
 world_width = 198
 world_height = 198
+
+def file_prefix world
+  "doc/world_pngs/#{world.id}-#{world.name.gsub(/\s/, '_')}"
+end
+
+def clear_old_pngs world
+  files = Dir.glob("#{file_prefix world}*.png")
+  files.each do |file|
+    File.delete(file)
+  end
+end
+
+def create_png world, tick_count
+  file_name = "#{file_prefix world}-%03d.png" % tick_count
+  world.generate_png file_name
+end
+
+def create_gif world
+  file_name = "#{file_prefix world}.gif"
+  File.delete(file_name) if File.exists?(file_name)
+  system "convert #{file_prefix world}-*.png #{file_name}"
+end
+
+def set_progress_title tick_progress_bar, tick_count, agent_count
+  tick_progress_bar.title = "Tick #{tick_count + 1} - #{agent_count} Tribbles" if Rails.env.development?
+end
+
+def tribbles_in_world world
+  Tribble.where(world_id: world.id)
+end
 
 world = if ARGV[0]
           World.find(ARGV[0])
         else
           Factory :world_with_resources, width: world_width, height: world_height
         end
+tribbles_in_world(world).delete_all
+
 world_width = world.width
 world_height = world.height
-
-world.agents.delete_all
 tick_count = 0
 ind_tick_count = 0
 
-tribble_pb = ProgressBar.new('Tribbles', num_tribbles) if Rails.env.development?
+ProgressBar.disable_output unless Rails.env.development?
+
+tribble_pb = ProgressBar.new('Tribbles', num_tribbles)
+
 num_tribbles.times do
-  Factory :tribble, world: world, location: [rand(world_width), rand(world_height)], heading: rand(360).round
-  tribble_pb.inc if Rails.env.development?
+  begin
+    tribble = Factory.build :tribble, world: world,
+                                      location: [rand * world_width, rand * world_height],
+                                      heading: rand(360).round
+  end until tribble.resource_tile.type == 'LandTile' && tribble.resource_tile.tree_density > 0.4
+  tribble.save
+  tribble_pb.inc
 end
-tribble_pb.finish if Rails.env.development?
+tribble_pb.finish
 
-tick_pb = ProgressBar.new('Tribble Ticks', num_tribbles * num_ticks) if Rails.env.development?
-time = Benchmark.realtime do
-  num_ticks.times do |n|
-    Tribble.where(world_id: world.id).each_with_index do |tribble, idx|
-      tribble.tick!
-      ind_tick_count += 1
-      tick_pb.inc if Rails.env.development?
-      print Tribble.where(world_id: world.id).count.to_s.and_go_to(0)
-    end
-    tick_count += 1
-    tribble_count = Tribble.where(world_id: world.id).count
-    remaining_ticks = num_ticks - tick_count
-    remaining_ind_ticks = remaining_ticks * tribble_count
-    tick_pb.instance_variable_set('@total', tick_pb.current + remaining_ind_ticks)
+clear_old_pngs world
+create_png world, tick_count
+
+tiles = LandTile.where(world_id: world.id)
+
+num_ticks.times do |n|
+
+  tribbles = tribbles_in_world world
+
+  tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tribbles", tribbles.count)
+  set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
+  tick_pb.expand_title
+
+  tribbles.each do |tribble|
+    tribble.tick!
+
+    set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
+    tick_pb.expand_title
+    tick_pb.inc
   end
-end
-tick_pb.finish if Rails.env.development?
+  tick_pb.finish
 
-min, sec = time.divmod(60)
-puts "(%d,%d) world, %d ticks, %d tribbles = %2d:%02d".green % [world_width, world_height, num_ticks, world.agents.count, min, sec]
-puts "%.2f individual ticks per second".green % [(ind_tick_count) / time]
+
+  tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tiles", tiles.count)
+  tick_pb.expand_title
+  tiles.each do |tile|
+    tile.tick!
+    tick_pb.inc
+  end
+  tick_pb.finish
+
+  tick_count += 1
+
+  create_png world, tick_count
+  create_gif world
+end

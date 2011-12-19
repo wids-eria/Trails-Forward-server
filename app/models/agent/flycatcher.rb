@@ -1,0 +1,3 @@
+class Flycatcher < Agent
+
+end
