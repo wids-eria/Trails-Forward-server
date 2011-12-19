@@ -38,4 +38,20 @@ describe World do
     end
   end
 
+  describe "#tick" do
+    let(:world) { build :world }
+    let(:start_date) { world.start_date }
+
+    subject{ world }
+
+    before do
+      world.stub(tick_agents: true,
+                 tick_tiles: true,
+                 tick_length: 1.day)
+      world.tick
+    end
+
+    its(:current_date) { should == world.start_date + 1.day }
+  end
+
 end

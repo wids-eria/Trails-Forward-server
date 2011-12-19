@@ -26,6 +26,24 @@ class World < ActiveRecord::Base
     @manager ||= GameWorldManager.for_world(self)
   end
 
+  def tick
+    tick_agents
+    tick_tiles
+    self.current_date += tick_length
+  end
+
+  def tick_length
+    1.day
+  end
+
+  def tick_agents
+
+  end
+
+  def tick_tiles
+
+  end
+
   def each_resource_tile &blk
     each_coord do |x,y|
       yield resource_tile_at(x,y)
