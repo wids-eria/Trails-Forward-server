@@ -5,9 +5,7 @@ FactoryGirl.define do
     heading 0
   end
 
-  factory :tribble, class: Tribble, parent: :agent do
-  end
-
-  factory :generic_agent, class: GenericAgent, parent: :agent do
-  end
+  factory(:flycatcher, class: Flycatcher, parent: :agent) {}
+  factory(:generic_agent, class: GenericAgent, parent: :agent) {}
+  factory(:tribble, class: Tribble, parent: :agent) {}
 end
