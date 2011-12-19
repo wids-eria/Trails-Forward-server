@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111214204540) do
+ActiveRecord::Schema.define(:version => 20111219194939) do
 
   create_table "agents", :force => true do |t|
     t.column "type", :string
@@ -146,14 +146,14 @@ ActiveRecord::Schema.define(:version => 20111214204540) do
 
   create_table "worlds", :force => true do |t|
     t.column "name", :string
-    t.column "year_start", :integer
-    t.column "year_current", :integer
     t.column "height", :integer
     t.column "width", :integer
     t.column "megatile_width", :integer
     t.column "megatile_height", :integer
     t.column "created_at", :datetime
     t.column "updated_at", :datetime
+    t.column "start_date", :date
+    t.column "current_date", :date
   end
 
 end
