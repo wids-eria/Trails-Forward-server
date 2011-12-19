@@ -1,0 +1,37 @@
+#!/usr/bin/env ./script/rails runner
+
+results = Array.new(180) { 0 }
+agents = 500
+
+
+def return_perc yday
+  1.0 / (1 + Math::E ** -(6 * (yday - 114) / 15.0))
+end
+
+def should_return? yday
+  rand < return_chance(yday)
+end
+
+180.times do |n|
+  migrated_agents = 500 - agents
+  remaining_agents = agents
+  to_have_returned_after_this_tick = return_perc(n) * 500
+  to_return_this_tick = to_have_returned_after_this_tick - migrated_agents
+
+  perc = to_return_this_tick / remaining_agents
+
+  agents.times do |agent|
+    if rand < perc
+      results[n] += 1
+      agents -= 1
+    end
+  end
+end
+
+# require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger
+
+cumulative = 0
+results.each_with_index do |r, idx|
+  cumulative += r
+  puts "#{idx}: #{r} (#{cumulative})" if r > 0
+end
