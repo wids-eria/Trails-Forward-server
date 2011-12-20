@@ -1,4 +1,8 @@
 class Agent < ActiveRecord::Base
+  property_set :settings do
+    property :energy
+  end
+
   has_geom :geom => :point
 
   belongs_to :resource_tile

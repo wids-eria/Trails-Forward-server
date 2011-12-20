@@ -1,19 +1,18 @@
 #!/usr/bin/env ./script/rails runner
 
 results = Array.new(180) { 0 }
+agent_count = 5000
 
-def migrate_in_pdf
-  @dist ||= GSL::Rng.alloc
-  range = 45.0
-  std = range / 6.0
-  mean = 114
-  @dist.gaussian(std) + mean
+world = Factory :world
+agents = agent_count.times.collect { Factory :flycatcher, world: world }
+
+agents.each do |a|
+  a.set_migrate_in_date
+  a.save!
 end
 
-agents = 10000
-
-agents.times.each do |n|
-  results[migrate_in_pdf.floor] += 1
+agents.each do |a|
+  results[Date.parse(a.settings.migrate_in_date).yday] += 1
 end
 
 cumulative = 0
