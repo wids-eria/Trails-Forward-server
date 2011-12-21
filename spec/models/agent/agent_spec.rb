@@ -34,6 +34,21 @@ describe Agent do
     end
   end
 
+  describe '#tick' do
+    let(:agent) { create :generic_agent, age: 0 }
+    before { agent.stub(go: true) }
+
+    it 'advances agent age' do
+      agent.tick
+      agent.age.should == 1
+    end
+
+    it 'calls the #go hook' do
+      agent.should_receive(:go).and_return(true)
+      agent.tick
+    end
+  end
+
   describe '#location=' do
     context 'on an existing record' do
       before do

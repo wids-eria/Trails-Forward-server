@@ -100,6 +100,12 @@ class Agent < ActiveRecord::Base
   end
 
   def tick
+    self.age += 1
+
+    go
+  end
+
+  def go
     raise NotImplementedError
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111220182840) do
+ActiveRecord::Schema.define(:version => 20111221180055) do
 
   create_table "agent_settings", :force => true do |t|
     t.column "agent_id", :integer, :null => false
@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20111220182840) do
     t.column "heading", :integer
     t.column "state", :string
     t.column "geom", :point, :srid => 4326
+    t.column "age", :integer, :default => 0
   end
 
   add_index "agents", ["geom"], :name => "index_agents_on_geom", :spatial=> true 
