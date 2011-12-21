@@ -61,6 +61,10 @@ class Agent < ActiveRecord::Base
     [x, y]
   end
 
+  def vector_to other
+    Vector[other.x - self.x, other.y - self.y]
+  end
+
   def turn degrees
     self.heading += degrees
   end

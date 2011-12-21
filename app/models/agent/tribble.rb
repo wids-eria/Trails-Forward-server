@@ -5,6 +5,44 @@ class Tribble < Agent
     turn(rand(90) - 45)
   end
 
+  def tile_pref_scale tile
+    if tile.type == 'WaterTile'
+      -0.1
+    else
+      (tile.tree_density + 1.0) / 2
+    end
+  end
+
+  def tile_pref_vector tile
+    vect = vector_to tile
+    dist = vect.r
+    vect = vect.normalize / dist
+    vect * tile_pref_scale(tile)
+  end
+
+  def agent_pref_scale agent
+    -0.25
+  end
+
+  def agent_pref_vector agent
+    vect = vector_to agent
+    dist = vect.r
+    vect = vect.normalize / dist
+    vect * agent_pref_scale(agent)
+  end
+
+  def most_desirable_heading
+    Vector.sum(nearby_tile_preference_vectors + nearby_agent_preference_vectors)
+  end
+
+  def nearby_tile_preference_vectors
+    nearby_tiles.map { |tile| tile_pref_vector tile }
+  end
+
+  def nearby_agent_preference_vectors
+    nearby_agents.map { |agent| agent_pref_vector agent }
+  end
+
   def litter_size
     10
   end

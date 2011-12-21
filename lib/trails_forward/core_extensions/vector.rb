@@ -18,6 +18,11 @@ module TrailsForward::CoreExtensions
       def from_heading degrees
         self.from_deg(90 - degrees)
       end
+
+      def sum *vectors
+        vectors.flatten! if vectors.respond_to? :flatten
+        vectors.inject(:+)
+      end
     end
 
     def clean
