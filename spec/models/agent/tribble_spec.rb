@@ -12,6 +12,7 @@ describe Tribble do
       before do
         agent.stub(:should_die => false)
         agent.stub(:should_move? => true)
+        agent.stub(:too_fidgity? => false)
       end
       it('moves') { agent.should_receive(:move).and_return(true) }
     end

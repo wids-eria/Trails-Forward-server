@@ -1,0 +1,23 @@
+#!/usr/bin/env ./script/rails runner
+
+results = Array.new(180) { 0 }
+agent_count = 5000
+
+world = Factory :world
+agents = agent_count.times.collect { Factory :flycatcher, world: world }
+
+agents.each do |a|
+  a.set_migrate_in_date
+  a.save!
+end
+
+agents.each do |a|
+  results[Date.parse(a.settings.migrate_in_date).yday] += 1
+end
+
+cumulative = 0
+max = results.max.to_f
+results.each_with_index do |r, idx|
+  cumulative += r
+  puts "%3d: %3d (%4d) %s" % [idx, r, cumulative, r == 0 ? '' : '=' * (50 * r / max).floor]
+end

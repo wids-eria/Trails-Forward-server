@@ -1,0 +1,24 @@
+#!/usr/bin/env ./script/rails runner
+
+results = Array.new(180) { 0 }
+
+def migrate_in_pdf
+  @dist ||= GSL::Rng.alloc
+  range = 45.0
+  std = range / 6.0
+  mean = 114
+  @dist.gaussian(std) + mean
+end
+
+agents = 10000
+
+agents.times.each do |n|
+  results[migrate_in_pdf.floor] += 1
+end
+
+cumulative = 0
+max = results.max.to_f
+results.each_with_index do |r, idx|
+  cumulative += r
+  puts "%3d: %3d (%4d) %s" % [idx, r, cumulative, r == 0 ? '' : '=' * (50 * r / max).floor]
+end
