@@ -1,9 +1,7 @@
 class Tribble < Agent
   def go
     reproduce if should_reproduce?
-
     move(rand(2) + 1) if should_move?
-
     turn(rand(90) - 45)
   end
 
