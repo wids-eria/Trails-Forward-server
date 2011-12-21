@@ -9,7 +9,7 @@ class Agent < ActiveRecord::Base
 
   has_geom :geom => :point
 
-  belongs_to :resource_tile
+  belongs_to :resource_tile 
   belongs_to :world
 
   validates_presence_of :x

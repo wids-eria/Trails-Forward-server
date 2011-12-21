@@ -98,7 +98,7 @@ describe Agent do
       agent.should_receive(:create_descendant).exactly(litter_size).times.and_return(true)
       agent.reproduce
     end
-  end
+  end 
 
   describe '#location=' do
     context 'on an existing record' do
