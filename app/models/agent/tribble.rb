@@ -26,7 +26,7 @@ class Tribble < Agent
   end
 
   def should_reproduce?
-    nearby_peers.count <= reproduce_threshold
+    nearby_peers.count <= max_neighbors_to_reproduce
   end
 
   def should_move?
@@ -42,7 +42,7 @@ class Tribble < Agent
     1
   end
 
-  def reproduce_threshold
+  def max_neighbors_to_reproduce
     2
   end
 end
