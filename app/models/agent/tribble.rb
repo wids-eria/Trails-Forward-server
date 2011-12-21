@@ -23,7 +23,11 @@ class Tribble < Agent
 
   def should_move?
     nearby_tiles
-    nearby_peers.count > move_threshold || rand < 0.3
+    nearby_peers.count > move_threshold || too_fidgity?
+  end
+
+  def too_fidgity?
+    rand < 0.3
   end
 
   def move_threshold
