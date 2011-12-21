@@ -5,12 +5,13 @@ describe Agent do
   it { should belong_to :world }
   it { should have_db_column(:heading).of_type(:integer) }
 
-  let(:agent) { build(:generic_agent) }
+  let(:world) { create(:world_with_tiles) }
+  let(:agent) { build(:generic_agent, world: world) }
 
   describe 'scope: ' do
     describe '.for_types (or .for_type alias' do
-      let!(:tribble) { create :tribble }
-      let!(:generic) { create :generic_agent }
+      let!(:tribble) { create :tribble, world: world }
+      let!(:generic) { create :generic_agent, world: world }
 
       context 'passed a single type' do
         it 'returns agents of that type' do

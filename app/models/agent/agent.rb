@@ -11,8 +11,10 @@ class Agent < ActiveRecord::Base
   validates_presence_of :x
   validates_presence_of :y
   validates_presence_of :heading
+  validates_presence_of :world
 
   after_create :setup_geom
+  before_validation :setup_resource_tile
 
   scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
   scope :for_type, lambda { |type| where(type: type.to_s.classify) }
@@ -111,5 +113,10 @@ private
     return unless x && y
     self.geom = Point.from_x_y(x, y)
     save
+  end
+
+  def setup_resource_tile
+    return unless x && y && world
+    self.resource_tile ||= world.resource_tile_at(x, y)
   end
 end

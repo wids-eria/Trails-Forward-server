@@ -89,7 +89,7 @@ class World < ActiveRecord::Base
   end
 
   def resource_tile_at(x,y)
-    ResourceTile.where(x: x, y: y, world_id: id).first
+    ResourceTile.where(x: x.floor, y: y.floor, world_id: id).first
   end
 
   def player_for_user(user)
