@@ -71,8 +71,32 @@ describe Agent do
     let(:world) { create :world_with_tiles }
     let(:agent) { create :generic_agent, world: world }
     subject { agent.create_descendant }
+
+    it 'is a clone of the parent' do
+      subject.should_not == agent
+    end
+
     it 'is in the same location as the parent' do
       subject.location.should == agent.location
+    end
+
+    it 'has a new heading' do
+      subject.heading.should_not == agent.heading
+    end
+  end
+
+  describe '#reproduce' do
+    let(:agent) { create :generic_agent }
+    let(:litter_size) { 3 }
+
+    before do
+      agent.stub(litter_size: litter_size)
+      agent.stub(create_descendant: true)
+    end
+
+    it 'calls #create_descendant #litter_size times' do
+      agent.should_receive(:create_descendant).exactly(litter_size).times.and_return(true)
+      agent.reproduce
     end
   end
 

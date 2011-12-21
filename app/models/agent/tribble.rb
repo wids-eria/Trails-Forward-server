@@ -11,7 +11,6 @@ class Tribble < Agent
     10
   end
 
-
   def should_die?
     rand < 1 / (1 + Math::E ** (-(5.0 / life_expectancy) * (self.age - life_expectancy)))
   end
