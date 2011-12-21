@@ -11,6 +11,10 @@ class Tribble < Agent
     10
   end
 
+  def life_expectancy
+    10
+  end
+
   def should_die?
     rand < 1 / (1 + Math::E ** (-(5.0 / life_expectancy) * (self.age - life_expectancy)))
   end
@@ -19,6 +23,9 @@ class Tribble < Agent
     4
   end
 
+  def max_move_rate
+    2
+  end
 
   def should_reproduce?
     nearby_peers.count <= reproduce_threshold
@@ -26,10 +33,10 @@ class Tribble < Agent
 
   def should_move?
     nearby_tiles
-    nearby_peers.count > move_threshold || too_fidgity?
+    nearby_peers.count > move_threshold || fidget?
   end
 
-  def too_fidgity?
+  def fidget?
     rand < 0.3
   end
 

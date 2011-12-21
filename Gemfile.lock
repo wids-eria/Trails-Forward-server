@@ -1,4 +1,14 @@
 GIT
+  remote: git://github.com/bendyworks/property_sets
+  revision: 525c5c3cf510b030da13fc71b580d1a780eb7a1d
+  branch: rails3_associations
+  specs:
+    property_sets (0.5.6)
+      actionpack (>= 3.0.0)
+      activerecord (>= 3.0.0)
+      activesupport (>= 3.0.0)
+
+GIT
   remote: git://github.com/fabrik42/acts_as_api.git
   revision: 74df68cf147b6fed84b5fdc18777493267b45f8f
   specs:
@@ -20,14 +30,6 @@ GIT
   specs:
     gsl (1.12.109)
       narray (>= 0.5.9)
-
-PATH
-  remote: /Users/bendyworker/dev/property_sets
-  specs:
-    property_sets (0.5.6)
-      actionpack (>= 3.0.0)
-      activerecord (>= 3.0.0)
-      activesupport (>= 3.0.0)
 
 GEM
   remote: http://rubygems.org/

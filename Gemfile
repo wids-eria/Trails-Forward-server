@@ -18,7 +18,7 @@ gem 'narray'
 gem 'pg'
 gem 'postgis_adapter'
 gem 'progressbar', git: 'git://github.com/randland/progressbar'
-gem 'property_sets', path: '/Users/bendyworker/dev/property_sets/'
+gem 'property_sets', git: 'git://github.com/bendyworks/property_sets', branch: 'rails3_associations'
 gem 'ruby-units'
 gem 'state_machine'
 
