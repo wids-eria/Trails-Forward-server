@@ -25,7 +25,6 @@ class Tribble < Agent
     2
   end
 
-
   def should_reproduce?
     nearby_peers.count <= reproduce_threshold
   end
@@ -46,5 +45,4 @@ class Tribble < Agent
   def reproduce_threshold
     2
   end
-
 end
