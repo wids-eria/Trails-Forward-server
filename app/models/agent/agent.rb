@@ -1,4 +1,8 @@
 class Agent < ActiveRecord::Base
+  def self.dist
+    @@dist ||= GSL::Rng.alloc('gsl_rng_ranlux', Time.now.to_i)
+  end
+
   property_set :settings do
     property :energy
   end
@@ -101,8 +105,34 @@ class Agent < ActiveRecord::Base
 
   def tick
     self.age += 1
+    die! and return if should_die?
 
     go
+  end
+
+  def die!
+    self.destroy
+  end
+
+  def should_die?
+    false
+  end
+
+  def litter_size
+    1
+  end
+
+  def reproduce
+    litter_size.times do
+      create_descendant
+    end
+  end
+
+  def create_descendant
+    self.class.create(world_id: world_id,
+                      resource_tile_id: resource_tile_id,
+                      heading: rand(360).round,
+                      location: self.location)
   end
 
   def go

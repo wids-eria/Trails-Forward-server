@@ -5,8 +5,8 @@ describe Tribble do
   let(:agent) { create(:tribble, world: world) }
   subject { agent }
 
-  describe '#tick' do
-    after { agent.tick }
+  describe '#go' do
+    after { agent.go }
 
     context 'given it should move' do
       before do

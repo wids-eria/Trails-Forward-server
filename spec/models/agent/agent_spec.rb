@@ -47,6 +47,33 @@ describe Agent do
       agent.should_receive(:go).and_return(true)
       agent.tick
     end
+
+    describe '#die!' do
+      context 'when should_die?' do
+        before { agent.stub(should_die?: true) }
+        it 'is called' do
+          agent.should_receive(:die!).and_return(true)
+          agent.tick
+        end
+      end
+
+      context 'when not should_die?' do
+        before { agent.stub(should_die?: false) }
+        it 'is not called' do
+          agent.should_receive(:die!).never
+          agent.tick
+        end
+      end
+    end
+  end
+
+  describe '#create_descendant' do
+    let(:world) { create :world_with_tiles }
+    let(:agent) { create :generic_agent, world: world }
+    subject { agent.create_descendant }
+    it 'is in the same location as the parent' do
+      subject.location.should == agent.location
+    end
   end
 
   describe '#location=' do
