@@ -55,7 +55,7 @@ describe Tribble do
     it { should == Vector[1,1] }
   end
 
-  describe '#agent_pref_vector' do
+  xit '#agent_pref_vector' do
     let(:x) { agent.location[0] }
     let(:y) { agent.location[1] }
     let(:agent) { build :tribble, location: [1.4, 3.2] }
