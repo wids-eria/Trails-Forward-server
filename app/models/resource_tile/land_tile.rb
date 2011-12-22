@@ -40,7 +40,9 @@ class LandTile < ResourceTile
 
   def grow_trees
     if self.tree_size != nil
-      self.tree_size = Math.log(1.10 * Math::E ** self.tree_size)
+      rate = 0.5
+      size = self.tree_size
+      self.tree_size += (4 * size ** 3 - 8 * size ** 2 + 4 * size) * rate
     end
   end
 

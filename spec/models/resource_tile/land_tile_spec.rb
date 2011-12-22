@@ -120,10 +120,10 @@ describe LandTile do
   end
 
   context "trees" do
-    let(:tile) { LandTile.new tree_density: 1, tree_size: 1 }
+    let(:tile) { LandTile.new tree_density: 1, tree_size: 0.5 }
 
     it "should have estimated lumber value" do
-      tile.estimated_lumber_value.should == 42
+      tile.estimated_lumber_value.should == 21
     end
 
     it "can be grown" do

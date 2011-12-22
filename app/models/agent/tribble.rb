@@ -64,7 +64,10 @@ class Tribble < Agent
   end
 
   def should_reproduce?
-    nearby_peers.count <= max_neighbors_to_reproduce
+    child_bearing_range = (2..9)
+    child_bearing_range.include?(self.age) &&
+      (rand / 2) < self.resource_tile.tree_density &&
+      nearby_peers.count <= max_neighbors_to_reproduce
   end
 
   def should_move?
