@@ -44,4 +44,16 @@ describe Tribble do
     end
   end
 
+  describe '#most_desirable_heading' do
+    let(:land_prefs) { [Vector[3,4]] }
+    let(:agent_prefs) { [Vector[-2, -3]] }
+    before do
+      agent.should_receive(:nearby_tile_preference_vectors).and_return(land_prefs)
+      agent.should_receive(:nearby_agent_preference_vectors).and_return(agent_prefs)
+    end
+    subject { agent.most_desirable_heading }
+    it { should == Vector[1,1] }
+  end
+
+
 end

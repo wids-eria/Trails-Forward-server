@@ -348,4 +348,16 @@ describe Agent do
       end
     end
   end
+
+  describe '#vector_to' do
+    let(:x) { agent.location[0] }
+    let(:y) { agent.location[1] }
+    let(:agent) { build :generic_agent, location: [1.4, 3.2] }
+    let(:other_agent) { build :generic_agent, location: [x + 2, y + 1] }
+
+    subject { agent.vector_to(other_agent).clean }
+    it do
+      should == Vector[2,1]
+    end
+  end
 end
