@@ -128,6 +128,10 @@ module TrailsForward::CoreExtensions
       rad2deg self.radians_to(other)
     end
 
+    def heading_to other
+      -self.degrees_to(other)
+    end
+
     def projected_magnitude *others
       others.flatten.map do |other|
         self.normalize.inner_product(other.normalize) * self.magnitude

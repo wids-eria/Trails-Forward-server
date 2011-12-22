@@ -275,4 +275,69 @@ describe Vector do
 
   end
 
+  describe '#degrees_to' do
+    let(:v1) { Vector[1,1] }
+    let(:v2) { Vector[-1,0] }
+    let(:v3) { Vector[0,-1] }
+
+    context 'returns degrees between vectors' do
+      example '[1,1] to [-1,0] = 135' do
+        v1.degrees_to(v2).should == 135
+      end
+
+      example '[-1,0] to [0,-1] = 90' do
+        v2.degrees_to(v3).should == 90
+      end
+
+      example '[0,-1] to [1,1] = 135' do
+        v3.degrees_to(v1).should == 135
+      end
+
+      example '[-1,0] to [1,1] = -135' do
+        v2.degrees_to(v1).should == -135
+      end
+
+      example '[0,-1] to [-1,0] = -90' do
+        v3.degrees_to(v2).should == -90
+      end
+
+      example '[1,1] to [0,-1] = -135' do
+        v1.degrees_to(v3).should == -135
+      end
+    end
+
+  end
+
+  describe '#heading_to' do
+    let(:v1) { Vector[1,1] }
+    let(:v2) { Vector[-1,0] }
+    let(:v3) { Vector[0,-1] }
+
+    context 'returns degrees between vectors' do
+      example '[1,1] to [-1,0] = -135' do
+        v1.heading_to(v2).should == -135
+      end
+
+      example '[-1,0] to [0,-1] = -90' do
+        v2.heading_to(v3).should == -90
+      end
+
+      example '[0,-1] to [1,1] = -135' do
+        v3.heading_to(v1).should == -135
+      end
+
+      example '[-1,0] to [1,1] = 135' do
+        v2.heading_to(v1).should == 135
+      end
+
+      example '[0,-1] to [-1,0] = 90' do
+        v3.heading_to(v2).should == 90
+      end
+
+      example '[1,1] to [0,-1] = 135' do
+        v1.heading_to(v3).should == 135
+      end
+    end
+
+  end
 end
