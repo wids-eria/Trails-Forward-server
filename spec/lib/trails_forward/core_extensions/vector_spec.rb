@@ -1,3 +1,4 @@
+# encoding: utf-8
 require 'spec_helper'
 require 'trails_forward/core_extensions/vector'
 
@@ -240,4 +241,38 @@ describe Vector do
     subject { vector.to_heading }
     it { should == 225 }
   end
+
+  describe '#radians_to' do
+    let(:v1) { Vector[1,1] }
+    let(:v2) { Vector[-1,0] }
+    let(:v3) { Vector[0,-1] }
+
+    context 'returns radians between vectors' do
+      example '[1,1] to [-1,0] = 3π/4' do
+        v1.radians_to(v2).should == 3 * Math::PI / 4
+      end
+
+      example '[-1,0] to [0,-1] = π/2' do
+        v2.radians_to(v3).should == Math::PI / 2
+      end
+
+      example '[0,-1] to [1,1] = 3π/4' do
+        v3.radians_to(v1).should == 3 * Math::PI / 4
+      end
+
+      example '[-1,0] to [1,1] = -3π/4' do
+        v2.radians_to(v1).should == -3 * Math::PI / 4
+      end
+
+      example '[0,-1] to [-1,0] = -π/2' do
+        v3.radians_to(v2).should == -Math::PI / 2
+      end
+
+      example '[1,1] to [0,-1] = -3π/4' do
+        v1.radians_to(v3).should == -3 * Math::PI / 4
+      end
+    end
+
+  end
+
 end
