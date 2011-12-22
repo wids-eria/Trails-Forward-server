@@ -3432,7 +3432,7 @@ CREATE OR REPLACE FUNCTION postgis_libxml_version() RETURNS text
 	LANGUAGE 'C' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION postgis_scripts_build_date() RETURNS text
-	AS 'SELECT ''2011-12-06 22:46:22''::text AS version'
+	AS 'SELECT ''2011-12-22 20:06:02''::text AS version'
 	LANGUAGE 'sql' IMMUTABLE;
 
 CREATE OR REPLACE FUNCTION postgis_lib_build_date() RETURNS text

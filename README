@@ -10,12 +10,28 @@ To install PostGIS:
 $ brew install postgis --enable-ruby
 
 
+To initialize DB, add the following to /etc/sysctl.conf:
+kern.sysv.shmmax=4194304
+kern.sysv.shmmin=1
+kern.sysv.shmmni=32
+kern.sysv.shmseg=8
+kern.sysv.shmall=1024
+
+Reboot, then call:
+
+$ initdb /usr/local/var/postgres
+
+
 To create a user:
 
-$ createuser <username_from_database.yaml>
+$ createlang plpgsql <username_from_database.yml>
+$ createuser <username_from_database.yml>
 
 Be sure to make them a super-user
 
+To install GSL:
+
+$ brew install gsl
 
 To setup the database:
 
