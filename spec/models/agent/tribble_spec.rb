@@ -55,20 +55,5 @@ describe Tribble do
     it { should == Vector[1,1] }
   end
 
-  xit '#agent_pref_vector' do
-    let(:x) { agent.location[0] }
-    let(:y) { agent.location[1] }
-    let(:agent) { build :tribble, location: [1.4, 3.2] }
-    let(:other_agent) { build :tribble, location: [x + 2, y + 1] }
-
-    before do
-      agent.should_receive(:nearby_agents).and_return([other_agent])
-    end
-
-    subject { agent.agent_pref_vector(other_agent).clean }
-    it do
-      should == [Vector[2,1]]
-    end
-  end
 
 end
