@@ -4,19 +4,20 @@ module TrailsForward::CoreExtensions
   module Vector
     def self.included(base)
       base.extend ClassMethods
+      base.send :alias_method, :magnitude, :r
     end
 
     module ClassMethods
-      def from_rad radians
+      def from_radians radians
         self[Math.cos(radians), Math.sin(radians)]
       end
 
-      def from_deg degrees
-        self.from_rad(degrees * Math::PI/180)
+      def from_degrees degrees
+        self.from_radians(degrees * Math::PI/180)
       end
 
       def from_heading degrees
-        self.from_deg(90 - degrees)
+        self.from_degrees(90 - degrees)
       end
 
       def sum *vectors
@@ -29,13 +30,23 @@ module TrailsForward::CoreExtensions
       self.map {|x| x.round(8)}
     end
 
+    def decompose
+      components = []
+      self.each_with_index do |x, idx|
+        tuple = Array.new(self.size) { 0 }
+        tuple[idx] = x
+        components << self.class[*tuple]
+      end
+      components
+    end
+
     def normalize
-      return self if self.r == 0
-      self / self.r
+      return self if self.magnitude == 0
+      self / self.magnitude
     end
 
     def square_r
-      return 0 if self.r == 0
+      return 0 if self.magnitude == 0
       1 / self.normalize.map(&:abs).max
     end
 
@@ -43,7 +54,7 @@ module TrailsForward::CoreExtensions
       if radius == 0
         self.all? {|x| x >= -1 && x < 1}
       else
-        dist = self.r - self.square_r
+        dist = self.magnitude - self.square_r
 
         if dist < radius
           true
@@ -53,16 +64,32 @@ module TrailsForward::CoreExtensions
       end
     end
 
-    def to_rad
+    def to_radians
       Math.atan2(self[1].to_f, self[0].to_f) % (2 * Math::PI)
     end
 
-    def to_deg
-      self.to_rad * 180 / Math::PI
+    def to_degrees
+      self.to_radians * 180 / Math::PI
     end
 
     def to_heading
-      (90 - self.to_deg) % 360
+      (90 - self.to_degrees) % 360
+    end
+
+    def radians_to other
+      Math.acos(self.projection_onto other)
+    end
+
+    def degrees_to other
+      self.radians_to(other) * 180 / Math::PI
+    end
+
+    def projection_onto other
+      self.normalize.inner_product(other.normalize)
+    end
+
+    def projection_from *vects
+      self.class.sum(*vects).projection_onto self
     end
   end
 end
