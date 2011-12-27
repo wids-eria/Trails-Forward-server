@@ -6,7 +6,7 @@ class Agent < ActiveRecord::Base
   end
 
   def self.normal_dist std = 1, mean = 0
-    self.dist.normal * std + mean
+    self.dist.normal mean, std
   end
 
   property_set :settings do
