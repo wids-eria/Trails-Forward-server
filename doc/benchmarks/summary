@@ -3,3 +3,13 @@ rake db:reset && script/world_generator script/data/small_test_1.csv && yn scrip
     real	2m24.891s
     user	1m42.611s
     sys	0m29.211s
+
+  -after increasing shared buffers to 128MB
+    real	2m24.658s
+    user	1m43.146s
+    sys	0m27.954s
+
+  -after increasing shared buffers to 1GB
+    real	2m22.987s
+    user	1m40.995s
+    sys	0m29.101s

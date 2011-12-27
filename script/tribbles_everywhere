@@ -70,6 +70,8 @@ tribble_pb.finish
 clear_old_pngs world
 create_png world, tick_count
 
+puts
+
 tiles = LandTile.where(world_id: world.id)
 
 num_ticks.times do |n|
