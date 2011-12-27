@@ -43,10 +43,10 @@ class LandTile < ResourceTile
   end
 
   def grow_trees
-    if self.tree_size != nil
+    if self.tree_density != nil
       rate = 0.5
-      size = self.tree_size
-      self.tree_size += (4 * size ** 3 - 8 * size ** 2 + 4 * size) * rate
+      density = self.tree_density
+      self.tree_density += (4 * density ** 3 - 8 * density ** 2 + 4 * density) * rate
     end
   end
 

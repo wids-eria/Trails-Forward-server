@@ -4,7 +4,7 @@ require "tattletail"
 
 num_ticks = ARGV[1] || 10
 num_ticks = num_ticks.to_i
-num_tribbles = 8
+num_tribbles = 1000
 world_width = 198
 world_height = 198
 
@@ -49,6 +49,7 @@ world_width = world.width
 world_height = world.height
 tick_count = 0
 ind_tick_count = 0
+tick_tiles = true
 
 ProgressBar.color_status
 ProgressBar.iter_rate_mode
@@ -60,7 +61,8 @@ num_tribbles.times do
   begin
     tribble = Factory.build :tribble, world: world,
                                       location: [rand * world_width, rand * world_height],
-                                      heading: rand(360).round
+                                      heading: rand(360).round,
+                                      age: [Agent.normal_dist(2,5), 0].max.floor
   end until tribble.resource_tile.type == 'LandTile' && tribble.resource_tile.tree_density > 0.4
   tribble.save
   tribble_pb.inc
@@ -72,18 +74,16 @@ create_png world, tick_count
 
 puts
 
-tiles = LandTile.where(world_id: world.id)
+tile_count = LandTile.where(world_id: world.id).where('tree_density IS NOT NULL').count
 
 num_ticks.times do |n|
 
-  tribbles = tribbles_in_world world
-
-  tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tribbles", tribbles.count)
+  tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tribbles", tribbles_in_world(world).count)
   set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
   tick_pb.expand_title
   tick_pb.colorize :magenta
 
-  tribbles.each do |tribble|
+  tribbles_in_world(world).each do |tribble|
     tribble.tick!
 
     set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
@@ -93,14 +93,18 @@ num_ticks.times do |n|
   tick_pb.finish
 
 
-  tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tiles", tiles.count)
-  tick_pb.expand_title
-  tick_pb.colorize :blue
-  tiles.each do |tile|
-    tile.tick!
-    tick_pb.inc
+  if tick_tiles
+    tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tiles", tile_count)
+    tick_pb.expand_title
+    tick_pb.colorize :blue
+    LandTile.where(world_id: world.id).where('tree_density IS NOT NULL').find_in_batches do |tile_batch|
+      tile_batch.each do |tile|
+        tile.tick!
+        tick_pb.inc
+      end
+    end
+    tick_pb.finish
   end
-  tick_pb.finish
 
   tick_count += 1
 

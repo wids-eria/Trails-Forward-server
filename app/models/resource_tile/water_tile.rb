@@ -13,6 +13,10 @@ class WaterTile < ResourceTile
     template.add :type
   end
 
+  def tick
+
+  end
+
   private
 
   def should_not_have_land_properties

@@ -90,6 +90,7 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def tick
+    raise NotImplementedError
   end
 
   def tick!
