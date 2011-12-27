@@ -5,6 +5,64 @@ describe ResourceTile do
   let(:resource_tile) { build :resource_tile }
 
   describe 'scope' do
+    describe '.in_square_range' do
+      let(:world) { create :world_with_tiles }
+      let(:corner_agent) { create :generic_agent, world: world, location: [3, 3] }
+      let(:center_agent) { create :generic_agent, world: world, location: [2.5, 2.5] }
+
+      subject { ResourceTile.in_square_range(radius, *location).map(&:location).sort }
+
+      context 'corner agent' do
+        let(:location) { corner_agent.location }
+
+        context 'in radius 0' do
+          let(:radius) { 0 }
+          it { should == [[3,3]].sort }
+        end
+
+        context 'in radius 1' do
+          let(:radius) { 1 }
+          it { should == [[2,2],[3,2],
+                          [2,3],[3,3]].sort }
+        end
+
+        context 'in radius 2.5' do
+          let(:radius) { 2.5 }
+          it { should == [[0,0],[1,0],[2,0],[3,0],[4,0],[5,0],
+                          [0,1],[1,1],[2,1],[3,1],[4,1],[5,1],
+                          [0,2],[1,2],[2,2],[3,2],[4,2],[5,2],
+                          [0,3],[1,3],[2,3],[3,3],[4,3],[5,3],
+                          [0,4],[1,4],[2,4],[3,4],[4,4],[5,4],
+                          [0,5],[1,5],[2,5],[3,5],[4,5],[5,5]].sort }
+        end
+      end
+
+      context 'centered agent' do
+        let(:location) { center_agent.location }
+
+        context 'in radius 0' do
+          let(:radius) { 0 }
+          it { should == [[2,2]].sort }
+        end
+
+        context 'in radius 1' do
+          let(:radius) { 1 }
+          it { should == [[1,1],[2,1],[3,1],
+                          [1,2],[2,2],[3,2],
+                          [1,3],[2,3],[3,3]].sort }
+        end
+
+        context 'in radius 2' do
+          let(:radius) { 2 }
+          it { should == [[0,0],[1,0],[2,0],[3,0],[4,0],
+                          [0,1],[1,1],[2,1],[3,1],[4,1],
+                          [0,2],[1,2],[2,2],[3,2],[4,2],
+                          [0,3],[1,3],[2,3],[3,3],[4,3],
+                          [0,4],[1,4],[2,4],[3,4],[4,4]].sort }
+        end
+      end
+    end
+
     describe '.within_rectangle' do
       let(:world) { create :world_with_tiles }
       before do

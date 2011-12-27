@@ -1,13 +1,9 @@
 class ResourceTile < ActiveRecord::Base
   acts_as_api
 
-  has_geom :geom => :point
-
   belongs_to :megatile
   belongs_to :world
   has_many :agents
-
-  after_create :setup_geom
 
   # validates_uniqueness_of :x, :scope => [:y, :world_id]
   # validates_uniqueness_of :y, :scope => [:x, :world_id]
@@ -27,6 +23,18 @@ class ResourceTile < ActiveRecord::Base
   # scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
 
   scope :with_agents, include: [:agents]
+
+  scope :in_square_range, lambda { |radius, x, y|
+    x_min = (x - radius).floor
+    y_min = (y - radius).floor
+    if radius == 0
+      where("x = ? AND y= ?", x_min, y_min)
+    else
+      x_max = (x + radius).ceil
+      y_max = (y + radius).ceil
+      where("x >= ? AND x < ? AND y >= ? AND y < ?", x_min, x_max, y_min, y_max)
+    end
+  }
 
   def self.verbiage
     { :tree_species => {
@@ -52,9 +60,6 @@ class ResourceTile < ActiveRecord::Base
   def location= coords
     self.x = coords[0]
     self.y = coords[1]
-    unless self.new_record?
-      self.geom = get_geom
-    end
   end
 
   def location
@@ -141,17 +146,5 @@ class ResourceTile < ActiveRecord::Base
 
   def <=> other
     self.location <=> other.location
-  end
-
-  private
-  def get_geom
-    return unless x && y
-    Point.from_x_y(x + 0.5, y + 0.5)
-  end
-
-  def setup_geom
-    return unless x && y
-    self.geom = Point.from_x_y(x + 0.5, y + 0.5)
-    save
   end
 end

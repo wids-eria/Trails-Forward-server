@@ -9,6 +9,18 @@ describe Agent do
   let(:agent) { build(:generic_agent, world: world) }
 
   describe 'scope: ' do
+    describe '.in_square_range' do
+      let!(:too_large_negative_y) { create :agent, x: -1, y: -1.01 }
+      let!(:negative_xy) { create :agent, x: -1, y: -1 }
+      let!(:positive_xy) { create :agent, x: 1, y: 1 }
+      let!(:too_large_positive_y) { create :agent, x: 1, y: 1.01 }
+      let!(:too_large_negative_x) { create :agent, x: -1.01, y: -1 }
+      let!(:too_large_positive_x) { create :agent, x: 1.01, y: 1 }
+
+      subject { Agent.in_square_range(1, 0, 0).to_set }
+      it { should == [negative_xy, positive_xy].to_set }
+    end
+
     describe '.for_types (or .for_type alias' do
       let!(:tribble) { create :tribble, world: world }
       let!(:generic) { create :generic_agent, world: world }
@@ -111,11 +123,6 @@ describe Agent do
         agent.x.should == 4.4
         agent.y.should == 5.5
       end
-
-      it 'assigns geometry point' do
-        agent.geom.x.should == 4.4
-        agent.geom.y.should == 5.5
-      end
     end
 
     context 'on a new record' do
@@ -129,10 +136,6 @@ describe Agent do
         agent.y.should == 5.5
       end
 
-      it 'assigns geometry point' do
-        agent.geom.x.should == 4.4
-        agent.geom.y.should == 5.5
-      end
     end
   end
 
@@ -235,7 +238,7 @@ describe Agent do
     let(:location) { [3.5, 3.5] }
 
     example 'radius 1' do
-      agent.nearby_tiles(radius: 1).map(&:location).to_set.should == [[2,3], [3,2], [3,3], [3,4], [4,3]].to_set
+      agent.nearby_tiles(radius: 1).map(&:location).to_set.should == [[2,2], [2,3], [2,4], [3,2], [3,3], [3,4], [4,2], [4,3], [4,4]].to_set
     end
 
     example 'radius 1.5' do
@@ -243,7 +246,7 @@ describe Agent do
     end
 
     example 'radius 2' do
-      agent.nearby_tiles(radius: 2).map(&:location).to_set.should == [[1,3], [2,2], [2,3], [2,4], [3,1], [3,2], [3,3], [3,4], [3,5], [4,2], [4,3], [4,4], [5,3]].to_set
+      agent.nearby_tiles(radius: 2).map(&:location).to_set.should == [[1,1], [1,2], [1,3], [1,4], [1,5], [2,1], [2,2], [2,3], [2,4], [2,5], [3,1], [3,2], [3,3], [3,4], [3,5], [4,1], [4,2], [4,3], [4,4], [4,5], [5,1], [5,2], [5,3], [5,4], [5,5]].to_set
     end
   end
 

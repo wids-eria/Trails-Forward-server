@@ -7,8 +7,6 @@ class Agent < ActiveRecord::Base
     property :energy
   end
 
-  has_geom :geom => :point
-
   belongs_to :resource_tile 
   belongs_to :world
 
@@ -17,11 +15,18 @@ class Agent < ActiveRecord::Base
   validates_presence_of :heading
   validates_presence_of :world
 
-  after_create :setup_geom
   before_validation :setup_resource_tile
 
   scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
   scope :for_type, lambda { |type| where(type: type.to_s.classify) }
+
+  scope :in_square_range, lambda { |radius, x, y|
+    x_min = x - radius
+    x_max = x + radius
+    y_min = y - radius
+    y_max = y + radius
+    where("x >= ? AND x <= ? AND y >= ? AND y <= ?", x_min, x_max, y_min, y_max)
+  }
 
   def max_view_distance
     10
@@ -31,20 +36,26 @@ class Agent < ActiveRecord::Base
     opts = {}.merge opts
     opts[:radius] = [opts[:radius], max_view_distance].compact.min
 
-    local_search = opts[:class].where(world_id: world_id)
+    local_search = opts[:class].where(world_id: world_id).in_square_range(opts[:radius], self.x, self.y)
     local_search = local_search.for_types(opts[:types]) if opts[:types]
-    local_search.all_dwithin(geom, opts[:radius]).reject{|a| a.id == id}
+    local_search
   end
 
   def nearby_tiles opts = {}
+    opts[:radius] = [opts[:radius], max_view_distance].compact.min
     nearby_stuff opts.merge(class: ResourceTile)
   end
 
   def nearby_agents opts = {}
-    nearby_stuff opts.merge(class: Agent)
+    opts[:radius] = [opts[:radius], max_view_distance].compact.min
+    nearby_stuff(opts.merge class: Agent).reject do |a|
+      vect = (Vector[*a.location] - Vector[*self.location])
+      vect.magnitude > opts[:radius] || a == self
+    end
   end
 
   def nearby_peers opts = {}
+    opts[:radius] = [opts[:radius], max_view_distance].compact.min
     nearby_agents opts.merge({types: [self.class]})
   end
 
@@ -52,9 +63,6 @@ class Agent < ActiveRecord::Base
     self.x = coords[0]
     self.y = coords[1]
     self.resource_tile = world.resource_tile_at(self.x.floor, self.y.floor)
-    unless self.new_record?
-      self.geom = get_geom
-    end
   end
 
   def location
@@ -144,16 +152,6 @@ class Agent < ActiveRecord::Base
   end
 
 private
-  def get_geom
-    return unless x && y
-    Point.from_x_y(x, y)
-  end
-
-  def setup_geom
-    return unless x && y
-    self.geom = Point.from_x_y(x, y)
-    save
-  end
 
   def setup_resource_tile
     return unless x && y && world
