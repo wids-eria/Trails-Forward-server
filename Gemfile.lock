@@ -19,7 +19,7 @@ GIT
 
 GIT
   remote: git://github.com/randland/progressbar
-  revision: 4493b7d0a6bc8525d7ef6f5871a3c642b5ec5d5c
+  revision: 2d704f5d6113f92d073455d9e32c242685c09fde
   specs:
     progressbar (0.9.2)
       colorful (>= 0.0.2)
