@@ -1,5 +1,6 @@
 require 'database_cleaner'
-DatabaseCleaner.strategy = :truncation
+DatabaseCleaner[:active_record].strategy = :truncation
+DatabaseCleaner[:mongoid].strategy = :truncation
 
 RSpec.configure do |config|
   config.before(:all) do

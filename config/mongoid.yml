@@ -1,8 +1,12 @@
+defaults: &defaults
+  allow_dynamic_fields: false
+
 development:
   host: localhost
   database: trails_forward_development
 
 test:
+  <<: *defaults
   host: localhost
   database: trails_forward_test
 

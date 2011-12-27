@@ -4,9 +4,10 @@ class Tortuga
   include LocativeDocumentInWorld
   
   field :heading, type: Float, default: 0
-  field :age, type: Integer
+  field :age, type: Integer, default: 0
   
   before_save :wrap_heading
+  belongs_to :patch
   
   def wrap_heading
     self.heading = self.heading % 360
@@ -20,6 +21,10 @@ class Tortuga
     self.y = self.y % self.mundo.height
   end
 
+
+  scope :for_types, lambda { |types| any_in(_type: types.map{|t| t.to_s.classify}) }
+  scope :for_type, lambda { |type| where(_type: type.to_s.classify) }
+
   def turn(degrees)
   end
   
@@ -31,12 +36,24 @@ class Tortuga
     turn_right(0-degrees)
   end
   
-  def tick
-  end
-  
   def do_tick
     tick
     save!
+  end
+
+  def tick
+    self.age += 1
+    die! and return if should_die?
+
+    go
+  end
+
+  def die!
+    self.destroy
+  end
+
+  def should_die?
+    false
   end
   
   def self.degrees_to_radians(degrees)
