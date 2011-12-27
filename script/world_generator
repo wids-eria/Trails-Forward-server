@@ -10,6 +10,7 @@ filename = ARGV[0] || BASE_FILENAME
 name = File.basename(filename).sub(/\.csv$/, '')
 
 ProgressBar.color_status
+ProgressBar.iter_rate_mode
 pb = ProgressBar.new 'CSV Parse', 1
 rows = BAMFCSV.read(filename)
 pb.finish
