@@ -4,6 +4,7 @@ class Tortuga
   include LocativeDocumentInWorld
   
   field :heading, type: Float, default: 0
+  field :age, type: Integer
   
   before_save :wrap_heading
   
@@ -17,6 +18,9 @@ class Tortuga
     
     self.x = self.x % self.mundo.width
     self.y = self.y % self.mundo.height
+  end
+
+  def turn(degrees)
   end
   
   def turn_right(degrees)
@@ -39,4 +43,10 @@ class Tortuga
     (degrees/180.0)*Math::PI
   end
 
+  def nearby_tiles
+
+  end
+
+  def nearby_peers
+  end
 end

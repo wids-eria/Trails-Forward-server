@@ -19,6 +19,11 @@ module LocativeDocumentInWorld
 
     validate :fits_in_mundo?
 
+    def location=(coords)
+      self.x = coords[0]
+      self.y = coords[1]
+    end
+
     def x
       self._x
     end
@@ -42,7 +47,7 @@ module LocativeDocumentInWorld
       self._y = new_y
       loc_list = [new_x, new_y]
       # self.location = {:lng => new_x, :lat => new_y}
-      self.location = loc_list
+      self[:location] = loc_list
       loc_list
     end
 

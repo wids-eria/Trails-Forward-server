@@ -28,7 +28,7 @@ describe TribbleTortuga do
     let(:peers) { peer_count.times.collect { build :tribble_tortuga } }
     subject { agent.should_move? }
     before do
-      Tribble.any_instance.stub(:nearby_peers => peers,
+      TribbleTortuga.any_instance.stub(:nearby_peers => peers,
                                 :move_threshold => move_threshold)
     end
 
