@@ -41,15 +41,15 @@ pb.finish
 
 world.spawn_megatiles
 
-# pb = ProgressBar.new 'Megatile IDs', world.megatiles.count
+pb = ProgressBar.new 'Megatile IDs', world.megatiles.count
 megatile_ids = {}
 world.megatiles.find_in_batches do |megatiles|
   megatiles.each do |megatile|
     megatile_ids["#{megatile.x}:#{megatile.y}"] = megatile.id
-    # pb.inc
+    pb.inc
   end
 end
-# pb.finish
+pb.finish
 
 def row_to_hash row
   result = {}
@@ -89,7 +89,7 @@ pb = ProgressBar.new 'Clear Tiles', 1
 ResourceTile.delete_all world_id: world_id
 pb.finish
 
-# pb = ProgressBar.new 'Tile Import', rows.count
+pb = ProgressBar.new 'Tile Import', rows.count
 rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
   tiles_to_import = []
 
@@ -109,8 +109,7 @@ rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
     tile_class = LandTile
     tile_hash = { world_id: world_id,
                   megatile_id: megatile_id,
-                  location: [tile_x, tile_y],
-                  geom: Point.from_x_y(tile_x + 0.5, tile_y + 0.5) }
+                  location: [tile_x, tile_y] }
 
     tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
     tile_hash[:housing_density] = housing_density_percent(row_hash[:devel_density].to_f)
@@ -167,22 +166,22 @@ rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
     end
 
     tiles_to_import << tile_class.new(tile_hash)
-    # pb.inc
+    pb.inc
   end
 
   ResourceTile.import tiles_to_import, validate: false, timestamps: false
 
 end
-# pb.finish
+pb.finish
 
-# pb = ProgressBar.new 'Players', PLAYER_TYPES.count
+pb = ProgressBar.new 'Players', PLAYER_TYPES.count
 PLAYER_TYPES.each_with_index do |player_klass, idx|
   user = Factory :user,
     name: "User #{world_id}-#{idx}",
     email: "u#{world.id}-#{idx}@example.com"
   player = player_klass.create :user => user, :world => world, :balance => 1000
-  # pb.inc
+  pb.inc
 end
-# pb.finish
+pb.finish
 
 puts "##{world_id} - #{name} generated".green
