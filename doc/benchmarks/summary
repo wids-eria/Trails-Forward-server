@@ -1,0 +1,5 @@
+rake db:reset && script/world_generator script/data/small_test_1.csv && yn script/tribbles_everywhere 1
+  -after removing GIS & GSL (10 ticks, 8 initial tribbles):
+    real	2m24.891s
+    user	1m42.611s
+    sys	0m29.211s

@@ -2,7 +2,8 @@
 require 'benchmark'
 require "tattletail"
 
-num_ticks = 256
+num_ticks = ARGV[1] || 10
+num_ticks = num_ticks.to_i
 num_tribbles = 8
 world_width = 198
 world_height = 198
@@ -49,6 +50,8 @@ world_height = world.height
 tick_count = 0
 ind_tick_count = 0
 
+ProgressBar.color_status
+ProgressBar.iter_rate_mode
 ProgressBar.disable_output unless Rails.env.development?
 
 tribble_pb = ProgressBar.new('Tribbles', num_tribbles)
@@ -76,6 +79,7 @@ num_ticks.times do |n|
   tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tribbles", tribbles.count)
   set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
   tick_pb.expand_title
+  tick_pb.colorize :magenta
 
   tribbles.each do |tribble|
     tribble.tick!
@@ -89,6 +93,7 @@ num_ticks.times do |n|
 
   tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tiles", tiles.count)
   tick_pb.expand_title
+  tick_pb.colorize :blue
   tiles.each do |tile|
     tile.tick!
     tick_pb.inc
@@ -99,4 +104,5 @@ num_ticks.times do |n|
 
   create_png world, tick_count
   create_gif world
+  puts
 end

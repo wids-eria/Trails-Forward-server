@@ -24,6 +24,7 @@ module TrailsForward
 
       prog_bar = ProgressBar.new(File.basename(filename), resource_tiles.count)
       prog_bar.expand_title
+      prog_bar.colorize :cyan
       resource_tiles.with_agents.find_in_batches do |tiles|
         tiles.each do |tile|
           x, y = tile.location

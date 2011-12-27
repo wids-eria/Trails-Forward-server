@@ -17,6 +17,10 @@ class LandTile < ResourceTile
     end
   end
 
+  def tick
+    grow_trees
+  end
+
   def can_bulldoze?
     true
   end

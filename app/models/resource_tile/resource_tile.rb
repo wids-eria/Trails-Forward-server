@@ -89,6 +89,14 @@ class ResourceTile < ActiveRecord::Base
     save!
   end
 
+  def tick
+  end
+
+  def tick!
+    tick
+    save!
+  end
+
   api_accessible :resource_base do |template|
     template.add :id
     template.add :x
