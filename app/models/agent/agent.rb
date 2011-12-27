@@ -1,6 +1,12 @@
 class Agent < ActiveRecord::Base
   def self.dist
-    @@dist ||= GSL::Rng.alloc('gsl_rng_ranlux', Time.now.to_i)
+    @@dist ||= SimpleRandom.new
+    @@dist.set_seed
+    @@dist
+  end
+
+  def self.normal_dist std = 1, mean = 0
+    self.dist.normal * std + mean
   end
 
   property_set :settings do

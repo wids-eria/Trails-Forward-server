@@ -29,6 +29,6 @@ class Flycatcher < Agent
     range = 45.0
     std = range / 6.0
     mean = 114.0
-    Agent.dist.gaussian(std) + mean
+    Agent.normal_dist std, mean
   end
 end

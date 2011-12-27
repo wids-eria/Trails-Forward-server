@@ -15,8 +15,8 @@ class Tribble < Agent
 
   def tile_pref_vector tile
     vect = vector_to tile
-    dist = vect.r
-    vect = vect.normalize / dist
+    distance = vect.r
+    vect = vect.normalize / distance
     vect * tile_pref_scale(tile)
   end
 
@@ -26,8 +26,8 @@ class Tribble < Agent
 
   def agent_pref_vector agent
     vect = vector_to agent
-    dist = vect.r
-    vect = vect.normalize / dist
+    distance = vect.r
+    vect = vect.normalize / distance
     vect * agent_pref_scale(agent)
   end
 

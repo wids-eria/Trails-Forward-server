@@ -3,11 +3,10 @@
 results = Array.new(180) { 0 }
 
 def migrate_in_pdf
-  @dist ||= GSL::Rng.alloc
   range = 45.0
   std = range / 6.0
   mean = 114
-  @dist.gaussian(std) + mean
+  Agent.normal_dist std, mean
 end
 
 agents = 10000
