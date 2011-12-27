@@ -1,4 +1,15 @@
 FactoryGirl.define do
+  factory :mundo do
+    sequence(:name) {|n| "Teste Mundo #{n}"}
+    width 6
+    height 6
+    after_create do |mundo, proxy|
+      mundo.initialize_patches
+    end
+  end
+end
+
+FactoryGirl.define do
   factory :world do
     sequence(:name) {|n| "Example World #{n}"}
     start_date Date.new(1800, 1, 1)
