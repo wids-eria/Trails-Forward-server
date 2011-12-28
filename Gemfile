@@ -20,6 +20,7 @@ gem 'property_sets', git: 'git://github.com/bendyworks/property_sets', branch: '
 gem 'ruby-units'
 gem 'simple-random'
 gem 'state_machine'
+gem 'capistrano'
 
 group :development, :test do
   gem 'ruby-debug19', require: 'ruby-debug'
