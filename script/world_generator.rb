@@ -42,6 +42,7 @@ pb.finish
 
 world.spawn_megatiles
 
+
 pb = ProgressBar.new 'Megatile IDs', world.megatiles.count
 megatile_ids = {}
 world.megatiles.find_in_batches do |megatiles|
@@ -85,6 +86,14 @@ end
 def developed_but_not_lived_in? tile_hash
   (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_density] <= 0.75
 end
+
+# tile_indices = ResourceTile.connection.indexes :resource_tiles
+# pb = ProgressBar.new "Remove Indices", tile_indices.count
+# tile_indices.each do |index|
+#   ResourceTile.connection.remove_index index.table, index.columns
+#   pb.inc
+# end
+# pb.finish
 
 pb = ProgressBar.new 'Clear Tiles', 1
 ResourceTile.delete_all world_id: world_id
@@ -180,6 +189,13 @@ rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
   ResourceTile.import import_columns, tiles_to_import, validate: false, timestamps: false
 end
 pb.finish
+
+# pb = ProgressBar.new "Reapply indices", tile_indices.count
+# tile_indices.each do |index|
+#   ResourceTile.connection.add_index index.table, index.columns
+#   pb.inc
+# end
+# pb.finish
 
 pb = ProgressBar.new 'Players', PLAYER_TYPES.count
 PLAYER_TYPES.each_with_index do |player_klass, idx|

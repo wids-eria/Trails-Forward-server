@@ -1,7 +1,7 @@
 Scenario:
   Array based import
   Increased GC
-  Batch size 1000
+  Batch size 2000
   Partitions in place (16)
     CSV Parse:     100% |==================================================================================================|   6.35s ea | Time: 00:00:06
     World:         100% |==================================================================================================|     2.48/s | Time: 00:00:00
@@ -13,7 +13,7 @@ Scenario:
 
   Array based import
   Increased GC
-  Batch size 1000
+  Batch size 2000
   No partitions
     CSV Parse:     100% |==================================================================================================|   6.54s ea | Time: 00:00:06
     World:         100% |==================================================================================================|     3.74/s | Time: 00:00:00
@@ -29,7 +29,7 @@ Scenario:
 
   Array based import
   Increased GC
-  Batch size 1000
+  Batch size 2000
   No partitions
   Rows shifted instead of sliced
     CSV Parse:     100% |==================================================================================================|   5.52s ea | Time: 00:00:05
