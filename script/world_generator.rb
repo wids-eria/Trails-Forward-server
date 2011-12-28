@@ -107,86 +107,88 @@ import_columns = [ :megatile_id, :x, :y, :type, :zoned_use,
 
 pb = ProgressBar.new 'Tile Import', rows.count
 
-rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
-  tiles_to_import = []
+ResourceTile.connection.transaction do
+  rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
+    tiles_to_import = []
 
-  row_batch.each do |row|
-    row_hash = row_to_hash(row)
-    class_code = row_hash[:cover_class].to_i
+    row_batch.each do |row|
+      row_hash = row_to_hash(row)
+      class_code = row_hash[:cover_class].to_i
 
-    tile_x = row_hash[:col].to_i
-    tile_y = row_hash[:row].to_i
-    next if tile_x >= world.width || tile_y >= world.height
-    puts "[#{tile_x}, #{tile_y}]" if tile_x >= world.width || tile_y >= world.height
+      tile_x = row_hash[:col].to_i
+      tile_y = row_hash[:row].to_i
+      next if tile_x >= world.width || tile_y >= world.height
+      puts "[#{tile_x}, #{tile_y}]" if tile_x >= world.width || tile_y >= world.height
 
-    megatile_x = tile_x % world.megatile_width
-    megatile_y = tile_y % world.megatile_height
-    megatile_id = megatile_ids["#{megatile_x}:#{megatile_y}"]
+      megatile_x = tile_x % world.megatile_width
+      megatile_y = tile_y % world.megatile_height
+      megatile_id = megatile_ids["#{megatile_x}:#{megatile_y}"]
 
-    tile_hash = { world_id: world_id,
-                  type: 'LandTile',
-                  megatile_id: megatile_id,
-                  location: [tile_x, tile_y] }
+      tile_hash = { world_id: world_id,
+                    type: 'LandTile',
+                    megatile_id: megatile_id,
+                    location: [tile_x, tile_y] }
 
-    tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
-    tile_hash[:housing_density] = housing_density_percent(row_hash[:devel_density].to_f)
-    tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
-    tile_hash[:frontage] = row_hash[:frontage].to_f
-    tile_hash[:lakesize] = row_hash[:lakesize].to_f
-    tile_hash[:soil] = soil_amount(row_hash[:soil].to_i)
-    tile_hash[:landcover_class_code] = class_code
+      tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
+      tile_hash[:housing_density] = housing_density_percent(row_hash[:devel_density].to_f)
+      tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
+      tile_hash[:frontage] = row_hash[:frontage].to_f
+      tile_hash[:lakesize] = row_hash[:lakesize].to_f
+      tile_hash[:soil] = soil_amount(row_hash[:soil].to_i)
+      tile_hash[:landcover_class_code] = class_code
 
-    case class_code
+      case class_code
 
-    # Open Water, Emergent Herbaceous Wetlands
-    when 11, 95
-      if tile_hash[:housing_density] > 0
+      # Open Water, Emergent Herbaceous Wetlands
+      when 11, 95
+        if tile_hash[:housing_density] > 0
+          tile_hash[:zoned_use] = "Development"
+          tile_hash[:primary_use] = "Housing"
+        else
+          tile_hash[:type] = 'WaterTile'
+        end
+
+      # Developed
+      when 21..24
         tile_hash[:zoned_use] = "Development"
-        tile_hash[:primary_use] = "Housing"
-      else
+        tile_hash[:development_intensity] = (class_code - 20.0 / 4.0)
+        tile_hash[:primary_use] = developed_but_not_lived_in?(tile_hash) ? "Industry" : "Housing"
+
+      # Barren land
+      when 31
+        # tile_hash[:zoned_use] = "Barren"
+
+      # Forest, Scrub, Herbaceous, Wetlands
+      when 41..71, 90
+        tile_hash[:primary_use] = "Forest"
+        tile_hash[:tree_species] = case class_code
+                                   when 41 then ResourceTile.verbiage[:tree_species][:deciduous]
+                                   when 42 then ResourceTile.verbiage[:tree_species][:coniferous]
+                                   when 43 then ResourceTile.verbiage[:tree_species][:mixed]
+                                   else ResourceTile.verbiage[:tree_species][:unknown]
+                                   end
+      # Farmland
+      when 81..82
+        tile_hash[:primary_use] = case class_code
+                                  when 81 then "Agriculture/Pasture"
+                                  when 82 then "Agriculture/Cultivated Crops"
+                                  end
+        tile_hash[:zoned_use] = "Agriculture"
+
+      # Off the end of the world, Water for now
+      when 255
         tile_hash[:type] = 'WaterTile'
+
+      else
+        raise "Unknown tile class code #{class_code}"
       end
 
-    # Developed
-    when 21..24
-      tile_hash[:zoned_use] = "Development"
-      tile_hash[:development_intensity] = (class_code - 20.0 / 4.0)
-      tile_hash[:primary_use] = developed_but_not_lived_in?(tile_hash) ? "Industry" : "Housing"
-
-    # Barren land
-    when 31
-      # tile_hash[:zoned_use] = "Barren"
-
-    # Forest, Scrub, Herbaceous, Wetlands
-    when 41..71, 90
-      tile_hash[:primary_use] = "Forest"
-      tile_hash[:tree_species] = case class_code
-                                 when 41 then ResourceTile.verbiage[:tree_species][:deciduous]
-                                 when 42 then ResourceTile.verbiage[:tree_species][:coniferous]
-                                 when 43 then ResourceTile.verbiage[:tree_species][:mixed]
-                                 else ResourceTile.verbiage[:tree_species][:unknown]
-                                 end
-    # Farmland
-    when 81..82
-      tile_hash[:primary_use] = case class_code
-                                when 81 then "Agriculture/Pasture"
-                                when 82 then "Agriculture/Cultivated Crops"
-                                end
-      tile_hash[:zoned_use] = "Agriculture"
-
-    # Off the end of the world, Water for now
-    when 255
-      tile_hash[:type] = 'WaterTile'
-
-    else
-      raise "Unknown tile class code #{class_code}"
+      tiles_to_import << import_columns.map { |col| tile_hash[col] }
+      pb.inc
     end
 
-    tiles_to_import << import_columns.map { |col| tile_hash[col] }
-    pb.inc
+    ResourceTile.import import_columns, tiles_to_import, validate: false, timestamps: false
   end
-
-  ResourceTile.import import_columns, tiles_to_import, validate: false, timestamps: false
 end
 pb.finish
 
