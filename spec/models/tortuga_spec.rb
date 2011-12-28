@@ -112,9 +112,9 @@ describe Tortuga do
         agent.y.should == 5.5
       end
 
-      it 'assigns geometry point' do
-        agent.geom.x.should == 4.4
-        agent.geom.y.should == 5.5
+      it 'assigns mongo gis location' do
+        agent.location[0].should == 4.4
+        agent.location[1].should == 5.5
       end
     end
 
@@ -130,16 +130,9 @@ describe Tortuga do
       end
 
       it 'assigns geometry point' do
-        agent.geom.x.should == 4.4
-        agent.geom.y.should == 5.5
+        agent.location[0].should == 4.4
+        agent.location[1].should == 5.5
       end
-    end
-  end
-
-  describe '#location' do
-    it 'returns array of [x,y] values' do
-      agent = build(:tortuga, x: 1.5, y:3.7)
-      agent.location.should == [1.5, 3.7]
     end
   end
 
@@ -157,7 +150,7 @@ describe Tortuga do
         agent2.should be_valid
       end
       example 'agent 1 and agent 2 share the tile' do
-        agent1.resource_tile.should == agent2.resource_tile
+        agent1.patch.should == agent2.patch
       end
     end
 
@@ -170,7 +163,7 @@ describe Tortuga do
         agent2.should be_valid
       end
       example 'agent 1 and agent 2 share the tile' do
-        agent1.resource_tile.should == agent2.resource_tile
+        agent1.patch.should == agent2.patch
       end
       example 'agent 1 and agent 2 have the same location' do
         agent1.location.should == agent2.location
@@ -182,7 +175,7 @@ describe Tortuga do
     let(:mundo) { create :mundo }
     let!(:agent1) { create :tortuga, mundo: mundo, location: location1 }
     let!(:agent2) { create :tortuga, mundo: mundo, location: location2 }
-    let!(:tribble) { create :tribble, mundo: mundo, location: location1 }
+    let!(:tribble) { create :tribble_tortuga, mundo: mundo, location: location1 }
     let(:location1) { [0.5, 0.5] }
     context 'near enough to see' do
       let(:location2) { [0.6, 0.4] }
@@ -198,7 +191,7 @@ describe Tortuga do
     end
     context 'farther than max view distance' do
       let(:location2) { [2.6, 2.4] }
-      before { GenericAgent.any_instance.stub(max_view_distance: 2) }
+      before { Tortuga.any_instance.stub(max_view_distance: 2) }
       example 'agent 1 can not see agent 2' do
         agent1.nearby_agents(radius: 10).should == [tribble]
       end
@@ -275,7 +268,7 @@ describe Tortuga do
           its(:location) { should == [1.0, 2.0] }
 
           it 'changes associated resource tile' do
-            agent.resource_tile.location.should == [1, 2]
+            agent.patch.location.should == [1, 2]
           end
         end
 

@@ -21,12 +21,16 @@ module LocativeDocumentInWorld
 
     def location=(coords)
       if coords.respond_to? :key
-        self.x = coords[:lat]
-        self.y = coords[:lng]
+        self.x = coords[:lng]
+        self.y = coords[:lat]
       else
         self.x = coords[0]
         self.y = coords[1]
       end
+    end
+
+    def location
+      [x,y]
     end
 
     def x

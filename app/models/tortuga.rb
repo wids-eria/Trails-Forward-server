@@ -8,7 +8,7 @@ class Tortuga
   
   before_save :wrap_heading
   belongs_to :patch
-  
+
   def wrap_heading
     self.heading = self.heading % 360
   end
@@ -78,5 +78,54 @@ class Tortuga
                       patch: patch_id,
                       heading: rand(360).round,
                       location: self.location)
+  end
+
+  def move distance
+    offset_coordinates = Agent.calculate_offset_coordinates(self.heading, distance)
+    new_x = (self.x + offset_coordinates[0]).round(2)
+    new_y = (self.y + offset_coordinates[1]).round(2)
+
+    if new_x < 0 || new_x >= mundo.width
+      if new_x < 0
+        new_x = 0
+      else
+        new_x = mundo.width - 1
+      end
+      self.heading = (360 - self.heading)
+    end
+
+    if new_y < 0 || new_y >= mundo.height
+      if new_y < 0
+        new_y = 0
+      else
+        new_y = mundo.height - 1
+      end
+      self.heading = (180 - self.heading)
+    end
+
+    self.location = [new_x, new_y]
+  end
+
+  def self.calculate_offset_coordinates heading, distance
+    heading_in_radians = heading * (Math::PI / 180.0)
+    x_offset = (distance * Math.sin(heading_in_radians)).round(2)
+    y_offset = (distance * Math.cos(heading_in_radians)).round(2)
+    [x_offset, y_offset]
+  end
+
+  def set_x_y(new_x, new_y)
+    self._x = new_x
+    self._y = new_y
+    loc_list = [new_x, new_y]
+    self[:location] = loc_list
+    if x && y
+      self.patch = Patch.where(_x: x.floor, _y: y.floor, mundo_id: mundo_id).first
+    end
+
+    loc_list
+  end
+
+  def nearby_agents opts = {}
+    []
   end
 end
