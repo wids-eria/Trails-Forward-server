@@ -42,9 +42,16 @@ class LandTile < ResourceTile
   end
 
   def self.grow_trees! world
+    # sql = <<EOS
+# UPDATE resource_tiles
+# SET tree_density = tree_density + (((4 * tree_density ^ 3) - (8 * tree_density ^ 2) + (4 * tree_density)) * 0.5)
+# WHERE world_id = #{world.id}
+  # AND type = 'LandTile'
+  # AND tree_density > 0
+# EOS
     sql = <<EOS
 UPDATE resource_tiles
-SET tree_density = tree_density + (((4 * tree_density ^ 3) - (8 * tree_density ^ 2) + (4 * tree_density)) * 0.5)
+SET tree_density = tree_density + (((4 * POW(tree_density, 3)) - (8 * POW(tree_density, 2)) + (4 * tree_density)) * 0.5)
 WHERE world_id = #{world.id}
   AND type = 'LandTile'
   AND tree_density > 0
