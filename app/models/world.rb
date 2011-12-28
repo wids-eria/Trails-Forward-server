@@ -36,6 +36,10 @@ class World < ActiveRecord::Base
     1.day
   end
 
+  def grow_trees!
+    LandTile.grow_trees! self
+  end
+
   def tick_agents
 
   end

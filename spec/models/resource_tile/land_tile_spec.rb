@@ -125,11 +125,16 @@ describe LandTile do
     it "should have estimated lumber value" do
       tile.estimated_lumber_value.should == 21
     end
+  end
 
-    it "can be grown" do
-      lambda {
-        tile.grow_trees
-      }.should change(tile, :tree_size)
+  describe '.grow_trees!' do
+    let(:world) { create :world_with_resources }
+    let(:tile) { world.resource_tiles.where('type = ? AND tree_density > 0', 'LandTile').first }
+
+    example 'increases the tree_density' do
+      original_density = tile.tree_density
+      world.grow_trees!
+      tile.reload.tree_density.should > original_density
     end
   end
 

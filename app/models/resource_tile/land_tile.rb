@@ -18,7 +18,6 @@ class LandTile < ResourceTile
   end
 
   def tick
-    grow_trees
   end
 
   def can_bulldoze?
@@ -42,12 +41,15 @@ class LandTile < ResourceTile
     42 * td * ts
   end
 
-  def grow_trees
-    if self.tree_size != nil
-      rate = 0.5
-      size = self.tree_size
-      self.tree_size += (4 * size ** 3 - 8 * size ** 2 + 4 * size) * rate
-    end
+  def self.grow_trees! world
+    sql = <<EOS
+UPDATE resource_tiles
+SET tree_density = tree_density + (((4 * tree_density ^ 3) - (8 * tree_density ^ 2) + (4 * tree_density)) * 0.5)
+WHERE world_id = #{world.id}
+  AND type = 'LandTile'
+  AND tree_density > 0
+EOS
+    self.connection.execute(sql)
   end
 
   def estimated_value

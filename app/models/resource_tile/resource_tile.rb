@@ -90,11 +90,12 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def tick
+    raise NotImplementedError
   end
 
   def tick!
     tick
-    save!
+    save! if changed?
   end
 
   api_accessible :resource_base do |template|

@@ -1,0 +1,637 @@
+\h
+GRANT ALL ON trails_forward_development TO bendyworker;
+SHOW schemas
+;
+SHOW tables;
+GRANT ALL ON public TO bendyworker;
+SHOW search_path;
+GRANT ALL ON bendyworker TO bendyworker;
+SHOW databases;
+SHOW databases
+;
+GRANT ALL ON SCHEMA bendyworker TO bendyworker;
+GRANT ALL ON SCHEMA "$user" TO bendyworker;
+GRANT ALL ON SCHEMA public TO bendyworker;
+exit
+\q
+\h
+exit
+exit
+\q
+GRANT ALL PRIVILEGES ON public TO bendyworker;
+GRANT ALL PRIVILEGES ON SCHEMA public TO bendyworker;
+\q
+Tribble
+;
+describe agents;
+\d agents;
+exit
+;
+\q
+\d agents
+exit
+;
+\q
+GRANT ALL PRIVILEGES ON SCHEMA public TO bendyworker;
+exit
+\q
+\d agents
+\d agent_properties
+exit
+\q
+CREATE TABLE agents_x0_y0 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y0_x_y ON agents_x0_y0 (x,y)
+CREATE TABLE agents_x0_y200 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y200_x_y ON agents_x0_y200 (x,y)
+CREATE TABLE agents_x0_y400 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y400_x_y ON agents_x0_y400 (x,y)
+CREATE TABLE agents_x0_y600 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y600_x_y ON agents_x0_y600 (x,y)
+CREATE TABLE agents_x0_y800 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y800_x_y ON agents_x0_y800 (x,y)
+CREATE TABLE agents_x200_y0 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y0_x_y ON agents_x200_y0 (x,y)
+CREATE TABLE agents_x200_y200 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y200_x_y ON agents_x200_y200 (x,y)
+CREATE TABLE agents_x200_y400 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y400_x_y ON agents_x200_y400 (x,y)
+CREATE TABLE agents_x200_y600 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y600_x_y ON agents_x200_y600 (x,y)
+CREATE TABLE agents_x200_y800 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y800_x_y ON agents_x200_y800 (x,y)
+CREATE TABLE agents_x400_y0 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y0_x_y ON agents_x400_y0 (x,y)
+CREATE TABLE agents_x400_y200 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y200_x_y ON agents_x400_y200 (x,y)
+CREATE TABLE agents_x400_y400 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y400_x_y ON agents_x400_y400 (x,y)
+CREATE TABLE agents_x400_y600 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y600_x_y ON agents_x400_y600 (x,y)
+CREATE TABLE agents_x400_y800 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y800_x_y ON agents_x400_y800 (x,y)
+CREATE TABLE agents_x600_y0 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y0_x_y ON agents_x600_y0 (x,y)
+CREATE TABLE agents_x600_y200 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y200_x_y ON agents_x600_y200 (x,y)
+CREATE TABLE agents_x600_y400 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y400_x_y ON agents_x600_y400 (x,y)
+CREATE TABLE agents_x600_y600 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y600_x_y ON agents_x600_y600 (x,y)
+CREATE TABLE agents_x600_y800 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y800_x_y ON agents_x600_y800 (x,y)
+CREATE TABLE agents_x800_y0 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y0_x_y ON agents_x800_y0 (x,y)
+CREATE TABLE agents_x800_y200 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y200_x_y ON agents_x800_y200 (x,y)
+CREATE TABLE agents_x800_y400 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y400_x_y ON agents_x800_y400 (x,y)
+CREATE TABLE agents_x800_y600 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y600_x_y ON agents_x800_y600 (x,y)
+CREATE TABLE agents_x800_y800 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y800_x_y ON agents_x800_y800 (x,y)
+CREATE TABLE agents_x1000_y0 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y0_x_y ON agents_x1000_y0 (x,y)
+CREATE TABLE agents_x1000_y200 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y200_x_y ON agents_x1000_y200 (x,y)
+CREATE TABLE agents_x1000_y400 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y400_x_y ON agents_x1000_y400 (x,y)
+CREATE TABLE agents_x1000_y600 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y600_x_y ON agents_x1000_y600 (x,y)
+CREATE TABLE agents_x1000_y800 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y800_x_y ON agents_x1000_y800 (x,y)
+CREATE TABLE agents_x1200_y0 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y0_x_y ON agents_x1200_y0 (x,y)
+CREATE TABLE agents_x1200_y200 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y200_x_y ON agents_x1200_y200 (x,y)
+CREATE TABLE agents_x1200_y400 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y400_x_y ON agents_x1200_y400 (x,y)
+CREATE TABLE agents_x1200_y600 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y600_x_y ON agents_x1200_y600 (x,y)
+CREATE TABLE agents_x1200_y800 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y800_x_y ON agents_x1200_y800 (x,y)
+CREATE TABLE agents_x1400_y0 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y0_x_y ON agents_x1400_y0 (x,y)
+CREATE TABLE agents_x1400_y200 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y200_x_y ON agents_x1400_y200 (x,y)
+CREATE TABLE agents_x1400_y400 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y400_x_y ON agents_x1400_y400 (x,y)
+CREATE TABLE agents_x1400_y600 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y600_x_y ON agents_x1400_y600 (x,y)
+CREATE TABLE agents_x1400_y800 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y800_x_y ON agents_x1400_y800 (x,y)
+CREATE OR REPLACE FUNCTION agents_insert_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF ( x >= 0 AND x < 200 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x0_y0 VALUES (NEW.*);
+  ELSIF ( x >= 0 AND x < 200 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x0_y200 VALUES (NEW.*);
+  ELSIF ( x >= 0 AND x < 200 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x0_y400 VALUES (NEW.*);
+  ELSIF ( x >= 0 AND x < 200 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x0_y600 VALUES (NEW.*);
+  ELSIF ( x >= 0 AND x < 200 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x0_y800 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x200_y0 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x200_y200 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x200_y400 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x200_y600 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x200_y800 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x400_y0 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x400_y200 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x400_y400 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x400_y600 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x400_y800 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x600_y0 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x600_y200 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x600_y400 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x600_y600 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x600_y800 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x800_y0 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x800_y200 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x800_y400 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x800_y600 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x800_y800 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x1000_y0 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x1000_y200 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x1000_y400 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x1000_y600 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x1000_y800 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x1200_y0 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x1200_y200 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x1200_y400 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x1200_y600 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x1200_y800 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x1400_y0 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x1400_y200 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x1400_y400 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x1400_y600 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x1400_y800 VALUES (NEW.*);
+  ELSE
+    RAISE EXCEPTION 'Date out of range.  Fix the agents_insert_trigger() function!';
+  END IF;
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+exit
+\q
+CREATE TABLE agents_x0_y0 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y0_x_y ON agents_x0_y0 (x,y);
+CREATE TABLE agents_x0_y200 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y200_x_y ON agents_x0_y200 (x,y);
+CREATE TABLE agents_x0_y400 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y400_x_y ON agents_x0_y400 (x,y);
+CREATE TABLE agents_x0_y600 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y600_x_y ON agents_x0_y600 (x,y);
+CREATE TABLE agents_x0_y800 (
+  CHECK ( x >= 0 AND x < 200
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x0_y800_x_y ON agents_x0_y800 (x,y);
+CREATE TABLE agents_x200_y0 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y0_x_y ON agents_x200_y0 (x,y);
+CREATE TABLE agents_x200_y200 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y200_x_y ON agents_x200_y200 (x,y);
+CREATE TABLE agents_x200_y400 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y400_x_y ON agents_x200_y400 (x,y);
+CREATE TABLE agents_x200_y600 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y600_x_y ON agents_x200_y600 (x,y);
+CREATE TABLE agents_x200_y800 (
+  CHECK ( x >= 200 AND x < 400
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x200_y800_x_y ON agents_x200_y800 (x,y);
+CREATE TABLE agents_x400_y0 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y0_x_y ON agents_x400_y0 (x,y);
+CREATE TABLE agents_x400_y200 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y200_x_y ON agents_x400_y200 (x,y);
+CREATE TABLE agents_x400_y400 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y400_x_y ON agents_x400_y400 (x,y);
+CREATE TABLE agents_x400_y600 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y600_x_y ON agents_x400_y600 (x,y);
+CREATE TABLE agents_x400_y800 (
+  CHECK ( x >= 400 AND x < 600
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x400_y800_x_y ON agents_x400_y800 (x,y);
+CREATE TABLE agents_x600_y0 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y0_x_y ON agents_x600_y0 (x,y);
+CREATE TABLE agents_x600_y200 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y200_x_y ON agents_x600_y200 (x,y);
+CREATE TABLE agents_x600_y400 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y400_x_y ON agents_x600_y400 (x,y);
+CREATE TABLE agents_x600_y600 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y600_x_y ON agents_x600_y600 (x,y);
+CREATE TABLE agents_x600_y800 (
+  CHECK ( x >= 600 AND x < 800
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x600_y800_x_y ON agents_x600_y800 (x,y);
+CREATE TABLE agents_x800_y0 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y0_x_y ON agents_x800_y0 (x,y);
+CREATE TABLE agents_x800_y200 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y200_x_y ON agents_x800_y200 (x,y);
+CREATE TABLE agents_x800_y400 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y400_x_y ON agents_x800_y400 (x,y);
+CREATE TABLE agents_x800_y600 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y600_x_y ON agents_x800_y600 (x,y);
+CREATE TABLE agents_x800_y800 (
+  CHECK ( x >= 800 AND x < 1000
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x800_y800_x_y ON agents_x800_y800 (x,y);
+CREATE TABLE agents_x1000_y0 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y0_x_y ON agents_x1000_y0 (x,y);
+CREATE TABLE agents_x1000_y200 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y200_x_y ON agents_x1000_y200 (x,y);
+CREATE TABLE agents_x1000_y400 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y400_x_y ON agents_x1000_y400 (x,y);
+CREATE TABLE agents_x1000_y600 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y600_x_y ON agents_x1000_y600 (x,y);
+CREATE TABLE agents_x1000_y800 (
+  CHECK ( x >= 1000 AND x < 1200
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x1000_y800_x_y ON agents_x1000_y800 (x,y);
+CREATE TABLE agents_x1200_y0 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y0_x_y ON agents_x1200_y0 (x,y);
+CREATE TABLE agents_x1200_y200 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y200_x_y ON agents_x1200_y200 (x,y);
+CREATE TABLE agents_x1200_y400 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y400_x_y ON agents_x1200_y400 (x,y);
+CREATE TABLE agents_x1200_y600 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y600_x_y ON agents_x1200_y600 (x,y);
+CREATE TABLE agents_x1200_y800 (
+  CHECK ( x >= 1200 AND x < 1400
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x1200_y800_x_y ON agents_x1200_y800 (x,y);
+CREATE TABLE agents_x1400_y0 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 0 AND y < 200 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y0_x_y ON agents_x1400_y0 (x,y);
+CREATE TABLE agents_x1400_y200 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 200 AND y < 400 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y200_x_y ON agents_x1400_y200 (x,y);
+CREATE TABLE agents_x1400_y400 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 400 AND y < 600 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y400_x_y ON agents_x1400_y400 (x,y);
+CREATE TABLE agents_x1400_y600 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 600 AND y < 800 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y600_x_y ON agents_x1400_y600 (x,y);
+CREATE TABLE agents_x1400_y800 (
+  CHECK ( x >= 1400 AND x < 1600
+    AND y >= 800 AND y < 1000 )
+) INHERITS (agents);
+CREATE INDEX agents_x1400_y800_x_y ON agents_x1400_y800 (x,y);
+CREATE OR REPLACE FUNCTION agents_insert_trigger()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF ( x >= 0 AND x < 200 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x0_y0 VALUES (NEW.*);
+  ELSIF ( x >= 0 AND x < 200 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x0_y200 VALUES (NEW.*);
+  ELSIF ( x >= 0 AND x < 200 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x0_y400 VALUES (NEW.*);
+  ELSIF ( x >= 0 AND x < 200 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x0_y600 VALUES (NEW.*);
+  ELSIF ( x >= 0 AND x < 200 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x0_y800 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x200_y0 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x200_y200 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x200_y400 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x200_y600 VALUES (NEW.*);
+  ELSIF ( x >= 200 AND x < 400 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x200_y800 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x400_y0 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x400_y200 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x400_y400 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x400_y600 VALUES (NEW.*);
+  ELSIF ( x >= 400 AND x < 600 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x400_y800 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x600_y0 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x600_y200 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x600_y400 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x600_y600 VALUES (NEW.*);
+  ELSIF ( x >= 600 AND x < 800 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x600_y800 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x800_y0 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x800_y200 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x800_y400 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x800_y600 VALUES (NEW.*);
+  ELSIF ( x >= 800 AND x < 1000 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x800_y800 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x1000_y0 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x1000_y200 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x1000_y400 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x1000_y600 VALUES (NEW.*);
+  ELSIF ( x >= 1000 AND x < 1200 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x1000_y800 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x1200_y0 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x1200_y200 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x1200_y400 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x1200_y600 VALUES (NEW.*);
+  ELSIF ( x >= 1200 AND x < 1400 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x1200_y800 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 0 AND y < 200 ) THEN
+    INSERT INTO agents_x1400_y0 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 200 AND y < 400 ) THEN
+    INSERT INTO agents_x1400_y200 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 400 AND y < 600 ) THEN
+    INSERT INTO agents_x1400_y400 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 600 AND y < 800 ) THEN
+    INSERT INTO agents_x1400_y600 VALUES (NEW.*);
+  ELSIF ( x >= 1400 AND x < 1600 AND y >= 800 AND y < 1000 ) THEN
+    INSERT INTO agents_x1400_y800 VALUES (NEW.*);
+  ELSE
+    RAISE EXCEPTION 'Date out of range.  Fix the agents_insert_trigger() function!';
+  END IF;
+  RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+show tables
+\d
+\q
+\s
+\s
+\s
+\s
+\s
+\s
+\s
+\s
+show tables
+;
+\s tables
