@@ -79,6 +79,10 @@ describe Tortuga do
     it 'has a new heading' do
       subject.heading.should_not == agent.heading
     end
+
+    it "is in the same world" do
+      subject.mundo.should == agent.mundo
+    end
   end
 
   describe '#reproduce' do

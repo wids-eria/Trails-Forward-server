@@ -66,4 +66,17 @@ class Tortuga
 
   def nearby_peers
   end
+
+  def reproduce
+    litter_size.times do
+      create_descendant
+    end
+  end
+
+  def create_descendant
+    self.class.create(mundo: mundo_id,
+                      patch: patch_id,
+                      heading: rand(360).round,
+                      location: self.location)
+  end
 end

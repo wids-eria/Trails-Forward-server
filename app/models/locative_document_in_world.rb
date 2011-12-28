@@ -17,11 +17,16 @@ module LocativeDocumentInWorld
     validates_presence_of :_y
     validates_presence_of :location
 
-    validate :fits_in_mundo?
+    #validate :fits_in_mundo?
 
     def location=(coords)
-      self.x = coords[0]
-      self.y = coords[1]
+      if coords.respond_to? :key
+        self.x = coords[:lat]
+        self.y = coords[:lng]
+      else
+        self.x = coords[0]
+        self.y = coords[1]
+      end
     end
 
     def x
@@ -51,10 +56,10 @@ module LocativeDocumentInWorld
       loc_list
     end
 
-    def fits_in_mundo?
-      errors.add(:_x, "must be less than mundo width") unless (_x < mundo.width)
-      errors.add(:_y, "must be less than mundo height") unless (_y < mundo.height)
-    end
+    #def fits_in_mundo?
+    #  errors.add(:_x, "must be less than mundo width") unless (_x < mundo.width)
+    #  errors.add(:_y, "must be less than mundo height") unless (_y < mundo.height)
+    #end
     
     def turtles_in_radius(radius)
       Turtle.where(:mundo_id => mundo.id, :_id.ne => self.id).geo_near([x, y], :max_distance => radius)
