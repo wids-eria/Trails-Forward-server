@@ -127,7 +127,8 @@ ResourceTile.connection.transaction do
       tile_hash = { world_id: world_id,
                     type: 'LandTile',
                     megatile_id: megatile_id,
-                    location: [tile_x, tile_y] }
+                    x: tile_x,
+                    y: tile_y }
 
       tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
       tile_hash[:housing_density] = housing_density_percent(row_hash[:devel_density].to_f)

@@ -95,7 +95,7 @@ class ResourceTile < ActiveRecord::Base
 
   def tick!
     tick
-    save!
+    save! if changed?
   end
 
   api_accessible :resource_base do |template|

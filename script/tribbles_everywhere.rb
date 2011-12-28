@@ -50,6 +50,7 @@ world_height = world.height
 tick_count = 0
 ind_tick_count = 0
 tick_tiles = true
+generate_pngs = false
 
 ProgressBar.color_status
 ProgressBar.iter_rate_mode
@@ -58,19 +59,23 @@ ProgressBar.disable_output unless Rails.env.development?
 tribble_pb = ProgressBar.new('Tribbles', num_tribbles)
 
 num_tribbles.times do
+  location = []
+  resource_tile = ''
   begin
-    tribble = Factory.build :tribble, world: world,
-                                      location: [rand * world_width, rand * world_height],
-                                      heading: rand(360).round,
-                                      age: [Agent.normal_dist(2,5), 0].max.floor
-  end until tribble.resource_tile.type == 'LandTile' && tribble.resource_tile.tree_density > 0.4
-  tribble.save
+    location = [rand * world_width, rand * world_height]
+    resource_tile = world.resource_tile_at(*location.map(&:floor))
+  end until resource_tile.type == 'LandTile' && resource_tile.tree_density > 0.4
+  tribble = Factory.create :tribble,
+                            world: world,
+                            location: location,
+                            heading: rand(360).round,
+                            age: [Agent.normal_dist(2,5), 0].max.floor
   tribble_pb.inc
 end
 tribble_pb.finish
 
 clear_old_pngs world
-create_png world, tick_count
+create_png(world, tick_count) if generate_pngs
 
 puts
 
@@ -97,7 +102,8 @@ num_ticks.times do |n|
     tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tiles", tile_count)
     tick_pb.expand_title
     tick_pb.colorize :blue
-    LandTile.where(world_id: world.id).where('tree_density IS NOT NULL').find_in_batches do |tile_batch|
+    world.grow_trees!
+    LandTile.where(world_id: world.id).find_in_batches do |tile_batch|
       tile_batch.each do |tile|
         tile.tick!
         tick_pb.inc
@@ -108,7 +114,9 @@ num_ticks.times do |n|
 
   tick_count += 1
 
-  create_png world, tick_count
-  create_gif world
+  if generate_pngs
+    create_png(world, tick_count)
+    create_gif world
+  end
   puts
 end
