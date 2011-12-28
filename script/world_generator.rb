@@ -86,18 +86,6 @@ def developed_but_not_lived_in? tile_hash
   (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_density] <= 0.75
 end
 
-class Import
-  def self.args= args
-    @args = args
-  end
-
-  def self.import
-    ResourceTile.import(*@args)
-    nil
-  end
-  # tell_on :import
-end
-
 pb = ProgressBar.new 'Clear Tiles', 1
 ResourceTile.delete_all world_id: world_id
 pb.finish
@@ -110,8 +98,6 @@ import_columns = [ :megatile_id, :x, :y, :type, :zoned_use,
 
 pb = ProgressBar.new 'Tile Import', rows.count
 
-# while rows.size > 0
-#   row_batch = rows.shift(ROW_BATCH_SIZE)
 rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
   tiles_to_import = []
 
@@ -191,9 +177,7 @@ rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
     pb.inc
   end
 
-  Import.args = [import_columns, tiles_to_import, {validate: false, timestamps: false}]
-  Import.import
-
+  ResourceTile.import import_columns, tiles_to_import, validate: false, timestamps: false
 end
 pb.finish
 
