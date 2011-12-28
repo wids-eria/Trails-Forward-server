@@ -99,17 +99,21 @@ num_ticks.times do |n|
 
 
   if tick_tiles
-    tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tiles", tile_count)
-    tick_pb.expand_title
-    tick_pb.colorize :blue
+    sql_pb = ProgressBar.new("Tick #{tick_count + 1} - Growth", 1)
     world.grow_trees!
+    sql_pb.inc
+    sql_pb.finish
+
+    tile_pb = ProgressBar.new("Tick #{tick_count + 1} - Tiles", tile_count)
+    tile_pb.expand_title
+    tile_pb.colorize :blue
     LandTile.where(world_id: world.id).find_in_batches do |tile_batch|
       tile_batch.each do |tile|
         tile.tick!
-        tick_pb.inc
+        tile_pb.inc
       end
     end
-    tick_pb.finish
+    tile_pb.finish
   end
 
   tick_count += 1
