@@ -1,3 +1,7 @@
+To setup 1.9.2 with improved Garbage Collection:
+http://metaskills.net/2011/03/09/gc-tune-ruby-1.9.2-with-rvm/
+
+
 To install PostgreSQL:
 
 $ brew install postgresql
