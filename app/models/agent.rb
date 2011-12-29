@@ -116,9 +116,13 @@ class Agent < ActiveRecord::Base
     [x_offset, y_offset]
   end
 
+  def self.age! world
+    world.agents.update_all('age = age + 1')
+  end
+
   def tick!
     tick
-    save!
+    save! if changed?
   end
 
   def tick

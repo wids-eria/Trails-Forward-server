@@ -6,4 +6,12 @@ FactoryGirl.define do
 
   factory(:land_tile, class: LandTile, parent: :resource_tile) {}
   factory(:water_tile, class: WaterTile, parent: :resource_tile) {}
+
+  factory(:forest_tile, parent: :land_tile) do
+    tree_density 0.5
+  end
+
+  factory(:grass_tile, parent: :land_tile) do
+    tree_density nil
+  end
 end

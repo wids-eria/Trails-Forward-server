@@ -5,6 +5,15 @@ describe ResourceTile do
   let(:resource_tile) { build :resource_tile }
 
   describe 'scope' do
+    describe '.with_trees' do
+      it 'returns only land tiles with trees' do
+        forest = create :forest_tile
+        create :grass_tile
+        create :water_tile
+        ResourceTile.with_trees.should == [forest]
+      end
+    end
+
     describe '.in_square_range' do
       let(:world) { create :world_with_tiles }
       let(:corner_agent) { create :generic_agent, world: world, location: [3, 3] }

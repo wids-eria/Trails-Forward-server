@@ -88,6 +88,11 @@ num_ticks.times do |n|
   tick_pb.expand_title
   tick_pb.colorize :magenta
 
+  age_pb = ProgressBar.new("Tick #{tick_count + 1} - Age", 1)
+  world.age_agents!
+  age_pb.inc
+  age_pb.finish
+
   tribbles_in_world(world).each do |tribble|
     tribble.tick!
 

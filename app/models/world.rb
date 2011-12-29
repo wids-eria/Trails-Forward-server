@@ -27,6 +27,8 @@ class World < ActiveRecord::Base
   end
 
   def tick
+    grow_trees!
+    age_agents!
     tick_agents
     tick_tiles
     self.current_date += tick_length
@@ -38,6 +40,10 @@ class World < ActiveRecord::Base
 
   def grow_trees!
     LandTile.grow_trees! self
+  end
+
+  def age_agents!
+    Agent.age! self
   end
 
   def tick_agents

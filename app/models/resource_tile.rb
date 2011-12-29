@@ -10,6 +10,8 @@ class ResourceTile < ActiveRecord::Base
 
   # todo: Add validations for tree_species, zoned_use, and primary_use to be sure that they're in one of the below
 
+  scope :with_trees, where('tree_density > 0')
+
   scope :within_rectangle, lambda{|opts|
     min_x = opts[:x].to_i
     min_y = opts[:y].to_i
