@@ -1,7 +1,10 @@
 class Tribble < Agent
   def go
-    reproduce if should_reproduce?
-    try_move if should_move?
+    if should_reproduce?
+      reproduce
+    else
+      try_move if should_move?
+    end
   end
 
   def try_move
