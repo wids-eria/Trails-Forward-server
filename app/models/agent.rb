@@ -83,10 +83,11 @@ class Agent < ActiveRecord::Base
     self.heading += degrees
   end
 
-  def move distance
+  def position_after_move distance
     offset_coordinates = Agent.calculate_offset_coordinates(self.heading, distance)
     new_x = (self.x + offset_coordinates[0]).round(2)
     new_y = (self.y + offset_coordinates[1]).round(2)
+    new_heading = self.heading
 
     if new_x < 0 || new_x >= world.width
       if new_x < 0
@@ -94,7 +95,7 @@ class Agent < ActiveRecord::Base
       else
         new_x = world.width - 1
       end
-      self.heading = (360 - self.heading)
+      new_heading = (360 - self.heading)
     end
 
     if new_y < 0 || new_y >= world.height
@@ -103,10 +104,16 @@ class Agent < ActiveRecord::Base
       else
         new_y = world.height - 1
       end
-      self.heading = (180 - self.heading)
+      new_heading = (180 - self.heading)
     end
 
-    self.location = [new_x, new_y]
+    {location: [new_x, new_y], heading: new_heading}
+  end
+
+  def move distance
+    pos = position_after_move distance
+    self.heading = pos[:heading]
+    self.location = pos[:location]
   end
 
   def self.calculate_offset_coordinates heading, distance
@@ -126,9 +133,7 @@ class Agent < ActiveRecord::Base
   end
 
   def tick
-    self.age += 1
     die! and return if should_die?
-
     go
   end
 

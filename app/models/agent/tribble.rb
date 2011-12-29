@@ -1,8 +1,29 @@
 class Tribble < Agent
   def go
     reproduce if should_reproduce?
-    move(rand(2) + 1) if should_move?
-    turn(rand(90) - 45)
+    try_move if should_move?
+  end
+
+  def try_move
+    orig_location = location
+    orig_heading = heading
+    move_tries = 0
+
+    self.heading = most_desirable_heading
+
+    target_tile = nil
+    pos = {}
+
+    begin
+      pos = position_after_move(rand max_move_rate)
+      target_tile = world.resource_tile_at(*pos[:location].map(&:to_i))
+      move_tries += 1
+    end until target_tile.type == 'LandTile' || move_tries > 3
+
+    if move_tries <= 3
+      self.heading = pos[:heading]
+      self.location = pos[:location]
+    end
   end
 
   def tile_pref_scale tile
@@ -71,12 +92,11 @@ class Tribble < Agent
   end
 
   def should_move?
-    nearby_tiles
     nearby_peers.count > move_threshold || fidget?
   end
 
   def fidget?
-    rand < 0.3
+    rand < 0.1
   end
 
   def move_threshold

@@ -14,12 +14,12 @@ describe Tribble do
         agent.stub(:should_move? => true)
         agent.stub(:fidgit? => false)
       end
-      it('moves') { agent.should_receive(:move).and_return(true) }
+      it('moves') { agent.should_receive(:try_move).and_return(true) }
     end
 
     context 'given it should not move' do
       before { agent.stub(:should_move? => false) }
-      it('does not move') { agent.should_not_receive(:move).and_return(true) }
+      it('does not move') { agent.should_not_receive(:try_move).and_return(true) }
     end
   end
 

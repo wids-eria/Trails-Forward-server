@@ -50,9 +50,9 @@ describe Agent do
     let(:agent) { create :generic_agent, age: 0 }
     before { agent.stub(go: true) }
 
-    it 'advances agent age' do
+    it 'does not advance agent age' do
       agent.tick
-      agent.age.should == 1
+      agent.age.should == 0
     end
 
     it 'calls the #go hook' do
