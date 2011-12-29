@@ -96,10 +96,10 @@ num_ticks.times do |n|
   tribbles_in_world(world).each do |tribble|
     tribble.tick!
 
-    set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
-    tick_pb.expand_title
     tick_pb.inc
   end
+  set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
+  tick_pb.expand_title
   tick_pb.finish
 
 
