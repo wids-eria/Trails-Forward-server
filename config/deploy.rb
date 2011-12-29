@@ -48,9 +48,13 @@ namespace :deploy do
 
   task :cold do       # Overriding the default deploy:cold
     update
-    run rake_task("db:create")
     load_schema       # My own step, replacing migrations.
     start
+  end
+
+  desc "create database"
+  task :db_create, :roles => :app do
+    run rake_task("db:create")
   end
 
   desc "Load schema.rb into database"
