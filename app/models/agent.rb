@@ -112,16 +112,16 @@ class Agent < ActiveRecord::Base
     {location: [new_x, new_y], heading: new_heading}
   end
 
-  def move distance, set_resource_tile = true
-    pos = position_after_move distance
-    self.heading = pos[:heading]
-    if set_resource_tile
-      self.location = pos[:location]
-    else
-      self.x = pos[:location][0]
-      self.y = pos[:location][1]
-    end
-  end
+  # def move distance, set_resource_tile = true
+  #   pos = position_after_move distance
+  #   self.heading = pos[:heading]
+  #   if set_resource_tile
+  #     self.location = pos[:location]
+  #   else
+  #     self.x = pos[:location][0]
+  #     self.y = pos[:location][1]
+  #   end
+  # end
 
   def self.calculate_offset_coordinates heading, distance
     heading_in_radians = heading * (Math::PI / 180.0)

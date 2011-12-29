@@ -245,94 +245,94 @@ describe Agent do
     end
   end
 
-  describe '#move' do
-    let(:world) { create :world_with_tiles }
-    let(:agent) { build(:generic_agent, world: world, location: location, heading: heading) }
-    subject { agent }
-    before do
-      agent.move(distance)
-    end
+  # describe '#move' do
+  #   let(:world) { create :world_with_tiles }
+  #   let(:agent) { build(:generic_agent, world: world, location: location, heading: heading) }
+  #   subject { agent }
+  #   before do
+  #     agent.move(distance)
+  #   end
 
-    context 'starting at location [1, 1]' do
-      let(:location) { [1, 1] }
+  #   context 'starting at location [1, 1]' do
+  #     let(:location) { [1, 1] }
 
-      context 'with heading 45' do
-        let(:heading) { 45 }
+  #     context 'with heading 45' do
+  #       let(:heading) { 45 }
 
-        context 'passed a distance of 1' do
-          let(:distance) { 1 }
-          its(:location) { should == [1.71, 1.71] }
-        end
-      end
+  #       context 'passed a distance of 1' do
+  #         let(:distance) { 1 }
+  #         its(:location) { should == [1.71, 1.71] }
+  #       end
+  #     end
 
-      context 'with heading 0' do
-        let(:heading) { 0 }
+  #     context 'with heading 0' do
+  #       let(:heading) { 0 }
 
-        context 'passed a distance of 1' do
-          let(:distance) { 1 }
-          its(:location) { should == [1.0, 2.0] }
+  #       context 'passed a distance of 1' do
+  #         let(:distance) { 1 }
+  #         its(:location) { should == [1.0, 2.0] }
 
-          it 'changes associated resource tile' do
-            agent.resource_tile.location.should == [1, 2]
-          end
-        end
+  #         it 'changes associated resource tile' do
+  #           agent.resource_tile.location.should == [1, 2]
+  #         end
+  #       end
 
-        context 'passed a distance of -1' do
-          let(:distance) { -1 }
-          its(:location) { should == [1, 0] }
-        end
+  #       context 'passed a distance of -1' do
+  #         let(:distance) { -1 }
+  #         its(:location) { should == [1, 0] }
+  #       end
 
-        context 'passed a distance of -2' do
-          let(:distance) { -2 }
-          its(:location) { should == [1, 0] }
-        end
-      end
+  #       context 'passed a distance of -2' do
+  #         let(:distance) { -2 }
+  #         its(:location) { should == [1, 0] }
+  #       end
+  #     end
 
-      context 'with heading 90' do
-        let(:heading) { 90 }
+  #     context 'with heading 90' do
+  #       let(:heading) { 90 }
 
-        context 'passed a distance of 1' do
-          let(:distance) { 1 }
-          its(:location) { should == [2, 1] }
-        end
+  #       context 'passed a distance of 1' do
+  #         let(:distance) { 1 }
+  #         its(:location) { should == [2, 1] }
+  #       end
 
-        context 'passed a distance of -1' do
-          let(:distance) { -1 }
-          its(:location) { should == [0, 1] }
-        end
-      end
+  #       context 'passed a distance of -1' do
+  #         let(:distance) { -1 }
+  #         its(:location) { should == [0, 1] }
+  #       end
+  #     end
 
-    end
+  #   end
 
-    context 'starting at location [5.5, 3.7]' do
-      let(:location) { [5.5, 3.7] }
+  #   context 'starting at location [5.5, 3.7]' do
+  #     let(:location) { [5.5, 3.7] }
 
-      context 'with heading 0' do
-        let(:heading) { 0 }
+  #     context 'with heading 0' do
+  #       let(:heading) { 0 }
 
-        context 'passed a distance of 1' do
-          let(:distance) { 1 }
-          its(:location) { should == [5.5, 4.7] }
-        end
+  #       context 'passed a distance of 1' do
+  #         let(:distance) { 1 }
+  #         its(:location) { should == [5.5, 4.7] }
+  #       end
 
-        context 'passed a distance of -1' do
-          let(:distance) { -1 }
-          its(:location) { should == [5.5, 2.7] }
-        end
-      end
+  #       context 'passed a distance of -1' do
+  #         let(:distance) { -1 }
+  #         its(:location) { should == [5.5, 2.7] }
+  #       end
+  #     end
 
-      context 'with heading 180' do
-        let(:heading) { 180 }
+  #     context 'with heading 180' do
+  #       let(:heading) { 180 }
 
-        context 'passed a distance of 3.4' do
-          let(:distance) { 3.4 }
-          its(:location) { should == [5.5, 0.3] }
-        end
-      end
+  #       context 'passed a distance of 3.4' do
+  #         let(:distance) { 3.4 }
+  #         its(:location) { should == [5.5, 0.3] }
+  #       end
+  #     end
 
-    end
+  #   end
 
-  end
+  # end
 
   describe '#calculate_offset_coordinates' do
     subject { Agent.calculate_offset_coordinates(heading, distance) }
