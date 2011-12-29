@@ -21,6 +21,7 @@ gem 'ruby-units'
 gem 'simple-random'
 gem 'state_machine'
 gem 'capistrano'
+gem 'factory_girl_rails'
 
 group :development, :test do
   gem 'ruby-debug19', require: 'ruby-debug'
@@ -38,7 +39,6 @@ group :development, :test do
   gem 'capybara'
   gem 'cucumber-rails'
   gem 'database_cleaner'
-  gem 'factory_girl_rails'
   gem 'fuubar'
   gem 'fuubar-cucumber'
   gem 'rspec'
