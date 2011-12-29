@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111227161252) do
+ActiveRecord::Schema.define(:version => 20111228221537) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -32,11 +32,7 @@ ActiveRecord::Schema.define(:version => 20111227161252) do
     t.integer "age",              :default => 0
   end
 
-  add_index "agents", ["resource_tile_id"], :name => "index_agents_on_resource_tile_id"
-  add_index "agents", ["type"], :name => "index_agents_on_type"
-  add_index "agents", ["world_id"], :name => "index_agents_on_world_id"
-  add_index "agents", ["x"], :name => "index_agents_on_x"
-  add_index "agents", ["y"], :name => "index_agents_on_y"
+  add_index "agents", ["x", "y", "world_id"], :name => "index_agents_on_x_and_y_and_world_id"
 
   create_table "bids", :force => true do |t|
     t.integer  "listing_id"
