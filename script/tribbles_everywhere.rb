@@ -4,7 +4,7 @@ require "tattletail"
 
 num_ticks = ARGV[1] || 10
 num_ticks = num_ticks.to_i
-num_tribbles = 1000
+num_tribbles = 10000
 world_width = 198
 world_height = 198
 
@@ -93,11 +93,14 @@ num_ticks.times do |n|
   age_pb.inc
   age_pb.finish
 
-  tribbles_in_world(world).each do |tribble|
-    tribble.tick!
-
-    tick_pb.inc
+  litter = []
+  tribbles_in_world(world).find_in_batches do |tribbles|
+    tribbles.each do |tribble|
+      litter += tribble.tick!
+      tick_pb.inc
+    end
   end
+  Agent.import litter, validate: false, timestamps: false
   set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
   tick_pb.expand_title
   tick_pb.finish

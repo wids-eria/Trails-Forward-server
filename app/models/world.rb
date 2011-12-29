@@ -47,7 +47,11 @@ class World < ActiveRecord::Base
   end
 
   def tick_agents
-
+    progeny = []
+    agents.each do |agent|
+      progeny += agent.tick!
+    end
+    Agent.import litter, validate: false, timestamps: false
   end
 
   def tick_tiles

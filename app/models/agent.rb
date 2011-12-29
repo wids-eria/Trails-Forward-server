@@ -135,8 +135,9 @@ class Agent < ActiveRecord::Base
   end
 
   def tick!
-    tick
+    progeny = tick || []
     save! if changed?
+    progeny
     # require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger if $moving
     # $moving = false
   end
@@ -162,7 +163,6 @@ class Agent < ActiveRecord::Base
     litter = litter_size.times.map do
       new_descendant
     end
-    self.class.import litter, validate: false, timestamps: false
   end
 
   def new_descendant

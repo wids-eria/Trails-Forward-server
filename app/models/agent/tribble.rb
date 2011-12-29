@@ -1,7 +1,8 @@
 class Tribble < Agent
   def go
+    progeny = []
     if should_reproduce?
-      reproduce
+      progeny = reproduce
     else
       if should_move?
         # $moving = true
@@ -9,6 +10,7 @@ class Tribble < Agent
         try_move
       end
     end
+    progeny
   end
 
   def try_move
