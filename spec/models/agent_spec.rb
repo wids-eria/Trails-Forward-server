@@ -79,10 +79,10 @@ describe Agent do
     end
   end
 
-  describe '#create_descendant' do
+  describe '#new_descendant' do
     let(:world) { create :world_with_tiles }
     let(:agent) { create :generic_agent, world: world }
-    subject { agent.create_descendant }
+    subject { agent.new_descendant }
 
     it 'is a clone of the parent' do
       subject.should_not == agent
@@ -100,15 +100,10 @@ describe Agent do
   describe '#reproduce' do
     let(:agent) { create :generic_agent }
     let(:litter_size) { 3 }
+    before { agent.stub(litter_size: litter_size) }
 
-    before do
-      agent.stub(litter_size: litter_size)
-      agent.stub(create_descendant: true)
-    end
-
-    it 'calls #create_descendant #litter_size times' do
-      agent.should_receive(:create_descendant).exactly(litter_size).times.and_return(true)
-      agent.reproduce
+    it 'saves new agents' do
+      lambda { agent.reproduce }.should change(Agent, :count).by(litter_size)
     end
   end
 

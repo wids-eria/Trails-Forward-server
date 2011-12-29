@@ -145,16 +145,17 @@ class Agent < ActiveRecord::Base
   end
 
   def reproduce
-    litter_size.times do
-      create_descendant
+    litter = litter_size.times.map do
+      new_descendant
     end
+    self.class.import litter, validations: false, timestamps: false
   end
 
-  def create_descendant
-    self.class.create(world_id: world_id,
-                      resource_tile_id: resource_tile_id,
-                      heading: rand(360).round,
-                      location: self.location)
+  def new_descendant
+    self.class.new(world_id: world_id,
+                   resource_tile_id: resource_tile_id,
+                   heading: rand(360).round,
+                   location: self.location)
   end
 
   def go
