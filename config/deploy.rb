@@ -48,6 +48,7 @@ namespace :deploy do
 
   task :cold do       # Overriding the default deploy:cold
     update
+    run rake_task("db:create")
     load_schema       # My own step, replacing migrations.
     start
   end
