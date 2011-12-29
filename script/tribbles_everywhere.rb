@@ -35,7 +35,7 @@ def set_progress_title tick_progress_bar, tick_count, agent_count
 end
 
 def tribbles_in_world world
-  Tribble.where(world_id: world.id)
+  Tribble.with_world_and_tile.where(world_id: world.id)
 end
 
 world = if ARGV[0]

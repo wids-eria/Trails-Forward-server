@@ -34,6 +34,8 @@ class Agent < ActiveRecord::Base
     where("x >= ? AND x <= ? AND y >= ? AND y <= ?", x_min, x_max, y_min, y_max)
   }
 
+  scope :with_world_and_tile, include: [:world, :resource_tile]
+
   def max_view_distance
     10
   end
@@ -153,14 +155,15 @@ class Agent < ActiveRecord::Base
     litter = litter_size.times.map do
       new_descendant
     end
-    self.class.import litter, validations: false, timestamps: false
+    self.class.import litter, validate: false, timestamps: false
   end
 
   def new_descendant
-    self.class.new(world_id: world_id,
-                   resource_tile_id: resource_tile_id,
+    self.class.new(world: world,
+                   resource_tile: resource_tile,
                    heading: rand(360).round,
-                   location: self.location)
+                   x: self.x,
+                   y: self.y)
   end
 
   def go
