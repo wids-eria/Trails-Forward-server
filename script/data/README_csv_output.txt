@@ -43,7 +43,8 @@ LANDCOVER CLASS CODE DEFINITIONS (15 classes)
 95 = Emergent Herbaceos Wetlands
 
 See URL for in depth class descriptions:
-http://www.mrlc.gov/nlcd_definitions.php
+http://www.mrlc.gov/nlcd06_leg.php
+
 
 
 HOUSING DENSITY CLASS CODES
