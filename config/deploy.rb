@@ -45,4 +45,15 @@ namespace :deploy do
     desc "#{t} task is a no-op with mod_rails"
     task t, :roles => :app do ; end
   end
+
+  task :cold do       # Overriding the default deploy:cold
+    update
+    load_schema       # My own step, replacing migrations.
+    start
+  end
+
+  desc "Load schema.rb into database"
+  task :load_schema, :roles => :app do
+    run "cd #{current_path}; rake db:schema:load"
+  end
 end
