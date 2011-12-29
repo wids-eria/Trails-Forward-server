@@ -52,13 +52,8 @@ namespace :deploy do
     start
   end
 
-  desc "create database"
-  task :db_create, :roles => :app do
-    run "cd #{current_path}; rake db:create"
-  end
-
   desc "Load schema.rb into database"
   task :load_schema, :roles => :app do
-    run "cd #{current_path}; rake db:schema:load"
+    run "cd #{current_path}; RAILS_ENV=production bundle exec rake db:schema:load"
   end
 end
