@@ -3,7 +3,11 @@ class Tribble < Agent
     if should_reproduce?
       reproduce
     else
-      try_move if should_move?
+      if should_move?
+        # $moving = true
+        # require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger 
+        try_move
+      end
     end
   end
 
@@ -14,18 +18,24 @@ class Tribble < Agent
 
     self.heading = most_desirable_heading
 
-    target_tile = nil
+    target_tile = self.resource_tile
     pos = {}
 
     begin
       pos = position_after_move(rand max_move_rate)
-      target_tile = world.resource_tile_at(*pos[:location].map(&:to_i))
+      unless pos[:location].map(&:floor) == resource_tile.location
+        target_tile = world.resource_tile_at(*pos[:location].map(&:to_i))
+      else
+        target_tile = self.resource_tile
+      end
       move_tries += 1
     end until target_tile.type == 'LandTile' || move_tries > 3
 
     if move_tries <= 3
       self.heading = pos[:heading]
-      self.location = pos[:location]
+      self.x = pos[:location][0]
+      self.y = pos[:location][1]
+      self.resource_tile = target_tile
     end
   end
 

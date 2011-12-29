@@ -112,10 +112,15 @@ class Agent < ActiveRecord::Base
     {location: [new_x, new_y], heading: new_heading}
   end
 
-  def move distance
+  def move distance, set_resource_tile = true
     pos = position_after_move distance
     self.heading = pos[:heading]
-    self.location = pos[:location]
+    if set_resource_tile
+      self.location = pos[:location]
+    else
+      self.x = pos[:location][0]
+      self.y = pos[:location][1]
+    end
   end
 
   def self.calculate_offset_coordinates heading, distance
@@ -132,6 +137,8 @@ class Agent < ActiveRecord::Base
   def tick!
     tick
     save! if changed?
+    # require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger if $moving
+    # $moving = false
   end
 
   def tick
