@@ -54,7 +54,7 @@ namespace :deploy do
 
   desc "create database"
   task :db_create, :roles => :app do
-    run rake_task("db:create")
+    run "cd #{current_path}; rake db:create"
   end
 
   desc "Load schema.rb into database"
