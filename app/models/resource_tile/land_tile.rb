@@ -8,7 +8,7 @@ class LandTile < ResourceTile
       World.transaction do
         megatile.owner.balance += estimated_lumber_value
         self.tree_density = 0.0
-        self.tree_species = nil
+        self.land_cover_type = nil
         self.tree_size = 0.0
         save!
       end
@@ -94,7 +94,7 @@ class LandTile < ResourceTile
     template.add :people_density
     template.add :housing_density
     template.add :tree_density
-    template.add :tree_species
+    template.add :land_cover_type
     template.add :tree_size
     template.add :development_intensity
     template.add :imperviousness

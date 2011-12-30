@@ -120,10 +120,10 @@ BigTreeSizeWeights = {
   mixed: [0.369033307,0.232593812,0.114078886,0.10555826,0.061401365,0.046739204,0.068313732,0.002281434],
 }
 
-def determine_tree_size tree_species
-  case tree_species
+def determine_tree_size land_cover_type
+  case land_cover_type
   when 'Coniferous', 'Deciduous', 'Forested Wetland', 'Mixed'
-    cover_type_symbol = tree_species.underscore.sub(' ', '_').to_sym
+    cover_type_symbol = land_cover_type.underscore.sub(' ', '_').to_sym
     calculate_tree_size cover_type_symbol
   when'Dwarf Scrub', 'Grassland/Herbaceous', 'Shrub/Scrub'
     nil
@@ -131,7 +131,7 @@ def determine_tree_size tree_species
   when nil
     nil
   else
-    raise "Unrecognized tree_species: #{tree_species}"
+    raise "Unrecognized land_cover_type: #{land_cover_type}"
   end
 end
 
@@ -162,7 +162,7 @@ pb.finish
 
 import_columns = [ :megatile_id, :x, :y, :type, :zoned_use,
                    :world_id, :primary_use, :people_density,
-                   :housing_density, :tree_density, :tree_species,
+                   :housing_density, :tree_density, :land_cover_type,
                    :development_intensity, :tree_size, :imperviousness,
                    :frontage, :lakesize, :soil, :landcover_class_code ]
 
@@ -224,8 +224,8 @@ ResourceTile.connection.transaction do
       # Forest types, Scrub, Herbaceous
       when 41..43,51,52,71,90
         tile_hash[:primary_use] = "Forest"
-        tile_hash[:tree_species] = ResourceTile.verbiage[:tree_species][cover_type_symbol(class_code)]
-        tile_hash[:tree_size] = determine_tree_size(tile_hash[:tree_species])
+        tile_hash[:land_cover_type] = ResourceTile.verbiage[:land_cover_type][cover_type_symbol(class_code)]
+        tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
 
       # Farmland
       when 81..82

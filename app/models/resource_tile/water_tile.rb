@@ -8,7 +8,7 @@ class WaterTile < ResourceTile
     template.add :x
     template.add :y
     template.add :tree_density
-    template.add :tree_species
+    template.add :land_cover_type
     template.add :tree_size
     template.add :type
   end

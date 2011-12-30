@@ -98,7 +98,7 @@ module TrailsForward
           people_density: 0,
           housing_density: 0,
           tree_density: 0.5 + rand / 2.0,
-          tree_species: 'Deciduous',
+          land_cover_type: 'Deciduous',
           development_intensity: 0.0,
           zoned_use: (rand(10) == 0) ? "Logging" : ""
       else
@@ -130,7 +130,7 @@ module TrailsForward
           resource_tile.people_density = 0
           resource_tile.housing_density = resource_tile.people_density
           resource_tile.tree_density = 0.5 + rand()/2.0
-          resource_tile.tree_species = "Deciduous"
+          resource_tile.land_cover_type = "Deciduous"
           resource_tile.development_intensity = 0.0
           resource_tile.zoned_use = "Logging" if (rand(10) == 0)
         when 7..8
@@ -139,7 +139,7 @@ module TrailsForward
           resource_tile.people_density = 0.5 + rand()/2.0
           resource_tile.housing_density = resource_tile.people_density
           resource_tile.tree_density = rand() * 0.1
-          resource_tile.tree_species = nil
+          resource_tile.land_cover_type = nil
           resource_tile.development_intensity = resource_tile.housing_density
         end
         resource_tile.save

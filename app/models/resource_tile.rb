@@ -8,7 +8,7 @@ class ResourceTile < ActiveRecord::Base
   # validates_uniqueness_of :x, :scope => [:y, :world_id]
   # validates_uniqueness_of :y, :scope => [:x, :world_id]
 
-  # todo: Add validations for tree_species, zoned_use, and primary_use to be sure that they're in one of the below
+  # todo: Add validations for land_cover_type, zoned_use, and primary_use to be sure that they're in one of the below
 
   scope :with_trees, where('tree_density > 0')
 
@@ -39,7 +39,7 @@ class ResourceTile < ActiveRecord::Base
   }
 
   def self.verbiage
-    { :tree_species => {
+    { :land_cover_type => {
         :coniferous => "Coniferous",
         :deciduous => "Deciduous",
         :mixed => "Mixed",
@@ -85,7 +85,7 @@ class ResourceTile < ActiveRecord::Base
     self.people_density = nil
     self.housing_density = nil
     self.tree_density = nil
-    self.tree_species = nil
+    self.land_cover_type = nil
     self.tree_size = nil
     self.development_intensity = nil
   end
