@@ -88,19 +88,6 @@ def developed_but_not_lived_in? tile_hash
   (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_density] <= 0.75
 end
 
-def cover_type_symbol class_code
-  cover_type_sym = case class_code
-                   when 41 then :deciduous
-                   when 42 then :coniferous
-                   when 43 then :mixed
-                   when 51 then :dwarf_scrub
-                   when 52 then :shrub_scrub
-                   when 71 then :grassland_herbaceous
-                   when 90 then :forested_wetland
-                   else :unknown
-                   end
-end
-
 # TODO: revisit forested_wetland weights, since the values here are simply
 # copied from mixed. 12/30/11
 
@@ -148,6 +135,46 @@ def calculate_tree_size cover_type_symbol
   tree_size
 end
 
+def zoned_use tile_hash
+  case tile_hash[:landcover_class_code]
+  when 11, 95 # Open Water, Emergent Herbaceous Wetlands
+    'Development' if tile_hash[:housing_density] > 0
+  when 21..24 # Developed
+    'Development'
+  when 81,82 # Farmland
+    'Agriculture'
+  end
+end
+
+def primary_use tile_hash
+  case tile_hash[:landcover_class_code]
+  when 11, 95 # Open Water, Emergent Herbaceous Wetlands
+    'Housing' if tile_hash[:housing_density] > 0
+  when 21..24 # Developed
+    developed_but_not_lived_in?(tile_hash) ? "Industry" : "Housing"
+  when 41,42,43,51,52,71,90 # Forest types
+    "Forest"
+  when 81
+    'Agriculture/Pasture'
+  when 82
+    'Agriculture/Cultivated Crops'
+  end
+end
+
+def tile_type(tile_hash)
+  case tile_hash[:landcover_class_code]
+  when 11, 95 # Open Water, Emergent Herbaceous Wetlands
+    if tile_hash[:housing_density] <= 0
+      'WaterTile'
+    else
+      'LandTile'
+    end
+  when 255 # Off the end of the world, Water for now
+    'WaterTile'
+  else
+    'LandTile'
+  end
+end
 # tile_indices = ResourceTile.connection.indexes :resource_tiles
 # pb = ProgressBar.new "Remove Indices", tile_indices.count
 # tile_indices.each do |index|
@@ -174,7 +201,7 @@ ResourceTile.connection.transaction do
 
     row_batch.each do |row|
       row_hash = row_to_hash(row)
-      class_code = row_hash[:cover_class].to_i
+      landcover_code = row_hash[:cover_class].to_i
 
       tile_x = row_hash[:col].to_i
       tile_y = row_hash[:row].to_i
@@ -187,7 +214,6 @@ ResourceTile.connection.transaction do
       megatile_id = megatile_ids["#{megatile_x}:#{megatile_y}"]
 
       tile_hash = { world_id: world_id,
-                    type: 'LandTile',
                     megatile_id: megatile_id,
                     x: tile_x,
                     y: tile_y }
@@ -198,51 +224,20 @@ ResourceTile.connection.transaction do
       tile_hash[:frontage] = row_hash[:frontage].to_f
       tile_hash[:lakesize] = row_hash[:lakesize].to_f
       tile_hash[:soil] = soil_amount(row_hash[:soil].to_i)
-      tile_hash[:landcover_class_code] = class_code
+      tile_hash[:landcover_class_code] = landcover_code
 
-      case class_code
+      case landcover_code
+      when 21..24 # Developed
+        tile_hash[:development_intensity] = (landcover_code - 20.0 / 4.0)
 
-      # Open Water, Emergent Herbaceous Wetlands
-      when 11, 95
-        if tile_hash[:housing_density] > 0
-          tile_hash[:zoned_use] = "Development"
-          tile_hash[:primary_use] = "Housing"
-        else
-          tile_hash[:type] = 'WaterTile'
-        end
-
-      # Developed
-      when 21..24
-        tile_hash[:zoned_use] = "Development"
-        tile_hash[:development_intensity] = (class_code - 20.0 / 4.0)
-        tile_hash[:primary_use] = developed_but_not_lived_in?(tile_hash) ? "Industry" : "Housing"
-
-      # Barren land
-      when 31
-        # tile_hash[:zoned_use] = "Barren"
-
-      # Forest types, Scrub, Herbaceous
-      when 41..43,51,52,71,90
-        tile_hash[:primary_use] = "Forest"
-        tile_hash[:land_cover_type] = ResourceTile.verbiage[:land_cover_type][cover_type_symbol(class_code)]
+      when 41,42,43,51,52,71,90 # Forest types, Scrub, Herbaceous
+        tile_hash[:land_cover_type] = ResourceTile.landcover_description(landcover_code)
         tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
-
-      # Farmland
-      when 81..82
-        tile_hash[:primary_use] = case class_code
-                                  when 81 then "Agriculture/Pasture"
-                                  when 82 then "Agriculture/Cultivated Crops"
-                                  end
-
-        tile_hash[:zoned_use] = "Agriculture"
-
-      # Off the end of the world, Water for now
-      when 255
-        tile_hash[:type] = 'WaterTile'
-
-      else
-        raise "Unknown tile class code #{class_code}"
       end
+
+      tile_hash[:zoned_use] = zoned_use(tile_hash)
+      tile_hash[:primary_use] = primary_use(tile_hash)
+      tile_hash[:type] = tile_type(tile_hash)
 
       tiles_to_import << import_columns.map { |col| tile_hash[col] }
       pb.inc

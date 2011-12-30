@@ -38,6 +38,11 @@ class ResourceTile < ActiveRecord::Base
     end
   }
 
+  def self.landcover_description landcover_code
+    cover_type_sym = ResourceTile.cover_type_symbol(landcover_code)
+    self.verbiage[:land_cover_type][cover_type_sym]
+  end
+
   def self.verbiage
     { :land_cover_type => {
         :coniferous => "Coniferous",
@@ -61,6 +66,19 @@ class ResourceTile < ActiveRecord::Base
         :housing => "Housing",
         :logging => "Logging",
         :industry => "Industry" } }
+  end
+
+  def self.cover_type_symbol class_code
+    case class_code
+    when 41 then :deciduous
+    when 42 then :coniferous
+    when 43 then :mixed
+    when 51 then :dwarf_scrub
+    when 52 then :shrub_scrub
+    when 71 then :grassland_herbaceous
+    when 90 then :forested_wetland
+    else :unknown
+    end
   end
 
   def location= coords
