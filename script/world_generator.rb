@@ -87,6 +87,19 @@ def developed_but_not_lived_in? tile_hash
   (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_density] <= 0.75
 end
 
+def cover_type_symbol class_code
+  cover_type_sym = case class_code
+                   when 41 then :deciduous
+                   when 42 then :coniferous
+                   when 43 then :mixed
+                   when 51 then :dwarf_scrub
+                   when 52 then :shrub_scrub
+                   when 71 then :grassland_herbaceous
+                   when 90 then :forested_wetland
+                   else :unknown
+                   end
+end
+
 # tile_indices = ResourceTile.connection.indexes :resource_tiles
 # pb = ProgressBar.new "Remove Indices", tile_indices.count
 # tile_indices.each do |index|
@@ -159,21 +172,18 @@ ResourceTile.connection.transaction do
       when 31
         # tile_hash[:zoned_use] = "Barren"
 
-      # Forest, Scrub, Herbaceous, Wetlands
-      when 41..71, 90
+      # Forest types, Scrub, Herbaceous
+      when 41..43,51,52,71,90
         tile_hash[:primary_use] = "Forest"
-        tile_hash[:tree_species] = case class_code
-                                   when 41 then ResourceTile.verbiage[:tree_species][:deciduous]
-                                   when 42 then ResourceTile.verbiage[:tree_species][:coniferous]
-                                   when 43 then ResourceTile.verbiage[:tree_species][:mixed]
-                                   else ResourceTile.verbiage[:tree_species][:unknown]
-                                   end
+        tile_hash[:tree_species] = ResourceTile.verbiage[:tree_species][cover_type_symbol(class_code)]
+
       # Farmland
       when 81..82
         tile_hash[:primary_use] = case class_code
                                   when 81 then "Agriculture/Pasture"
                                   when 82 then "Agriculture/Cultivated Crops"
                                   end
+
         tile_hash[:zoned_use] = "Agriculture"
 
       # Off the end of the world, Water for now

@@ -43,6 +43,10 @@ class ResourceTile < ActiveRecord::Base
         :coniferous => "Coniferous",
         :deciduous => "Deciduous",
         :mixed => "Mixed",
+        :forested_wetland => "Forested Wetland",
+        :dwarf_scrub => 'Dwarf Scrub',
+        :shrub_scrub => 'Shrub/Scrub',
+        :grassland_herbaceous => "Grassland/Herbaceous",
         :unknown => "Unknown" },
       :zoned_uses => {
         :development => "Development",
