@@ -102,8 +102,9 @@ describe Agent do
     let(:litter_size) { 3 }
     before { agent.stub(litter_size: litter_size) }
 
-    it 'saves new agents' do
-      lambda { agent.reproduce }.should change(Agent, :count).by(litter_size)
+    it 'calls new agent litter_size times' do
+      Agent.should_receive(:new).exactly(3).times
+      agent.reproduce
     end
   end
 
