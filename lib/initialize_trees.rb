@@ -38,11 +38,11 @@ end
 
 def determine_tree_size cover_type_symbol
   if cover_type_symbol.present?
-    tree_size = random_element(DefaultTreeSizeWeights[cover_type_symbol], DefaultTreeSizes)
+    tree_size = random_element(DefaultTreeSizes, DefaultTreeSizeWeights[cover_type_symbol])
 
     # puts "#{tile.x}, #{tile.y}: tree size = #{tile.tree_size}"
     if tree_size == 10
-      tree_size += random_element(BigTreeSizeWeights[cover_type_symbol], BigTreeSizes)
+      tree_size += random_element(BigTreeSizes, BigTreeSizeWeights[cover_type_symbol])
     end
   else
     tree_size = nil

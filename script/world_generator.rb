@@ -1,6 +1,7 @@
 #!/usr/bin/env ./script/rails runner
 require 'bamfcsv'
 require 'progressbar'
+require 'stats_utilities'
 
 BASE_FILENAME = "script/data/vilas_conserv_game_spatial_1_acre_inputs_combined.csv"
 ROW_BATCH_SIZE = 2000
@@ -100,6 +101,53 @@ def cover_type_symbol class_code
                    end
 end
 
+# TODO: revisit forested_wetland weights, since the values here are simply
+# copied from mixed. 12/30/11
+
+DefaultTreeSizes = [10, 8, 5]
+DefaultTreeSizeWeights = {
+  coniferous: [0.556035896, 0.258728096, 0.185236008],
+  deciduous: [0.43, 0.37, 0.2],
+  forested_wetland: [0.424745355, 0.350450241, 0.224804403],
+  mixed: [0.424745355, 0.350450241, 0.224804403]
+}
+
+BigTreeSizes = [0,2,4,6,8,10,15,20]
+BigTreeSizeWeights = {
+  coniferous: [0.372470808,0.216336587,0.104601339,0.107220868,0.063811891,0.053101396,0.079521954,0.002935158],
+  deciduous: [0.473433437,0.271229523,0.127051152,0.068338135,0.029715297,0.011826016,0.01840644,0],
+  forested_wetland: [0.369033307,0.232593812,0.114078886,0.10555826,0.061401365,0.046739204,0.068313732,0.002281434],
+  mixed: [0.369033307,0.232593812,0.114078886,0.10555826,0.061401365,0.046739204,0.068313732,0.002281434],
+}
+
+def determine_tree_size tree_species
+  case tree_species
+  when 'Coniferous', 'Deciduous', 'Forested Wetland', 'Mixed'
+    cover_type_symbol = tree_species.underscore.sub(' ', '_').to_sym
+    calculate_tree_size cover_type_symbol
+  when'Dwarf Scrub', 'Grassland/Herbaceous', 'Shrub/Scrub'
+    nil
+    # tile.update_attributes(tree_size: nil)
+  when nil
+    nil
+  else
+    raise "Unrecognized tree_species: #{tree_species}"
+  end
+end
+
+def calculate_tree_size cover_type_symbol
+  if cover_type_symbol.present?
+    tree_size = random_element(DefaultTreeSizes, DefaultTreeSizeWeights[cover_type_symbol])
+
+    if tree_size == 10
+      tree_size += random_element(BigTreeSizes, BigTreeSizeWeights[cover_type_symbol])
+    end
+  else
+    tree_size = nil
+  end
+  tree_size
+end
+
 # tile_indices = ResourceTile.connection.indexes :resource_tiles
 # pb = ProgressBar.new "Remove Indices", tile_indices.count
 # tile_indices.each do |index|
@@ -131,6 +179,7 @@ ResourceTile.connection.transaction do
       tile_x = row_hash[:col].to_i
       tile_y = row_hash[:row].to_i
       next if tile_x >= world.width || tile_y >= world.height
+
       puts "[#{tile_x}, #{tile_y}]" if tile_x >= world.width || tile_y >= world.height
 
       megatile_x = tile_x % world.megatile_width
@@ -176,6 +225,7 @@ ResourceTile.connection.transaction do
       when 41..43,51,52,71,90
         tile_hash[:primary_use] = "Forest"
         tile_hash[:tree_species] = ResourceTile.verbiage[:tree_species][cover_type_symbol(class_code)]
+        tile_hash[:tree_size] = determine_tree_size(tile_hash[:tree_species])
 
       # Farmland
       when 81..82
