@@ -66,16 +66,6 @@ ActiveRecord::Schema.define(:version => 20111230202224) do
   add_index "change_requests", ["complete"], :name => "index_change_requests_on_complete"
   add_index "change_requests", ["world_id"], :name => "index_change_requests_on_world_id"
 
-  create_table "geometry_columns", :id => false, :force => true do |t|
-    t.string  "f_table_catalog",   :limit => 256, :null => false
-    t.string  "f_table_schema",    :limit => 256, :null => false
-    t.string  "f_table_name",      :limit => 256, :null => false
-    t.string  "f_geometry_column", :limit => 256, :null => false
-    t.integer "coord_dimension",                  :null => false
-    t.integer "srid",                             :null => false
-    t.string  "type",              :limit => 30,  :null => false
-  end
-
   create_table "listings", :force => true do |t|
     t.integer  "owner_id"
     t.integer  "megatile_grouping_id"
@@ -133,14 +123,6 @@ ActiveRecord::Schema.define(:version => 20111230202224) do
   end
 
   add_index "resource_tiles", ["x", "y", "world_id"], :name => "index_resource_tiles_on_x_and_y_and_world_id", :unique => true
-
-  create_table "spatial_ref_sys", :id => false, :force => true do |t|
-    t.integer "srid",                      :null => false
-    t.string  "auth_name", :limit => 256
-    t.integer "auth_srid"
-    t.string  "srtext",    :limit => 2048
-    t.string  "proj4text", :limit => 2048
-  end
 
   create_table "users", :force => true do |t|
     t.string   "name"
