@@ -19,6 +19,8 @@ class World < ActiveRecord::Base
   validates :megatile_width, :numericality => {:greater_than => 0}
   validates :megatile_height, :numericality => {:greater_than => 0}
   validates :name, :presence => true
+  validates :start_date, :presence => true
+  validates :current_date, :presence => true
 
   validate :world_dimensions_are_consistent
 
@@ -118,6 +120,14 @@ class World < ActiveRecord::Base
   # TODO: make scope
   def pending_change_requests
     change_requests.where(:complete => false)
+  end
+
+  def year_current
+    current_date.year
+  end
+
+  def year_start
+    start_date.year
   end
 
   api_accessible :world_without_tiles do |template|

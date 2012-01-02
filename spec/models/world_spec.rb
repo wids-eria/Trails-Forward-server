@@ -54,4 +54,21 @@ describe World do
     its(:current_date) { should == world.start_date + 1.day }
   end
 
+  context "world api" do
+    let(:world) { build :world, start_date: Date.today - 10.days, current_date: Date.today }
+
+    # NOTE just to get the api working like it used to
+    describe "#year_current" do
+      it "returns the year from the current date" do
+        world.year_current.should == Date.today.year
+      end
+    end
+
+    describe "#year_start" do
+      it "returns the year from the start date" do
+        world.year_start.should == (Date.today-10.days).year
+      end
+    end
+  end
+
 end
