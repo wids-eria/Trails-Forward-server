@@ -132,9 +132,10 @@ end
 def tile_hash_from_row world, megatile_ids, row_hash, tile_x, tile_y
   landcover_code = row_hash[:cover_class].to_i
 
-  megatile_x = tile_x % world.megatile_width
-  megatile_y = tile_y % world.megatile_height
+  megatile_x = tile_x - (tile_x % world.megatile_width)
+  megatile_y = tile_y - (tile_y % world.megatile_height)
   megatile_id = megatile_ids["#{megatile_x}:#{megatile_y}"]
+  raise("Missing megatile at #{megatile_x}:#{megatile_y}") if megatile_id.nil?
 
   tile_hash = { world_id: world.id, megatile_id: megatile_id, x: tile_x, y: tile_y }
 
@@ -240,8 +241,6 @@ ResourceTile.connection.transaction do
         tile_hash = tile_hash_from_row world, megatile_ids, row_hash, tile_x, tile_y
         tiles_to_import << import_columns.map { |col| tile_hash[col] }
         pb.inc
-      else
-        puts "throwing away [#{tile_x}, #{tile_y}]: landcover_class: #{row_hash[:cover_class]}"
       end
     end
 
