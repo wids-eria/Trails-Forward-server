@@ -137,9 +137,7 @@ class Agent < ActiveRecord::Base
   def tick!
     progeny = tick || []
     save! if changed?
-    progeny
-    # require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger if $moving
-    # $moving = false
+    self.class.import progeny, validate: false, timestamps: false
   end
 
   def tick
