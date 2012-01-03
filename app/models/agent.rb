@@ -126,7 +126,7 @@ class Agent < ActiveRecord::Base
   def tick!
     progeny = tick || []
     save! if changed?
-    progeny
+    self.class.import progeny, validate: false, timestamps: false
   end
 
   def tick

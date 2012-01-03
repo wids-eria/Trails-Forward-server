@@ -46,5 +46,5 @@ module TrailsForwardWorld
     config.filter_parameters += [:password, :auth_token]
 
     config.execute_sales_immediately = false
-      end
+  end
 end

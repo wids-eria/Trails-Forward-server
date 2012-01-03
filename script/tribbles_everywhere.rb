@@ -81,6 +81,8 @@ puts
 
 tile_count = LandTile.where(world_id: world.id).where('tree_density IS NOT NULL').count
 
+tick_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], 'agent.tick.complete')
+
 num_ticks.times do |n|
 
   tick_pb = ProgressBar.new("Tick #{tick_count + 1} - Tribbles", tribbles_in_world(world).count)
@@ -94,13 +96,17 @@ num_ticks.times do |n|
   age_pb.finish
 
   litter = []
-  tribbles_in_world(world).find_in_batches do |tribbles|
-    tribbles.each do |tribble|
-      litter += tribble.tick!
-      tick_pb.inc
-    end
+
+  tribble_count = tribbles_in_world(world).count
+  tribbles_in_world(world).each do |tribble|
+    Stalker.enqueue 'agent.tick', agent_id: tribble.id
   end
-  Agent.import litter, validate: false, timestamps: false
+
+  tribble_count.times do
+    job = tick_complete_stalk.reserve
+    job.delete
+    tick_pb.inc
+  end
   set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
   tick_pb.expand_title
   tick_pb.finish
