@@ -45,13 +45,23 @@ class ResourceTile < ActiveRecord::Base
 
   def self.verbiage
     { :land_cover_type => {
+        :barren => 'Barren',
         :coniferous => "Coniferous",
+        :cultivated_crops => 'Cultivated Crops',
         :deciduous => "Deciduous",
-        :mixed => "Mixed",
-        :forested_wetland => "Forested Wetland",
+        :developed_high_intensity => 'Developed, High Intensity',
+        :developed_low_intensity => 'Developed, Low Intensity',
+        :developed_medium_intensity => 'Developed, Medium Intensity',
+        :developed_open_space => 'Developed, Open Space',
         :dwarf_scrub => 'Dwarf Scrub',
-        :shrub_scrub => 'Shrub/Scrub',
+        :emergent_herbaceous_wetland => 'Emergent Herbaceous Wetland',
+        :excluded => 'Excluded',
+        :forested_wetland => "Forested Wetland",
         :grassland_herbaceous => "Grassland/Herbaceous",
+        :mixed => "Mixed",
+        :open_water => 'Open Water',
+        :pasture_hay => 'Pasture/Hay',
+        :shrub_scrub => 'Shrub/Scrub',
         :unknown => "Unknown" },
       :zoned_uses => {
         :development => "Development",
@@ -70,13 +80,23 @@ class ResourceTile < ActiveRecord::Base
 
   def self.cover_type_symbol class_code
     case class_code
+    when 11 then :open_water
+    when 21 then :developed_open_space
+    when 22 then :developed_low_intensity
+    when 23 then :developed_medium_intensity
+    when 24 then :developed_high_intensity
+    when 31 then :barren
     when 41 then :deciduous
     when 42 then :coniferous
     when 43 then :mixed
     when 51 then :dwarf_scrub
     when 52 then :shrub_scrub
     when 71 then :grassland_herbaceous
+    when 81 then :pasture_hay
+    when 82 then :cultivated_crops
     when 90 then :forested_wetland
+    when 95 then :emergent_herbaceous_wetland
+    when 255 then :excluded #named on the assumption this is the outside of Vilas county coordinates
     else :unknown
     end
   end
