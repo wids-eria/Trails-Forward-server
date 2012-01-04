@@ -73,7 +73,7 @@ God.watch do |w|
 end
 
 RAILS_ROOT = File.expand_path('../../', __FILE__)
-num_cores = 3
+num_cores = 22
 num_cores.times do |n|
   God.watch do |w|
     w.name = "Stalk Agent Ticks ##{n}"
