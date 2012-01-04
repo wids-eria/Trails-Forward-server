@@ -8,7 +8,7 @@ describe WorldPresenter do
     subject { canvas.to_png }
 
     it 'colors water and land correctly' do
-      world.each_resource_tile do |tile|
+      world.resource_tiles do |tile|
         subject[tile.x, tile.y].should == case tile.type
                                           when WaterTile.to_s then ChunkyPNG::Color::WHITE
                                           when LandTile.to_s  then ChunkyPNG::Color::BLACK

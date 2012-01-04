@@ -169,8 +169,12 @@ class Agent < ActiveRecord::Base
     self.class.new(world: world,
                    resource_tile: resource_tile,
                    heading: rand(360).round,
-                   x: self.x,
-                   y: self.y)
+                   x: self.x + baby_drop_jitter,
+                   y: self.y + baby_drop_jitter)
+  end
+
+  def baby_drop_jitter
+    rand / 5.0
   end
 
   def go
