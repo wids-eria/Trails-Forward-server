@@ -64,10 +64,15 @@ God.watch do |w|
   w.keepalive
 end
 
-sleep 2
+God.watch do |w|
+  w.name = 'MySQL'
+  w.start = 'mysqld --basedir=$HOME/opt/mysql --datadir=$HOME/mysql/run_state/data/'
+  w.stop = 'mysqladmin -u root shutdown'
+  w.restart = 'mysqladmin -u root restart'
+  w.keepalive
+end
 
 RAILS_ROOT = File.expand_path('../../', __FILE__)
-
 num_cores = 3
 num_cores.times do |n|
   God.watch do |w|
