@@ -4,11 +4,7 @@ class Tribble < Agent
     if should_reproduce?
       progeny = reproduce
     else
-      if should_move?
-        # $moving = true
-        # require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger 
-        try_move
-      end
+      try_move if should_move?
     end
     progeny
   end
@@ -18,7 +14,7 @@ class Tribble < Agent
     orig_heading = heading
     move_tries = 0
 
-    self.heading = most_desirable_heading
+    self.heading = most_desirable_heading.to_heading
 
     target_tile = self.resource_tile
     pos = {}

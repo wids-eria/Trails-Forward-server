@@ -112,17 +112,6 @@ class Agent < ActiveRecord::Base
     {location: [new_x, new_y], heading: new_heading}
   end
 
-  # def move distance, set_resource_tile = true
-  #   pos = position_after_move distance
-  #   self.heading = pos[:heading]
-  #   if set_resource_tile
-  #     self.location = pos[:location]
-  #   else
-  #     self.x = pos[:location][0]
-  #     self.y = pos[:location][1]
-  #   end
-  # end
-
   def self.calculate_offset_coordinates heading, distance
     heading_in_radians = heading * (Math::PI / 180.0)
     x_offset = (distance * Math.sin(heading_in_radians)).round(2)
@@ -138,8 +127,6 @@ class Agent < ActiveRecord::Base
     progeny = tick || []
     save! if changed?
     progeny
-    # require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger if $moving
-    # $moving = false
   end
 
   def tick
@@ -166,11 +153,25 @@ class Agent < ActiveRecord::Base
   end
 
   def new_descendant
-    self.class.new(world: world,
-                   resource_tile: resource_tile,
+    self.class.new(world_id: world.id,
+                   resource_tile_id: resource_tile_id,
                    heading: rand(360).round,
-                   x: self.x,
-                   y: self.y)
+                   x: jitter_x,
+                   y: jitter_y)
+  end
+
+  def jitter_x
+    result = self.x + baby_drop_jitter
+    result.floor == self.x.floor ? result : self.x
+  end
+
+  def jitter_y
+    result = self.y + baby_drop_jitter
+    result.floor == self.y.floor ? result : self.y
+  end
+
+  def baby_drop_jitter
+    (rand / 5.0) - 0.1
   end
 
   def go
