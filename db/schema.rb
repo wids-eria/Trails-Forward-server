@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111230202224) do
+ActiveRecord::Schema.define(:version => 20120103213339) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -106,7 +106,6 @@ ActiveRecord::Schema.define(:version => 20111230202224) do
     t.integer "x"
     t.integer "y"
     t.string  "type"
-    t.string  "zoned_use"
     t.integer "world_id"
     t.string  "primary_use"
     t.float   "people_density"
@@ -120,6 +119,7 @@ ActiveRecord::Schema.define(:version => 20111230202224) do
     t.float   "lakesize"
     t.integer "soil"
     t.integer "landcover_class_code"
+    t.integer "zoning_code"
   end
 
   add_index "resource_tiles", ["x", "y", "world_id"], :name => "index_resource_tiles_on_x_and_y_and_world_id", :unique => true

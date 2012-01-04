@@ -68,14 +68,15 @@ describe LandTile do
     end
   end
 
-  it "can be clearcut if zoned for logging" do
-    tile = LandTile.new zoned_use: "Logging"
-    tile.can_clearcut?.should be_true
+  [1..17].each do |zoning_code|
+    example "zoning_code #{zoning_code} can be clear cut" do
+      tile = LandTile.new zoning_code: zoning_code
+      tile.can_clearcut?.should be_true
+    end
   end
-
-  it "cant be clearcut if not zoned for logging" do
-    tile = LandTile.new zoned_use: "Park"
-    tile.can_clearcut?.should_not be_true
+  example "zoning_code 255 cannot be clear cut" do
+    tile = LandTile.new zoning_code: 255
+    tile.can_clearcut?.should be_false
   end
 
   context "with world" do
@@ -85,7 +86,6 @@ describe LandTile do
     let(:tile) { megatile.world.resource_tiles.select{|tile| tile.kind_of?(LandTile)}.first }
     before do
       tile.megatile.owner = player
-      tile.zoned_use = "Logging"
       tile.tree_density = 1
       tile.tree_size = 1
     end

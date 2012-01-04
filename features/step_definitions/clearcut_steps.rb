@@ -1,12 +1,13 @@
 Given /^my megatile is completely zoned for logging$/ do
-  @my_megatile.resource_tiles.each do |rt|
-    rt.update_attributes(zoned_use: logging_zone) if rt.zone_allowed? logging_zone
-  end
+  # TODO:re-visit how this should be set up
+  # @my_megatile.resource_tiles.each do |rt|
+    # rt.update_attributes(zoned_use: logging_zone) if rt.zone_allowed? logging_zone
+  # end
 end
 
 Given /^the owned megatile is completely zoned for logging$/ do
   @owned_megatile.resource_tiles.each do |rt|
-    rt.update_attributes(zoned_use: logging_zone) if rt.zone_allowed? logging_zone
+    rt.update_attributes(zoning_code: 6) # if rt.zone_allowed? logging_zone
   end
 end
 

@@ -1,14 +1,12 @@
 Given /^at least one resource tile on the megatile is a land type$/ do
   @my_megatile.resource_tiles.each do |rt|
-    rt.type = LandTile.to_s
-    rt.save!
+    rt.update_attributes type: 'LandTile'
   end
 end
 
 Given /^at least one resource tile on the owned megatile is a land type$/ do
   @owned_megatile.resource_tiles.each do |rt|
-    rt.type = LandTile.to_s
-    rt.save!
+    rt.update_attributes type: 'LandTile'
   end
 end
 

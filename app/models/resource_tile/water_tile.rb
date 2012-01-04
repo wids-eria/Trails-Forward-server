@@ -28,11 +28,7 @@ class WaterTile < ResourceTile
   end
 
   def appropriate_zoning
-    errors.add(:zoned_use, "disallowed zoning") if disallowed_zoned_uses.include? zoned_use
-  end
-
-  def disallowed_zoned_uses
-    [ResourceTile.verbiage[:zoned_uses][:logging]]
+    errors.add(:zoning_code, "disallowed zoning") unless zoning_code == 255
   end
 
 end

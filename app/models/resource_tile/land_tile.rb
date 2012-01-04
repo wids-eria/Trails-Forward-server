@@ -1,6 +1,6 @@
 class LandTile < ResourceTile
   def can_clearcut?
-    zoned_use == ResourceTile.verbiage[:zoned_uses][:logging]
+    zoning_code != 255
   end
 
   def clearcut!
@@ -90,7 +90,7 @@ class LandTile < ResourceTile
 
   api_accessible :resource, :extend => :resource_base do |template|
     template.add :primary_use
-    template.add :zoned_use
+    template.add :zoning_code
     template.add :people_density
     template.add :housing_density
     template.add :tree_density
