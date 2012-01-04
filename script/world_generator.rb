@@ -88,17 +88,6 @@ def calculate_tree_size cover_type_symbol
   tree_size
 end
 
-def zoned_use tile_hash
-  case tile_hash[:landcover_class_code]
-  when 11, 95 # Open Water, Emergent Herbaceous Wetlands
-    'Development' if tile_hash[:housing_density] > 0
-  when 21..24 # Developed
-    'Development'
-  when 81,82 # Farmland
-    'Agriculture'
-  end
-end
-
 def primary_use tile_hash
   case tile_hash[:landcover_class_code]
   when 11, 95 # Open Water, Emergent Herbaceous Wetlands
@@ -155,7 +144,7 @@ def tile_hash_from_row world, megatile_ids, row_hash, tile_x, tile_y
     tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
   end
 
-  tile_hash[:zoned_use] = zoned_use(tile_hash)
+  tile_hash[:zoning_code] = row_hash[:zoning]
   tile_hash[:primary_use] = primary_use(tile_hash)
   tile_hash[:type] = tile_type(tile_hash)
   tile_hash
@@ -179,7 +168,9 @@ header = rows.shift
                 :forest_density => header.index("CANOPY%2001"),
                 :frontage => header.index("FRONTAGE"),
                 :lakesize => header.index("LAKESIZE"),
-                :soil => header.index("SOIL")}
+                :soil => header.index("SOIL"),
+                :zoning => header.index("ZONING")}
+
 x_col = @col_numbers[:col]
 y_col = @col_numbers[:row]
 row_hash = rows.index_by { |row| "#{row[x_col]}:#{row[y_col]}" }
@@ -220,7 +211,7 @@ pb = ProgressBar.new 'Clear Tiles', 1
 ResourceTile.delete_all world_id: world_id
 pb.finish
 
-import_columns = [ :megatile_id, :x, :y, :type, :zoned_use,
+import_columns = [ :megatile_id, :x, :y, :type, :zoning_code,
                    :world_id, :primary_use, :people_density,
                    :housing_density, :tree_density, :land_cover_type,
                    :development_intensity, :tree_size, :imperviousness,

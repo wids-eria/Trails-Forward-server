@@ -5,7 +5,10 @@ FactoryGirl.define do
   end
 
   factory(:land_tile, class: LandTile, parent: :resource_tile) {}
-  factory(:water_tile, class: WaterTile, parent: :resource_tile) {}
+
+  factory(:water_tile, class: WaterTile, parent: :resource_tile) do
+    zoning_code 255
+  end
 
   factory(:forest_tile, parent: :land_tile) do
     tree_density 0.5

@@ -11,7 +11,7 @@ describe WaterTile do
   end
 
   it "cannot be zoned for logging" do
-    build(:water_tile, zoned_use: "Logging").should_not be_valid
+    build(:water_tile, zoning_code: 6).should_not be_valid
   end
 
   its(:can_bulldoze?) { should be_false }

@@ -8,7 +8,7 @@ class ResourceTile < ActiveRecord::Base
   # validates_uniqueness_of :x, :scope => [:y, :world_id]
   # validates_uniqueness_of :y, :scope => [:x, :world_id]
 
-  # todo: Add validations for land_cover_type, zoned_use, and primary_use to be sure that they're in one of the below
+  # todo: Add validations for land_cover_type, zoning_code, and primary_use to be sure that they're in one of the below
 
   scope :with_trees, where('tree_density > 0')
 
@@ -63,13 +63,13 @@ class ResourceTile < ActiveRecord::Base
         :pasture_hay => 'Pasture/Hay',
         :shrub_scrub => 'Shrub/Scrub',
         :unknown => "Unknown" },
-      :zoned_uses => {
-        :development => "Development",
-        :dev => "Development",
-        :agriculture => "Agriculture",
-        :ag => "Agriculture",
-        :logging => "Logging",
-        :park => "Park" },
+      # :zoned_uses => {
+        # :development => "Development",
+        # :dev => "Development",
+        # :agriculture => "Agriculture",
+        # :ag => "Agriculture",
+        # :logging => "Logging",
+        # :park => "Park" },
       :primary_uses => {
         :pasture => "Agriculture/Pasture",
         :crops => "Agriculture/Cultivated Crops",
