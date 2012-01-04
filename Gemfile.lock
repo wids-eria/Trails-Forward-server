@@ -118,6 +118,7 @@ GEM
       ruby-progressbar (~> 0.0.10)
     gherkin (2.6.8)
       json (>= 1.4.6)
+    god (0.11.0)
     growl_notify (0.0.3)
       rb-appscript
     guard (0.8.8)
@@ -270,6 +271,7 @@ DEPENDENCIES
   factory_girl_rails
   fuubar
   fuubar-cucumber
+  god
   growl_notify
   guard
   guard-bundler

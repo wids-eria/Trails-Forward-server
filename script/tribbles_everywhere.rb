@@ -2,7 +2,7 @@
 require 'benchmark'
 require "tattletail"
 
-num_ticks = ARGV[1] || 10
+num_ticks = ARGV[1] || 100
 num_ticks = num_ticks.to_i
 num_tribbles = 100
 world_width = 198
@@ -51,6 +51,8 @@ world_width = world.width
 world_height = world.height
 tick_count = 0
 ind_tick_count = 0
+tick_tiles = true
+generate_pngs = true
 
 ProgressBar.color_status
 ProgressBar.iter_rate_mode
@@ -110,7 +112,6 @@ num_ticks.times do |n|
   set_progress_title(tick_pb, tick_count, tribbles_in_world(world).count)
   tick_pb.expand_title
   tick_pb.finish
-
 
   if tick_tiles
     sql_pb = ProgressBar.new("Tick #{tick_count + 1} - Growth", 1)
