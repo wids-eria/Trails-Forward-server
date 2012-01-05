@@ -175,7 +175,7 @@ class Agent < ActiveRecord::Base
   end
 
   def go
-    raise NotImplementedError
+    raise NotImplementedError, '#go is not defined on your agent'
   end
 
 private

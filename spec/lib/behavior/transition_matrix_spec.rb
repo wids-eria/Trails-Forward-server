@@ -14,6 +14,8 @@ class TransitionMatrixAgent < Agent
   include Behavior::TransitionMatrix
   transition_matrix [[FECUNDITY0, FECUNDITY1],
                      [SURVIVAL0,  SURVIVAL1 ]]
+  def go
+  end
 end
 
 describe TransitionMatrixAgent do
@@ -136,21 +138,32 @@ describe TransitionMatrixAgent do
       its(:life_state) { should == 0 }
     end
 
-    xit 'transition' do
+    describe 'transition' do
       before do
-        agent.life_state = life_state
-        agent.stub(:rand).and_return(should_happen ? 0 : 1)
-        agent.try_transition!
+        agent.life_state = 0
+        agent.age = age
+        agent.tick
       end
 
-      context 'given they pass transition probability' do
-        let(:should_happen) { true }
-        its(:life_state) { should == 1 }
+      context 'less than a year' do
+        let(:age) { 350 }
+        it 'does not transition' do
+          agent.life_state.should == 0
+        end
       end
 
-      context 'given they fail the transition probability' do
-        let(:should_happen) { false }
-        its(:life_state) { should == 0 }
+      context 'at one year' do
+        let(:age) { 365 }
+        it 'transitions' do
+          agent.life_state.should == 1
+        end
+      end
+
+      context 'at more than a year' do
+        let(:age) { 370 }
+        it 'does not transition' do
+          agent.life_state.should == 1
+        end
       end
     end
   end
