@@ -3,7 +3,7 @@ require 'spec_helper'
 FECUNDITY0 = 0
 FECUNDITY1 = 1.49
 SURVIVAL0 = 0.48
-SURVIVAL1 = 0.48
+SURVIVAL1 = 0.68
 
 def daily_prob prob
   prob ** (1.0/365)
@@ -89,13 +89,13 @@ describe TransitionMatrixAgent do
     describe '#litter_size' do
       subject { agent.litter_size }
 
-      before do
-        agent.stub(:rand).and_return(small_litter ? [litter_probability[1] + 0.05, 1].min : [litter_probability[1] - 0.05, 0].max)
-      end
-
       context 'juvenile' do
         let(:litter_probability) { FECUNDITY0.divmod 1 }
         let(:life_state) { 0 }
+
+        before do
+          agent.stub(:rand).and_return(small_litter ? [litter_probability[1] + 0.05, 1].min : [litter_probability[1] - 0.05, 0].max)
+        end
 
         context 'small litter size' do
           let(:small_litter) { true }
@@ -116,6 +116,10 @@ describe TransitionMatrixAgent do
         let(:life_state) { 1 }
         let(:litter_probability) { FECUNDITY1.divmod 1 }
 
+        before do
+          agent.stub(:rand).and_return(small_litter ? [litter_probability[1] + 0.05, 1].min : [litter_probability[1] - 0.05, 0].max)
+        end
+
         context 'small litter size' do
           let(:small_litter) { true }
           it 'returns the floor of the fecundity' do
@@ -128,6 +132,35 @@ describe TransitionMatrixAgent do
           it 'returns the ceiling of the fecundity' do
             subject.should == litter_probability[0] + 1
           end
+        end
+      end
+
+      describe 'reproduce?' do
+        let(:life_state) { 1 }
+        before do
+          agent.age = age
+        end
+
+        subject { agent.reproduce? }
+
+        context 'less than a year' do
+          let(:age) { 350 }
+          it { should_not be }
+        end
+
+        context 'at one year' do
+          let(:age) { 365 }
+          it { should be }
+        end
+
+        context 'at more than a year, less than two' do
+          let(:age) { 370 }
+          it { should_not be }
+        end
+
+        context 'at two years' do
+          let(:age) { 730 }
+          it { should be }
         end
       end
     end
