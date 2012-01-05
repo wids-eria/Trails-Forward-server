@@ -1,9 +1,5 @@
 module Behavior
   module TransitionMatrix
-    def self.included(base)
-      base.extend(ClassMethods)
-    end
-
     def life_state= val
       @life_state = val
     end
@@ -33,6 +29,19 @@ module Behavior
       result = litter_size_probability[0]
       result += 1.0 if (rand < litter_size_probability[1])
       result
+    end
+
+    def tick_with_state_transition_check
+      self.life_state = 1 if self.life_state == 0 && self.age >= 365
+      tick_without_state_transition_check
+    end
+
+    def self.included(base)
+      base.extend(ClassMethods)
+      base.class_eval do
+        alias_method :tick_without_state_transition_check, :tick unless method_defined?(:tick_without_state_transition_check)
+        alias_method :tick, :tick_with_state_transition_check
+      end
     end
 
     module ClassMethods
