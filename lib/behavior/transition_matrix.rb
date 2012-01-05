@@ -16,19 +16,18 @@ module Behavior
       rand < daily_survival_probabilities[life_state]
     end
 
-    def die!
-      self.class.delete(self.id) unless new_record?
+    def try_transition!
+      @life_state += 1 if rand < daily_transition_probabilities[life_state]
     end
 
-    def try_transition!
-      @life_state += 1 if (rand < daily_transition_probabilities[life_state])
+    def reproduce?
+      self.age % 365 == 0
     end
 
     def litter_size
       litter_size_probability = litter_size_probabilities[life_state]
-      result = litter_size_probability[0]
-      result += 1.0 if (rand < litter_size_probability[1])
-      result
+      large_litter = rand < litter_size_probability[1]
+      litter_size_probability[0] + (large_litter ? 1 : 0)
     end
 
     def tick_with_state_transition_check
