@@ -12,12 +12,20 @@ module Behavior
       die! unless survive?
     end
 
+    def base_survival_probability
+      daily_survival_probabilities[life_state]
+    end
+
     def survive?
-      rand < daily_survival_probabilities[life_state]
+      rand < base_survival_probability
+    end
+
+    def base_transition_probability
+      daily_transition_probability[life_state]
     end
 
     def try_transition!
-      @life_state += 1 if rand < daily_transition_probabilities[life_state]
+      @life_state += 1 if rand < daily_transition_probability
     end
 
     def reproduce?
