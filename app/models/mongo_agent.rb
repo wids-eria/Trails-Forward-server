@@ -25,6 +25,10 @@ class MongoAgent
     eat
   end
 
+
+
+  ### BASE BEHAVIOR ######################
+
   def die
 
   end
@@ -38,6 +42,18 @@ class MongoAgent
   end
 
   def eat
+
+  end
+
+
+
+  ### HELPERS ############################
+
+  def nearby_agents
+
+  end
+
+  def nearby_tiles
 
   end
 end
