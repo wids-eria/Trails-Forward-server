@@ -27,7 +27,7 @@ group :development, :test do
   gem 'ruby-debug19', require: 'ruby-debug'
 
   gem 'guard'
-    gem 'growl_notify'
+    gem 'growl'
     gem 'guard-bundler'
     gem 'guard-cucumber'
     gem 'guard-migrate'
