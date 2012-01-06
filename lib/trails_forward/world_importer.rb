@@ -2,6 +2,13 @@ require 'bamfcsv'
 require 'progressbar'
 require 'stats_utilities'
 
+class NilProgressBar
+  def self.color_status; end
+  def self.iter_rate_mode; end
+  def finish; end
+  def inc; end
+end
+
 module TrailsForward
   module WorldImporter
     ROW_BATCH_SIZE = 2000
@@ -150,10 +157,15 @@ module TrailsForward
       tile_hash
     end
 
-    def self.import_world filename
-      ProgressBar.color_status
-      ProgressBar.iter_rate_mode
-      pb = ProgressBar.new 'CSV Parse', 1
+    def self.import_world filename, show_progress = true
+      if show_progress
+        progress_bar_class = ProgressBar
+      else
+        progress_bar_class = NilProgressBar
+      end
+      progress_bar_class.color_status
+      progress_bar_class.iter_rate_mode
+      pb = progress_bar_class.new 'CSV Parse', 1
       rows = BAMFCSV.read(filename)
       pb.finish
 
@@ -181,7 +193,7 @@ module TrailsForward
 
       name = File.basename(filename).sub(/\.csv$/, '')
 
-      pb = ProgressBar.new 'World', 1
+      pb = progress_bar_class.new 'World', 1
       world = Factory :world, width: world_width, height: world_height, name: name
       world_id = world.id
       pb.finish
@@ -189,7 +201,7 @@ module TrailsForward
       world.spawn_megatiles
 
 
-      pb = ProgressBar.new 'Megatile IDs', world.megatiles.count
+      pb = progress_bar_class.new 'Megatile IDs', world.megatiles.count
       megatile_ids = {}
       world.megatiles.find_in_batches do |megatiles|
         megatiles.each do |megatile|
@@ -200,14 +212,14 @@ module TrailsForward
       pb.finish
 
       # tile_indices = ResourceTile.connection.indexes :resource_tiles
-      # pb = ProgressBar.new "Remove Indices", tile_indices.count
+      # pb = progress_bar_class.new "Remove Indices", tile_indices.count
       # tile_indices.each do |index|
       #   ResourceTile.connection.remove_index index.table, index.columns
       #   pb.inc
       # end
       # pb.finish
 
-      pb = ProgressBar.new 'Clear Tiles', 1
+      pb = progress_bar_class.new 'Clear Tiles', 1
       ResourceTile.delete_all world_id: world_id
       pb.finish
 
@@ -217,7 +229,7 @@ module TrailsForward
                          :development_intensity, :tree_size, :imperviousness,
                          :frontage, :lakesize, :soil, :landcover_class_code ]
 
-      pb = ProgressBar.new 'Tile Import', rows.count
+      pb = progress_bar_class.new 'Tile Import', rows.count
 
       ResourceTile.connection.transaction do
         rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
@@ -240,14 +252,14 @@ module TrailsForward
       end
       pb.finish
 
-      # pb = ProgressBar.new "Reapply indices", tile_indices.count
+      # pb = progress_bar_class.new "Reapply indices", tile_indices.count
       # tile_indices.each do |index|
       #   ResourceTile.connection.add_index index.table, index.columns
       #   pb.inc
       # end
       # pb.finish
 
-      pb = ProgressBar.new 'Players', PLAYER_TYPES.count
+      pb = progress_bar_class.new 'Players', PLAYER_TYPES.count
       PLAYER_TYPES.each_with_index do |player_klass, idx|
         user = Factory :user,
           name: "User #{world_id}-#{idx}",
@@ -257,7 +269,7 @@ module TrailsForward
       end
       pb.finish
 
-      puts "##{world_id} - #{name} generated".green
+      puts("##{world_id} - #{name} generated".green) if show_progress
     end
   end
 end

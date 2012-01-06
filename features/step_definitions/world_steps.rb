@@ -29,7 +29,7 @@ Given /^I own a megatile in the world$/ do
 end
 
 When /^I generate a world from "([^"]*)"$/ do |csv_file_name|
-  TrailsForward::WorldImporter.import_world "script/data/#{csv_file_name}"
+  TrailsForward::WorldImporter.import_world "script/data/#{csv_file_name}", false
 end
 
 Then /^the new world should have (\d+) resource tiles$/ do |num_resource_tiles|
