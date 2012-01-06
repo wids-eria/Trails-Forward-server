@@ -40,12 +40,12 @@ module Tickers
         group.each do |rt|
           x = rt.x
           y = rt.y
-          case rt.tree_species
-          when ResourceTile.verbiage[:tree_species][:deciduous]
+          case rt.land_cover_type
+          when ResourceTile.verbiage[:land_cover_type][:deciduous]
             @land[x,y] = 1
-          when ResourceTile.verbiage[:tree_species][:coniferous]
+          when ResourceTile.verbiage[:land_cover_type][:coniferous]
             @land[x,y] = 2
-          when ResourceTile.verbiage[:tree_species][:mixed]
+          when ResourceTile.verbiage[:land_cover_type][:mixed]
             @land[x,y] = 3
           end
         end

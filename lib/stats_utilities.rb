@@ -1,6 +1,6 @@
 WVPairing = Struct.new :weight, :value
 
-def random_element(weights, values)
+def random_element values, weights
   pairings = []
   weights.count.times do |i|
     pairings << WVPairing.new(weights[i], values[i])

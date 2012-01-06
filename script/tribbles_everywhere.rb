@@ -4,9 +4,11 @@ require "tattletail"
 
 num_ticks = ARGV[1] || 10
 num_ticks = num_ticks.to_i
-num_tribbles = 10000
+num_tribbles = 100
 world_width = 198
 world_height = 198
+tick_tiles = true
+generate_pngs = true
 
 def file_prefix world
   "doc/world_pngs/#{world.id}-#{world.name.gsub(/\s/, '_')}"
@@ -49,8 +51,6 @@ world_width = world.width
 world_height = world.height
 tick_count = 0
 ind_tick_count = 0
-tick_tiles = true
-generate_pngs = false
 
 ProgressBar.color_status
 ProgressBar.iter_rate_mode

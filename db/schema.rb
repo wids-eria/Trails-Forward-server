@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20111229205110) do
+ActiveRecord::Schema.define(:version => 20120104162212) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -66,16 +66,6 @@ ActiveRecord::Schema.define(:version => 20111229205110) do
   add_index "change_requests", ["complete"], :name => "index_change_requests_on_complete"
   add_index "change_requests", ["world_id"], :name => "index_change_requests_on_world_id"
 
-  create_table "geometry_columns", :id => false, :force => true do |t|
-    t.string  "f_table_catalog",   :limit => 256, :null => false
-    t.string  "f_table_schema",    :limit => 256, :null => false
-    t.string  "f_table_name",      :limit => 256, :null => false
-    t.string  "f_geometry_column", :limit => 256, :null => false
-    t.integer "coord_dimension",                  :null => false
-    t.integer "srid",                             :null => false
-    t.string  "type",              :limit => 30,  :null => false
-  end
-
   create_table "listings", :force => true do |t|
     t.integer  "owner_id"
     t.integer  "megatile_grouping_id"
@@ -116,13 +106,12 @@ ActiveRecord::Schema.define(:version => 20111229205110) do
     t.integer "x"
     t.integer "y"
     t.string  "type"
-    t.string  "zoned_use"
     t.integer "world_id"
     t.string  "primary_use"
     t.float   "people_density"
     t.float   "housing_density"
     t.float   "tree_density"
-    t.string  "tree_species"
+    t.string  "land_cover_type"
     t.float   "development_intensity"
     t.float   "tree_size"
     t.float   "imperviousness"
@@ -130,17 +119,10 @@ ActiveRecord::Schema.define(:version => 20111229205110) do
     t.float   "lakesize"
     t.integer "soil"
     t.integer "landcover_class_code"
+    t.integer "zoning_code"
   end
 
   add_index "resource_tiles", ["x", "y", "world_id"], :name => "index_resource_tiles_on_x_and_y_and_world_id", :unique => true
-
-  create_table "spatial_ref_sys", :id => false, :force => true do |t|
-    t.integer "srid",                      :null => false
-    t.string  "auth_name", :limit => 256
-    t.integer "auth_srid"
-    t.string  "srtext",    :limit => 2048
-    t.string  "proj4text", :limit => 2048
-  end
 
   create_table "users", :force => true do |t|
     t.string   "name"

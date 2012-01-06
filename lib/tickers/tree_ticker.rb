@@ -19,14 +19,14 @@ module Tickers
         group.each do |rt|
           x = rt.x
           y = rt.y
-          case rt.tree_species
-          when ResourceTile.verbiage[:tree_species][:deciduous]
+          case rt.land_cover_type
+          when ResourceTile.verbiage[:land_cover_type][:deciduous]
             @decid[x,y] = rt.tree_size
             @old_tree_size[x,y] = rt.tree_size
-          when ResourceTile.verbiage[:tree_species][:coniferous]
+          when ResourceTile.verbiage[:land_cover_type][:coniferous]
             @conifer[x,y] = rt.tree_size
             @old_tree_size[x,y] = rt.tree_size
-          when ResourceTile.verbiage[:tree_species][:mixed]
+          when ResourceTile.verbiage[:land_cover_type][:mixed]
             @mixed[x,y] = rt.tree_size
             @old_tree_size[x,y] = rt.tree_size
           end
@@ -49,12 +49,12 @@ module Tickers
         group.each do |rt|
           x = rt.x
           y = rt.y
-          case rt.tree_species
-          when ResourceTile.verbiage[:tree_species][:deciduous]
+          case rt.land_cover_type
+          when ResourceTile.verbiage[:land_cover_type][:deciduous]
             rt.tree_size = result.tree_size[x,y]
-          when ResourceTile.verbiage[:tree_species][:coniferous]
+          when ResourceTile.verbiage[:land_cover_type][:coniferous]
             rt.tree_size = result.tree_size[x,y]
-          when ResourceTile.verbiage[:tree_species][:mixed]
+          when ResourceTile.verbiage[:land_cover_type][:mixed]
             rt.tree_size = result.tree_size[x,y]
           end
           rt.save!

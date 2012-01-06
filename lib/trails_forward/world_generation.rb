@@ -98,16 +98,16 @@ module TrailsForward
           people_density: 0,
           housing_density: 0,
           tree_density: 0.5 + rand / 2.0,
-          tree_species: 'Deciduous',
+          land_cover_type: 'Deciduous',
           development_intensity: 0.0,
-          zoned_use: (rand(10) == 0) ? "Logging" : ""
+          zoning_code: 6
       else
         people_density = 0.5 + rand / 2.0
         LandTile.new world_id: id,
           location: location,
           megatile_id: megatile_id,
           primary_use: "Residential",
-          zoned_use: "Development",
+          zoning_code: 12,
           people_density: people_density,
           housing_density: people_density,
           tree_density: rand * 0.1,
@@ -130,16 +130,16 @@ module TrailsForward
           resource_tile.people_density = 0
           resource_tile.housing_density = resource_tile.people_density
           resource_tile.tree_density = 0.5 + rand()/2.0
-          resource_tile.tree_species = "Deciduous"
+          resource_tile.land_cover_type = "Deciduous"
           resource_tile.development_intensity = 0.0
-          resource_tile.zoned_use = "Logging" if (rand(10) == 0)
+          resource_tile.zoning_code = 6
         when 7..8
           resource_tile.primary_use = "Residential"
-          resource_tile.zoned_use = "Development"
+          resource_tile.zoning_code = 12
           resource_tile.people_density = 0.5 + rand()/2.0
           resource_tile.housing_density = resource_tile.people_density
           resource_tile.tree_density = rand() * 0.1
-          resource_tile.tree_species = nil
+          resource_tile.land_cover_type = nil
           resource_tile.development_intensity = resource_tile.housing_density
         end
         resource_tile.save

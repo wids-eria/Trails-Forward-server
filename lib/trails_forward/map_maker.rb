@@ -68,7 +68,7 @@ module TrailsForward
     end
 
     def forest_color tile
-      this_green = case tile.tree_species
+      this_green = case tile.land_cover_type
                    when 'Deciduous' then color[:deciduous_forest]
                    when 'Coniferous' then color[:coniferous_forest]
                    else @color[:mixed_forest]
