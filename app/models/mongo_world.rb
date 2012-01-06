@@ -17,8 +17,23 @@ class MongoWorld
   alias :agents :mongo_agents
   alias :agents= :mongo_agents=
 
+  has_many :mongo_mega_tiles
+  alias :mega_tiles :mongo_mega_tiles
+  alias :mega_tiles= :mongo_mega_tiles=
+
   # has_many :players
   # has_many :listings
   # has_many :change_requests
   # has_many :agents
+
+  def tick
+    grow_trees  # noop
+    agen_agents # noop
+
+    tick_agents 
+  end
+
+  def tick_agents
+    MongoAgent.tick(agents)
+  end
 end

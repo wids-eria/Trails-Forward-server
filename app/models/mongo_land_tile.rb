@@ -1,0 +1,3 @@
+class MongoLandTile < MongoResourceTile
+
+end
