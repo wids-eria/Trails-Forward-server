@@ -1,0 +1,3 @@
+class MongoWaterTile < MongoResourceTile
+
+end
