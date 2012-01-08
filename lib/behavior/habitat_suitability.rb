@@ -27,8 +27,14 @@ module Behavior
         end
       end
 
-      def habitat_survival_modifier &blk
-        define_method :habitat_survival_modifier do
+      def suitability_survival_modifier &blk
+        define_method :suitability_survival_modifier do
+          blk.call(habitat_suitability self.resource_tile.land_cover_type)
+        end
+      end
+
+      def suitability_fecundity_modifier &blk
+        define_method :suitability_fecundity_modifier do
           blk.call(habitat_suitability self.resource_tile.land_cover_type)
         end
       end

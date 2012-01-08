@@ -7,8 +7,12 @@ class HabitatSuitabilityAgent < Agent
                       shrub_scrub: 8.7,
                       pasture_hay: 5
 
-  habitat_survival_modifier do |suitability_rating|
+  suitability_survival_modifier do |suitability_rating|
     1 - (1 - suitability_rating / 10.0) ** 3
+  end
+
+  suitability_fecundity_modifier do |suitability_rating|
+    suitability_rating / 10.0
   end
 
   def go
@@ -33,11 +37,11 @@ describe HabitatSuitabilityAgent do
     end
   end
 
-  describe '#habitat_survival_modifier' do
+  describe '#suitability_survival_modifier' do
     before do
       agent.stub_chain(:resource_tile, land_cover_type: ResourceTile.cover_type_number(cover_code))
     end
-    subject { agent.habitat_survival_modifier }
+    subject { agent.suitability_survival_modifier }
 
     context 'for a non-suitable environment' do
       let(:cover_code) { :open_water }
@@ -55,6 +59,37 @@ describe HabitatSuitabilityAgent do
       let(:cover_code) { :shrub_scrub }
       it { should be_kind_of(Float) }
       it { should == 0.997803 }
+    end
+
+    context 'for a perfectly suitabile environment' do
+      let(:cover_code) { :dwarf_scrub }
+      it { should be_kind_of(Float) }
+      it { should == 1.0 }
+    end
+  end
+
+  describe '#suitability_fecundity_modifier' do
+    before do
+      agent.stub_chain(:resource_tile, land_cover_type: ResourceTile.cover_type_number(cover_code))
+    end
+    subject { agent.suitability_fecundity_modifier }
+
+    context 'for a non-suitable environment' do
+      let(:cover_code) { :open_water }
+      it { should be_kind_of(Float) }
+      it { should == 0.0 }
+    end
+
+    context 'for an integer defined suitability environment' do
+      let(:cover_code) { :pasture_hay }
+      it { should be_kind_of(Float) }
+      it { should == 0.5 }
+    end
+
+    context 'for an float defined suitability environment' do
+      let(:cover_code) { :shrub_scrub }
+      it { should be_kind_of(Float) }
+      it { should be_within(0.000001).of(0.87) }
     end
 
     context 'for a perfectly suitabile environment' do
