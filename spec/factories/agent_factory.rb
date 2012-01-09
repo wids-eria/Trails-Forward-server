@@ -7,5 +7,6 @@ FactoryGirl.define do
 
   factory(:flycatcher, class: Flycatcher, parent: :agent) {}
   factory(:generic_agent, class: GenericAgent, parent: :agent) {}
+  factory(:red_fox, class: RedFox, parent: :agent) {}
   factory(:tribble, class: Tribble, parent: :agent) {}
 end

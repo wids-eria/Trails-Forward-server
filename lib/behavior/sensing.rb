@@ -9,7 +9,7 @@ module Behavior
     end
 
     def best_nearby_tile
-      nearby_tiles.sort_by {|a, b| tile_utility(b) <=> tile_utility(a)}.first
+      nearby_tiles.sort {|a, b| tile_utility(b) <=> tile_utility(a)}.first
     end
 
     def nearby_stuff opts = {}
