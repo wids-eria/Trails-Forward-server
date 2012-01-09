@@ -44,43 +44,6 @@ class Agent < ActiveRecord::Base
     10
   end
 
-  def nearby_stuff opts = {}
-    opts = {}.merge opts
-    opts[:radius] = [opts[:radius], max_view_distance].compact.min
-
-    local_search = opts[:class].where(world_id: world_id).in_square_range(opts[:radius], self.x, self.y)
-    local_search = local_search.for_types(opts[:types]) if opts[:types]
-    local_search
-  end
-
-  def nearby_tiles opts = {}
-    opts[:radius] = [opts[:radius], max_view_distance].compact.min
-    nearby_stuff opts.merge(class: ResourceTile)
-  end
-
-  def nearby_agents opts = {}
-    opts[:radius] = [opts[:radius], max_view_distance].compact.min
-    nearby_stuff(opts.merge class: Agent).reject do |a|
-      vect = (Vector[*a.location] - Vector[*self.location])
-      vect.magnitude > opts[:radius] || a == self
-    end
-  end
-
-  def nearby_peers opts = {}
-    opts[:radius] = [opts[:radius], max_view_distance].compact.min
-    nearby_agents opts.merge({types: [self.class]})
-  end
-
-  def location= coords
-    self.x = coords[0]
-    self.y = coords[1]
-    self.resource_tile = world.resource_tile_at(self.x.floor, self.y.floor)
-  end
-
-  def location
-    [x, y]
-  end
-
   def vector_to other
     Vector[other.x - self.x, other.y - self.y]
   end
