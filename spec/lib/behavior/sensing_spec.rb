@@ -2,7 +2,7 @@ require 'spec_helper'
 
 class SensingAgent < Agent
   max_view_distance 4
-  tile_utility do |tile|
+  tile_utility do |agent, tile|
     0.7
   end
 end

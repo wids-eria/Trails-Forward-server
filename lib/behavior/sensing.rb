@@ -8,6 +8,10 @@ module Behavior
       0.5
     end
 
+    def best_nearby_tile
+      nearby_tiles.sort_by {|a, b| tile_utility(b) <=> tile_utility(a)}.first
+    end
+
     def nearby_stuff opts = {}
       opts = {}.merge opts
       opts[:radius] = [opts[:radius], max_view_distance].compact.min
@@ -48,7 +52,7 @@ module Behavior
 
       def tile_utility &blk
         define_method :tile_utility do |tile|
-          blk.call(tile)
+          blk.call(self, tile)
         end
       end
     end

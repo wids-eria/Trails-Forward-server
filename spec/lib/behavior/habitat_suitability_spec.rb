@@ -15,7 +15,8 @@ class HabitatSuitabilityAgent < Agent
     suitability_rating / 10.0
   end
 
-  def go
+  tile_utility do |agent, tile|
+    agent.suitability_survival_modifier_for tile
   end
 end
 
@@ -42,6 +43,35 @@ describe HabitatSuitabilityAgent do
       agent.stub_chain(:resource_tile, land_cover_type: ResourceTile.cover_type_number(cover_code))
     end
     subject { agent.suitability_survival_modifier }
+
+    context 'for a non-suitable environment' do
+      let(:cover_code) { :open_water }
+      it { should be_kind_of(Float) }
+      it { should == 0.0 }
+    end
+
+    context 'for an integer defined suitability environment' do
+      let(:cover_code) { :pasture_hay }
+      it { should be_kind_of(Float) }
+      it { should == 0.875 }
+    end
+
+    context 'for an float defined suitability environment' do
+      let(:cover_code) { :shrub_scrub }
+      it { should be_kind_of(Float) }
+      it { should == 0.997803 }
+    end
+
+    context 'for a perfectly suitabile environment' do
+      let(:cover_code) { :dwarf_scrub }
+      it { should be_kind_of(Float) }
+      it { should == 1.0 }
+    end
+  end
+
+  describe '#tile_utility' do
+    let(:tile) { ResourceTile.new land_cover_type: cover_code }
+    subject { agent.tile_utility tile }
 
     context 'for a non-suitable environment' do
       let(:cover_code) { :open_water }
