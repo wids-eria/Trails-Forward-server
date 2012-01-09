@@ -1,4 +1,8 @@
+require 'behavior/base'
+
 class Agent < ActiveRecord::Base
+  include Behavior::Base
+
   def self.dist
     @@dist ||= SimpleRandom.new
     @@dist.set_seed
@@ -124,58 +128,16 @@ class Agent < ActiveRecord::Base
   end
 
   def tick!
-    progeny = tick || []
+    tick
     save! if changed?
-    progeny
+    @litter
   end
 
   def tick
-    die! and return if should_die?
-    go
-  end
-
-  def die!
-    self.destroy
-  end
-
-  def should_die?
-    false
-  end
-
-  def litter_size
-    1
-  end
-
-  def reproduce
-    litter = litter_size.times.map do
-      new_descendant
-    end
-  end
-
-  def new_descendant
-    self.class.new(world_id: world.id,
-                   resource_tile_id: resource_tile_id,
-                   heading: rand(360).round,
-                   x: jitter_x,
-                   y: jitter_y)
-  end
-
-  def jitter_x
-    result = self.x + baby_drop_jitter
-    result.floor == self.x.floor ? result : self.x
-  end
-
-  def jitter_y
-    result = self.y + baby_drop_jitter
-    result.floor == self.y.floor ? result : self.y
-  end
-
-  def baby_drop_jitter
-    (rand / 5.0) - 0.1
-  end
-
-  def go
-    raise NotImplementedError, '#go is not defined on your agent'
+    @litter = []
+    reproduce if reproduce?
+    die if die?
+    @litter
   end
 
 private
