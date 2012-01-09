@@ -18,7 +18,7 @@ Feature:
   Scenario: Agent class just specifies survival (no cover type modifiers)
     Given agent class:
     """
-      survival_rate 0.2
+      survival_rate 0.4
     """
     When 100 of those agents are ticked 365 times
-    Then the population of those agents should be 20 with a tolerance of 5
+    Then the population of those agents should be 40 with a tolerance of 5

@@ -128,15 +128,16 @@ class Agent < ActiveRecord::Base
   end
 
   def tick!
-    progeny = tick || []
+    tick
     save! if changed?
-    progeny
+    @litter
   end
 
   def tick
-    progeny = reproduce if reproduce?
+    @litter = []
+    reproduce if reproduce?
     die if die?
-    progeny
+    @litter
   end
 
   def die
@@ -154,12 +155,11 @@ class Agent < ActiveRecord::Base
   end
 
   def reproduce?
-    # puts age
     self.age % 365 == 364
   end
 
   def reproduce
-    litter = litter_size.times.map do
+    @litter = litter_size.times.map do
       new_descendant
     end
   end
