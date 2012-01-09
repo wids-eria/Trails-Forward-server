@@ -167,8 +167,14 @@ describe TransitionMatrixAgent do
   end
 
   describe '#life_state' do
+    subject { agent.life_state }
+
+    before do
+      agent.stub(:reproduce?)
+    end
+
     context 'new agent' do
-      its(:life_state) { should == 0 }
+      it { should == 0 }
     end
 
     describe 'transition' do
@@ -180,23 +186,17 @@ describe TransitionMatrixAgent do
 
       context 'less than a year' do
         let(:age) { 350 }
-        it 'does not transition' do
-          agent.life_state.should == 0
-        end
+        it { should == 0 }
       end
 
       context 'at one year' do
         let(:age) { 365 }
-        it 'transitions' do
-          agent.life_state.should == 1
-        end
+        it { should == 1 }
       end
 
       context 'at more than a year' do
         let(:age) { 370 }
-        it 'does not transition' do
-          agent.life_state.should == 1
-        end
+        it { should == 1 }
       end
     end
   end

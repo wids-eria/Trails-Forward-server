@@ -1,4 +1,8 @@
+require 'behavior/base'
+
 class Agent < ActiveRecord::Base
+  include Behavior::Base
+
   def self.dist
     @@dist ||= SimpleRandom.new
     @@dist.set_seed
@@ -130,20 +134,28 @@ class Agent < ActiveRecord::Base
   end
 
   def tick
-    die! and return if should_die?
-    go
+    progeny = reproduce if reproduce?
+    die if die?
+    progeny
   end
 
-  def die!
+  def die
     self.destroy
   end
 
-  def should_die?
-    false
+  def die?
+    rand < self.mortality_rate
   end
 
   def litter_size
-    1
+    result = fecundity.floor
+    result += 1 if rand < (fecundity % 1.0)
+    result
+  end
+
+  def reproduce?
+    # puts age
+    self.age % 365 == 364
   end
 
   def reproduce
@@ -172,10 +184,6 @@ class Agent < ActiveRecord::Base
 
   def baby_drop_jitter
     (rand / 5.0) - 0.1
-  end
-
-  def go
-    raise NotImplementedError, '#go is not defined on your agent'
   end
 
 private
