@@ -9,6 +9,10 @@ module Behavior
       [x, y]
     end
 
+    def vector_to other
+      Vector[other.x - self.x, other.y - self.y]
+    end
+
     def self.included(base)
       base.extend ClassMethods
     end
