@@ -140,52 +140,6 @@ class Agent < ActiveRecord::Base
     @litter
   end
 
-  def die
-    self.destroy
-  end
-
-  def die?
-    rand < self.mortality_rate
-  end
-
-  def litter_size
-    result = fecundity.floor
-    result += 1 if rand < (fecundity % 1.0)
-    result
-  end
-
-  def reproduce?
-    self.age % 365 == 364
-  end
-
-  def reproduce
-    @litter = litter_size.times.map do
-      new_descendant
-    end
-  end
-
-  def new_descendant
-    self.class.new(world_id: world.id,
-                   resource_tile_id: resource_tile_id,
-                   heading: rand(360).round,
-                   x: jitter_x,
-                   y: jitter_y)
-  end
-
-  def jitter_x
-    result = self.x + baby_drop_jitter
-    result.floor == self.x.floor ? result : self.x
-  end
-
-  def jitter_y
-    result = self.y + baby_drop_jitter
-    result.floor == self.y.floor ? result : self.y
-  end
-
-  def baby_drop_jitter
-    (rand / 5.0) - 0.1
-  end
-
 private
 
   def setup_resource_tile

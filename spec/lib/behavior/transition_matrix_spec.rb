@@ -14,8 +14,6 @@ class TransitionMatrixAgent < Agent
   include Behavior::TransitionMatrix
   transition_matrix [[FECUNDITY0, FECUNDITY1],
                      [SURVIVAL0,  SURVIVAL1 ]]
-  def go
-  end
 end
 
 describe TransitionMatrixAgent do
@@ -25,34 +23,32 @@ describe TransitionMatrixAgent do
   its(:daily_survival_probabilities) { should == [daily_prob(SURVIVAL0),
                                                   daily_prob(SURVIVAL1)] }
 
-  its(:litter_size_probabilities) { should == [FECUNDITY0.divmod(1),
-                                               FECUNDITY1.divmod(1)] }
+  its(:litter_size_probabilities) { should == [FECUNDITY0,
+                                               FECUNDITY1] }
 
   context 'mortality' do
     before do
-      daily_survival = daily_prob("SURVIVAL#{life_state}".constantize)
+      daily_mortality = 1 - daily_prob("SURVIVAL#{life_state}".constantize)
       agent.life_state = life_state
-      agent.stub(:rand).and_return(should_happen ? daily_survival - 0.05 : daily_survival + 0.05)
+      agent.stub(:rand).and_return(should_happen ? daily_mortality - 0.05 : daily_mortality + 0.05)
     end
 
     context 'juvenile' do
       let(:life_state) { 0 }
 
       context 'given they pass transition probability' do
-        let(:should_happen) { true }
+        let(:should_happen) { false }
 
         it 'does not die' do
-          agent.should_receive(:die!).never
-          agent.try_survival!
+          agent.should_not be_die
         end
       end
 
       context 'given they fail the transition probability' do
-        let(:should_happen) { false }
+        let(:should_happen) { true }
 
         it 'dies' do
-          agent.should_receive(:die!).and_return(true)
-          agent.try_survival!
+          agent.should be_die
         end
       end
     end
@@ -61,20 +57,18 @@ describe TransitionMatrixAgent do
       let(:life_state) { 1 }
 
       context 'given they pass transition probability' do
-        let(:should_happen) { true }
+        let(:should_happen) { false }
 
         it 'does not die' do
-          agent.should_receive(:die!).never
-          agent.try_survival!
+          agent.should_not be_die
         end
       end
 
       context 'given they fail the transition probability' do
-        let(:should_happen) { false }
+        let(:should_happen) { true }
 
         it 'dies' do
-          agent.should_receive(:die!).and_return(true)
-          agent.try_survival!
+          agent.should be_die
         end
       end
     end
@@ -149,7 +143,7 @@ describe TransitionMatrixAgent do
         end
 
         context 'at one year' do
-          let(:age) { 365 }
+          let(:age) { 364 }
           it { should be }
         end
 
@@ -159,7 +153,7 @@ describe TransitionMatrixAgent do
         end
 
         context 'at two years' do
-          let(:age) { 730 }
+          let(:age) { 729 }
           it { should be }
         end
       end
