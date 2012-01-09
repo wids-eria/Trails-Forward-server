@@ -4,6 +4,10 @@ module Behavior
       0
     end
 
+    def tile_utility tile
+      0.5
+    end
+
     def nearby_stuff opts = {}
       opts = {}.merge opts
       opts[:radius] = [opts[:radius], max_view_distance].compact.min
@@ -39,6 +43,12 @@ module Behavior
       def max_view_distance val
         define_method :max_view_distance do
           val
+        end
+      end
+
+      def tile_utility &blk
+        define_method :tile_utility do |tile|
+          blk.call(tile)
         end
       end
     end

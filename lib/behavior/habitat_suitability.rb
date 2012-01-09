@@ -1,14 +1,13 @@
 module Behavior
   module HabitatSuitability
+    def base_survival_probability_with_habitat_suitabiltiy
+      self.base_survival_probability * habitat_suitability_modifier
+    end
 
     def self.included(base)
       base.extend ClassMethods
       base.class_eval do
       end
-    end
-
-    def base_survival_probability_with_habitat_suitabiltiy
-      self.base_survival_probability * habitat_suitability_modifier
     end
 
     module ClassMethods
