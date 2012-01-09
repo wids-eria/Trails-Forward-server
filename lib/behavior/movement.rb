@@ -1,5 +1,12 @@
 module Behavior
   module Movement
+    def move?
+      false
+    end
+
+    def move
+    end
+
     def turn degrees
       self.heading += degrees
     end
@@ -41,6 +48,18 @@ module Behavior
         x_offset = (distance * Math.sin(heading_in_radians)).round(2)
         y_offset = (distance * Math.cos(heading_in_radians)).round(2)
         [x_offset, y_offset]
+      end
+
+      def move_when &blk
+        define_method :move? do
+          blk.call self
+        end
+      end
+
+      def move_to &blk
+        define_method :move do
+          self.location = blk.call(self)
+        end
       end
     end
   end

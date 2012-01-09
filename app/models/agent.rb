@@ -52,6 +52,7 @@ class Agent < ActiveRecord::Base
 
   def tick
     @litter = []
+    move if move?
     reproduce if reproduce?
     die if die?
     @litter
