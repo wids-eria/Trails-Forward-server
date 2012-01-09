@@ -115,6 +115,10 @@ class ResourceTile < ActiveRecord::Base
     [x, y]
   end
 
+  def center_location
+    location.map {|x| x + 0.5}
+  end
+
   def zone_allowed? zone
     not disallowed_zoned_uses.include? zone
   end

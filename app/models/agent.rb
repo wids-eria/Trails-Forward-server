@@ -45,8 +45,7 @@ class Agent < ActiveRecord::Base
   end
 
   def tick!
-    tick
-    save! if changed?
+    save if tick && changed?
     @litter
   end
 
@@ -54,8 +53,8 @@ class Agent < ActiveRecord::Base
     @litter = []
     move if move?
     reproduce if reproduce?
-    die if die?
-    @litter
+    die and return if die?
+    true
   end
 
 private

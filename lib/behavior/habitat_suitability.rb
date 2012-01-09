@@ -28,11 +28,12 @@ module Behavior
 
       def suitability_survival_modifier &blk
         define_method :suitability_survival_modifier_for do |tile|
+          require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger 
           blk.call(habitat_suitability tile.land_cover_type)
         end
 
         define_method :suitability_survival_modifier do
-          suitability_survival_modifier_for self.resource_tile
+          suitability_survival_modifier_for resource_tile
         end
       end
 
@@ -42,7 +43,7 @@ module Behavior
         end
 
         define_method :suitability_fecundity_modifier do
-          suitability_fecundity_modifier_for self.resource_tile
+          suitability_fecundity_modifier_for resource_tile
         end
       end
     end

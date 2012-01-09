@@ -35,6 +35,7 @@ class World < ActiveRecord::Base
     tick_tiles
     grow_trees!
 
+    self.reload
     self.current_date += tick_length
   end
 
@@ -44,7 +45,8 @@ class World < ActiveRecord::Base
 
   def tick_agents
     progeny = []
-    agents.reload.each do |agent|
+    agents.each do |agent|
+      agent.reload
       progeny += agent.tick!
     end
     Agent.import progeny, validate: false, timestamps: false
