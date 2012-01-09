@@ -18,6 +18,14 @@ When /^(\d+) of those agents are ticked (\d+) times$/ do |num_agents, num_ticks|
     @agent_class.create! world: @world, x: 0, y: 0, heading: 0
   end
 
+  $rand = Random.new(0)
+
+  @agent_class.class_eval do
+    define_method :rand do |*val|
+      $rand.rand *val
+    end
+  end
+
   num_ticks.to_i.times do
     @world.tick
   end

@@ -40,9 +40,6 @@ class Agent < ActiveRecord::Base
 
   scope :with_world_and_tile, include: [:world, :resource_tile]
 
-  def max_view_distance
-    10
-  end
 
   def vector_to other
     Vector[other.x - self.x, other.y - self.y]

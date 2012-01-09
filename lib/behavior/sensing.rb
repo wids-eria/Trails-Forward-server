@@ -1,5 +1,9 @@
 module Behavior
   module Sensing
+    def max_view_distance
+      0
+    end
+
     def nearby_stuff opts = {}
       opts = {}.merge opts
       opts[:radius] = [opts[:radius], max_view_distance].compact.min
@@ -32,6 +36,11 @@ module Behavior
     end
 
     module ClassMethods
+      def max_view_distance val
+        define_method :max_view_distance do
+          val
+        end
+      end
     end
   end
 end
