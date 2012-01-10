@@ -1,4 +1,8 @@
+require 'behavior/base'
+
 class Agent < ActiveRecord::Base
+  include Behavior::Base
+
   def self.dist
     @@dist ||= SimpleRandom.new
     @@dist.set_seed
@@ -36,146 +40,22 @@ class Agent < ActiveRecord::Base
 
   scope :with_world_and_tile, include: [:world, :resource_tile]
 
-  def max_view_distance
-    10
-  end
-
-  def nearby_stuff opts = {}
-    opts = {}.merge opts
-    opts[:radius] = [opts[:radius], max_view_distance].compact.min
-
-    local_search = opts[:class].where(world_id: world_id).in_square_range(opts[:radius], self.x, self.y)
-    local_search = local_search.for_types(opts[:types]) if opts[:types]
-    local_search
-  end
-
-  def nearby_tiles opts = {}
-    opts[:radius] = [opts[:radius], max_view_distance].compact.min
-    nearby_stuff opts.merge(class: ResourceTile)
-  end
-
-  def nearby_agents opts = {}
-    opts[:radius] = [opts[:radius], max_view_distance].compact.min
-    nearby_stuff(opts.merge class: Agent).reject do |a|
-      vect = (Vector[*a.location] - Vector[*self.location])
-      vect.magnitude > opts[:radius] || a == self
-    end
-  end
-
-  def nearby_peers opts = {}
-    opts[:radius] = [opts[:radius], max_view_distance].compact.min
-    nearby_agents opts.merge({types: [self.class]})
-  end
-
-  def location= coords
-    self.x = coords[0]
-    self.y = coords[1]
-    self.resource_tile = world.resource_tile_at(self.x.floor, self.y.floor)
-  end
-
-  def location
-    [x, y]
-  end
-
-  def vector_to other
-    Vector[other.x - self.x, other.y - self.y]
-  end
-
-  def turn degrees
-    self.heading += degrees
-  end
-
-  def position_after_move distance
-    offset_coordinates = Agent.calculate_offset_coordinates(self.heading, distance)
-    new_x = (self.x + offset_coordinates[0]).round(2)
-    new_y = (self.y + offset_coordinates[1]).round(2)
-    new_heading = self.heading
-
-    if new_x < 0 || new_x >= world.width
-      if new_x < 0
-        new_x = 0
-      else
-        new_x = world.width - 1
-      end
-      new_heading = (360 - self.heading)
-    end
-
-    if new_y < 0 || new_y >= world.height
-      if new_y < 0
-        new_y = 0
-      else
-        new_y = world.height - 1
-      end
-      new_heading = (180 - self.heading)
-    end
-
-    {location: [new_x, new_y], heading: new_heading}
-  end
-
-  def self.calculate_offset_coordinates heading, distance
-    heading_in_radians = heading * (Math::PI / 180.0)
-    x_offset = (distance * Math.sin(heading_in_radians)).round(2)
-    y_offset = (distance * Math.cos(heading_in_radians)).round(2)
-    [x_offset, y_offset]
-  end
-
   def self.age! world
     world.agents.update_all('age = age + 1')
   end
 
   def tick!
-    progeny = tick || []
+    tick
     save! if changed?
-    progeny
+    @litter
   end
 
   def tick
-    die! and return if should_die?
-    go
-  end
-
-  def die!
-    self.destroy
-  end
-
-  def should_die?
-    false
-  end
-
-  def litter_size
-    1
-  end
-
-  def reproduce
-    litter = litter_size.times.map do
-      new_descendant
-    end
-  end
-
-  def new_descendant
-    self.class.new(world_id: world.id,
-                   resource_tile_id: resource_tile_id,
-                   heading: rand(360).round,
-                   x: jitter_x,
-                   y: jitter_y)
-  end
-
-  def jitter_x
-    result = self.x + baby_drop_jitter
-    result.floor == self.x.floor ? result : self.x
-  end
-
-  def jitter_y
-    result = self.y + baby_drop_jitter
-    result.floor == self.y.floor ? result : self.y
-  end
-
-  def baby_drop_jitter
-    (rand / 5.0) - 0.1
-  end
-
-  def go
-    raise NotImplementedError
+    @litter = []
+    move if move?
+    reproduce if reproduce?
+    die if die?
+    @litter
   end
 
 private

@@ -55,24 +55,19 @@ describe Agent do
       agent.age.should == 0
     end
 
-    it 'calls the #go hook' do
-      agent.should_receive(:go).and_return(true)
-      agent.tick
-    end
-
-    describe '#die!' do
-      context 'when should_die?' do
-        before { agent.stub(should_die?: true) }
+    describe '#die' do
+      context 'when die?' do
+        before { agent.stub(die?: true) }
         it 'is called' do
-          agent.should_receive(:die!).and_return(true)
+          agent.should_receive(:die).and_return(true)
           agent.tick
         end
       end
 
-      context 'when not should_die?' do
-        before { agent.stub(should_die?: false) }
+      context 'when not die?' do
+        before { agent.stub(die?: false) }
         it 'is not called' do
-          agent.should_receive(:die!).never
+          agent.should_receive(:die).never
           agent.tick
         end
       end

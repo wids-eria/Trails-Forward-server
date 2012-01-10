@@ -78,27 +78,32 @@ class ResourceTile < ActiveRecord::Base
         :industry => "Industry" } }
   end
 
+  def self.cover_types
+    @cover_types ||= { 11 => :open_water,
+                       21 => :developed_open_space,
+                       22 => :developed_low_intensity,
+                       23 => :developed_medium_intensity,
+                       24 => :developed_high_intensity,
+                       31 => :barren,
+                       41 => :deciduous,
+                       42 => :coniferous,
+                       43 => :mixed,
+                       51 => :dwarf_scrub,
+                       52 => :shrub_scrub,
+                       71 => :grassland_herbaceous,
+                       81 => :pasture_hay,
+                       82 => :cultivated_crops,
+                       90 => :forested_wetland,
+                       95 => :emergent_herbaceous_wetland,
+                       255 => :excluded }
+  end
+
   def self.cover_type_symbol class_code
-    case class_code
-    when 11 then :open_water
-    when 21 then :developed_open_space
-    when 22 then :developed_low_intensity
-    when 23 then :developed_medium_intensity
-    when 24 then :developed_high_intensity
-    when 31 then :barren
-    when 41 then :deciduous
-    when 42 then :coniferous
-    when 43 then :mixed
-    when 51 then :dwarf_scrub
-    when 52 then :shrub_scrub
-    when 71 then :grassland_herbaceous
-    when 81 then :pasture_hay
-    when 82 then :cultivated_crops
-    when 90 then :forested_wetland
-    when 95 then :emergent_herbaceous_wetland
-    when 255 then :excluded #named on the assumption this is the outside of Vilas county coordinates
-    else :unknown
-    end
+    cover_types[class_code] || :unknown
+  end
+
+  def self.cover_type_number class_symbol
+    cover_types.invert[class_symbol] || raise("Cover type #{class_symbol} not found")
   end
 
   def location= coords
