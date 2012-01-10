@@ -81,7 +81,6 @@ module TrailsForward
 
       progress = ProgressBar.new('MegaTiles', coordinate_list.count) if Rails.env.development?
       self.mega_tiles = coordinate_list.collect do |x, y|
-        #puts "{#{x},#{y}}"
         tile = MongoMegaTile.new x: x, y: y, world: world
         tile.save!
         progress.inc
@@ -97,7 +96,6 @@ module TrailsForward
       progress = ProgressBar.new('MegaTile $', mega_tiles.count)
       self.mega_tile_ids = {}
       mega_tiles.each do |megatile|
-        #puts "<#{x},#{y}>"
         self.mega_tile_ids["#{megatile.x}:#{megatile.y}"] = megatile.id
         progress.inc
       end
