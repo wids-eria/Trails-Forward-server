@@ -132,9 +132,17 @@ class ResourceTile < ActiveRecord::Base
     self.people_density = nil
     self.housing_density = nil
     self.tree_density = nil
-    self.land_cover_type = nil
+    self.land_cover_type = :barren
     self.tree_size = nil
     self.development_intensity = nil
+  end
+
+  def land_cover_type
+    ResourceTile.cover_type_symbol self.landcover_class_code
+  end
+
+  def land_cover_type= val
+    @landcover_class_code = ResourceTile.cover_type_number val
   end
 
   def clear_resources!

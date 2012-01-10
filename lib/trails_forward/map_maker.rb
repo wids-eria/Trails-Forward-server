@@ -29,8 +29,8 @@ module TrailsForward
         tiles.each do |tile|
           x, y = tile.location
           canvas[x, y] = color_tile tile
-          prog_bar.inc
         end
+        prog_bar.inc tiles.size
       end
       prog_bar.finish
 
@@ -68,9 +68,9 @@ module TrailsForward
     end
 
     def forest_color tile
-      this_green = case tile.land_cover_type
-                   when 'Deciduous' then color[:deciduous_forest]
-                   when 'Coniferous' then color[:coniferous_forest]
+      this_green = case tile.land_cover_type.to_sym
+                   when :deciduous then color[:deciduous_forest]
+                   when :coniferous then color[:coniferous_forest]
                    else @color[:mixed_forest]
                    end
       blend this_green, color[:ground], tile.tree_density

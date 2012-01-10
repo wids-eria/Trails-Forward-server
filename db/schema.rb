@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120104162212) do
+ActiveRecord::Schema.define(:version => 20120110190400) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -111,7 +111,6 @@ ActiveRecord::Schema.define(:version => 20120104162212) do
     t.float   "people_density"
     t.float   "housing_density"
     t.float   "tree_density"
-    t.string  "land_cover_type"
     t.float   "development_intensity"
     t.float   "tree_size"
     t.float   "imperviousness"

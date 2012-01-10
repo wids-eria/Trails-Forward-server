@@ -223,11 +223,11 @@ module TrailsForward
       ResourceTile.delete_all world_id: world_id
       pb.finish
 
-      import_columns = [ :megatile_id, :x, :y, :type, :zoning_code,
-                         :world_id, :primary_use, :people_density,
-                         :housing_density, :tree_density, :land_cover_type,
-                         :development_intensity, :tree_size, :imperviousness,
-                         :frontage, :lakesize, :soil, :landcover_class_code ]
+      import_columns = [ :megatile_id, :x, :y, :type, :zoning_code, :world_id,
+                         :primary_use, :people_density, :housing_density,
+                         :tree_density, :development_intensity, :tree_size,
+                         :imperviousness, :frontage, :lakesize, :soil,
+                         :landcover_class_code ]
 
       pb = progress_bar_class.new 'Tile Import', rows.count
 
