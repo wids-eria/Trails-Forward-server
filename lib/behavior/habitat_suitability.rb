@@ -1,14 +1,14 @@
 module Behavior
   module HabitatSuitability
-    def mortality_rate_with_suitability
-      (1 - (1 - mortality_rate_without_suitability) * (suitability_survival_modifier || 0))
+    def annual_survival_rate_with_suitability tile = resource_tile
+      annual_survival_rate_without_suitability(tile) * suitability_survival_modifier
     end
 
     def self.included(base)
       base.extend ClassMethods
       base.class_eval do
-        alias_method :mortality_rate_without_suitability, :mortality_rate unless method_defined?(:mortality_rate_without_suitability)
-        alias_method :mortality_rate, :mortality_rate_with_suitability
+        alias_method :annual_survival_rate_without_suitability, :annual_survival_rate unless method_defined?(:annual_survival_rate_without_suitability)
+        alias_method :annual_survival_rate, :annual_survival_rate_with_suitability
       end
     end
 

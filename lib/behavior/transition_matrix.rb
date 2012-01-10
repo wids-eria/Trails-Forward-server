@@ -8,10 +8,6 @@ module Behavior
       @life_state ||= 0
     end
 
-    def mortality_rate
-      1 - daily_survival_probabilities[life_state]
-    end
-
     def base_transition_probability
       daily_transition_probability[life_state]
     end
