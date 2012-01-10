@@ -28,6 +28,8 @@ module TrailsForward
       import_resource_tiles
       create_players
 
+      verify_stuff
+
       puts "DING!"
     end
 
@@ -79,8 +81,9 @@ module TrailsForward
 
       progress = ProgressBar.new('MegaTiles', coordinate_list.count) if Rails.env.development?
       self.mega_tiles = coordinate_list.collect do |x, y|
+        #puts "{#{x},#{y}}"
         tile = MongoMegaTile.new x: x, y: y, world: world
-        tile.save
+        tile.save!
         progress.inc
         tile
       end
@@ -94,6 +97,7 @@ module TrailsForward
       progress = ProgressBar.new('MegaTile $', mega_tiles.count)
       self.mega_tile_ids = {}
       mega_tiles.each do |megatile|
+        #puts "<#{x},#{y}>"
         self.mega_tile_ids["#{megatile.x}:#{megatile.y}"] = megatile.id
         progress.inc
       end
@@ -102,12 +106,15 @@ module TrailsForward
 
 
     def import_resource_tiles
-      progress = ProgressBar.new('ResourceTiles', mega_tiles.count)
+      progress = ProgressBar.new('ResourceTiles', csv_rows.count)
       csv_rows.each do |row|
         row_hash = csv_row_to_hash(row)
         record_attributes = tile_attribute_hash_from_row_hash(row_hash) 
         tile = MongoResourceTile.new record_attributes 
-        tile.save
+        if world.contains_coordinate?(tile.x, tile.y)
+          raise "No Mega Tile" if tile.mongo_mega_tile_id.blank?
+          tile.save
+        end
         progress.inc
       end
       progress.finish
@@ -121,7 +128,6 @@ module TrailsForward
 
     ### HELPERS ##########################
 
-
     def tile_attribute_hash_from_row_hash row_hash
       tile_x = row_hash[:col].to_i
       tile_y = row_hash[:row].to_i
@@ -130,9 +136,8 @@ module TrailsForward
       mega_tile_x = tile_x - (tile_x % world.mega_tile_width)
       mega_tile_y = tile_y - (tile_y % world.mega_tile_height)
       mega_tile_id = mega_tile_ids["#{mega_tile_x}:#{mega_tile_y}"]
-      raise("Missing mega_tile at #{mega_tile_x}:#{mega_tile_y}") if mega_tile_id.nil?
 
-      tile_hash = { world_id: world.id, mega_tile_id: mega_tile_id, x: tile_x, y: tile_y }
+      tile_hash = { mongo_world_id: world.id, mongo_mega_tile_id: mega_tile_id, x: tile_x, y: tile_y }
 
       tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
       tile_hash[:housing_density] = housing_density_percent(row_hash[:devel_density].to_f)
@@ -164,5 +169,19 @@ module TrailsForward
       result
     end
 
+
+
+    ### SANITY ###########################
+
+    def verify_stuff
+      mega_tile = mega_tiles.first
+      mega_tile.reload
+      raise "No MegaTile association to World" if mega_tile.world.blank? || mega_tile.world != world
+
+      resource_tile = mega_tile.resource_tiles.first
+      resource_tile.reload
+      raise "No Resource association to MegaTile" if resource_tile.mega_tile.blank? || resource_tile.mega_tile != mega_tile
+      raise "No Resource association to World" if resource_tile.world.blank? || resource_tile.world != world
+    end
   end
 end

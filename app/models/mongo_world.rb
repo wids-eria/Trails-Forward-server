@@ -36,4 +36,11 @@ class MongoWorld
   def tick_agents
     MongoAgent.tick(agents)
   end
+
+
+  ### HELPERS ############################
+
+  def contains_coordinate?(x,y)
+    x < self.width && y < self.height && x > 0 && y > 0
+  end
 end
