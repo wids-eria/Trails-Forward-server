@@ -136,7 +136,7 @@ module TrailsForward
       tile_hash = { world_id: world.id, megatile_id: megatile_id, x: tile_x, y: tile_y }
 
       tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
-      tile_hash[:housing_density] = housing_density_percent(row_hash[:devel_density].to_f)
+      tile_hash[:housing_density] = housing_density_percent(row_hash[:housing_density].to_f)
       tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
       tile_hash[:frontage] = row_hash[:frontage].to_f
       tile_hash[:lakesize] = row_hash[:lakesize].to_f
@@ -146,7 +146,7 @@ module TrailsForward
 
       case landcover_code
       when 21..24 # Developed
-        tile_hash[:development_intensity] = (landcover_code - 20.0 / 4.0)
+        tile_hash[:development_intensity] = (landcover_code - (20.0 / 4.0))
       when 41,42,43,51,52,71,90 # Forest types, Scrub, Herbaceous
         tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
       end
@@ -174,7 +174,7 @@ module TrailsForward
                       :col => header.index("COL"),
                       :cover_class => header.index("LANDCOV2001"),
                       :imperviousness => header.index("IMPERV%2001"),
-                      :devel_density => header.index("HDEN00"),
+                      :housing_density => header.index("HDEN00"),
                       :forest_density => header.index("CANOPY%2001"),
                       :frontage => header.index("FRONTAGE"),
                       :lakesize => header.index("LAKESIZE"),

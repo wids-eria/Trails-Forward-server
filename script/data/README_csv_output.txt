@@ -57,3 +57,12 @@ HOUSING DENSITY CLASS CODES
 5 = Very High Housing Density (>16 to 128 houses per sq. km)
 6 = Intensely High Housing Density  (>128 houses per sq. km)
 99 = Open Water
+
+
+
+NOTES OF INSANITY
+=================
+HDEN00 - HOUSES2005 - LANDCOV2001: all describe similar values for housing.
+HDEN00 - LANDCOV2001: both describe water.
+
+
