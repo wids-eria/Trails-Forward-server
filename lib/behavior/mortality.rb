@@ -1,19 +1,28 @@
 module Behavior
   module Mortality
     def die?
-      rand < self.mortality_rate
+      rand < self.annual_mortality_rate
     end
 
     def die
       self.destroy
     end
 
-    def mortality_rate
-      0
+    # Default to 100% survival until DSL overrides
+    def annual_survival_rate tile = resource_tile
+      1
     end
 
-    def survival_rate
-      1 - mortality_rate
+    def annual_mortality_rate tile = resource_tile
+      1 - annual_survival_rate(tile)
+    end
+
+    def daily_survival_rate tile = resource_tile
+      annual_survival_rate(tile) ** (1 / 365.0)
+    end
+
+    def daily_mortality_rate tile = resource_tile
+      1 - daily_survival_rate(tile)
     end
 
     def self.included(base)
@@ -21,14 +30,14 @@ module Behavior
     end
 
     module ClassMethods
-      def mortality_rate val
-        define_method :mortality_rate do
-          1 - (1 - val) ** (1.0/365)
-        end
+      def annual_mortality_rate val
+        annual_survival_rate(1 - val)
       end
 
-      def survival_rate val
-        mortality_rate 1.0 - val
+      def annual_survival_rate val
+        define_method :annual_survival_rate do |tile|
+          val
+        end
       end
     end
   end

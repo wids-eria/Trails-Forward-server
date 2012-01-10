@@ -2,7 +2,7 @@ require 'spec_helper'
 
 class HabitatSuitabilityAgent < Agent
   include Behavior::HabitatSuitability
-  survival_rate 0.8
+  annual_survival_rate 0.8
   max_view_distance 1
 
   habitat_suitability open_water: 0,
