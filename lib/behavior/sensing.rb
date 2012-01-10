@@ -9,7 +9,9 @@ module Behavior
     end
 
     def best_nearby_tile
-      nearby_tiles.sort {|a, b| tile_utility(b) <=> tile_utility(a)}.first
+      tile_utilities = nearby_tiles.map {|t| [tile_utility(t), t]}.sort
+      best_utility = tile_utilities.map(&:first).max
+      tile_utilities.reject {|utility, tile| utility < best_utility}.sample[1]
     end
 
     def nearby_stuff opts = {}

@@ -98,7 +98,7 @@ module TrailsForward
           people_density: 0,
           housing_density: 0,
           tree_density: 0.5 + rand / 2.0,
-          land_cover_type: 'Deciduous',
+          landcover_class_code: ResourceTile.cover_type_number(:deciduous),
           development_intensity: 0.0,
           zoning_code: 6
       else
@@ -130,7 +130,7 @@ module TrailsForward
           resource_tile.people_density = 0
           resource_tile.housing_density = resource_tile.people_density
           resource_tile.tree_density = 0.5 + rand()/2.0
-          resource_tile.land_cover_type = "Deciduous"
+          resource_tile.landcover_class_code = ResourceTile.cover_type_number(:deciduous)
           resource_tile.development_intensity = 0.0
           resource_tile.zoning_code = 6
         when 7..8

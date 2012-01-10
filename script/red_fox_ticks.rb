@@ -8,7 +8,7 @@ num_red_foxes = 562 # <<< highly scientific value from Steve Wangen!
 world_width = 198
 world_height = 198
 tick_tiles = true
-generate_pngs = true
+generate_pngs = ARGV[2]
 
 def file_prefix world
   "doc/world_pngs/#{world.id}-#{world.name.gsub(/\s/, '_')}"

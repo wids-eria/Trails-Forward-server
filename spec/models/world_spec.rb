@@ -39,7 +39,7 @@ describe World do
   end
 
   describe "#tick" do
-    let(:world) { build :world }
+    let(:world) { create :world }
     let(:start_date) { world.start_date }
 
     subject{ world }

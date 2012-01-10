@@ -8,7 +8,7 @@ class LandTile < ResourceTile
       World.transaction do
         megatile.owner.balance += estimated_lumber_value
         self.tree_density = 0.0
-        self.land_cover_type = nil
+        self.land_cover_type = :barren
         self.tree_size = 0.0
         save!
       end

@@ -59,7 +59,6 @@ module Behavior
       def move_to &blk
         define_method :move do
           self.location = blk.call(self)
-          require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger unless self.resource_tile
         end
       end
     end

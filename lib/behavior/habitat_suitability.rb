@@ -1,12 +1,14 @@
 module Behavior
   module HabitatSuitability
-    def base_survival_probability_with_habitat_suitabiltiy
-      self.base_survival_probability * habitat_suitability_modifier
+    def mortality_rate_with_suitability
+      (1 - (1 - mortality_rate_without_suitability) * (suitability_survival_modifier || 0))
     end
 
     def self.included(base)
       base.extend ClassMethods
       base.class_eval do
+        alias_method :mortality_rate_without_suitability, :mortality_rate unless method_defined?(:mortality_rate_without_suitability)
+        alias_method :mortality_rate, :mortality_rate_with_suitability
       end
     end
 
@@ -26,10 +28,10 @@ module Behavior
         end
       end
 
-      def suitability_survival_modifier &blk
+      def suitability_survival_modifier default = nil, &blk
         define_method :suitability_survival_modifier_for do |tile|
-          require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger 
-          blk.call(habitat_suitability tile.land_cover_type)
+          suitability = habitat_suitability(tile.landcover_class_code) if tile && tile.landcover_class_code
+          suitability ? blk.call(suitability) : default
         end
 
         define_method :suitability_survival_modifier do
@@ -37,9 +39,10 @@ module Behavior
         end
       end
 
-      def suitability_fecundity_modifier &blk
+      def suitability_fecundity_modifier default = nil, &blk
         define_method :suitability_fecundity_modifier_for do |tile|
-          blk.call(habitat_suitability tile.land_cover_type)
+          suitability = habitat_suitability(tile.landcover_class_code) if tile && tile.landcover_class_code
+          suitability ? blk.call(suitability) : default
         end
 
         define_method :suitability_fecundity_modifier do
