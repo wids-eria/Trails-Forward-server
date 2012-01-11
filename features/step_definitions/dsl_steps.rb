@@ -33,5 +33,7 @@ end
 
 Then /the population of those agents should be (\d+) with a tolerance of (\d+)$/ do |target_population, tolerance|
   population = @world.agents.count
-  (population - target_population.to_i).abs.should <= tolerance.to_i
+  if (population - target_population.to_i).abs > tolerance.to_i
+    population.should == target_population.to_i
+  end
 end

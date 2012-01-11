@@ -1,7 +1,7 @@
 module Behavior
   module Mortality
     def die?
-      rand < self.annual_mortality_rate
+      rand < self.daily_mortality_rate
     end
 
     def die
@@ -35,7 +35,7 @@ module Behavior
       end
 
       def annual_survival_rate val
-        define_method :annual_survival_rate do |tile|
+        define_method :annual_survival_rate do |tile = nil|
           val
         end
       end
