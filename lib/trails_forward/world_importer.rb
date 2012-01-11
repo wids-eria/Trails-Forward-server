@@ -25,8 +25,8 @@ module TrailsForward
       mixed: [0.424745355, 0.350450241, 0.224804403]
     }
 
-    BigTreeSizes = [0,2,4,6,8,10,15,20]
-    BigTreeSizeWeights = {
+    LessFrequentTreeSizes = [0,2,4,6,8,10,15,20]
+    LessFrequentTreeSizeWeights = {
       coniferous: [0.372470808,0.216336587,0.104601339,0.107220868,0.063811891,0.053101396,0.079521954,0.002935158],
       deciduous: [0.473433437,0.271229523,0.127051152,0.068338135,0.029715297,0.011826016,0.01840644,0],
       forested_wetland: [0.369033307,0.232593812,0.114078886,0.10555826,0.061401365,0.046739204,0.068313732,0.002281434],
@@ -72,6 +72,7 @@ module TrailsForward
       when 'Coniferous', 'Deciduous', 'Forested Wetland', 'Mixed'
         cover_type_symbol = land_cover_type.underscore.sub(' ', '_').to_sym
         calculate_tree_size cover_type_symbol
+
       when'Dwarf Scrub', 'Grassland/Herbaceous', 'Shrub/Scrub'
         nil
         # tile.update_attributes(tree_size: nil)
@@ -87,7 +88,7 @@ module TrailsForward
         tree_size = random_element(DefaultTreeSizes, DefaultTreeSizeWeights[cover_type_symbol])
 
         if tree_size == 10
-          tree_size += random_element(BigTreeSizes, BigTreeSizeWeights[cover_type_symbol])
+          tree_size += random_element(LessFrequentTreeSizes, LessFrequentTreeSizeWeights[cover_type_symbol])
         end
       else
         tree_size = nil
@@ -125,6 +126,12 @@ module TrailsForward
       end
     end
 
+    def determine_num_trees_from_tree_density tree_density_percent
+      basal_area = 0.005454 * tree_size * tree_size
+      ** formula from Steve Wangen goes here **
+      ** W00t! **
+    end
+
     def self.tile_hash_from_row world, megatile_ids, row_hash, tile_x, tile_y
       landcover_code = row_hash[:cover_class].to_i
 
@@ -149,6 +156,8 @@ module TrailsForward
         tile_hash[:development_intensity] = (landcover_code - (20.0 / 4.0))
       when 41,42,43,51,52,71,90 # Forest types, Scrub, Herbaceous
         tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
+        col_with_trees = "num_diameter_#{tree_size}_trees".to_sym
+        tile_hash[col_with_trees] = determine_num_trees_from_tree_density tile_hash[:tree_size], tile_hash[:tree_density]
       end
 
       tile_hash[:zoning_code] = row_hash[:zoning]
