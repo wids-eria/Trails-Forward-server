@@ -14,12 +14,12 @@ class RedFox < Agent
                       developed_medium_intensity: 2,
                       developed_open_space: 5,
                       emergent_herbaceous_wetlands: 0,
+                      excluded: -1,
                       grassland_herbaceous: 8,
                       mixed_forest: 6,
                       open_water: -1,
                       pasture_hay: 6,
                       shrub_scrub: 10,
-                      excluded: 0,
                       woody_wetlands: 0
 
   suitability_survival_modifier do |suitability_rating|

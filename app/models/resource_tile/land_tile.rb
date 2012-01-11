@@ -42,7 +42,7 @@ class LandTile < ResourceTile
   end
 
   def self.grow_trees! world
-    world.resource_tiles.with_trees.update_all('tree_density = tree_density + (((4 * POW(tree_density, 3)) - (8 * POW(tree_density, 2)) + (4 * tree_density)) * 0.5)')
+    world.resource_tiles.with_trees.update_all('tree_density = tree_density + (((4 * POW(tree_density, 3)) - (8 * POW(tree_density, 2)) + (4 * tree_density)) * 0.01)')
   end
 
   def estimated_value

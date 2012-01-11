@@ -10,6 +10,7 @@ module TrailsForward
       @color = { agent: ChunkyPNG::Color(:red),
                  light_water: ChunkyPNG::Color(:blue),
                  dark_water: ChunkyPNG::Color(:dark_blue),
+                 marshland: ChunkyPNG::Color(2, 117, 110),
                  ground: ChunkyPNG::Color(:dark_khaki),
                  mixed_forest: mixed_forest,
                  deciduous_forest: deciduous_forest,
@@ -41,7 +42,7 @@ module TrailsForward
 
     def color_tile tile
       base_color = case tile.type
-                   when WaterTile.to_s then water_color
+                   when WaterTile.to_s then water_color(tile)
                    when LandTile.to_s
                      if tile.tree_density > 0.01
                        forest_color(tile)
@@ -63,8 +64,13 @@ module TrailsForward
       ChunkyPNG::Color.interpolate_quick foreground, background, (blend_alpha * 256).to_i
     end
 
-    def water_color
-      blend color[:light_water], color[:dark_water], rand / 4
+    def water_color tile
+      if tile.landcover_class_code == 95
+        percent_color = (5.0 - (tile.soil || 0)) / 5.0
+        blend color[:marshland], color[:ground], percent_color
+      else
+        blend color[:light_water], color[:dark_water], rand / 4
+      end
     end
 
     def forest_color tile

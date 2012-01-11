@@ -4,7 +4,7 @@ require "tattletail"
 
 num_ticks = ARGV[1] || 10
 num_ticks = num_ticks.to_i
-num_red_foxes = 562 # <<< highly scientific value from Steve Wangen!
+num_red_foxes = 1000
 world_width = 198
 world_height = 198
 tick_tiles = true
