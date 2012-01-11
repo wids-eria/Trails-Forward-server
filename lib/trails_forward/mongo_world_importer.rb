@@ -67,6 +67,7 @@ module TrailsForward
       world_height -= world_height % 3
 
       name = File.basename(filename).sub(/\.csv$/, '')
+      name = "#{name} #{DateTime.now}"
 
       progress = ProgressBar.new 'World', 1
       self.world = MongoWorld.new width: world_width, height: world_height, name: name, mega_tile_width: 3, mega_tile_height: 3

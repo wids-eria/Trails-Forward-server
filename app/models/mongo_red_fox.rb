@@ -1,0 +1,3 @@
+class MongoRedFox < MongoAgent
+
+end

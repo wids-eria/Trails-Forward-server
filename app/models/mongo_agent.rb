@@ -19,10 +19,10 @@ class MongoAgent
   end
 
   def tick
-    die
-    reproduce
-    move
     eat
+    move
+    reproduce
+    die
   end
 
 
@@ -30,19 +30,19 @@ class MongoAgent
   ### BASE BEHAVIOR ######################
 
   def die
-
+    puts "die"
   end
 
   def reproduce
-
+    puts "reproduce"
   end
 
   def move
-
+    puts "move"
   end
 
   def eat
-
+    puts "eat"
   end
 
 
