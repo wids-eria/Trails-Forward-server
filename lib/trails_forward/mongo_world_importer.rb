@@ -30,7 +30,7 @@ module TrailsForward
 
       verify_stuff
 
-      puts "DING!"
+      puts "World #{world.id} created"
     end
 
 

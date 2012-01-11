@@ -27,14 +27,20 @@ class MongoWorld
   # has_many :agents
 
   def tick
-    grow_trees  # noop
-    agen_agents # noop
+    grow_trees # noop
 
-    tick_agents 
+    tick_agents
   end
 
+
   def tick_agents
-    MongoAgent.tick(agents)
+    MongoAgent.tick(agents.all)
+  end
+
+
+  ### BEHAVIORS ##########################
+
+  def grow_trees
   end
 
 
