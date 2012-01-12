@@ -1,5 +1,6 @@
 class MongoResourceTile
   include Mongoid::Document
+  include TrailsForward::MongoSpacial
 
   field :x,                      type: Integer
   field :y,                      type: Integer

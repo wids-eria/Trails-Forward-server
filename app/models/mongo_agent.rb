@@ -1,6 +1,6 @@
 class MongoAgent
   include Mongoid::Document
-  include Mongoid::Spacial::Document
+  include TrailsForward::MongoSpacial
 
   field :x,        type: Float
   field :y,        type: Float
@@ -8,15 +8,9 @@ class MongoAgent
   # field :state,    type: String
   field :age,      type: Integer
 
-  field :location, type: Array, spacial: true
-  spacial_index :location
-  before_save :set_location
-
-
   belongs_to :mongo_world
   alias :world :mongo_world
   alias :world= :mongo_world=
-
 
   def self.tick(agents)
     agents.each do |agent|
@@ -64,19 +58,16 @@ class MongoAgent
 
   ### HELPERS ############################
 
-  def set_location
-    self.location = [x,y]
-  end
 
   def view_distance
     5
   end
 
   def nearby_agents
-    MongoAgent.where(:mongo_world_id => world.id, :_id.ne => self.id).geo_near([x, y], :max_distance => view_distance).all
+    MongoAgent.where(:mongo_world_id => world.id, :_id.ne => self.id).geo_near([x, y], :max_distance => view_distance)
   end
 
   def nearby_tiles
-    MongoResourceTile.where(:mongo_world_id => world.id).geo_near([x, y], :max_distance => view_distance).all
+    MongoResourceTile.where(:mongo_world_id => world.id).geo_near([x, y], :max_distance => view_distance)
   end
 end
