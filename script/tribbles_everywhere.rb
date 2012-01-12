@@ -45,7 +45,6 @@ world = if ARGV[0]
         else
           Factory :world_with_resources, width: world_width, height: world_height
         end
-tribbles_in_world(world).delete_all
 
 world_width = world.width
 world_height = world.height
@@ -56,23 +55,26 @@ ProgressBar.color_status
 ProgressBar.iter_rate_mode
 ProgressBar.disable_output unless Rails.env.development?
 
-tribble_pb = ProgressBar.new('Tribbles', num_tribbles)
+if @reset_tribbles || world.agents.count == 0
+  tribbles_in_world(world).delete_all
+  tribble_pb = ProgressBar.new('Tribbles', num_tribbles)
 
-num_tribbles.times do
-  location = []
-  resource_tile = ''
-  begin
-    location = [rand * world_width, rand * world_height]
-    resource_tile = world.resource_tile_at(*location.map(&:floor))
-  end until resource_tile.type == 'LandTile' && resource_tile.tree_density > 0.4
-  tribble = Factory.create :tribble,
-                            world: world,
-                            location: location,
-                            heading: rand(360).round,
-                            age: [Agent.normal_dist(2,5), 0].max.floor
-  tribble_pb.inc
+  num_tribbles.times do
+    location = []
+    resource_tile = ''
+    begin
+      location = [rand * world_width, rand * world_height]
+      resource_tile = world.resource_tile_at(*location.map(&:floor))
+    end until resource_tile.type == 'LandTile' && resource_tile.tree_density > 0.4
+    tribble = Factory.create :tribble,
+                              world: world,
+                              location: location,
+                              heading: rand(360).round,
+                              age: [Agent.normal_dist(2,5), 0].max.floor
+    tribble_pb.inc
+  end
+  tribble_pb.finish
 end
-tribble_pb.finish
 
 clear_old_pngs world
 create_png(world, tick_count) if generate_pngs
@@ -98,8 +100,10 @@ num_ticks.times do |n|
   litter = []
 
   tribble_count = tribbles_in_world(world).count
-  tribbles_in_world(world).each do |tribble|
-    Stalker.enqueue 'agent.tick', agent_id: tribble.id
+  tribbles_in_world(world).find_in_batches do |tribbles|
+    tribbles.each do |tribble|
+      Stalker.enqueue 'agent.tick', agent_id: tribble.id
+    end
   end
 
   tribble_count.times do
@@ -136,4 +140,5 @@ num_ticks.times do |n|
     create_gif world
   end
   puts
+  system 'rake log:clear'
 end
