@@ -146,7 +146,7 @@ module TrailsForward
 
       case landcover_code
       when 21..24 # Developed
-        tile_hash[:development_intensity] = (landcover_code - (20.0 / 4.0))
+        tile_hash[:development_intensity] = ((landcover_code - 20.0) / 4.0)
       when 41,42,43,51,52,71,90 # Forest types, Scrub, Herbaceous
         tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
       end
