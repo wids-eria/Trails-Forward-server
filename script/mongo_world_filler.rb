@@ -2,7 +2,7 @@
 
 world_id = ARGV[0]
 
-population_size = 10000
+population_size = 500
 ProgressBar.color_status
 ProgressBar.iter_rate_mode
 

@@ -1,10 +1,12 @@
 development:
   host: localhost
   database: trails_forward_development
+  autocreate_indexes: true
 
 test:
   host: localhost
   database: trails_forward_test
+  autocreate_indexes: true
 
 # set these environment variables on your prod server
 production:

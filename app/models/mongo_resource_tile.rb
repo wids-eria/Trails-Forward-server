@@ -19,11 +19,11 @@ class MongoResourceTile
   # field :tree_species,           type: String
   # field :zoned_use,              type: String
 
-  belongs_to :mongo_mega_tile
+  belongs_to :mongo_mega_tile, index: true
   alias :mega_tile :mongo_mega_tile
   alias :mega_tile= :mongo_mega_tile=
 
-  belongs_to :mongo_world
+  belongs_to :mongo_world, index: true
   alias :world :mongo_world
   alias :world= :mongo_world=
 end

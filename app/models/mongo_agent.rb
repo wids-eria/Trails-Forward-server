@@ -8,7 +8,7 @@ class MongoAgent
   # field :state,    type: String
   field :age,      type: Integer
 
-  belongs_to :mongo_world
+  belongs_to :mongo_world, index: true
   alias :world :mongo_world
   alias :world= :mongo_world=
 
