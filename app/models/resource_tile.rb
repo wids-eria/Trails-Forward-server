@@ -159,6 +159,14 @@ class ResourceTile < ActiveRecord::Base
     save! if changed?
   end
 
+  def set_permitted_actions_method player
+    if self.megatile.owner == player
+      def self.permitted_actions
+        self.owner_permitted_actions
+      end
+    end
+  end
+
   api_accessible :resource_base do |template|
     template.add :id
     template.add :x

@@ -27,6 +27,15 @@ class MegatilesController < ApplicationController
       end
       @megatiles = @world.megatiles
     end
+
+    player = @world.player_for_user(current_user)
+
+    @megatiles.each do |megatile|
+      megatile.resource_tiles.each do |tile|
+        tile.set_permitted_actions_method(player)
+      end
+    end
+
     respond_to do |format|
       format.xml  { render_for_api :megatile_with_resources, :xml  => @megatiles, :root => :megatiles  }
       format.json { render_for_api :megatile_with_resources, :json => @megatiles, :root => :megatiles  }
