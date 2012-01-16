@@ -29,7 +29,7 @@ describe LandTile do
 
       context 'on an unowned tile' do
         let(:target_player) { other_player }
-        it { should == ['request_bulldoze', 'request_clearcut'] }
+        it { should == [] }
       end
     end
 
@@ -46,7 +46,7 @@ describe LandTile do
 
       context 'on an unowned tile' do
         let(:target_player) { other_player }
-        it { should == ['request_bulldoze'] }
+        it { should == [] }
       end
     end
 

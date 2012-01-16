@@ -17,11 +17,7 @@ class ResourceTilesController < ApplicationController
       player = world.player_for_user(current_user)
 
       resource_tiles.each do |tile|
-        if tile.megatile.owner == player
-          def tile.permitted_actions
-            self.owner_permitted_actions
-          end
-        end
+        tile.set_permitted_actions_method(player)
       end
       format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
       format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
