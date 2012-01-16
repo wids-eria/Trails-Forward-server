@@ -17,10 +17,10 @@ describe ResourceTilesController do
 
     context 'with signed in player' do
 
-      context 'passed "microtiles"' do
+      context 'passed "resource_tile_ids"' do
         let(:tile_ids) { world.resource_tiles.select {|tile| tile.x % 2 == 0 && tile.y % 2 == 0}.map(&:id) }
         it 'returns a json list of the correct tiles' do
-          get :permitted_actions, world_id: world.id, microtiles: tile_ids, format: 'json'
+          get :permitted_actions, world_id: world.id, resource_tile_ids: tile_ids, format: 'json'
           locations.should == [[0,0], [0,2], [0,4], [2,0], [2,2], [2,4], [4,0], [4,2], [4,4]]
         end
       end
@@ -102,6 +102,23 @@ describe ResourceTilesController do
       end
     end
 
+    context 'passed a list of tiles' do
+      let!(:land_tile1) { create :land_tile, world: world, megatile: megatile }
+      let!(:land_tile2) { create :land_tile, world: world, megatile: megatile }
+      let!(:land_tiles) { [land_tile1, land_tile2] }
+      let(:megatile_owner) { player }
+
+      context 'that are all actionable' do
+        it "calls action on all the passed in tiles" do
+          LandTile.any_instance.should_receive("#{action}!".to_sym).any_number_of_times
+          post "#{action}_list", world_id: world.id, resource_tile_ids: land_tiles.map(&:id).map(&:to_s), format: 'json'
+#response.body.should == 'fubar'
+        end
+      end
+      context 'containing 1 non-actionable tile' do
+        it "effectively takes the action on none of the tiles"
+      end
+    end
   end
 
   describe '#clearcut' do

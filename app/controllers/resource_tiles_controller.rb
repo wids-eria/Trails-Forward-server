@@ -4,9 +4,10 @@ class ResourceTilesController < ApplicationController
 
   expose(:world) { World.find params[:world_id] }
   expose(:resource_tile) { ResourceTile.find params[:id] }
+
   expose(:resource_tiles) do
-    if params[:microtiles]
-      ResourceTile.find(params["microtiles"]).sort
+    if params[:resource_tile_ids]
+      ResourceTile.find(params["resource_tile_ids"]).sort
     else
       ResourceTile.within_rectangle x: params[:x], y: params[:y], width: params[:width], height: params[:height]
     end
