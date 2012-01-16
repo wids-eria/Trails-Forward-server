@@ -209,9 +209,7 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def non_owner_permitted_actions
-    self.all_actions.select {|action| send("can_#{action}?") }.map do |action|
-      "request_#{action}"
-    end
+    []
   end
 
   def <=> other
