@@ -7,6 +7,8 @@ TrailsForwardWorld::Application.routes.draw do
     resources :players, :only => [:index, :show, :update, :edit, :destroy]
   end
 
+  resources :my_players
+
   resources :worlds, :only => [:index, :show] do
     resources :players, :only => [:index, :show] do
       get :bids_placed
