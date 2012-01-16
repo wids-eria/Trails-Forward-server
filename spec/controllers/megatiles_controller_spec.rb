@@ -19,7 +19,7 @@ describe MegatilesController do
   describe '#index' do
     describe 'JSON for nested resource tiles' do
       context 'player owns the land tile' do
-        it 'includes bulldoze and clearcut permitted actions' do
+        example 'includes bulldoze and clearcut permitted actions' do
           world.resource_tile_at(0, 0).megatile.update_attributes(owner: player)
           get :index, world_id: world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 2, format: 'json'
           json = JSON.parse(response.body)
@@ -31,7 +31,7 @@ describe MegatilesController do
       end
 
       context 'player does not own the land tile' do
-        it 'includes no permitted actions' do
+        example 'includes no permitted actions' do
           get :index, world_id: world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 2, format: 'json'
           json = JSON.parse(response.body)
           megatile_hashes = json['megatiles']
