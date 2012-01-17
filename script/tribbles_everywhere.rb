@@ -9,6 +9,7 @@ world_width = 198
 world_height = 198
 tick_tiles = true
 generate_pngs = false
+@reset_tribbles = ARGV[2] || false
 
 def file_prefix world
   "doc/world_pngs/#{world.id}-#{world.name.gsub(/\s/, '_')}"
