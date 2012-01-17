@@ -14,13 +14,15 @@ class MongoAgent
 
   def self.tick(agents)
     agents.each do |agent|
-      agent.tick
-      agent.save
-      $bar.inc
+      Stalker.enqueue('mongo_agent.tick', :agent_id => agent.id)
+      #agent.tick
+      #agent.save
+      #$bar.inc
     end
   end
 
   def tick
+    puts "."
     mature
     eat
     move

@@ -30,11 +30,13 @@ class MongoWorld
     grow_trees # noop
 
     tick_agents
+
+    self.reload
   end
 
 
   def tick_agents
-    MongoAgent.tick(agents.all)
+    MongoAgent.tick(agents)#.all)
   end
 
 

@@ -18,6 +18,7 @@ gem 'json'
 gem 'mongoid', '~> 2.3'
 gem 'mongoid_spacial'
 gem 'bson_ext', '~> 1.4'
+gem 'stalker'
 
 gem 'msgpack'
 gem 'mysql2'
