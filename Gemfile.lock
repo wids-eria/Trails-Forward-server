@@ -146,7 +146,10 @@ GEM
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
+    metaclass (0.0.1)
     mime-types (1.17.2)
+    mocha (0.10.1)
+      metaclass (~> 0.0.1)
     msgpack (0.4.6)
     multi_json (1.0.4)
     mysql2 (0.3.11)
@@ -272,6 +275,7 @@ DEPENDENCIES
   guard-rspec
   guard-spork
   json
+  mocha
   msgpack
   mysql2
   narray
