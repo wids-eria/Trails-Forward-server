@@ -103,16 +103,15 @@ describe ResourceTilesController do
     end
 
     context 'passed a list of tiles' do
-      let!(:land_tile1) { create :land_tile, world: world, megatile: megatile }
-      let!(:land_tile2) { create :land_tile, world: world, megatile: megatile }
-      let!(:land_tiles) { [land_tile1, land_tile2] }
+      let(:land_tile1) { create :land_tile, world: world, megatile: megatile }
+      let(:land_tile2) { create :land_tile, world: world, megatile: megatile }
+      let(:land_tiles) { [land_tile1, land_tile2] }
       let(:megatile_owner) { player }
 
       context 'that are all actionable' do
         it "calls action on all the passed in tiles" do
-          LandTile.any_instance.should_receive("#{action}!".to_sym).any_number_of_times
-          post "#{action}_list", world_id: world.id, resource_tile_ids: land_tiles.map(&:id).map(&:to_s), format: 'json'
-#response.body.should == 'fubar'
+          put "#{action}_list", world_id: world.id, resource_tile_ids: land_tiles.map(&:id).map(&:to_s), format: 'json'
+          response.should be_success
         end
       end
       context 'containing 1 non-actionable tile' do

@@ -43,6 +43,7 @@ group :development, :test do
   gem 'fuubar-cucumber'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'mocha'
   gem 'shoulda-matchers'
   gem 'spork', '0.9.0.rc9'
   gem 'tattletail'
