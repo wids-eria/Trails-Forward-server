@@ -64,16 +64,16 @@ module TrailsForward
     end
 
     def self.select_bin_size diameter_bin
-      if diameter_bin > 24
+      if (diameter_bin <= 0) || (diameter_bin >= 29)
+        nil
+      elsif diameter_bin > 24
         24
-      elsif diameter_bin.round.even?
-        diameter_bin.round
       else
-        if diameter_bin.floor.even?
-          diameter_bin.floor
-        else
-          diameter_bin.ceil
+        result = diameter_bin.ceil
+        if result.odd?
+          result += 1
         end
+        result
       end
     end
   end
