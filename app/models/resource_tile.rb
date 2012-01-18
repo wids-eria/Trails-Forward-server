@@ -4,6 +4,7 @@ class ResourceTile < ActiveRecord::Base
   belongs_to :megatile
   belongs_to :world
   has_many :agents
+  has_many :resources
 
   def self.dist
     @@dist ||= SimpleRandom.new
