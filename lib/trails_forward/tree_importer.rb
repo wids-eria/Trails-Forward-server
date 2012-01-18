@@ -2,13 +2,13 @@ module TrailsForward
   module TreeImporter
     # The idea here is to determine a corresponding target basal area based on the mean diameter size,
     def self.determine_target_basal_area
-      # randomly assign for now, until Steve W. defines the desire logic
-      rand * 30
+      # randomly assign for now, until Steve W. defines the desired logic
+      (rand * 50) + 60
     end
 
     # exponential distribution of diameters;
     # ie.  (Meyer 1952, Goff and West 1975, Manion and Griffin 2001, Hitimana et al. 2004, Wang et al. 2009)
-    def self.populate_with_uneven_aged_distribution(tree_size, target_basal_area)
+    def self.populate_with_uneven_aged_distribution tree_size, target_basal_area
       random_neg_exp = rand * 1.5 + 0.5
 
     # determine the probability of an individual being entered into each size class, based on a negative exponential distribution
@@ -38,7 +38,9 @@ module TrailsForward
       end
     end
 
-    def self.populate_with_even_aged_distribution(tree_size, target_basal_area)
+    def self.populate_with_even_aged_distribution tile_hash, target_basal_area
+      tree_size = tile_hash[:tree_size]
+      default_all_tree_sizes_to_0 tile_hash
       tile_basal_area = 0
 
       # Randomly determine coefficient of variation: 0 - 1, mean ~ 0.2 (made up following Volker class notes)
@@ -55,11 +57,17 @@ module TrailsForward
           diameter_bin = select_bin_size diameter_bin
 
           # Update the count in the size class for this individual
-          self.send("num_#{diameter_bin}_inch_diameter_trees=", self.send("num_#{diameter_bin}_inch_diameter_trees") + 1)
+          tile_hash["num_#{diameter_bin}_inch_diameter_trees".to_sym] = tile_hash["num_#{diameter_bin}_inch_diameter_trees".to_sym] + 1
 
           # Update running BA total (so it knows when to stop
           tile_basal_area += 0.005454 * diameter_bin ** 2
         end
+      end
+    end
+
+    def self.default_all_tree_sizes_to_0 tile_hash
+      (2..24).step(2).each do |n|
+        tile_hash["num_#{n}_inch_diameter_trees".to_sym] = 0
       end
     end
 

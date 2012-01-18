@@ -126,12 +126,6 @@ module TrailsForward
       end
     end
 
-    def determine_num_trees_from_tree_density tree_density_percent
-      basal_area = 0.005454 * tree_size * tree_size
-      ** formula from Steve Wangen goes here **
-      ** W00t! **
-    end
-
     def self.tile_hash_from_row world, megatile_ids, row_hash, tile_x, tile_y
       landcover_code = row_hash[:cover_class].to_i
 
@@ -157,13 +151,18 @@ module TrailsForward
       when 41,42,43,51,52,71,90 # Forest types, Scrub, Herbaceous
         tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
         col_with_trees = "num_diameter_#{tree_size}_trees".to_sym
-        tile_hash[col_with_trees] = determine_num_trees_from_tree_density tile_hash[:tree_size], tile_hash[:tree_density]
+        tile_hash[col_with_trees] = determine_num_trees_from_tree_density tile_hash
       end
 
       tile_hash[:zoning_code] = row_hash[:zoning]
       tile_hash[:primary_use] = primary_use(tile_hash)
       tile_hash[:type] = tile_type(tile_hash)
       tile_hash
+    end
+
+    def determine_num_trees_from_tree_density tile_hash
+      target_basal_area = TrailsForward::TreeImporter.determine_target_basal_area
+      TrailsForward::TreeImporter.populate_with_even_aged_distribution tile_hash, target_basal_area
     end
 
     def self.import_world filename, show_progress = true
