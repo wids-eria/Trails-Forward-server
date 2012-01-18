@@ -85,6 +85,30 @@ class ResourceTile < ActiveRecord::Base
         :industry => "Industry" } }
   end
 
+  def self.base_cover_type
+    @cover_types ||= { 11 => :water,
+                       21 => :developed,
+                       22 => :developed,
+                       23 => :developed,
+                       24 => :developed,
+                       31 => :barren,
+                       41 => :forest,
+                       42 => :forest,
+                       43 => :forest,
+                       51 => :herbaceous,
+                       52 => :herbaceous,
+                       71 => :herbaceous,
+                       81 => :herbaceous,
+                       82 => :herbaceous,
+                       90 => :wetland,
+                       95 => :wetland,
+                       255 => :excluded }
+  end
+
+  def base_cover_type
+    ResourceTile.base_cover_type[landcover_class_code]
+  end
+
   def self.cover_types
     @cover_types ||= { 11 => :open_water,
                        21 => :developed_open_space,
@@ -179,6 +203,7 @@ class ResourceTile < ActiveRecord::Base
     template.add :x
     template.add :y
     template.add :type
+    template.add :base_cover_type
     template.add :permitted_actions
   end
 
