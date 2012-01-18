@@ -30,7 +30,7 @@ describe TransitionMatrixAgent do
     before do
       daily_mortality = 1 - daily_prob("SURVIVAL#{life_state}".constantize)
       agent.life_state = life_state
-      agent.stub(:rand).and_return(should_happen ? daily_mortality - 0.05 : daily_mortality + 0.05)
+      agent.stubs(:rand).returns(should_happen ? daily_mortality - 0.05 : daily_mortality + 0.05)
     end
 
     context 'juvenile' do
@@ -88,7 +88,7 @@ describe TransitionMatrixAgent do
         let(:life_state) { 0 }
 
         before do
-          agent.stub(:rand).and_return(small_litter ? [litter_probability[1] + 0.05, 1].min : [litter_probability[1] - 0.05, 0].max)
+          agent.stubs(:rand).returns(small_litter ? [litter_probability[1] + 0.05, 1].min : [litter_probability[1] - 0.05, 0].max)
         end
 
         context 'small litter size' do
@@ -111,7 +111,7 @@ describe TransitionMatrixAgent do
         let(:litter_probability) { FECUNDITY1.divmod 1 }
 
         before do
-          agent.stub(:rand).and_return(small_litter ? [litter_probability[1] + 0.05, 1].min : [litter_probability[1] - 0.05, 0].max)
+          agent.stubs(:rand).returns(small_litter ? [litter_probability[1] + 0.05, 1].min : [litter_probability[1] - 0.05, 0].max)
         end
 
         context 'small litter size' do
@@ -164,7 +164,7 @@ describe TransitionMatrixAgent do
     subject { agent.life_state }
 
     before do
-      agent.stub(:reproduce?)
+      agent.stubs(:reproduce?)
     end
 
     context 'new agent' do

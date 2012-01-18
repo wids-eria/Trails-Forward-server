@@ -18,8 +18,8 @@ describe LandTile do
 
     context 'when all actions are permitted' do
       before do
-        land_tile.stub(can_bulldoze?: true)
-        land_tile.stub(can_clearcut?: true)
+        land_tile.stubs(can_bulldoze?: true)
+        land_tile.stubs(can_clearcut?: true)
       end
 
       context 'on an owned tile' do
@@ -35,8 +35,8 @@ describe LandTile do
 
     context 'some actions are permitted' do
       before do
-        land_tile.stub(can_bulldoze?: true)
-        land_tile.stub(can_clearcut?: false)
+        land_tile.stubs(can_bulldoze?: true)
+        land_tile.stubs(can_clearcut?: false)
       end
 
       context 'on an owned tile' do
@@ -52,8 +52,8 @@ describe LandTile do
 
     context 'when no actions are permitted' do
       before do
-        land_tile.stub(can_bulldoze?: false)
-        land_tile.stub(can_clearcut?: false)
+        land_tile.stubs(can_bulldoze?: false)
+        land_tile.stubs(can_clearcut?: false)
       end
 
       context 'on an owned tile' do
@@ -110,7 +110,7 @@ describe LandTile do
 
   it "bulldozes the land" do
     tile = LandTile.new
-    tile.should_receive(:clear_resources)
+    tile.expects(:clear_resources)
     tile.bulldoze!
   end
 

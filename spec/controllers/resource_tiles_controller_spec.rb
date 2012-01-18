@@ -27,8 +27,8 @@ describe ResourceTilesController do
 
       context 'passed a world, x, y, width and height' do
         before do
-          ResourceTile.any_instance.stub(can_bulldoze?: true)
-          ResourceTile.any_instance.stub(can_clearcut?: false)
+          ResourceTile.any_instance.stubs(can_bulldoze?: true)
+          ResourceTile.any_instance.stubs(can_clearcut?: false)
         end
 
         it 'returns JSON representing the set of resource_tiles' do
@@ -80,8 +80,8 @@ describe ResourceTilesController do
       let(:megatile_owner) { player }
       context "and requesting a permitted action" do
         before do
-          ResourceTile.any_instance.stub("can_#{action}?".to_sym => true)
-          ResourceTile.any_instance.should_receive("#{action}!".to_sym)
+          ResourceTile.any_instance.stubs("can_#{action}?".to_sym => true)
+          ResourceTile.any_instance.expects("#{action}!".to_sym)
         end
 
         it "calls action on the passed in tile" do
@@ -93,7 +93,7 @@ describe ResourceTilesController do
       context "and requesting a non-supported action for the tile type" do
         subject { response }
         before do
-          ResourceTile.any_instance.stub("can_#{action}?".to_sym => false)
+          ResourceTile.any_instance.stubs("can_#{action}?".to_sym => false)
           post action, :world_id => world.id, :id => resource_tile.id, format: 'json'
         end
 

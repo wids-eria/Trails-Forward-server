@@ -48,7 +48,7 @@ describe Agent do
 
   describe '#tick' do
     let(:agent) { create :generic_agent, age: 0 }
-    before { agent.stub(go: true) }
+    before { agent.stubs(go: true) }
 
     it 'does not advance agent age' do
       agent.tick
@@ -57,17 +57,17 @@ describe Agent do
 
     describe '#die' do
       context 'when die?' do
-        before { agent.stub(die?: true) }
+        before { agent.stubs(die?: true) }
         it 'is called' do
-          agent.should_receive(:die).and_return(true)
+          agent.expects(:die).returns(true)
           agent.tick
         end
       end
 
       context 'when not die?' do
-        before { agent.stub(die?: false) }
+        before { agent.stubs(die?: false) }
         it 'is not called' do
-          agent.should_receive(:die).never
+          agent.expects(:die).never
           agent.tick
         end
       end
@@ -78,7 +78,7 @@ describe Agent do
     let(:world) { create :world_with_tiles }
     let(:agent) { create :generic_agent, world: world }
     subject { agent.new_descendant }
-    before { agent.stub baby_drop_jitter: 0 }
+    before { agent.stubs baby_drop_jitter: 0 }
 
     it 'is a clone of the parent' do
       subject.should_not == agent
@@ -96,10 +96,10 @@ describe Agent do
   describe '#reproduce' do
     let(:agent) { create :generic_agent }
     let(:litter_size) { 3 }
-    before { agent.stub(litter_size: litter_size) }
+    before { agent.stubs(litter_size: litter_size) }
 
     it 'calls new agent litter_size times' do
-      Agent.should_receive(:new).exactly(3).times
+      GenericAgent.expects(:new).times(3)
       agent.reproduce
     end
   end
@@ -193,7 +193,7 @@ describe Agent do
     end
     context 'farther than max view distance' do
       let(:location2) { [2.6, 2.4] }
-      before { GenericAgent.any_instance.stub(max_view_distance: 2) }
+      before { GenericAgent.any_instance.stubs(max_view_distance: 2) }
       example 'agent 1 can not see agent 2' do
         agent1.nearby_agents(radius: 10).should == [tribble]
       end

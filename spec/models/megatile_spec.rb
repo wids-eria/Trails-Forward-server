@@ -107,8 +107,8 @@ describe Megatile do
     let(:megatile) { build :megatile, resource_tiles: [resource_tile1, resource_tile2] }
 
     it "is based on the estimated value of its resource tiles" do
-      resource_tile1.should_receive(:estimated_value).once.and_return(5)
-      resource_tile2.should_receive(:estimated_value).once.and_return(6)
+      resource_tile1.expects(:estimated_value).once.returns(5)
+      resource_tile2.expects(:estimated_value).once.returns(6)
       megatile.estimated_value.should be(11)
     end
   end

@@ -45,7 +45,7 @@ describe World do
     subject{ world }
 
     before do
-      world.stub(tick_agents: true,
+      world.stubs(tick_agents: true,
                  tick_tiles: true,
                  tick_length: 1.day)
       world.tick
