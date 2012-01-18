@@ -15,6 +15,7 @@ production:
   username: <%= ENV['MONGOID_USERNAME'] %>
   password: <%= ENV['MONGOID_PASSWORD'] %>
   database: <%= ENV['MONGOID_DATABASE'] %>
+  autocreate_indexes: true
   # slaves:
   #   - host: slave1.local
   #     port: 27018
