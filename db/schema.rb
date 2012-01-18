@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120111215001) do
+ActiveRecord::Schema.define(:version => 20120118170244) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -134,6 +134,13 @@ ActiveRecord::Schema.define(:version => 20120111215001) do
   end
 
   add_index "resource_tiles", ["x", "y", "world_id"], :name => "index_resource_tiles_on_x_and_y_and_world_id", :unique => true
+
+  create_table "resources", :force => true do |t|
+    t.string  "type"
+    t.float   "value"
+    t.integer "world_id"
+    t.integer "resource_tile_id"
+  end
 
   create_table "users", :force => true do |t|
     t.string   "name"

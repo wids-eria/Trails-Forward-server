@@ -8,6 +8,6 @@ class HerbaceousVegetation < Resource
   end
 
   def self.growth_smoothing
-    10
+    100
   end
 end
