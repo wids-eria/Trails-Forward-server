@@ -21,7 +21,7 @@ describe MovingAgent do
   it { should be_move }
   describe '#move' do
     before do
-      agent.stub_chain(:world, resource_tile_at: ResourceTile.new(x: agent.x.floor, y: agent.y.floor))
+      agent.stubs(:world => stub('resource_tile_at', :resource_tile_at => ResourceTile.new(x: agent.x.floor, y: agent.y.floor)))
       agent.move
     end
 

@@ -60,7 +60,7 @@ describe HabitatSuitabilityAgent do
 
   describe '#suitability_survival_modifier' do
     before do
-      agent.stub(:resource_tile).and_return(stub 'resource_tile', landcover_class_code: ResourceTile.cover_type_number(cover_code))
+      agent.stubs(:resource_tile).returns(stub 'resource_tile', landcover_class_code: ResourceTile.cover_type_number(cover_code))
     end
     subject { agent.suitability_survival_modifier }
 
@@ -121,7 +121,7 @@ describe HabitatSuitabilityAgent do
 
   describe '#suitability_fecundity_modifier' do
     before do
-      agent.stub(:resource_tile).and_return(stub 'resource_tile', landcover_class_code: ResourceTile.cover_type_number(cover_code))
+      agent.stubs(:resource_tile).returns(stub 'resource_tile', landcover_class_code: ResourceTile.cover_type_number(cover_code))
     end
     subject { agent.suitability_fecundity_modifier }
 

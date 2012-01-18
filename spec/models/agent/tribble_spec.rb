@@ -10,16 +10,16 @@ describe Tribble do
 
     context 'given it should move' do
       before do
-        agent.stub(:should_die => false)
-        agent.stub(:should_move? => true)
-        agent.stub(:fidgit? => false)
+        agent.stubs(:should_die => false)
+        agent.stubs(:should_move? => true)
+        agent.stubs(:fidgit? => false)
       end
-      it('moves') { agent.should_receive(:try_move).and_return(true) }
+      it('moves') { agent.expects(:try_move).returns(true) }
     end
 
     context 'given it should not move' do
-      before { agent.stub(:should_move? => false) }
-      it('does not move') { agent.should_not_receive(:try_move).and_return(true) }
+      before { agent.stubs(:should_move? => false) }
+      it('does not move') { agent.expects(:try_move).never }
     end
   end
 
@@ -28,13 +28,13 @@ describe Tribble do
     let(:peers) { peer_count.times.collect { build :tribble } }
     subject { agent.should_move? }
     before do
-      Tribble.any_instance.stub(:nearby_peers => peers,
+      Tribble.any_instance.stubs(:nearby_peers => peers,
                                 :move_threshold => move_threshold)
     end
 
     context "with less neighbors than the move threshold" do
       let(:peer_count) { move_threshold - 1 }
-      before { agent.stub(rand: 1.0) }
+      before { agent.stubs(rand: 1.0) }
       it { should == false }
     end
 
@@ -48,8 +48,8 @@ describe Tribble do
     let(:land_prefs) { [Vector[3,4]] }
     let(:agent_prefs) { [Vector[-2, -3]] }
     before do
-      agent.should_receive(:nearby_tile_preference_vectors).and_return(land_prefs)
-      agent.should_receive(:nearby_agent_preference_vectors).and_return(agent_prefs)
+      agent.expects(:nearby_tile_preference_vectors).returns(land_prefs)
+      agent.expects(:nearby_agent_preference_vectors).returns(agent_prefs)
     end
     subject { agent.most_desirable_heading }
     it { should == Vector[1,1] }
