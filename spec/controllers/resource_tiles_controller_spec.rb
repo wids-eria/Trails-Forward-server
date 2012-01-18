@@ -39,8 +39,8 @@ describe ResourceTilesController do
         context 'when player does not own the tile' do
           example 'each resource_tile contains a list of permitted actions' do
             get :permitted_actions, world_id: world.id, x: 2, y: 1, width: 1, height: 1, format: 'json'
-            permitted_actions_set = tile_hashes.map{|tile| tile['permitted_actions']}
-            permitted_actions_set.should == [['request_bulldoze']]
+            permitted_actions = tile_hashes.map{|tile| tile['permitted_actions']}.first
+            permitted_actions.should == []
           end
         end
 
@@ -50,8 +50,8 @@ describe ResourceTilesController do
           end
           example 'each resource_tile contains a list of permitted actions' do
             get :permitted_actions, world_id: world.id, x: 2, y: 1, width: 1, height: 1, format: 'json'
-            permitted_actions_set = tile_hashes.map{|tile| tile['permitted_actions']}
-            permitted_actions_set.should == [['bulldoze']]
+            permitted_actions = tile_hashes.map{|tile| tile['permitted_actions']}.first
+            permitted_actions.should == ['bulldoze']
           end
         end
       end
@@ -76,29 +76,30 @@ describe ResourceTilesController do
       end
     end
 
-    context "passed a resource tile the user can perform the action on" do
+    context 'passed an owned tile' do
       let(:megatile_owner) { player }
-      before do
-        ResourceTile.any_instance.stub("can_#{action}?".to_sym => true)
-        ResourceTile.any_instance.should_receive("#{action}!".to_sym)
+      context "and requesting a permitted action" do
+        before do
+          ResourceTile.any_instance.stub("can_#{action}?".to_sym => true)
+          ResourceTile.any_instance.should_receive("#{action}!".to_sym)
+        end
+
+        it "calls action on the passed in tile" do
+          post action, :world_id => world.id, :id => resource_tile.id, format: 'json'
+          response.should be_success
+        end
       end
 
-      it "calls action on the passed in tile" do
-        post action, :world_id => world.id, :id => resource_tile.id, format: 'json'
-        response.should be_success
-      end
-    end
+      context "and requesting a non-supported action for the tile type" do
+        subject { response }
+        before do
+          ResourceTile.any_instance.stub("can_#{action}?".to_sym => false)
+          post action, :world_id => world.id, :id => resource_tile.id, format: 'json'
+        end
 
-    context "passed a resource tile the user cannot perform the action on" do
-      let(:megatile_owner) { player }
-      subject { response }
-      before do
-        ResourceTile.any_instance.stub("can_#{action}?".to_sym => false)
-        post action, :world_id => world.id, :id => resource_tile.id, format: 'json'
+        it { should be_forbidden }
+        its(:body) { should =~ /Action illegal for this land/ }
       end
-
-      it { should be_forbidden }
-      its(:body) { should =~ /Action illegal for this land/ }
     end
 
   end

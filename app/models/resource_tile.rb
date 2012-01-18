@@ -165,6 +165,14 @@ class ResourceTile < ActiveRecord::Base
     save! if changed?
   end
 
+  def set_permitted_actions_method player
+    if self.megatile.owner == player
+      def self.permitted_actions
+        self.owner_permitted_actions
+      end
+    end
+  end
+
   api_accessible :resource_base do |template|
     template.add :id
     template.add :x
@@ -215,9 +223,7 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def non_owner_permitted_actions
-    self.all_actions.select {|action| send("can_#{action}?") }.map do |action|
-      "request_#{action}"
-    end
+    []
   end
 
   def <=> other

@@ -1,10 +1,12 @@
 module TrailsForward
   module WorldGeneration
-    def spawn_blank_tiles populate = false
+    def spawn_blank_tiles opts = {}
+      opts.reverse_merge! populate: false
+
       raise "Can't spawn tiles for an invalid World" unless valid?
       ActiveRecord::Base.transaction do
         spawn_megatiles unless megatiles.any?
-        spawn_resource_tiles populate
+        spawn_resource_tiles opts
       end
 
       self
@@ -27,7 +29,8 @@ module TrailsForward
       mt_progress_bar.finish if Rails.env.development?
     end
 
-    def spawn_resource_tiles populate = false
+    def spawn_resource_tiles opts = {}
+      opts.reverse_merge! populate: false
       rt_progress_bar = ProgressBar.new('Resource Tiles', megatiles.count / 100) if Rails.env.development?
       Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 100) do |megatile_batch|
         batch_tiles = megatile_batch.collect do |tile_info|
@@ -35,7 +38,7 @@ module TrailsForward
             (0...megatile_height).collect do |y_offset|
               this_x = tile_info.x + x_offset
               this_y = tile_info.y + y_offset
-              if populate
+              if opts[:populate]
                 resource_gen [this_x, this_y], tile_info.id
               else
                 [this_x, this_y, tile_info.id, id]
@@ -44,7 +47,7 @@ module TrailsForward
           end.inject(:+)
         end.inject(:+)
 
-        if populate
+        if opts[:populate]
           ResourceTile.import batch_tiles, validate: false, timestamps: false
         else
           ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false

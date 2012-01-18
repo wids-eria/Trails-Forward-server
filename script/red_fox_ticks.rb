@@ -86,46 +86,6 @@ num_ticks.times do |n|
   world.tick
   tick_pb.finish
 
-  # set_progress_title(tick_pb, tick_count, red_foxes_in_world(world).count)
-  # tick_pb.expand_title
-  # tick_pb.colorize :magenta
-
-  # age_pb = ProgressBar.new("Tick #{tick_count + 1} - Age", 1)
-  # world.age_agents!
-  # age_pb.inc
-  # age_pb.finish
-
-  # litter = []
-  # red_foxes_in_world(world).find_in_batches do |red_foxes|
-  #   red_foxes.each do |red_fox|
-  #     litter += red_fox.tick!
-  #     tick_pb.inc
-  #   end
-  # end
-  # Agent.import litter, validate: false, timestamps: false
-  # set_progress_title(tick_pb, tick_count, red_foxes_in_world(world).count)
-  # tick_pb.expand_title
-  # tick_pb.finish
-
-
-  # if tick_tiles
-  #   sql_pb = ProgressBar.new("Tick #{tick_count + 1} - Growth", 1)
-  #   world.grow_trees!
-  #   sql_pb.inc
-  #   sql_pb.finish
-
-  #   tile_pb = ProgressBar.new("Tick #{tick_count + 1} - Tiles", tile_count)
-  #   tile_pb.expand_title
-  #   tile_pb.colorize :blue
-  #   LandTile.where(world_id: world.id).find_in_batches do |tile_batch|
-  #     tile_batch.each do |tile|
-  #       tile.tick!
-  #       tile_pb.inc
-  #     end
-  #   end
-  #   tile_pb.finish
-  # end
-
   tick_count += 1
 
   if generate_pngs
