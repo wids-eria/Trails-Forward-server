@@ -5,6 +5,12 @@ class ResourceTile < ActiveRecord::Base
   belongs_to :world
   has_many :agents
 
+  def self.dist
+    @@dist ||= SimpleRandom.new
+    @@dist.set_seed
+    @@dist
+  end
+
   # validates_uniqueness_of :x, :scope => [:y, :world_id]
   # validates_uniqueness_of :y, :scope => [:x, :world_id]
 
