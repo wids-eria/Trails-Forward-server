@@ -86,23 +86,23 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def self.base_cover_type
-    @cover_types ||= { 11 => :water,
-                       21 => :developed,
-                       22 => :developed,
-                       23 => :developed,
-                       24 => :developed,
-                       31 => :barren,
-                       41 => :forest,
-                       42 => :forest,
-                       43 => :forest,
-                       51 => :herbaceous,
-                       52 => :herbaceous,
-                       71 => :herbaceous,
-                       81 => :herbaceous,
-                       82 => :herbaceous,
-                       90 => :wetland,
-                       95 => :wetland,
-                       255 => :excluded }
+    @base_cover_types ||= { 11 => :water,
+                            21 => :developed,
+                            22 => :developed,
+                            23 => :developed,
+                            24 => :developed,
+                            31 => :barren,
+                            41 => :forest,
+                            42 => :forest,
+                            43 => :forest,
+                            51 => :herbaceous,
+                            52 => :herbaceous,
+                            71 => :herbaceous,
+                            81 => :herbaceous,
+                            82 => :herbaceous,
+                            90 => :wetland,
+                            95 => :wetland,
+                            255 => :excluded }
   end
 
   def base_cover_type
@@ -134,7 +134,7 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def self.cover_type_number class_symbol
-    cover_types.invert[class_symbol] || raise("Cover type #{class_symbol} not found")
+    cover_types.invert[class_symbol.to_sym] || raise("Cover type #{class_symbol} not found")
   end
 
   def location= coords
