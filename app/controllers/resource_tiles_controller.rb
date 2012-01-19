@@ -75,11 +75,10 @@ class ResourceTilesController < ApplicationController
   def bulldoze_list
     resource_tiles.each do |tile|
       authorize! :bulldoze, tile
-      if not tile.can_bulldoze?
-        respond_to do |format|
-          format.json { render :status => :forbidden, :text => "Action illegal for this land" }
-          return
-        end
+      unless tile.can_bulldoze?
+        render :status => :forbidden, :text => "Action illegal for this land"
+        return
+
       end
     end
 

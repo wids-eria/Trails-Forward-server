@@ -110,12 +110,20 @@ describe ResourceTilesController do
 
       context 'that are all actionable' do
         it "calls action on all the passed in tiles" do
-          put "#{action}_list", world_id: world.id, resource_tile_ids: land_tiles.map(&:id).map(&:to_s), format: 'json'
+          megatile.update_attributes(owner: player)
+          post "#{action}_list", world_id: world.id, resource_tile_ids: land_tiles.map(&:id).map(&:to_s), format: 'json'
           response.should be_success
         end
       end
       context 'containing 1 non-actionable tile' do
-        it "effectively takes the action on none of the tiles"
+        let(:water_tile) { create :water_tile, world: world, megatile: megatile }
+        let(:tiles) { [land_tile1, water_tile] }
+
+        it "effectively takes the action on none of the tiles" do
+          megatile.update_attributes(owner: player)
+          post "#{action}_list", world_id: world.id, resource_tile_ids: tiles.map(&:id).map(&:to_s), format: 'json'
+          response.should_not be_success
+        end
       end
     end
   end
