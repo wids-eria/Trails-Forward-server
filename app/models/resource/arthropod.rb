@@ -1,0 +1,2 @@
+class Arthropod < Resource
+end

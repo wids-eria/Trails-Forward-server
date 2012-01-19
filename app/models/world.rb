@@ -9,6 +9,7 @@ class World < ActiveRecord::Base
 
   has_many :megatiles
   has_many :resource_tiles
+  has_many :resources
   has_many :players
   has_many :listings
   has_many :change_requests
