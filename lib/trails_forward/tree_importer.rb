@@ -9,7 +9,7 @@ module TrailsForward
     # exponential distribution of diameters;
     # ie.  (Meyer 1952, Goff and West 1975, Manion and Griffin 2001, Hitimana et al. 2004, Wang et al. 2009)
     def self.populate_with_uneven_aged_distribution tree_size, target_basal_area
-      random_neg_exp = rand * 1.5 + 0.5
+      random_neg_exp = tree_size ** (-1) 
 
     # determine the probability of an individual being entered into each size class, based on a negative exponential distribution
       # start by creating class size values
@@ -17,7 +17,7 @@ module TrailsForward
 
       # calculate negative exponential value with random variation
       # negative_exponential_values = Math.exp(-random_neg_exp * class_steps)
-      negative_exponential_values = class_steps.map{|n| Math.exp(-random_neg_exp * n)}
+      negative_exponential_values = class_steps.map{|n| random_neg_exp * Math.exp(-random_neg_exp * n)}
 
       # normalize to calculate probability of each class
       # class_probabilities = negative_exponential_values/sum(negative_exponential_values)
