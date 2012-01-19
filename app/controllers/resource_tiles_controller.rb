@@ -94,10 +94,8 @@ class ResourceTilesController < ApplicationController
     resource_tiles.each do |tile|
       authorize! :clearcut, tile
       if not tile.can_clearcut?
-        respond_to do |format|
-          format.json { render :status => :forbidden, :text => "Action illegal for this land" }
-          return
-        end
+        render :status => :forbidden, :text => "Action illegal for this land"
+        return
       end
     end
 
