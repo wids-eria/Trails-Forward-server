@@ -72,12 +72,8 @@ module TrailsForward
       when 'Coniferous', 'Deciduous', 'Forested Wetland', 'Mixed'
         cover_type_symbol = land_cover_type.underscore.sub(' ', '_').to_sym
         calculate_tree_size cover_type_symbol
-
       when'Dwarf Scrub', 'Grassland/Herbaceous', 'Shrub/Scrub'
-        nil
-        # tile.update_attributes(tree_size: nil)
-      when nil
-        nil
+        0
       else
         raise "Unrecognized land_cover_type: #{land_cover_type}"
       end
@@ -150,7 +146,7 @@ module TrailsForward
         tile_hash[:development_intensity] = ((landcover_code - 20.0) / 4.0)
       when 41,42,43,51,52,71,90 # Forest types, Scrub, Herbaceous
         tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
-        col_with_trees = "num_diameter_#{tree_size}_trees".to_sym
+        col_with_trees = "num_diameter_#{tile_hash[:tree_size]}_trees".to_sym
         tile_hash[col_with_trees] = determine_num_trees_from_tree_density tile_hash
       end
 
@@ -160,7 +156,7 @@ module TrailsForward
       tile_hash
     end
 
-    def determine_num_trees_from_tree_density tile_hash
+    def self.determine_num_trees_from_tree_density tile_hash
       target_basal_area = TrailsForward::TreeImporter.determine_target_basal_area
       TrailsForward::TreeImporter.populate_with_even_aged_distribution tile_hash, target_basal_area
     end
@@ -259,6 +255,9 @@ module TrailsForward
         end
       end
       pb.finish
+      first_id = world.resource_tile_at(0,0)
+      last_id = world.resource_tile_at(world.width - 1, world.height - 1)
+      puts "ID error #{last_id} - #{first_id} != #{world.width} * #{world.height}" unless first_id + world_width * world_height == last_id
 
       # pb = progress_bar_class.new "Reapply indices", tile_indices.count
       # tile_indices.each do |index|

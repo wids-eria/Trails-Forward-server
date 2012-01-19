@@ -111,6 +111,7 @@ ActiveRecord::Schema.define(:version => 20120118170244) do
     t.float   "people_density"
     t.float   "housing_density"
     t.float   "tree_density"
+    t.string  "land_cover_type"
     t.float   "development_intensity"
     t.float   "tree_size"
     t.float   "imperviousness"

@@ -39,8 +39,10 @@ module TrailsForward
     end
 
     def self.populate_with_even_aged_distribution tile_hash, target_basal_area
-      tree_size = tile_hash[:tree_size]
+      tree_size = tile_hash[:tree_size] || raise("tree_size not set yet")
       default_all_tree_sizes_to_0 tile_hash
+      return if tree_size == 0
+
       tile_basal_area = 0
 
       # Randomly determine coefficient of variation: 0 - 1, mean ~ 0.2 (made up following Volker class notes)
