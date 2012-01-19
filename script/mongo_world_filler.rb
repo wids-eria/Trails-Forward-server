@@ -2,7 +2,7 @@
 
 world_id = ARGV[0]
 
-population_size = 500
+population_size = 100000
 ProgressBar.color_status
 ProgressBar.iter_rate_mode
 
@@ -13,6 +13,7 @@ def randomized_coordinate(value)
 end
 
 world = MongoWorld.find(world_id)
+Agent.delete_all
 
 bar = ProgressBar.new("Spawn Agents", population_size)
 population_size.times.each do 

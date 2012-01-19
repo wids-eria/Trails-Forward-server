@@ -1,4 +1,12 @@
 development:
+  # hosts:
+  #   - - localhost
+  #     - 27020
+  #   - - localhost
+  #     - 27018
+  #   - - localhost
+  #     - 27019
+  # read_secondary: true
   host: localhost
   database: trails_forward_development
   autocreate_indexes: true

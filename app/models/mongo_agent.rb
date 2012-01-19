@@ -46,8 +46,8 @@ class MongoAgent
   end
 
   def move
-    nearby_agents
-    nearby_tiles
+    nearby_agents + []
+    nearby_tiles + []
 
     self.x += rand
     self.y += rand
