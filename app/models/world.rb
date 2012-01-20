@@ -33,7 +33,6 @@ class World < ActiveRecord::Base
     begin
       ResourceTile.find(tile_ids_in_range x, y, radius)
     rescue Exception => e
-      require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger 
       puts e
     end
   end
