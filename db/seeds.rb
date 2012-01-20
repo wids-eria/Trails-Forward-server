@@ -5,3 +5,11 @@
 #
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Daley', :city => cities.first)
+require Rails.root.join('db/seed_tables.rb')
+
+SEED_TABLES.each do |table_name|
+  klass = table_name.classify.constantize
+  klass.delete_all
+end
+
+Rake::Task['db:seed:load'].invoke

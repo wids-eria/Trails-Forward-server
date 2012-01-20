@@ -42,10 +42,10 @@ class World < ActiveRecord::Base
   end
 
   def tile_ids_in_range x, y, radius
-    x_min = (x - radius).to_i
-    x_max = (x + radius).to_i
-    y_min = (y - radius).to_i
-    y_max = (y + radius).to_i
+    x_min = [(x - radius).to_i, 0].max
+    x_max = [(x + radius).to_i, width - 1].min
+    y_min = [(y - radius).to_i, 0].max
+    y_max = [(y + radius).to_i, height - 1].min
     x_range = (x_min..x_max)
     y_range = (y_min..y_max)
     x_range.inject([]) do |memo, test_x|
