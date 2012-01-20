@@ -1,3 +1,5 @@
+require 'stats_utilities'
+
 module TrailsForward
   module TreeImporter
     # The idea here is to determine a corresponding target basal area based on the mean diameter size,
@@ -8,8 +10,10 @@ module TrailsForward
 
     # exponential distribution of diameters;
     # ie.  (Meyer 1952, Goff and West 1975, Manion and Griffin 2001, Hitimana et al. 2004, Wang et al. 2009)
-    def self.populate_with_uneven_aged_distribution tree_size, target_basal_area
-      random_neg_exp = tree_size ** (-1) 
+    def self.populate_with_uneven_aged_distribution tile_hash, target_basal_area
+      tree_size = tile_hash[:tree_size] || raise("tree_size not set yet")
+      default_all_tree_sizes_to_0 tile_hash
+      random_neg_exp = tree_size ** (-1)
 
     # determine the probability of an individual being entered into each size class, based on a negative exponential distribution
       # start by creating class size values
@@ -28,7 +32,7 @@ module TrailsForward
       tile_basal_area = 0
       while tile_basal_area < target_basal_area
         diameter_bin = random_element class_steps, class_probabilities
-        self.send("num_#{diameter_bin}_inch_diameter_trees=", self.send("num_#{diameter_bin}_inch_diameter_trees") + 1)
+        increment_diameter_class_count tile_hash, diameter_bin
 
         # first, if diameter_bin < class_probabilities[1]
         # then concatenate("tile.diameter_size_class_2" = concatenate("tile.diameter_size_class_2") + 1
@@ -57,9 +61,7 @@ module TrailsForward
 
         if diameter_bin > 0 && diameter_bin < 29
           diameter_bin = select_bin_size diameter_bin
-
-          # Update the count in the size class for this individual
-          tile_hash["num_#{diameter_bin}_inch_diameter_trees".to_sym] = tile_hash["num_#{diameter_bin}_inch_diameter_trees".to_sym] + 1
+          increment_diameter_class_count tile_hash, diameter_bin
 
           # Update running BA total (so it knows when to stop
           tile_basal_area += 0.005454 * diameter_bin ** 2
@@ -71,6 +73,10 @@ module TrailsForward
       (2..24).step(2).each do |n|
         tile_hash["num_#{n}_inch_diameter_trees".to_sym] = 0
       end
+    end
+
+    def self.increment_diameter_class_count tile_hash, diameter_bin
+      tile_hash["num_#{diameter_bin}_inch_diameter_trees".to_sym] = tile_hash["num_#{diameter_bin}_inch_diameter_trees".to_sym] + 1
     end
 
     def self.select_bin_size diameter_bin
