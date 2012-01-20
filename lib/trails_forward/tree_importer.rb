@@ -13,6 +13,8 @@ module TrailsForward
     def self.populate_with_uneven_aged_distribution tile_hash, target_basal_area
       tree_size = tile_hash[:tree_size] || raise("tree_size not set yet")
       default_all_tree_sizes_to_0 tile_hash
+      return if tree_size == 0
+
       random_neg_exp = tree_size ** (-1)
 
     # determine the probability of an individual being entered into each size class, based on a negative exponential distribution
