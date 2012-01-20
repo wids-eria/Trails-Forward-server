@@ -1,4 +1,10 @@
 class LandTile < ResourceTile
+  TREE_UPGROWTH_P = {
+    shade_tolerant: [0.0164, -0.0001, 0.0055, -0.0002, 0],
+    mid_tolerant: [0.0134, -0.0002, 0.0051, -0.0002, 0.00002],
+    shade_intolerant: [0.0069, -0.0001, 0.0059, -0.0003, 0]
+  }
+
   TREE_MORTALITY_P = {
     shade_tolerant: [0.0336, 0, -0.0018, 0.0001, 0.00002],
     mid_tolerant: [0.0417, 0, -0.0033, 0.0001, 0],
@@ -49,16 +55,30 @@ class LandTile < ResourceTile
 
   def grow_trees
     site_index = 60 # WAG because no data...
+    basal_area = calculate_basal_area
 
     (2..24).step(2).map do |diameter|
       species = species_group
       if species
         mortality_rate = determine_mortality_rate(diameter, species, site_index)
+        upgrowth_rate = determine_upgrowth_rate(diameter, species, site_index, basal_area)
         self.send("num_#{diameter}_inch_diameter_trees=".to_sym, self.send("num_#{diameter}_inch_diameter_trees") * (1 - mortality_rate))
+
+        # transition # trees * upgrowth_rate to the next larger bin
+        #
+        BROKEN TO CALL ATTENTION TO CODE TO WORK ON NEXT
+        TODO:
+          switch to matrix multiplication
+          Steve Wangen has the plan!
+
       end
     end
 
     self.save!
+  end
+
+  def calculate_basal_area
+    (2..24).step(2).map{|diameter| 0.005454 * diameter ** 2 * self.send("num_#{diameter}_inch_diameter_trees")}.sum
   end
 
   # Describes the yearly proportion of trees in a diameter class that die
@@ -69,6 +89,15 @@ class LandTile < ResourceTile
       # TREE_MORTALITY_P[species][2] * basal_area +
       TREE_MORTALITY_P[species][3] * diameter**2 +
       TREE_MORTALITY_P[species][4] * site_index * diameter
+  end
+
+  # Describes the yearly proportion of trees moving from one diameter class to the next
+  def determine_upgrowth_rate diameter, species, site_index, basal_area
+    TREE_UPGROWTH_P[species][0] +
+      TREE_UPGROWTH_P[species][1] * basal_area +
+      TREE_UPGROWTH_P[species][2] * diameter +
+      TREE_UPGROWTH_P[species][3] * diameter ** 2 +
+      TREE_UPGROWTH_P[species][4] * site_index * diameter
   end
 
   def species_group
