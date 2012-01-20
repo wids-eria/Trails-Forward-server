@@ -103,10 +103,18 @@ class World < ActiveRecord::Base
   end
 
   def tick_agents
+    @tick_complete_queue ||= Beanstalk::Pool.new([ENV['BEANSTALK_URL'] || "localhost:11300"], 'agent_tick_complete')
+    agent_count = agents.count
+    agents.select(:id).each do |agent|
+      Stalker.enqueue 'agent_tick', agent_id: agent.id
+    end
+
     progeny = []
-    agents.each do |agent|
-      agent.reload
-      progeny += agent.tick!
+    agent_count.times do
+      job = @tick_complete_queue.reserve
+      require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger
+      progeny << job.progeny
+      job.delete
     end
     Agent.import progeny, validate: false, timestamps: false
   end
