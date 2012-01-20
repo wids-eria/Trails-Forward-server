@@ -36,7 +36,7 @@ module Behavior
 
       def annual_survival_rate val
         define_method :annual_survival_rate do |tile = nil|
-          val
+          [[val,0].max,1].min
         end
       end
     end

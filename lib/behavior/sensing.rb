@@ -25,19 +25,25 @@ module Behavior
 
     def nearby_tiles opts = {}
       opts[:radius] = [opts[:radius], max_view_distance].compact.min
-      nearby_stuff opts.merge(class: ResourceTile)
+      world.tiles_in_range self.x, self.y, opts[:radius]
+      # nearby_stuff opts.merge(class: ResourceTile)
     end
 
     def nearby_agents opts = {}
       opts[:radius] = [opts[:radius], max_view_distance].compact.min
-      nearby_stuff(opts.merge class: Agent).reject do |a|
-        vect = (Vector[*a.location] - Vector[*self.location])
-        vect.magnitude > opts[:radius] || a == self
-      end
+      opts[:types] ||= [Agent]
+      opts[:types] = opts[:types].map(&:to_s)
+
+      agents = world.agents_in_range self.x, self.y, opts[:radius]
+      agents.select {|a| opts[:types].include? a.type}
+      # nearby_stuff(opts.merge class: Agent).reject do |a|
+      #   vect = (Vector[*a.location] - Vector[*self.location])
+      #   vect.magnitude > opts[:radius] || a == self
+      # end
     end
 
     def nearby_peers opts = {}
-      opts[:radius] = [opts[:radius], max_view_distance].compact.min
+      # opts[:radius] = [opts[:radius], max_view_distance].compact.min
       nearby_agents opts.merge({types: [self.class]})
     end
 
