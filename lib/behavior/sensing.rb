@@ -25,7 +25,7 @@ module Behavior
 
     def nearby_tiles opts = {}
       opts[:radius] = [opts[:radius], max_view_distance].compact.min
-      world.reload.tiles_in_range self.x, self.y, opts[:radius]
+      world.tiles_in_range self.x, self.y, opts[:radius]
       # nearby_stuff opts.merge(class: ResourceTile)
     end
 
@@ -34,7 +34,7 @@ module Behavior
       opts[:types] ||= []
       opts[:types] = opts[:types].map(&:to_s).map(&:classify)
 
-      agents = world.reload.agents_in_range(self.x, self.y, opts[:radius]) - [self]
+      agents = world.agents_in_range(self.x, self.y, opts[:radius]) - [self]
       if opts[:types].any?
         agents.select {|a| opts[:types].include? a.type}
       else
