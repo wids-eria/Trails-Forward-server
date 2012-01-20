@@ -1,4 +1,10 @@
 class LandTile < ResourceTile
+  TREE_MORTALITY_P = {
+    shade_tolerant: [0.0336, 0, -0.0018, 0.0001, 0.00002],
+    mid_tolerant: [0.0417, 0, -0.0033, 0.0001, 0],
+    shade_intolerant: [0.0418, 0, -0.0009, 0, 0]
+  }
+
   def can_clearcut?
     zoning_code != 255
   end
@@ -41,8 +47,39 @@ class LandTile < ResourceTile
     42 * td * ts
   end
 
-  def self.grow_trees! world
-    world.resource_tiles.with_trees.update_all('tree_density = tree_density + (((4 * POW(tree_density, 3)) - (8 * POW(tree_density, 2)) + (4 * tree_density)) * 0.01)')
+  def grow_trees
+    site_index = 60 # WAG because no data...
+
+    (2..24).step(2).map do |diameter|
+      species = species_group
+      if species
+        mortality_rate = determine_mortality_rate(diameter, species, site_index)
+        self.send("num_#{diameter}_inch_diameter_trees=".to_sym, self.send("num_#{diameter}_inch_diameter_trees") * (1 - mortality_rate))
+      end
+    end
+
+    self.save!
+  end
+
+  # Describes the yearly proportion of trees in a diameter class that die
+  def determine_mortality_rate(diameter, species, site_index)
+    # debugger if diameter = 8 && species == :shade_tolerant
+    TREE_MORTALITY_P[species][0] +
+      TREE_MORTALITY_P[species][1] * diameter +
+      # TREE_MORTALITY_P[species][2] * basal_area +
+      TREE_MORTALITY_P[species][3] * diameter**2 +
+      TREE_MORTALITY_P[species][4] * site_index * diameter
+  end
+
+  def species_group
+    case self.landcover_class_code
+    when 41
+      :shade_tolerant
+    when 42, 95
+      :mid_tolerant
+    when 43
+      :shade_intolerant
+    end
   end
 
   def estimated_value

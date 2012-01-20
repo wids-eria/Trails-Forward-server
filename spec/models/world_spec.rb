@@ -38,6 +38,19 @@ describe World do
     end
   end
 
+  describe '#yearly_tick' do
+    let(:world) { create :world_with_resources }
+    let(:tile) { world.resource_tiles.where(landcover_class_code: [41, 42, 43]).first || raise('No forest tile created') }
+    it "applies tree mortality rate" do
+      old_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
+      old_num_trees.should == 72
+      world.yearly_tick
+      tile.reload
+      new_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
+      new_num_trees.should < old_num_trees
+    end
+  end
+
   describe "#tick" do
     let(:world) { create :world }
     let(:start_date) { world.start_date }

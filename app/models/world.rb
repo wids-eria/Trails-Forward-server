@@ -29,12 +29,15 @@ class World < ActiveRecord::Base
     @manager ||= GameWorldManager.for_world(self)
   end
 
+  def yearly_tick
+    grow_trees!
+  end
+
   def tick
     tick_agents
     age_agents!
 
     tick_tiles
-    grow_trees!
 
     self.reload
     self.current_date += tick_length
@@ -61,7 +64,11 @@ class World < ActiveRecord::Base
   end
 
   def grow_trees!
-    LandTile.grow_trees! self
+    land_tiles = self.resource_tiles.where(type: 'LandTile')
+
+    land_tiles.each do |land|
+      land.grow_trees
+    end
   end
 
   def each_resource_tile &blk

@@ -127,14 +127,16 @@ describe LandTile do
     end
   end
 
-  describe '.grow_trees!' do
+  describe '#grow_trees' do
     let(:world) { create :world_with_resources }
-    let(:tile) { world.resource_tiles.where('type = ? AND tree_density > 0', 'LandTile').first }
+    let(:tile) { world.resource_tiles.where(type: 'LandTile').first }
 
-    example 'increases the tree_density' do
-      original_density = tile.tree_density
-      world.grow_trees!
-      tile.reload.tree_density.should > original_density
+    it "applies tree mortality rate" do
+      old_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
+      old_num_trees.should == 72
+      tile.grow_trees
+      new_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
+      new_num_trees.should < old_num_trees
     end
   end
 
