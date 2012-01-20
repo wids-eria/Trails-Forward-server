@@ -158,7 +158,11 @@ module TrailsForward
 
     def self.determine_num_trees_from_tree_density tile_hash
       target_basal_area = TrailsForward::TreeImporter.determine_target_basal_area
-      TrailsForward::TreeImporter.populate_with_even_aged_distribution tile_hash, target_basal_area
+      if rand < 0.5
+        TrailsForward::TreeImporter.populate_with_even_aged_distribution tile_hash, target_basal_area
+      else
+        TrailsForward::TreeImporter.populate_with_uneven_aged_distribution tile_hash, target_basal_area
+      end
     end
 
     # TODO: extract sub-methods to shrink this overly long method...
@@ -259,7 +263,7 @@ module TrailsForward
 
       first_id = world.resource_tile_at(0,0).id
       last_id = world.resource_tile_at(world.width - 1, world.height - 1).id
-      puts "ID error #{last_id} - #{first_id} != #{world.width} * #{world.height}" unless first_id + world_width * world_height == last_id
+      puts "ID error #{last_id} - #{first_id - 1} != #{world.width} * #{world.height}" unless (first_id - 1) + world_width * world_height == last_id
 
       # pb = progress_bar_class.new "Reapply indices", tile_indices.count
       # tile_indices.each do |index|
