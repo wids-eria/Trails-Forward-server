@@ -236,7 +236,14 @@ module TrailsForward
                          :primary_use, :people_density, :housing_density,
                          :tree_density, :development_intensity, :tree_size,
                          :imperviousness, :frontage, :lakesize, :soil,
-                         :landcover_class_code ]
+                         :landcover_class_code, :num_2_inch_diameter_trees,
+                         :num_4_inch_diameter_trees, :num_6_inch_diameter_trees,
+                         :num_8_inch_diameter_trees, :num_10_inch_diameter_trees,
+                         :num_12_inch_diameter_trees, :num_14_inch_diameter_trees,
+                         :num_16_inch_diameter_trees, :num_18_inch_diameter_trees,
+                         :num_20_inch_diameter_trees, :num_22_inch_diameter_trees,
+                         :num_24_inch_diameter_trees ]
+
 
       pb = progress_bar_class.new 'Tile Import', rows.count
 
