@@ -41,7 +41,8 @@ Then /^the new world should have (\d+) megatiles$/ do |num_megatiles|
 end
 
 Then /^the forested resource tiles should have tree bin entries$/ do
-  forest_tiles = World.last.resource_tiles.where(landcover_class_code: [41, 42, 43])
+  forest_tiles = World.last.resource_tiles.where(landcover_class_code: [41, 42, 43, 90])
+  forest_tiles.count.should == 5
   forest_tiles.each do |tile|
     total_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
     total_trees.should > 0
