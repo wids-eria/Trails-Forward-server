@@ -111,8 +111,7 @@ class World < ActiveRecord::Base
     progeny = []
     agent_count.times do
       job = @tick_complete_queue.reserve
-      progeny << JSON.parse(job.body)[1]["progeny"]
-      require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger unless progeny.empty?
+      progeny.concat JSON.parse(job.body)[1]["progeny"]
       job.delete
     end
     Agent.import progeny, validate: false, timestamps: false
