@@ -4,11 +4,12 @@ require "tattletail"
 
 num_ticks = ARGV[1] || 10
 num_ticks = num_ticks.to_i
-num_red_foxes = 1000
+num_red_foxes = ARGV[2] || 1000
+num_red_foxes = num_red_foxes.to_i
 world_width = 198
 world_height = 198
 tick_tiles = true
-generate_pngs = ARGV[2]
+generate_pngs = ARGV[3]
 
 def file_prefix world
   "doc/world_pngs/#{world.id}-#{world.name.gsub(/\s/, '_')}"
