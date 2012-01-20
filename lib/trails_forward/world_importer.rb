@@ -161,6 +161,7 @@ module TrailsForward
       TrailsForward::TreeImporter.populate_with_even_aged_distribution tile_hash, target_basal_area
     end
 
+    # TODO: extract sub-methods to shrink this overly long method...
     def self.import_world filename, show_progress = true
       if show_progress
         progress_bar_class = ProgressBar
@@ -255,8 +256,9 @@ module TrailsForward
         end
       end
       pb.finish
-      first_id = world.resource_tile_at(0,0)
-      last_id = world.resource_tile_at(world.width - 1, world.height - 1)
+
+      first_id = world.resource_tile_at(0,0).id
+      last_id = world.resource_tile_at(world.width - 1, world.height - 1).id
       puts "ID error #{last_id} - #{first_id} != #{world.width} * #{world.height}" unless first_id + world_width * world_height == last_id
 
       # pb = progress_bar_class.new "Reapply indices", tile_indices.count
