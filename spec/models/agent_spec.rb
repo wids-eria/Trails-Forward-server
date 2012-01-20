@@ -229,6 +229,10 @@ describe Agent do
     let!(:agent) { create :generic_agent, world: world, location: location }
     let(:location) { [3.5, 3.5] }
 
+    example 'radius 0' do
+      agent.nearby_tiles(radius: 0).map(&:location).should == [[3,3]]
+    end
+
     example 'radius 1' do
       agent.nearby_tiles(radius: 1).map(&:location).to_set.should == [[2,2], [2,3], [2,4],
                                                                       [3,2], [3,3], [3,4],
@@ -242,11 +246,11 @@ describe Agent do
     end
 
     example 'radius 2' do
-      agent.nearby_tiles(radius: 2).map(&:location).to_set.should == [[1,1], [1,2], [1,3], [1,4], [1,5],
-                                                                      [2,1], [2,2], [2,3], [2,4], [2,5],
-                                                                      [3,1], [3,2], [3,3], [3,4], [3,5],
-                                                                      [4,1], [4,2], [4,3], [4,4], [4,5],
-                                                                      [5,1], [5,2], [5,3], [5,4], [5,5]].to_set
+      agent.nearby_tiles(radius: 2).map(&:location).to_set.should == [ [1,2], [1,3], [1,4],
+                                                                       [2,1], [2,2], [2,3], [2,4], [2,5],
+                                                                       [3,1], [3,2], [3,3], [3,4], [3,5],
+                                                                       [4,1], [4,2], [4,3], [4,4], [4,5],
+                                                                       [5,2], [5,3], [5,4]].to_set
     end
   end
 

@@ -32,20 +32,15 @@ module TrailsForward
     def spawn_resource_tiles opts = {}
       opts.reverse_merge! populate: false
       rt_progress_bar = ProgressBar.new('Resource Tiles', megatiles.count / 100) if Rails.env.development?
-      Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 100) do |megatile_batch|
-        batch_tiles = megatile_batch.collect do |tile_info|
-          (0...megatile_width).collect do |x_offset|
-            (0...megatile_height).collect do |y_offset|
-              this_x = tile_info.x + x_offset
-              this_y = tile_info.y + y_offset
-              if opts[:populate]
-                resource_gen [this_x, this_y], tile_info.id
-              else
-                [this_x, this_y, tile_info.id, id]
-              end
-            end
-          end.inject(:+)
-        end.inject(:+)
+      megatile_ids = megatiles.index_by {|mt| "#{mt.x}:#{mt.y}"}
+      (0...width).collect do |x|
+        batch_tiles = (0...height).collect do |y|
+          if opts[:populate]
+            resource_gen [x, y], megatile_ids["#{x - (x % megatile_width)}:#{y - (y % megatile_height)}"].id
+          else
+            [x, y, megatile_ids["#{x - (x % megatile_width)}:#{y - (y % megatile_height)}"].id, id]
+          end
+        end
 
         if opts[:populate]
           ResourceTile.import batch_tiles, validate: false, timestamps: false
@@ -53,8 +48,33 @@ module TrailsForward
           ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
         end
 
-        rt_progress_bar.inc if Rails.env.development?
+        rt_progress_bar.inc(height) if Rails.env.development?
       end
+
+
+      # Megatile.find_in_batches(conditions: {world_id: id}, batch_size: 100) do |megatile_batch|
+      #   batch_tiles = megatile_batch.collect do |tile_info|
+      #     (0...megatile_width).collect do |x_offset|
+      #       (0...megatile_height).collect do |y_offset|
+      #         this_x = tile_info.x + x_offset
+      #         this_y = tile_info.y + y_offset
+      #         if opts[:populate]
+      #           resource_gen [this_x, this_y], tile_info.id
+      #         else
+      #           [this_x, this_y, tile_info.id, id]
+      #         end
+      #       end
+      #     end.inject(:+)
+      #   end.inject(:+)
+
+      #   if opts[:populate]
+      #     ResourceTile.import batch_tiles, validate: false, timestamps: false
+      #   else
+      #     ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
+      #   end
+
+      #   rt_progress_bar.inc if Rails.env.development?
+      # end
       self.reload
 
       rt_progress_bar.finish if Rails.env.development?

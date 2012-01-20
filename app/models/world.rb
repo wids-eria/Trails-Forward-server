@@ -66,10 +66,10 @@ class World < ActiveRecord::Base
     return true if test_x == x.floor && test_y == y.floor
 
     if test_x == x.floor
-      return (test_y < y && test_y + 1 >= y - radius) || (test_y > y && test_y <= y + radius)
+      return (test_y < y && test_y + 1 > y - radius) || (test_y > y && test_y < y + radius)
 
     elsif test_y == y.floor
-      return (test_x < x && test_x + 1 >= x - radius) || (test_x > x && test_x <= x + radius)
+      return (test_x < x && test_x + 1 > x - radius) || (test_x > x && test_x < x + radius)
 
     else
       x_offset = x - (test_x < x ? test_x + 1 : test_x)
