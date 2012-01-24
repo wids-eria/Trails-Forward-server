@@ -29,6 +29,64 @@ class World < ActiveRecord::Base
     @manager ||= GameWorldManager.for_world(self)
   end
 
+  def tiles_in_range x, y, radius
+    begin
+      ResourceTile.find(tile_ids_in_range x, y, radius)
+    rescue Exception => e
+      require 'ruby-debug'; Debugger.start; Debugger.settings[:autoeval] = 1; Debugger.settings[:autolist] = 1; debugger 
+      puts e
+    end
+  end
+
+  def agents_in_range x, y, radius
+    Agent.where('resource_tile_id IN (?)', tile_ids_in_range(x, y, radius)).select do |agent|
+      x_offset = agent.x - x
+      y_offset = agent.y - y
+      x_offset * x_offset + y_offset * y_offset <= radius * radius
+    end
+  end
+
+  def tile_ids_in_range x, y, radius
+    x_min = [(x - radius).to_i, 0].max
+    x_max = [(x + radius).to_i, width - 1].min
+    y_min = [(y - radius).to_i, 0].max
+    y_max = [(y + radius).to_i, height - 1].min
+    x_range = (x_min..x_max)
+    y_range = (y_min..y_max)
+    x_range.inject([]) do |memo, test_x|
+      memo << y_range.inject([]) do |memo2, test_y|
+        memo2 << tile_id_at(test_x,test_y) if tile_in_range?(test_x, test_y, x, y, radius)
+        memo2
+      end
+    end.flatten
+  end
+
+  def tile_in_range? test_x, test_y, x, y, radius
+    return false if test_x < 0 || test_x >= width || test_y < 0 || test_y >= height
+    return true if test_x == x.floor && test_y == y.floor
+
+    if test_x == x.floor
+      return (test_y < y && test_y + 1 > y - radius) || (test_y > y && test_y < y + radius)
+
+    elsif test_y == y.floor
+      return (test_x < x && test_x + 1 > x - radius) || (test_x > x && test_x < x + radius)
+
+    else
+      x_offset = x - (test_x < x ? test_x + 1 : test_x)
+      y_offset = y - (test_y < y ? test_y + 1 : test_y)
+      dist = x_offset * x_offset + y_offset * y_offset
+      return dist < radius * radius
+    end
+  end
+
+  def first_tile_id
+    @first_tile_id ||= resource_tile_at(0,0).id
+  end
+
+  def tile_id_at x, y
+    first_tile_id + (y * width) + x
+  end
+
   def tick
     tick_agents
     age_agents!

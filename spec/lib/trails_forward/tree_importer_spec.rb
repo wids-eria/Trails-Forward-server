@@ -3,8 +3,18 @@ require 'spec_helper'
 require 'trails_forward/tree_importer'
 
 describe 'TrailsForward::TreeImporter' do
+  describe '.populate_with_uneven_aged_distribution' do
+    example 'should definitely populate the bins closest to the mean' do
+      tile_hash = { tree_size: 12 }
+      target_basal_area = 200
+      TrailsForward::TreeImporter.populate_with_uneven_aged_distribution tile_hash, target_basal_area
+      tile_hash[:num_2_inch_diameter_trees].should > 0
+      tile_hash[:num_4_inch_diameter_trees].should > 0
+    end
+  end
+
   describe '.populate_with_even_aged_distribution' do
-    example '' do
+    example 'should definitely populate the bins closest to the mean' do
       tile_hash = { tree_size: 12 }
       target_basal_area = 200
       TrailsForward::TreeImporter.populate_with_even_aged_distribution tile_hash, target_basal_area

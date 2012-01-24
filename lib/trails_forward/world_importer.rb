@@ -72,12 +72,8 @@ module TrailsForward
       when 'Coniferous', 'Deciduous', 'Forested Wetland', 'Mixed'
         cover_type_symbol = land_cover_type.underscore.sub(' ', '_').to_sym
         calculate_tree_size cover_type_symbol
-
       when'Dwarf Scrub', 'Grassland/Herbaceous', 'Shrub/Scrub'
-        nil
-        # tile.update_attributes(tree_size: nil)
-      when nil
-        nil
+        0
       else
         raise "Unrecognized land_cover_type: #{land_cover_type}"
       end
@@ -150,7 +146,7 @@ module TrailsForward
         tile_hash[:development_intensity] = ((landcover_code - 20.0) / 4.0)
       when 41,42,43,51,52,71,90 # Forest types, Scrub, Herbaceous
         tile_hash[:tree_size] = determine_tree_size(tile_hash[:land_cover_type])
-        col_with_trees = "num_diameter_#{tree_size}_trees".to_sym
+        col_with_trees = "num_diameter_#{tile_hash[:tree_size]}_trees".to_sym
         tile_hash[col_with_trees] = determine_num_trees_from_tree_density tile_hash
       end
 
@@ -160,11 +156,16 @@ module TrailsForward
       tile_hash
     end
 
-    def determine_num_trees_from_tree_density tile_hash
+    def self.determine_num_trees_from_tree_density tile_hash
       target_basal_area = TrailsForward::TreeImporter.determine_target_basal_area
-      TrailsForward::TreeImporter.populate_with_even_aged_distribution tile_hash, target_basal_area
+      if rand < 0.5
+        TrailsForward::TreeImporter.populate_with_even_aged_distribution tile_hash, target_basal_area
+      else
+        TrailsForward::TreeImporter.populate_with_uneven_aged_distribution tile_hash, target_basal_area
+      end
     end
 
+    # TODO: extract sub-methods to shrink this overly long method...
     def self.import_world filename, show_progress = true
       if show_progress
         progress_bar_class = ProgressBar
@@ -235,7 +236,14 @@ module TrailsForward
                          :primary_use, :people_density, :housing_density,
                          :tree_density, :development_intensity, :tree_size,
                          :imperviousness, :frontage, :lakesize, :soil,
-                         :landcover_class_code ]
+                         :landcover_class_code, :num_2_inch_diameter_trees,
+                         :num_4_inch_diameter_trees, :num_6_inch_diameter_trees,
+                         :num_8_inch_diameter_trees, :num_10_inch_diameter_trees,
+                         :num_12_inch_diameter_trees, :num_14_inch_diameter_trees,
+                         :num_16_inch_diameter_trees, :num_18_inch_diameter_trees,
+                         :num_20_inch_diameter_trees, :num_22_inch_diameter_trees,
+                         :num_24_inch_diameter_trees ]
+
 
       pb = progress_bar_class.new 'Tile Import', rows.count
 
@@ -259,6 +267,10 @@ module TrailsForward
         end
       end
       pb.finish
+
+      first_id = world.resource_tile_at(0,0).id
+      last_id = world.resource_tile_at(world.width - 1, world.height - 1).id
+      puts "ID error #{last_id} - #{first_id - 1} != #{world.width} * #{world.height}" unless (first_id - 1) + world_width * world_height == last_id
 
       # pb = progress_bar_class.new "Reapply indices", tile_indices.count
       # tile_indices.each do |index|

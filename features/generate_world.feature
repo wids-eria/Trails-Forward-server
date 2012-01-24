@@ -7,3 +7,4 @@ Feature: Generate World
     Then a new world should exist
       And the new world should have 36 resource tiles
       And the new world should have 4 megatiles
+      And the forested resource tiles should have tree bin entries
