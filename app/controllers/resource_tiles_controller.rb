@@ -72,40 +72,48 @@ class ResourceTilesController < ApplicationController
   end
 
 
+  # TODO move the double logic into cancan, so it calls tiles can_bulldoze?
   def bulldoze_list
+    a_ok = true
     resource_tiles.each do |tile|
       authorize! :bulldoze, tile
-      unless tile.can_bulldoze?
-        render :status => :forbidden, :text => "Action illegal for this land"
-        return
-
+      if not tile.can_bulldoze?
+        a_ok = false
       end
     end
 
-    resource_tiles.each &:bulldoze!
-
     respond_to do |format|
-      format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
-      format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
+      if not a_ok
+        format.json { render :status => :forbidden, :json => {:text => "Action illegal for this land" }}
+      else
+        resource_tiles.each &:bulldoze!
+
+        format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
+        format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
+      end
     end
   end
 
   def clearcut_list
+    a_ok = true
     resource_tiles.each do |tile|
       authorize! :clearcut, tile
       if not tile.can_clearcut?
-        respond_to do |format|
-          format.json { render :status => :forbidden, :text => "Action illegal for this land" }
-          return
-        end
+        a_ok = false
       end
     end
 
     resource_tiles.each &:clearcut!
 
     respond_to do |format|
-      format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
-      format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
+      if not a_ok
+        format.json { render :status => :forbidden, :json => {:text => "Action illegal for this land" }}
+      else
+        resource_tiles.each &:bulldoze!
+
+        format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
+        format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
+      end
     end
   end
 
