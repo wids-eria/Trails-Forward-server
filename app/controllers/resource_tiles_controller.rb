@@ -109,7 +109,7 @@ class ResourceTilesController < ApplicationController
       if not a_ok
         format.json { render :status => :forbidden, :json => {:text => "Action illegal for this land" }}
       else
-        resource_tiles.each &:bulldoze!
+        resource_tiles.each &:clearcut!
 
         format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
         format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
