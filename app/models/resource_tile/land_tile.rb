@@ -1,14 +1,20 @@
 class LandTile < ResourceTile
   TREE_UPGROWTH_P = {
-    shade_tolerant: [0.0164, -0.0001, 0.0055, -0.0002, 0],
-    mid_tolerant: [0.0134, -0.0002, 0.0051, -0.0002, 0.00002],
-    shade_intolerant: [0.0069, -0.0001, 0.0059, -0.0003, 0]
+    shade_tolerant:    [0.0164, -0.0001, 0.0055, -0.0002, 0      ],
+    mid_tolerant:      [0.0134, -0.0002, 0.0051, -0.0002, 0.00002],
+    shade_intolerant:  [0.0069, -0.0001, 0.0059, -0.0003, 0      ]
   }
 
   TREE_MORTALITY_P = {
-    shade_tolerant: [0.0336, 0, -0.0018, 0.0001, 0.00002],
-    mid_tolerant: [0.0417, 0, -0.0033, 0.0001, 0],
-    shade_intolerant: [0.0418, 0, -0.0009, 0, 0]
+    shade_tolerant:   [0.0336, 0, -0.0018, 0.0001, 0.00002],
+    mid_tolerant:     [0.0417, 0, -0.0033, 0.0001, 0      ],
+    shade_intolerant: [0.0418, 0, -0.0009, 0     , 0      ]
+  }
+
+  TREE_INGROWTH_PARAMETER = {
+    shade_tolerant:   [18.187, -0.097],
+    mid_tolerant:     [4.603,  -0.035],
+    shade_intolerant: [7.622,  -0.059]
   }
 
   def can_clearcut?
@@ -54,24 +60,39 @@ class LandTile < ResourceTile
   end
 
   def grow_trees
-    site_index = 60 # WAG because no data...
+    return if species_group.blank?
+
+    site_index = 80 # WAG because no data...
     basal_area = calculate_basal_area
 
-    (2..24).step(2).map do |diameter|
-      species = species_group
-      if species
-        mortality_rate = determine_mortality_rate(diameter, species, site_index)
-        upgrowth_rate = determine_upgrowth_rate(diameter, species, site_index, basal_area)
-        self.send("num_#{diameter}_inch_diameter_trees=".to_sym, self.send("num_#{diameter}_inch_diameter_trees") * (1 - mortality_rate))
+    tree_sizes = [2,4,6,8,10,12,14,16,18,20,22,24]
+    tree_size_counts = tree_sizes.collect {|diameter| self.send("num_#{diameter}_inch_diameter_trees") }
+    tree_size_count_matrix = Matrix[tree_size_counts]
 
-        # transition # trees * upgrowth_rate to the next larger bin
-        #
-        BROKEN TO CALL ATTENTION TO CODE TO WORK ON NEXT
-        TODO:
-          switch to matrix multiplication
-          Steve Wangen has the plan!
+    transition_matrix = Matrix.identity tree_sizes.length
 
+    tree_sizes.each_with_index do |tree_size, index|
+      survival_rate = 1 - determine_mortality_rate(tree_size, species_group, site_index)
+      upgrowth_rate = determine_upgrowth_rate(tree_size, species_group, site_index, basal_area)
+      retention_rate = 1 - upgrowth_rate
+
+      transition_matrix.send "[]=", index,index, survival_rate * retention_rate
+
+      # derive sub diagonal from each element in the diagonal except last element
+      if index < (tree_sizes.count - 1)
+        transition_matrix.send "[]=", index+1, index, survival_rate * upgrowth_rate
       end
+    end
+
+    # apply matrix
+    tree_size_count_matrix = tree_size_count_matrix * transition_matrix
+
+    # add saplings
+    tree_size_count_matrix.send "[]=", 0,0, determine_ingrowth_number(species_group, basal_area)
+
+    # set values on model
+    tree_sizes.each_with_index do |tree_size, index|
+      self.send("num_#{tree_size}_inch_diameter_trees=", tree_size_count_matrix[0,index])
     end
 
     self.save!
@@ -98,6 +119,10 @@ class LandTile < ResourceTile
       TREE_UPGROWTH_P[species][2] * diameter +
       TREE_UPGROWTH_P[species][3] * diameter ** 2 +
       TREE_UPGROWTH_P[species][4] * site_index * diameter
+  end
+
+  def determine_ingrowth_number(species_group, basal_area)
+    TREE_INGROWTH_PARAMETER[species_group][0] + TREE_INGROWTH_PARAMETER[species_group][1] * basal_area
   end
 
   def species_group
