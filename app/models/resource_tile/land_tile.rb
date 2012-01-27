@@ -6,9 +6,9 @@ class LandTile < ResourceTile
   }
 
   TREE_MORTALITY_P = {
-    shade_tolerant:   [0.0336, 0, -0.0018, 0.0001, 0.00002],
-    mid_tolerant:     [0.0417, 0, -0.0033, 0.0001, 0      ],
-    shade_intolerant: [0.0418, 0, -0.0009, 0     , 0      ]
+    shade_tolerant:   [0.0336, 0, -0.0018, 0.0001, -0.00002],
+    mid_tolerant:     [0.0417, 0, -0.0033, 0.0001,  0      ],
+    shade_intolerant: [0.0418, 0, -0.0009, 0     ,  0      ]
   }
 
   TREE_INGROWTH_PARAMETER = {
@@ -63,13 +63,14 @@ class LandTile < ResourceTile
     return if species_group.blank?
 
     site_index = 80 # WAG because no data...
-    basal_area = calculate_basal_area
 
     tree_sizes = [2,4,6,8,10,12,14,16,18,20,22,24]
     tree_size_counts = tree_sizes.collect {|diameter| self.send("num_#{diameter}_inch_diameter_trees") }
-    tree_size_count_matrix = Matrix[tree_size_counts]
 
+    tree_size_count_matrix = Matrix[tree_size_counts]
     transition_matrix = Matrix.identity tree_sizes.length
+
+    basal_area = calculate_basal_area(tree_sizes, tree_size_count_matrix.flat_map.to_a)
 
     tree_sizes.each_with_index do |tree_size, index|
       survival_rate = 1 - determine_mortality_rate(tree_size, species_group, site_index)
@@ -80,6 +81,7 @@ class LandTile < ResourceTile
 
       # derive sub diagonal from each element in the diagonal except last element
       if index < (tree_sizes.count - 1)
+        #transition_matrix.send "[]=", index+1, index, upgrowth_rate
         transition_matrix.send "[]=", index+1, index, survival_rate * upgrowth_rate
       end
     end
@@ -87,7 +89,8 @@ class LandTile < ResourceTile
     # apply matrix
     tree_size_count_matrix = tree_size_count_matrix * transition_matrix
 
-    # add saplings
+    # add sapling
+    basal_area = calculate_basal_area(tree_sizes, tree_size_count_matrix.flat_map.to_a)
     tree_size_count_matrix.send "[]=", 0,0, determine_ingrowth_number(species_group, basal_area)
 
     # set values on model
@@ -98,8 +101,12 @@ class LandTile < ResourceTile
     self.save!
   end
 
-  def calculate_basal_area
-    (2..24).step(2).map{|diameter| 0.005454 * diameter ** 2 * self.send("num_#{diameter}_inch_diameter_trees")}.sum
+  def calculate_basal_area(tree_sizes, tree_size_counts)
+    basal_area = 0
+    tree_sizes.each_with_index do |tree_size, index|
+      basal_area += tree_size ** 2 * 0.005454 * tree_size_counts[index]
+    end
+    basal_area
   end
 
   # Describes the yearly proportion of trees in a diameter class that die

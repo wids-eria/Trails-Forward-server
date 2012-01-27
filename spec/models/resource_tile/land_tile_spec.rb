@@ -140,6 +140,7 @@ describe LandTile do
     # end
 
     example 'applies the upgrowth rate' do
+      puts tile.inspect
       old_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
       old_num_trees.should == 72
       tile.grow_trees
