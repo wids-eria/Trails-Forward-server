@@ -22,4 +22,7 @@ describe SmallMammal do
     mammal.grow
     mammal.value.should < 55
   end
+
+  describe 'initial distribution of mammals' do
+    it "is blah when the resource tile is"
 end
