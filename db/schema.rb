@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120118170244) do
+ActiveRecord::Schema.define(:version => 20120227173807) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -119,18 +119,18 @@ ActiveRecord::Schema.define(:version => 20120118170244) do
     t.integer "soil"
     t.integer "landcover_class_code"
     t.integer "zoning_code"
-    t.integer "num_2_inch_diameter_trees"
-    t.integer "num_4_inch_diameter_trees"
-    t.integer "num_6_inch_diameter_trees"
-    t.integer "num_8_inch_diameter_trees"
-    t.integer "num_10_inch_diameter_trees"
-    t.integer "num_12_inch_diameter_trees"
-    t.integer "num_14_inch_diameter_trees"
-    t.integer "num_16_inch_diameter_trees"
-    t.integer "num_18_inch_diameter_trees"
-    t.integer "num_20_inch_diameter_trees"
-    t.integer "num_22_inch_diameter_trees"
-    t.integer "num_24_inch_diameter_trees"
+    t.float   "num_2_inch_diameter_trees"
+    t.float   "num_4_inch_diameter_trees"
+    t.float   "num_6_inch_diameter_trees"
+    t.float   "num_8_inch_diameter_trees"
+    t.float   "num_10_inch_diameter_trees"
+    t.float   "num_12_inch_diameter_trees"
+    t.float   "num_14_inch_diameter_trees"
+    t.float   "num_16_inch_diameter_trees"
+    t.float   "num_18_inch_diameter_trees"
+    t.float   "num_20_inch_diameter_trees"
+    t.float   "num_22_inch_diameter_trees"
+    t.float   "num_24_inch_diameter_trees"
   end
 
   add_index "resource_tiles", ["x", "y", "world_id"], :name => "index_resource_tiles_on_x_and_y_and_world_id", :unique => true

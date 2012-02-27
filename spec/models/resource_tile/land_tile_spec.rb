@@ -128,8 +128,9 @@ describe LandTile do
   end
 
   describe '#grow_trees' do
-    let(:world) { create :world_with_resources }
-    let(:tile) { world.resource_tiles.where(type: 'LandTile').first }
+    let(:megatile) { Factory :megatile }
+    let(:tile) { World.new.deciduous_land_tile [1,1], megatile.id }
+    let(:tile_variant) { World.new.deciduous_land_tile_variant [1,1], megatile.id }
 
     # example "applies tree mortality rate" do
       # old_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
@@ -140,12 +141,20 @@ describe LandTile do
     # end
 
     example 'applies the upgrowth rate' do
-      puts tile.inspect
       old_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
       old_num_trees.should == 72
       tile.grow_trees
       new_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
+
       new_num_trees.should > old_num_trees
+    end
+
+    example 'applies the upgrowth rate to the variant' do
+      old_num_trees = (2..24).step(2).map{|n| tile_variant.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
+      tile_variant.grow_trees
+      new_num_trees = (2..24).step(2).map{|n| tile_variant.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
+
+      new_num_trees.should < old_num_trees
     end
   end
 
