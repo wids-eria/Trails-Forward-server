@@ -104,7 +104,7 @@ class LandTile < ResourceTile
   def calculate_basal_area(tree_sizes, tree_size_counts)
     basal_area = 0
     tree_sizes.each_with_index do |tree_size, index|
-      basal_area += tree_size ** 2 * 0.005454 * tree_size_counts[index]
+      basal_area += (tree_size-1) ** 2 * 0.005454 * tree_size_counts[index]
     end
     basal_area
   end
@@ -113,19 +113,19 @@ class LandTile < ResourceTile
   def determine_mortality_rate(diameter, species, site_index)
     # debugger if diameter = 8 && species == :shade_tolerant
     TREE_MORTALITY_P[species][0] +
-      TREE_MORTALITY_P[species][1] * diameter +
+      TREE_MORTALITY_P[species][1] * (diameter-1) +
       # TREE_MORTALITY_P[species][2] * basal_area +
-      TREE_MORTALITY_P[species][3] * diameter**2 +
-      TREE_MORTALITY_P[species][4] * site_index * diameter
+      TREE_MORTALITY_P[species][3] * (diameter-1)**2 +
+      TREE_MORTALITY_P[species][4] * site_index * (diameter-1)
   end
 
   # Describes the yearly proportion of trees moving from one diameter class to the next
   def determine_upgrowth_rate diameter, species, site_index, basal_area
     TREE_UPGROWTH_P[species][0] +
       TREE_UPGROWTH_P[species][1] * basal_area +
-      TREE_UPGROWTH_P[species][2] * diameter +
-      TREE_UPGROWTH_P[species][3] * diameter ** 2 +
-      TREE_UPGROWTH_P[species][4] * site_index * diameter
+      TREE_UPGROWTH_P[species][2] * (diameter-1) +
+      TREE_UPGROWTH_P[species][3] * (diameter-1) ** 2 +
+      TREE_UPGROWTH_P[species][4] * site_index * (diameter-1)
   end
 
   def determine_ingrowth_number(species_group, basal_area)
