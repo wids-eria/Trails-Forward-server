@@ -53,19 +53,32 @@ class LandTile < ResourceTile
     end
   end
 
-  def estimated_lumber_value
-    td = (tree_density or 0)
-    ts = (tree_size or 0)
-    42 * td * ts
+  def estimated_6_inch_tree_value
+    size_class = 6
+    breast_height = 4.5
+    basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
+    merchantable_height = breast_height + 5.34 * (1 - Math.exp(-0.23 * (size_class-1)))**1.15 * site_index**0.54 * (1.00001 - (4/(size_class-1)))**0.83 * basal_area**0.06
+    volume = 1.375 + 0.002 * (size_class-1)**2 * merchantable_height
+
+    value = volume * 11.93
+  end
+
+  def tree_sizes
+    [2,4,6,8,10,12,14,16,18,20,22,24]
+  end
+
+  def collect_tree_size_counts
+    tree_sizes.collect {|diameter| self.send("num_#{diameter}_inch_diameter_trees") }
+  end
+
+  def site_index
+    80
   end
 
   def grow_trees
     return if species_group.blank?
 
-    site_index = 80 # WAG because no data...
-
-    tree_sizes = [2,4,6,8,10,12,14,16,18,20,22,24]
-    tree_size_counts = tree_sizes.collect {|diameter| self.send("num_#{diameter}_inch_diameter_trees") }
+    tree_size_counts = collect_tree_size_counts 
 
     tree_size_count_matrix = Matrix[tree_size_counts]
     transition_matrix = Matrix.identity tree_sizes.length

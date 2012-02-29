@@ -123,10 +123,25 @@ describe LandTile do
   end
 
   context "trees" do
-    let(:tile) { LandTile.new tree_density: 1, tree_size: 0.5 }
+    let(:tile) { LandTile.new }
 
-    it "should have estimated lumber value" do
-      tile.estimated_lumber_value.should == 21
+    # size class
+    # 0 - 4 worthless
+    # 6 - 10 poletimber
+    # 12+ sawtimber
+    #
+    it "estimates 2 inch tree value" do
+      tile.num_2_inch_diameter_trees = 10
+      tile.estimated_2_inch_tree_value.should == 0
+    end
+
+    it "estimates 6 inch tree value" do
+      tile.num_6_inch_diameter_trees = 10
+      tile.stubs(calculate_basal_area: 100)
+      # calc basal area
+      # calc height
+      # calc vol
+      tile.estimated_6_inch_tree_value.should be_within(0.1).of(26.68)
     end
   end
 
