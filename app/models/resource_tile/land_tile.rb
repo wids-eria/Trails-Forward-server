@@ -63,6 +63,15 @@ class LandTile < ResourceTile
     value = volume * 11.93
   end
 
+  def cubic_feet_to_cords(volume)
+    
+  end
+
+  # NOTE MBF = 1000 Board Feet
+  def cubic_feet_to_mbf
+    # based on species group
+  end
+
   def tree_sizes
     [2,4,6,8,10,12,14,16,18,20,22,24]
   end
