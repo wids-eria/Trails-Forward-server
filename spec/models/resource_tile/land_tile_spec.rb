@@ -131,25 +131,35 @@ describe LandTile do
     # 12+ sawtimber
     #
     # softwood
-    # 6 - 8 pole
+    # 0 - 4 worthless
+    # 6 - 8 poletimber
     # 10+ sawtimber
     #
+
+    # wood mapping
+    # shade tolerant   - hardwood - deciduous
+    # mid tolerant     - mixed    - mixed
+    # shade intolerant - softwood - coniforous
+    #
+
+    # poletimber - cords
+    # sawtimber  - board feet
 
     it "estimates 2 inch tree value" do
       tile.num_2_inch_diameter_trees = 10
       tile.estimated_2_inch_tree_value.should == 0
     end
 
-    it "estimates 6 inch tree value" do
+    it "estimates 6 inch coniforous tree value" do
       tile.num_6_inch_diameter_trees = 10
       tile.stubs(calculate_basal_area: 100)
       tile.estimated_6_inch_tree_value.should be_within(0.1).of(2.084375)
     end
 
-    it "estimates 14 inch tree value" do
+    it "estimates 14 inch coniforous tree value" do
       tile.num_14_inch_diameter_trees = 10
       tile.stubs(calculate_basal_area: 100)
-      tile.estimated_6_inch_tree_value.should be_within(0.1).of(26.68)
+      tile.estimated_14_inch_tree_value.should be_within(0.1).of(310.392508)
     end
 
     it "sums by product type"
@@ -158,11 +168,6 @@ describe LandTile do
       LandTile.new.cubic_feet_to_cords(26.68).should be_within(0.1).of(0.2084375)
     end
 
-    # wood mapping
-    # shade tolerant   - hardwood - deciduous
-    # mid tolerant     - mixed    - mixed
-    # shade intolerant - softwood - coniforous
-    #
 
     it "converts all the hethens"
     
