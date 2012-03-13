@@ -56,28 +56,35 @@ class LandTile < ResourceTile
   def estimated_timber_value
     # placeholder
     5
+    # NOTE calculate basal and pass it through, or memoize it
   end
-
 
   # assumed coniforous
   def estimated_6_inch_tree_value
     size_class = 6
-    breast_height = 4.5
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
-    merchantable_height = breast_height + 5.34 * (1 - Math.exp(-0.23 * (size_class-1)))**1.15 * site_index**0.54 * (1.00001 - (4/(size_class-1)))**0.83 * basal_area**0.06
-    single_tree_volume = 1.375 + 0.002 * (size_class-1)**2 * merchantable_height
+    merchantable_height = merchantable_height(size_class, basal_area, site_index)
+    single_tree_volume = single_coniferous_tree_volume(size_class, merchantable_height)
     volume = single_tree_volume * num_6_inch_diameter_trees
     value = cubic_feet_to_cords(volume) * 11.93
   end
 
   def estimated_14_inch_tree_value
     size_class = 14
-    breast_height = 4.5
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
-    merchantable_height = breast_height + 5.34 * (1 - Math.exp(-0.23 * (size_class-1)))**1.15 * site_index**0.54 * (1.00001 - (4/(size_class-1)))**0.83 * basal_area**0.06
-    single_tree_volume = 1.375 + 0.002 * (size_class-1)**2 * merchantable_height
+    merchantable_height = merchantable_height(size_class, basal_area, site_index)
+    single_tree_volume = single_coniferous_tree_volume(size_class, merchantable_height)
     volume = single_tree_volume * num_14_inch_diameter_trees
     value = cubic_feet_to_board_feet(volume) * 0.147
+  end
+
+  def single_coniferous_tree_volume(size_class, merchantable_height)
+    1.375 + 0.002 * (size_class-1)**2 * merchantable_height
+  end
+
+  def merchantable_height(size_class, basal_area, site_index)
+    breast_height = 4.5
+    breast_height + 5.34 * (1 - Math.exp(-0.23 * (size_class-1)))**1.15 * site_index**0.54 * (1.00001 - (4/(size_class-1)))**0.83 * basal_area**0.06
   end
 
   def cubic_feet_to_cords(volume)

@@ -162,6 +162,18 @@ describe LandTile do
       tile.estimated_14_inch_tree_value.should be_within(0.1).of(310.392508)
     end
 
+    # TODO
+    # refactor 6 and 14
+    #
+
+    it "estimates 6 inch deciduous tree value"
+    it "estimates 14 inch deciduous tree value"
+
+    # test switching
+    it "estimates 10 inch coniforous tree value"
+    it "estimates 10 inch deciduous tree value"
+
+
     it "sums by product type"
 
     it "converts cubic feet to cords" do
