@@ -139,7 +139,7 @@ describe LandTile do
     # wood mapping
     # shade tolerant   - hardwood - deciduous
     # mid tolerant     - mixed    - mixed
-    # shade intolerant - softwood - coniforous
+    # shade intolerant - softwood - coniferous
     #
 
     # poletimber - cords
@@ -150,28 +150,40 @@ describe LandTile do
       tile.estimated_2_inch_tree_value.should == 0
     end
 
-    it "estimates 6 inch coniforous tree value" do
-      tile.num_6_inch_diameter_trees = 10
-      tile.stubs(calculate_basal_area: 100)
-      tile.estimated_6_inch_tree_value.should be_within(0.1).of(2.084375)
+    context "shade intolerant" do
+      before do
+        tile.stubs(species_group: :shade_intolerant)
+      end
+      it "estimates 6 inch tree value" do
+        tile.num_6_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_6_inch_tree_value.should be_within(0.1).of(2.084375)
+      end
+
+      it "estimates 14 inch tree value" do
+        tile.num_14_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_14_inch_tree_value.should be_within(0.1).of(310.392508)
+      end
+
+      it "estimates 10 inch tree value"
     end
 
-    it "estimates 14 inch coniforous tree value" do
-      tile.num_14_inch_diameter_trees = 10
-      tile.stubs(calculate_basal_area: 100)
-      tile.estimated_14_inch_tree_value.should be_within(0.1).of(310.392508)
+    context "shade tolerant" do
+      before do
+        tile.stubs(species_group: :shade_tolerant)
+      end
+      it "estimates 6 inch tree value" do
+        tile.num_6_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_6_inch_tree_value.should be_within(0.1).of(2.084375)
+      end
+
+      it "estimates 14 inch tree value"
+
+      # test switching
+      it "estimates 10 inch tree value"
     end
-
-    # TODO
-    # refactor 6 and 14
-    #
-
-    it "estimates 6 inch deciduous tree value"
-    it "estimates 14 inch deciduous tree value"
-
-    # test switching
-    it "estimates 10 inch coniforous tree value"
-    it "estimates 10 inch deciduous tree value"
 
 
     it "sums by product type"
