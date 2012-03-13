@@ -157,13 +157,13 @@ describe LandTile do
       it "estimates 6 inch tree value" do
         tile.num_6_inch_diameter_trees = 10
         tile.stubs(calculate_basal_area: 100)
-        tile.estimated_6_inch_tree_value.should be_within(0.1).of(2.084375)
+        tile.estimated_6_inch_tree_value.should be_within(0.1).of(2.446338147)
       end
 
       it "estimates 14 inch tree value" do
         tile.num_14_inch_diameter_trees = 10
         tile.stubs(calculate_basal_area: 100)
-        tile.estimated_14_inch_tree_value.should be_within(0.1).of(310.392508)
+        tile.estimated_14_inch_tree_value.should be_within(0.1).of(179.8166)
       end
 
       it "estimates 10 inch tree value"
@@ -176,10 +176,14 @@ describe LandTile do
       it "estimates 6 inch tree value" do
         tile.num_6_inch_diameter_trees = 10
         tile.stubs(calculate_basal_area: 100)
-        tile.estimated_6_inch_tree_value.should be_within(0.1).of(2.084375)
+        tile.estimated_6_inch_tree_value.should be_within(0.1).of(3.325163)
       end
 
-      it "estimates 14 inch tree value"
+      it "estimates 14 inch tree value" do
+        tile.num_14_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_14_inch_tree_value.should be_within(0.1).of(218.22014)
+      end
 
       # test switching
       it "estimates 10 inch tree value"

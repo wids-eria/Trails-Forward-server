@@ -64,27 +64,86 @@ class LandTile < ResourceTile
     size_class = 6
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
     merchantable_height = merchantable_height(size_class, basal_area, site_index)
-    single_tree_volume = single_coniferous_tree_volume(size_class, merchantable_height)
+    single_tree_volume = single_tree_volume(size_class, merchantable_height)
     volume = single_tree_volume * num_6_inch_diameter_trees
-    value = cubic_feet_to_cords(volume) * 11.93
+    value = cubic_feet_to_cords(volume) * cord_value
   end
 
   def estimated_14_inch_tree_value
     size_class = 14
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
     merchantable_height = merchantable_height(size_class, basal_area, site_index)
-    single_tree_volume = single_coniferous_tree_volume(size_class, merchantable_height)
+    single_tree_volume = single_tree_volume(size_class, merchantable_height)
     volume = single_tree_volume * num_14_inch_diameter_trees
-    value = cubic_feet_to_board_feet(volume) * 0.147
+    value = cubic_feet_to_board_feet(volume) * board_feet_value
   end
 
-  def single_coniferous_tree_volume(size_class, merchantable_height)
-    1.375 + 0.002 * (size_class-1)**2 * merchantable_height
+  def cord_value
+    case species_group
+    when :shade_intolerant
+      14.00
+    when :shade_tolerant
+      12.00
+    when :mid_tolerant
+      13.00
+    end
+  end
+
+  def board_feet_value
+    case species_group
+    when :shade_intolerant
+      0.147
+    when :shade_tolerant
+      0.151
+    when :mid_tolerant
+      0.127
+    end
+  end
+
+  def single_tree_volume(size_class, merchantable_height)
+    case species_group
+    when :shade_intolerant
+      1.375 + 0.002 * (size_class-1)**2 * merchantable_height
+    when :shade_tolerant
+      2.706 + 0.002 * (size_class-1)**2 * merchantable_height
+    when :mid_tolerant
+      raise 'implement'
+    end
   end
 
   def merchantable_height(size_class, basal_area, site_index)
     breast_height = 4.5
-    breast_height + 5.34 * (1 - Math.exp(-0.23 * (size_class-1)))**1.15 * site_index**0.54 * (1.00001 - (4/(size_class-1)))**0.83 * basal_area**0.06
+    case species_group
+    when :shade_intolerant
+      breast_height + 5.34 * (1 - Math.exp(-0.23 * (size_class-1)))**1.15 * site_index**0.54 * (1.00001 - (top_diameter(size_class)/(size_class-1)))**0.83 * basal_area**0.06
+    when :shade_tolerant
+      breast_height + 6.43 * (1 - Math.exp(-0.24 * (size_class-1)))**1.34 * site_index**0.47 * (1.00001 - (top_diameter(size_class)/(size_class-1)))**0.73 * basal_area**0.08
+    when :mid_tolerant
+      raise 'implement'
+    end
+  end
+
+  def top_diameter(size_class)
+    case species_group
+    when :shade_intolerant
+      case size_class
+        when 0..4
+          raise 'no'
+        when 6..8
+          4
+        else
+          9
+      end
+    when :shade_tolerant, :mid_tolerant
+      case size_class
+        when 0..4
+          raise 'no'
+        when 6..10
+          4
+        else
+          9
+      end
+    end
   end
 
   def cubic_feet_to_cords(volume)
