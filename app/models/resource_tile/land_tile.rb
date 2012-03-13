@@ -24,7 +24,7 @@ class LandTile < ResourceTile
   def clearcut!
     if can_clearcut?
       World.transaction do
-        megatile.owner.balance += estimated_lumber_value
+        megatile.owner.balance += estimated_timber_value
         self.tree_density = 0.0
         self.land_cover_type = :barren
         self.tree_size = 0.0
@@ -53,6 +53,11 @@ class LandTile < ResourceTile
     end
   end
 
+  def estimated_timber_value
+    # placeholder
+    5
+  end
+
   def estimated_6_inch_tree_value
     size_class = 6
     breast_height = 4.5
@@ -64,7 +69,7 @@ class LandTile < ResourceTile
   end
 
   def cubic_feet_to_cords(volume)
-    
+    volume / 128.0
   end
 
   # NOTE MBF = 1000 Board Feet

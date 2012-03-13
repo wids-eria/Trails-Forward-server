@@ -164,7 +164,7 @@ describe LandTile do
     # shade intolerant - softwood - coniforous
     #
 
-    it "converts
+    it "converts all the hethens"
     
   end
 
