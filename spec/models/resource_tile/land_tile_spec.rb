@@ -166,7 +166,14 @@ describe LandTile do
         tile.estimated_14_inch_tree_value.should be_within(0.1).of(179.8166)
       end
 
-      it "estimates 10 inch tree value"
+      # TODO finish test
+      # refactor ...
+      # yay
+      it "estimates 10 inch tree value" do
+        tile.num_10_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_10_inch_tree_value.should be_within(0.1).of(29.0709)
+      end
     end
 
     context "shade tolerant" do
@@ -182,11 +189,14 @@ describe LandTile do
       it "estimates 14 inch tree value" do
         tile.num_14_inch_diameter_trees = 10
         tile.stubs(calculate_basal_area: 100)
-        tile.estimated_14_inch_tree_value.should be_within(0.1).of(218.22014)
+        tile.estimated_14_inch_tree_value.should be_within(0.1).of(218.98314)
       end
 
-      # test switching
-      it "estimates 10 inch tree value"
+      it "estimates 10 inch tree value" do
+        tile.num_10_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_10_inch_tree_value.should be_within(0.1).of(9.3374)
+      end
     end
 
 

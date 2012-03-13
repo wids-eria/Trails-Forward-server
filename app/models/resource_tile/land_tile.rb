@@ -69,13 +69,23 @@ class LandTile < ResourceTile
     value = cubic_feet_to_cords(volume) * cord_value
   end
 
+  def estimated_10_inch_tree_value
+    size_class = 10
+    basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
+    merchantable_height = merchantable_height(size_class, basal_area, site_index)
+    single_tree_volume = single_tree_volume(size_class, merchantable_height)
+    volume = single_tree_volume * num_10_inch_diameter_trees
+    value = cubic_feet_to_cords(volume) * cord_value
+  end
+
   def estimated_14_inch_tree_value
     size_class = 14
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
     merchantable_height = merchantable_height(size_class, basal_area, site_index)
     single_tree_volume = single_tree_volume(size_class, merchantable_height)
     volume = single_tree_volume * num_14_inch_diameter_trees
-    value = cubic_feet_to_board_feet(volume) * board_feet_value
+    puts [merchantable_height, volume].inspect
+    value = cubic_feet_to_board_feet(volume, size_class) * board_feet_value
   end
 
   def cord_value
@@ -150,8 +160,15 @@ class LandTile < ResourceTile
     volume / 128.0
   end
 
-  def cubic_feet_to_board_feet(volume)
-    volume * 12 * 0.858 # 14 softwood
+
+  SCRIBNER_FACTOR = {
+    :shade_tolerant =>                { 12 => 0.832, 14 => 0.861, 16 => 0.883, 18 => 0.900, 20 => 0.913, 22 => 0.924, 24 => 0.933 },
+    :mid_tolerant =>                  { 12 => 0.832, 14 => 0.861, 16 => 0.883, 18 => 0.900, 20 => 0.913, 22 => 0.924, 24 => 0.933 },
+    :shade_intolerant => { 10 => 0.783, 12 => 0.829, 14 => 0.858, 16 => 0.878, 18 => 0.895, 20 => 0.908, 22 => 0.917, 24 => 0.924 }
+
+  }
+  def cubic_feet_to_board_feet(volume, size_class)
+    volume * 12 * SCRIBNER_FACTOR[species_group][size_class]
   end
 
   def tree_sizes
