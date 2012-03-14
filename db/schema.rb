@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120227173807) do
+ActiveRecord::Schema.define(:version => 20120314220957) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -133,6 +133,7 @@ ActiveRecord::Schema.define(:version => 20120227173807) do
     t.float   "num_24_inch_diameter_trees"
   end
 
+  add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
   add_index "resource_tiles", ["x", "y", "world_id"], :name => "index_resource_tiles_on_x_and_y_and_world_id", :unique => true
 
   create_table "resources", :force => true do |t|
