@@ -214,6 +214,7 @@ GEM
       columnize (>= 0.3.1)
       linecache19 (>= 0.5.11)
       ruby-debug-base19 (>= 0.11.19)
+    ruby-prof (0.10.8)
     ruby-progressbar (0.0.10)
     ruby-units (1.4.0)
     ruby_core_source (0.1.5)
@@ -287,6 +288,7 @@ DEPENDENCIES
   rspec
   rspec-rails
   ruby-debug19
+  ruby-prof
   ruby-units
   shoulda-matchers
   simple-random
