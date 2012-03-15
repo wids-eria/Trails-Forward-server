@@ -79,7 +79,7 @@ describe ResourceTile do
         world
       end
       it 'returns resource tiles within the passed in rectangle coordinates' do
-        tiles = ResourceTile.within_rectangle x: 2, y: 1, width: 2, height: 3
+        tiles = ResourceTile.within_rectangle x_min: 2, y_min: 1, x_max: 3, y_max: 3
         tiles.count.should == 6
         tiles.map(&:location).should == [[2,1], [2,2], [2,3], [3,1], [3,2], [3,3]]
       end

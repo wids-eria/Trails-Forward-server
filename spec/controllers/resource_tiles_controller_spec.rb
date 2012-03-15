@@ -32,7 +32,7 @@ describe ResourceTilesController do
         end
 
         it 'returns JSON representing the set of resource_tiles' do
-          get :permitted_actions, world_id: world.id, x: 2, y: 1, width: 2, height: 2, format: 'json'
+          get :permitted_actions, world_id: world.id, x_min: 2, y_min: 1, x_max: 3, y_max: 2, format: 'json'
           locations.should == [[2,1], [2,2], [3,1], [3,2]]
         end
 

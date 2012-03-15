@@ -20,12 +20,10 @@ class ResourceTile < ActiveRecord::Base
   scope :with_trees, where('tree_density > 0')
 
   scope :within_rectangle, lambda{|opts|
-    min_x = opts[:x].to_i
-    min_y = opts[:y].to_i
-    width = opts[:width].to_i
-    height = opts[:height].to_i
-    max_x = min_x + width - 1
-    max_y = min_y + height - 1
+    min_x = opts[:x_min].to_i
+    min_y = opts[:y_min].to_i
+    max_x = opts[:x_max].to_i
+    max_y = opts[:y_max].to_i
 
     where(x: min_x..max_x, y: min_y..max_y)
   }
