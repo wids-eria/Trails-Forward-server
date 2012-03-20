@@ -171,7 +171,7 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def land_cover_type= val
-    @landcover_class_code = ResourceTile.cover_type_number val
+    self.landcover_class_code = ResourceTile.cover_type_number val
   end
 
   def clear_resources!

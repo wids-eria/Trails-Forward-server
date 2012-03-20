@@ -94,6 +94,9 @@ describe LandTile do
       lambda {
         tile.clearcut!
       }.should change(tile, :tree_density).to(0.0)
+      tile.save!
+      tile.reload
+      tile.land_cover_type.should == :barren
     end
 
     it "awards tile owner the lumber value when clearcut" do
