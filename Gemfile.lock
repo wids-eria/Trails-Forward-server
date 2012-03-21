@@ -232,6 +232,7 @@ GEM
       hike (~> 1.2)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
+    sqlite3 (1.3.5)
     state_machine (1.1.1)
     tattletail (0.0.3)
       colorful
@@ -293,5 +294,6 @@ DEPENDENCIES
   shoulda-matchers
   simple-random
   spork (= 0.9.0.rc9)
+  sqlite3
   state_machine
   tattletail
