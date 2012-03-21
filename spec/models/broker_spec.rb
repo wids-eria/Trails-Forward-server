@@ -33,4 +33,8 @@ describe Broker do
     world.manager.broker.process_sale(bid)
     # make sure listings are canceled
   end
+
+  it "accepts a bid for a listing on a tile with one listing"
+
+  it "accepts a bid for a listing on a tile with multiple listings"
 end
