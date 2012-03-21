@@ -26,7 +26,7 @@ describe Broker do
   end
 
   it "accepts a bid with no listing on a tile with listings" do
-    listing = Factory.create :listing, megatile_grouping: offered_land 
+    listing = Factory.create :listing, megatile_grouping: offered_land, owner: seller 
     bid = Bid.create! bidder: bidder, current_owner: seller, money: 100, requested_land: requested_land
     bid.accept!
 
