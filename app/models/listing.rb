@@ -38,10 +38,22 @@ class Listing < ActiveRecord::Base
     template.add :megatiles, :template => :id_and_name
   end
 
+  def cancelled?
+    status == Listing.verbiage[:cancelled]
+  end
+
+  def active?
+    status == Listing.verbiage[:active]
+  end
+
+  def sold?
+    status == Listing.verbiage[:sold]
+  end
+
   private
 
   def all_megatiles_are_owned_by_owner
-    if megatile_grouping
+    if megatile_grouping && active?
       owners = Set.new
 
       megatile_grouping.megatiles.each do |megatile|
