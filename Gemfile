@@ -39,7 +39,6 @@ group :development, :test do
     gem 'rb-fsevent'
 
   gem 'capybara'
-  gem 'cucumber-rails'
   gem 'database_cleaner'
   gem 'fuubar'
   gem 'fuubar-cucumber'
@@ -49,6 +48,10 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'spork', '0.9.0.rc9'
   gem 'tattletail'
+end
+
+group :test do
+	gem 'cucumber-rails'
 end
 
 group :production do

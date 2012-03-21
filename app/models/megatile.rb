@@ -85,7 +85,7 @@ class Megatile < ActiveRecord::Base
   
   def invalidate_cache
     Rails.cache.delete cache_key
-    self.megatile_region_cache.invalidate
+    self.megatile_region_cache.invalidate if self.megatile_region_cache
   end
   
   def cache_key
