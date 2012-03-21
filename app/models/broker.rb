@@ -38,7 +38,7 @@ class Broker
 
   # atomically processes a sale *immediately*, rejecting competing bids
   def execute_sale(bid)
-    raise "Can't process a sale for an unaccepted bid" unless bid.status == Bid.verbiage[:accepted]
+    raise "Can't process a sale for an unaccepted bid" unless bid.accepted?
 
     ActiveRecord::Base.transaction do
       lock_assets_for_bid bid

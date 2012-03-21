@@ -45,8 +45,21 @@ class Bid < ActiveRecord::Base
     save!
   end
 
+  def accepted?
+    self.status == Bid.verbiage[:accepted]
+  end
+
+  def accept
+    self.status = Bid.verbiage[:accepted]
+  end
+
+  def accept!
+    accept
+    save!
+  end
+
   def sale_pending
-    self.status == Bid.verbiage[:accepted] and not self.execution_complete?
+    self.accepted? and not self.execution_complete?
   end
 
   api_accessible :bid_public do |template|

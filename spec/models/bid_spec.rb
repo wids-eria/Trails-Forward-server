@@ -62,4 +62,23 @@ describe Bid do
       end
     end
   end
+
+  context "States" do
+    let(:bid) { build :bid, status: Bid.verbiage[:active] }
+
+    describe "#accept" do
+      it "should change status to accepted" do
+        bid.accept
+        bid.status.should == Bid.verbiage[:accepted]
+      end
+    end
+
+    describe "#accepted?" do
+      it "returns true or false based on status" do
+        bid.accepted?.should == false
+        bid.accept
+        bid.accepted?.should == true
+      end
+    end
+  end
 end
