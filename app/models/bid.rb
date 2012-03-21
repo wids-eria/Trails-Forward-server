@@ -24,6 +24,7 @@ class Bid < ActiveRecord::Base
   # land that is being PURCHASED by the bidder. In the case of a fully solicited buy, this == listing.megatile_grouping.meagtiles
   belongs_to :requested_land, class_name: "MegatileGrouping"
 
+  before_validation :set_requested_land_to_listing_megatiles
   validates :money, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :requested_land, presence: true
   validate :requested_land_must_all_have_same_owner
@@ -78,6 +79,12 @@ class Bid < ActiveRecord::Base
   end
 
 private
+
+  def set_requested_land_to_listing_megatiles
+    if listing
+      self.requested_land = listing.megatile_grouping
+    end
+  end
 
   def requested_land_must_all_have_same_owner
     if requested_land.present?

@@ -55,8 +55,8 @@ describe Bid do
 
   context "Scopes" do
     describe ".active" do
-      let!(:bid1) { Factory :bid, status: Bid.verbiage[:active] }
-      let!(:bid2) { Factory :bid, status: Bid.verbiage[:cancelled] }
+      let!(:bid1) { create :bid, status: Bid.verbiage[:active] }
+      let!(:bid2) { create :bid, status: Bid.verbiage[:cancelled] }
       it "returns active bids" do
         Bid.active.should == [bid1]
       end
@@ -78,6 +78,17 @@ describe Bid do
         bid.accepted?.should == false
         bid.accept
         bid.accepted?.should == true
+      end
+    end
+  end
+
+  context "Listings" do
+    describe "requested_land" do
+      let(:listing) { create :listing }
+      let(:bid) { create :bid, requested_land: nil, listing: listing }
+      it "is the same as the listing when present" do
+        bid.requested_land.megatiles.should == listing.megatile_grouping.megatiles
+        bid.requested_land.should == listing.megatile_grouping
       end
     end
   end
