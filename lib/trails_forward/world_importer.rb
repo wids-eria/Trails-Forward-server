@@ -13,6 +13,8 @@ module TrailsForward
   module WorldImporter
     ROW_BATCH_SIZE = 2000
     PLAYER_TYPES = [Lumberjack, Developer, Conserver]
+    
+    CACHE_REGION_WIDTH = 10
 
     # TODO: revisit forested_wetland weights, since the values here are simply
     # copied from mixed. 12/30/11
@@ -247,8 +249,8 @@ module TrailsForward
 
       pb = progress_bar_class.new 'Tile Import', rows.count
 
-      ResourceTile.connection.transaction do
-        rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
+      rows.each_slice(ROW_BATCH_SIZE) do |row_batch|
+        ResourceTile.connection.transaction do
           tiles_to_import = []
 
           row_batch.each do |row|
@@ -290,6 +292,36 @@ module TrailsForward
       pb.finish
 
       puts("##{world_id} - #{name} generated".green) if show_progress
+      
+      puts("Generating cache regions") if show_progress
+      regions_wide = world.width/CACHE_REGION_WIDTH 
+      regions_tall = world.height/CACHE_REGION_WIDTH
+      regions_wide += 1 if (world.width % CACHE_REGION_WIDTH > 0)
+      regions_tall += 1 if (world.width % CACHE_REGION_WIDTH > 0)
+      
+      pb = progress_bar_class.new 'Cache Regions', regions_tall * regions_wide
+      0.step(world.width, CACHE_REGION_WIDTH) do |x_min|
+        x_max = x_min + CACHE_REGION_WIDTH - 1
+        0.step(world.height, CACHE_REGION_WIDTH) do |y_min|
+          y_max = y_min + CACHE_REGION_WIDTH - 1
+          mrc = MegatileRegionCache.new 
+          mrc.world = world
+          mrc.x_min = x_min
+          mrc.x_max = x_max
+          mrc.y_min = y_min
+          mrc.y_max = y_max
+          mrc.save!
+          
+          megatiles = Megatile.where(:world_id => world.id).where("x >= :x_min AND x<= :x_max AND y >= :y_min AND y <= :y_max",
+                                                                          {:x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max})
+          megatiles.each do |mt|
+            mrc.megatiles << mt
+          end
+          pb.inc
+        end
+      end
+      
+      
     end
   end
 end
