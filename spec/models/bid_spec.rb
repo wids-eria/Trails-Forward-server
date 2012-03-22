@@ -89,6 +89,7 @@ describe Bid do
       it "is the same as the listing when present" do
         bid.requested_land.megatiles.should == listing.megatile_grouping.megatiles
         bid.requested_land.should == listing.megatile_grouping
+        bid.current_owner.should == listing.owner
       end
     end
   end

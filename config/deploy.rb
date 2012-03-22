@@ -29,11 +29,16 @@ set :normalize_asset_timestamps, false
 # CALLBACKS #########
 
 after 'deploy:finalize_update', 'deploy:symlink_db'
+after 'deploy:finalize_update', 'deploy:symlink_world_images'
 
 namespace :deploy do
   desc "Symlinks the database.yml"
   task :symlink_db, :roles => :app do
     run "ln -nfs #{deploy_to}/shared/config/database.yml #{release_path}/config/database.yml"
+  end
+
+  task :symlink_world_images, :roles => :app do
+    run "ln -nfs #{deploy_to}/shared/worlds/ #{release_path}/public/worlds"
   end
 
   desc "Restarting mod_rails with restart.txt"

@@ -83,6 +83,7 @@ private
   def set_requested_land_to_listing_megatiles
     if listing
       self.requested_land = listing.megatile_grouping
+      self.current_owner = listing.owner
     end
   end
 

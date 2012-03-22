@@ -37,6 +37,10 @@ class Ability
       megatile.world.player_for_user(user) == megatile.owner
     end
 
+    can :bid, Listing, do |listing|
+      (can? :do_things, listing.world) && (listing.owner != listing.world.player_for_user(user))
+    end
+
     can :bid, Megatile do |megatile|
       # the user doesn't already own the tile
       (can? :do_things, megatile.world) and ( megatile.owner != megatile.world.player_for_user(user) )
@@ -44,6 +48,10 @@ class Ability
 
     can :see_bids, Megatile do |megatile|
       (megatile.world.player_for_user(user) == megatile.owner) or (megatile.owner == nil)
+    end
+
+    can :see_bids, Listing do |listing|
+      (listing.world.player_for_user(user) == listing.owner) or (listing.owner == nil)
     end
 
     can :see_bids, Player, :user_id => user.id
