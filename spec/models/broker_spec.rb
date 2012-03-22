@@ -12,26 +12,33 @@ describe Broker do
     sellers_tile.update_attributes(owner: seller)
   end
 
-  it "accepts a bid with no listing on a tile with no listings" do
-    bid = Bid.create! bidder: bidder, current_owner: seller, money: 1000, requested_land: requested_land
-    bid.accept!
+  context "unsolicited bid" do
+    let!(:bid) { Bid.create! bidder: bidder, current_owner: seller, money: 1000, requested_land: requested_land }
+    before do
+      bid.accept!
+    end
 
-    world.manager.broker.process_sale(bid)
-    # make sure its transfered. and money is too
-    # break up into different its
-    sellers_tile.reload
-    sellers_tile.owner.should == bidder
-    seller.reload
-    seller.balance.should == 1100
-  end
+    describe "#process_sale" do
+      before do
+        world.manager.broker.process_sale(bid)
+      end
 
-  it "accepts a bid with no listing on a tile with listings" do
-    listing = Factory.create :listing, megatile_grouping: offered_land, owner: seller 
-    bid = Bid.create! bidder: bidder, current_owner: seller, money: 100, requested_land: requested_land
-    bid.accept!
+      it "changes owner to bidder" do
+        sellers_tile.reload
+        sellers_tile.owner.should == bidder
+      end
 
-    world.manager.broker.process_sale(bid)
-    # make sure listings are canceled
+      it "gives seller balance" do
+        seller.reload
+        seller.balance.should == 1100
+      end
+    end
+
+    it "processes bid on a tile with listings" do
+      listing = Factory.create :listing, megatile_grouping: offered_land, owner: seller
+
+      world.manager.broker.process_sale(bid)
+    end
   end
 
   it "accepts a bid for a listing on a tile with one listing"
