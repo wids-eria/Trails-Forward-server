@@ -294,16 +294,16 @@ module TrailsForward
       puts("##{world_id} - #{name} generated".green) if show_progress
       
       puts("Generating cache regions") if show_progress
-      regions_wide = world.width/CACHE_REGION_WIDTH 
-      regions_tall = world.height/CACHE_REGION_WIDTH
-      regions_wide += 1 if (world.width % CACHE_REGION_WIDTH > 0)
-      regions_tall += 1 if (world.width % CACHE_REGION_WIDTH > 0)
+      regions_wide = (world.width/world.megatile_width)/CACHE_REGION_WIDTH 
+      regions_tall = (world.height/world.megatile_height)/CACHE_REGION_WIDTH
+      regions_wide += 1 if ((world.width/world.megatile_width) % CACHE_REGION_WIDTH > 0)
+      regions_tall += 1 if ((world.height/world.megatile_height) % CACHE_REGION_WIDTH > 0)
       
       pb = progress_bar_class.new 'Cache Regions', regions_tall * regions_wide
-      0.step(world.width, CACHE_REGION_WIDTH) do |x_min|
-        x_max = x_min + CACHE_REGION_WIDTH - 1
-        0.step(world.height, CACHE_REGION_WIDTH) do |y_min|
-          y_max = y_min + CACHE_REGION_WIDTH - 1
+      0.step(world.width, CACHE_REGION_WIDTH * world.megatile_width) do |x_min|
+        x_max = x_min + CACHE_REGION_WIDTH*world.megatile_width - 1
+        0.step(world.height, CACHE_REGION_WIDTH * world.megatile_height) do |y_min|
+          y_max = y_min + CACHE_REGION_WIDTH*world.megatile_height - 1
           mrc = MegatileRegionCache.new 
           mrc.world = world
           mrc.x_min = x_min
