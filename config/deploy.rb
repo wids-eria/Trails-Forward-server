@@ -37,7 +37,7 @@ namespace :deploy do
     run "ln -nfs #{deploy_to}/shared/config/database.yml #{release_path}/config/database.yml"
   end
 
-  task :symlink_world_images, :roles => :all do
+  task :symlink_world_images, :roles => :app do
     run "ln -nfs #{deploy_to}/shared/worlds/ #{release_path}/public/worlds"
   end
 
@@ -45,7 +45,7 @@ namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "touch #{current_path}/tmp/restart.txt"
   end
- 
+
   [:start, :stop].each do |t|
     desc "#{t} task is a no-op with mod_rails"
     task t, :roles => :app do ; end
