@@ -59,8 +59,15 @@ class Ability
     can :accept_bid, Bid do |bid|
       # assumes that all requested land in the bid has the same owner
       megatiles = bid.requested_land.megatiles
-      megatile = megatiles.first
-      megatile.world.player_for_user(user) == megatile.owner
+      megatile  = megatiles.first
+      player    = megatile.world.player_for_user(user)
+
+      player == megatile.owner
+    end
+
+    can :accept_listing_bid, Bid, Listing do |bid, listing|
+      player = listing.world.player_for_user(user)
+      player == listing.owner && listing == bid.listing
     end
 
     can :bulldoze, ResourceTile do |rt|

@@ -36,7 +36,7 @@ class ListingBidsController < ApplicationController
 
   def accept
     @bid = Bid.find(params[:id])
-    authorize! :accept_bid, @bid
+    authorize! :accept_listing_bid, @bid, @listing
 
     @bid.accept!
 

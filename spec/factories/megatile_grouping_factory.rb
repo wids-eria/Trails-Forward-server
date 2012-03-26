@@ -6,7 +6,7 @@ FactoryGirl.define do
     end
 
     megatiles do
-      new_megatiles = single_megatile ? [Factory.create(:megatile, owner: owner)] : []
+      new_megatiles = single_megatile ? [Factory.create(:megatile, owner: owner, world: owner.world)] : []
     end
 
   end
