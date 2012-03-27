@@ -61,26 +61,34 @@ class LandTile < ResourceTile
 
   def poletimber_sizes
     if shade_tolerant?
-      (6..10)
+      [6,8,10]
     elsif shade_intolerant?
-      (6..8)
+      [6,8]
     end
   end
 
   def sawtimber_sizes
     if shade_tolerant?
-      (12..24)
+      [12,14,16,18,20,22,24]
     elsif shade_intolerant?
-      (10..24)
+      [10,12,14,16,18,20,22,24]
     end
   end
 
   def estimated_poletimber_value
-    poletimber_sizes.collect{|size| self.send estimated_tree_value_for_size(size)}
+    poletimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_value"}.sum
   end
 
   def estimated_poletimber_volume
     poletimber_sizes.collect{|size| self.send estimated_tree_volume_for_size(size)}
+  end
+
+  def estimated_sawtimber_value
+    sawtimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_value"}.sum
+  end
+
+  def estimated_sawtimber_volume
+    sawtimber_sizes.collect{|size| self.send estimated_tree_volume_for_size(size)}
   end
 
   def estimated_tree_volume_for_size(size)
