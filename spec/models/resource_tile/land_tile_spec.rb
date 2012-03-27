@@ -207,7 +207,7 @@ describe LandTile do
     end
 
 
-    it "converts all the hethens"
+    it "should test mid tolerant stuff"
     
   end
 
