@@ -54,7 +54,11 @@ class LandTile < ResourceTile
   end
 
   def estimated_timber_value
-    estimated_poletimber_value + estimated_sawtimber_value
+    if shade_tolerant? || shade_intolerant? || mid_tolerant?
+      estimated_poletimber_value + estimated_sawtimber_value
+    else
+      0
+    end
   end
 
   def poletimber_sizes

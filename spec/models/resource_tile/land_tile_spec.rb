@@ -100,6 +100,7 @@ describe LandTile do
     end
 
     it "awards tile owner the lumber value when clearcut" do
+      tile.expects(estimated_timber_value: 1)
       lambda {
         tile.clearcut!
       }.should change { tile.megatile.owner.balance }
