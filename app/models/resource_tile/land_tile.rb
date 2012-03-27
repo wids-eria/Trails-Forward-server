@@ -59,27 +59,54 @@ class LandTile < ResourceTile
     # NOTE calculate basal and pass it through, or memoize it
   end
 
+  def poletimber_sizes
+    if shade_tolerant?
+      (6..10)
+    elsif shade_intolerant?
+      (6..8)
+    end
+  end
+
+  def sawtimber_sizes
+    if shade_tolerant?
+      (12..24)
+    elsif shade_intolerant?
+      (10..24)
+    end
+  end
+
+  def estimated_poletimber_value
+    poletimber_sizes.collect{|size| self.send estimated_tree_value_for_size(size)}
+  end
+
+  def estimated_poletimber_volume
+    poletimber_sizes.collect{|size| self.send estimated_tree_volume_for_size(size)}
+  end
+
+  def estimated_tree_volume_for_size(size)
+    basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
+    merchantable_height = merchantable_height(size, basal_area, site_index)
+    single_tree_volume  = single_tree_volume(size, merchantable_height)
+    single_tree_volume * self.send("num_#{size}_inch_diameter_trees")
+  end
+
   def estimated_tree_value_for_size(size)
     if (2..4).include? size
       return 0
     end
 
-    size_class =  size 
-    basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
-    merchantable_height = merchantable_height(size_class, basal_area, site_index)
-    single_tree_volume  = single_tree_volume(size_class, merchantable_height)
-    volume = single_tree_volume * self.send("num_#{size}_inch_diameter_trees")
+    volume = estimated_tree_volume_for_size size
 
-    if (shade_tolerant? && (6..10).include?(size)) || (shade_intolerant? && (6..8).include?(size))
+    if poletimber_sizes.include?(size)
       cubic_feet_to_cords(volume) * cord_value
-    elsif (shade_tolerant? && (12..24).include?(size)) || (shade_intolerant? && (10..24).include?(size))
-      cubic_feet_to_board_feet(volume, size_class) * board_feet_value
+    elsif sawtimber_sizes.include?(size)
+      cubic_feet_to_board_feet(volume, size) * board_feet_value
     end
   end
 
-  [2,4,6,8,10,12,14,16,18,20,22,24].each do |size_class|
-    define_method "estimated_#{size_class}_inch_tree_value" do
-      estimated_tree_value_for_size size_class
+  [2,4,6,8,10,12,14,16,18,20,22,24].each do |tree_size|
+    define_method "estimated_#{tree_size}_inch_tree_value" do
+      estimated_tree_value_for_size tree_size
     end
   end
 
