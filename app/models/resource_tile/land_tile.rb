@@ -54,9 +54,7 @@ class LandTile < ResourceTile
   end
 
   def estimated_timber_value
-    # placeholder
-    5
-    # NOTE calculate basal and pass it through, or memoize it
+    estimated_poletimber_value + estimated_sawtimber_value
   end
 
   def poletimber_sizes
