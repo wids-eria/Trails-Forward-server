@@ -224,9 +224,33 @@ describe LandTile do
       it "sums poletimber value" do
         tile.estimated_poletimber_value.should == 12
       end
+    end
 
-      it "sums sawtimber volume"
-      it "sums poletimber volume"
+    context "timber volume sum" do
+      before do
+        tile.stubs(species_group: :shade_tolerant)
+
+        tile.stubs(estimated_2_inch_tree_volume:   1)
+        tile.stubs(estimated_4_inch_tree_volume:   2)
+        tile.stubs(estimated_6_inch_tree_volume:   3)
+        tile.stubs(estimated_8_inch_tree_volume:   4)
+        tile.stubs(estimated_10_inch_tree_volume:  5)
+        tile.stubs(estimated_12_inch_tree_volume:  6)
+        tile.stubs(estimated_14_inch_tree_volume:  7)
+        tile.stubs(estimated_16_inch_tree_volume:  8)
+        tile.stubs(estimated_18_inch_tree_volume:  9)
+        tile.stubs(estimated_20_inch_tree_volume: 10)
+        tile.stubs(estimated_22_inch_tree_volume: 11)
+        tile.stubs(estimated_24_inch_tree_volume: 12)
+      end
+
+      it "sums sawtimber volume" do
+        tile.estimated_sawtimber_volume.should == 63
+      end
+
+      it "sums poletimber volume" do
+        tile.estimated_poletimber_volume.should == 12
+      end
     end
 
     it "converts cubic feet to cords" do

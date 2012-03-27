@@ -80,7 +80,7 @@ class LandTile < ResourceTile
   end
 
   def estimated_poletimber_volume
-    poletimber_sizes.collect{|size| self.send estimated_tree_volume_for_size(size)}
+    poletimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_volume"}.sum
   end
 
   def estimated_sawtimber_value
@@ -88,7 +88,7 @@ class LandTile < ResourceTile
   end
 
   def estimated_sawtimber_volume
-    sawtimber_sizes.collect{|size| self.send estimated_tree_volume_for_size(size)}
+    sawtimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_volume"}.sum
   end
 
   def estimated_tree_volume_for_size(size)
