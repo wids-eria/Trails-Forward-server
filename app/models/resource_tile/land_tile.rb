@@ -60,10 +60,14 @@ class LandTile < ResourceTile
   end
 
   def estimated_tree_value_for_size(size)
+    if (2..4).include? size
+      return 0
+    end
+
     size_class =  size 
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
     merchantable_height = merchantable_height(size_class, basal_area, site_index)
-    single_tree_volume = single_tree_volume(size_class, merchantable_height)
+    single_tree_volume  = single_tree_volume(size_class, merchantable_height)
     volume = single_tree_volume * self.send("num_#{size}_inch_diameter_trees")
 
     if (shade_tolerant? && (6..10).include?(size)) || (shade_intolerant? && (6..8).include?(size))
@@ -73,16 +77,10 @@ class LandTile < ResourceTile
     end
   end
 
-  def estimated_6_inch_tree_value
-    estimated_tree_value_for_size 6
-  end
-
-  def estimated_10_inch_tree_value
-    estimated_tree_value_for_size 10
-  end
-
-  def estimated_14_inch_tree_value
-    estimated_tree_value_for_size 14
+  [2,4,6,8,10,12,14,16,18,20,22,24].each do |size_class|
+    define_method "estimated_#{size_class}_inch_tree_value" do
+      estimated_tree_value_for_size size_class
+    end
   end
 
   def shade_intolerant?; species_group == :shade_intolerant; end
