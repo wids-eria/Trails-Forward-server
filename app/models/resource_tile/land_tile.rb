@@ -60,7 +60,7 @@ class LandTile < ResourceTile
   end
 
   def poletimber_sizes
-    if shade_tolerant?
+    if shade_tolerant? || mid_tolerant?
       [6,8,10]
     elsif shade_intolerant?
       [6,8]
@@ -68,7 +68,7 @@ class LandTile < ResourceTile
   end
 
   def sawtimber_sizes
-    if shade_tolerant?
+    if shade_tolerant? || mid_tolerant?
       [12,14,16,18,20,22,24]
     elsif shade_intolerant?
       [10,12,14,16,18,20,22,24]
@@ -146,24 +146,24 @@ class LandTile < ResourceTile
 
   def single_tree_volume(size_class, merchantable_height)
     case species_group
-    when :shade_intolerant
-      1.375 + 0.002 * (size_class-1)**2 * merchantable_height
     when :shade_tolerant
       2.706 + 0.002 * (size_class-1)**2 * merchantable_height
     when :mid_tolerant
-      raise 'implement'
+              0.002 * (size_class-1)**2 * merchantable_height
+    when :shade_intolerant
+      1.375 + 0.002 * (size_class-1)**2 * merchantable_height
     end
   end
 
   def merchantable_height(size_class, basal_area, site_index)
     breast_height = 4.5
     case species_group
-    when :shade_intolerant
-      breast_height + 5.34 * (1 - Math.exp(-0.23 * (size_class-1)))**1.15 * site_index**0.54 * (1.00001 - (top_diameter(size_class)/(size_class-1)))**0.83 * basal_area**0.06
     when :shade_tolerant
-      breast_height + 6.43 * (1 - Math.exp(-0.24 * (size_class-1)))**1.34 * site_index**0.47 * (1.00001 - (top_diameter(size_class)/(size_class-1)))**0.73 * basal_area**0.08
+      breast_height + 5.34 * (1 - Math.exp(-0.23 * (size_class-1)))**1.15 * site_index**0.54 * (1.00001 - (top_diameter(size_class)/(size_class-1)))**0.83 * basal_area**0.06
     when :mid_tolerant
-      raise 'implement'
+      breast_height + 7.19 * (1 - Math.exp(-0.28 * (size_class-1)))**1.44 * site_index**0.39 * (1.00001 - (top_diameter(size_class)/(size_class-1)))**0.83 * basal_area**0.11
+    when :shade_intolerant
+      breast_height + 6.43 * (1 - Math.exp(-0.24 * (size_class-1)))**1.34 * site_index**0.47 * (1.00001 - (top_diameter(size_class)/(size_class-1)))**0.73 * basal_area**0.08
     end
   end
 

@@ -163,7 +163,7 @@ describe LandTile do
       it "estimates 14 inch tree value" do
         tile.num_14_inch_diameter_trees = 10
         tile.stubs(calculate_basal_area: 100)
-        tile.estimated_14_inch_tree_value.should be_within(0.1).of(179.8166)
+        tile.estimated_14_inch_tree_value.should be_within(0.1).of(192.2946)
       end
 
       # TODO finish test
@@ -189,13 +189,36 @@ describe LandTile do
       it "estimates 14 inch tree value" do
         tile.num_14_inch_diameter_trees = 10
         tile.stubs(calculate_basal_area: 100)
-        tile.estimated_14_inch_tree_value.should be_within(0.1).of(218.98314)
+        tile.estimated_14_inch_tree_value.should be_within(0.1).of(206.1207)
       end
 
       it "estimates 10 inch tree value" do
         tile.num_10_inch_diameter_trees = 10
         tile.stubs(calculate_basal_area: 100)
-        tile.estimated_10_inch_tree_value.should be_within(0.1).of(9.3374)
+        tile.estimated_10_inch_tree_value.should be_within(0.1).of(9.2107)
+      end
+    end
+
+    context "mid tolerant" do
+      before do
+        tile.stubs(species_group: :mid_tolerant)
+      end
+      it "estimates 6 inch tree value" do
+        tile.num_6_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_6_inch_tree_value.should be_within(0.1).of(0.8138)
+      end
+
+      it "estimates 14 inch tree value" do
+        tile.num_14_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_14_inch_tree_value.should be_within(0.1).of(125.7250)
+      end
+
+      it "estimates 10 inch tree value" do
+        tile.num_10_inch_diameter_trees = 10
+        tile.stubs(calculate_basal_area: 100)
+        tile.estimated_10_inch_tree_value.should be_within(0.1).of(6.6404)
       end
     end
 
@@ -256,10 +279,6 @@ describe LandTile do
     it "converts cubic feet to cords" do
       LandTile.new.cubic_feet_to_cords(26.68).should be_within(0.1).of(0.2084375)
     end
-
-
-    it "should test mid tolerant stuff"
-    
   end
 
   describe '#grow_trees' do
