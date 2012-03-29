@@ -21,7 +21,6 @@ end
 
 Spork.each_run do
   # This code will be run each time you run your specs.
-  Dir.glob("#{Rails.root}/app/models/**/*.rb").sort.each { |file| load file }
 
   DatabaseCleaner.strategy = :truncation
   DatabaseCleaner.clean
