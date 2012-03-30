@@ -107,7 +107,7 @@ class ResourceTilesController < ApplicationController
 
     respond_to do |format|
       if not a_ok
-        format.json { render :status => :forbidden, :json => {:text => "Action illegal for this land" }}
+        format.json { render :status => :forbidden, :json => {:text => "Action illegal for this land", :resource_tiles_debug => resource_tiles }}
       else
         resource_tiles.each &:clearcut!
 
