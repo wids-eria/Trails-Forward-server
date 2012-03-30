@@ -62,6 +62,6 @@ namespace :deploy do
 
   desc "Load schema.rb into database"
   task :load_schema, :roles => :app do
-    run "cd #{current_path}; RAILS_ENV=production bundle exec rake db:schema:load"
+    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec rake db:schema:load"
   end
 end
