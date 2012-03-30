@@ -5,7 +5,8 @@ describe Survey do
 
   context "when validating" do
     before { subject.valid? }
-      it { should have(1).errors_on(:capture_date) }
+
+    it { should have(1).errors_on(:capture_date) }
   end
 
   it "wont recreate a tile data if it exists already in another survey of the same time period"
