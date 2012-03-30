@@ -100,4 +100,5 @@ describe ResourceTile do
       resource_tile.location.should == [1, 3]
     end
   end
+  
 end

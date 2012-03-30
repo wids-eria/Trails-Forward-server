@@ -46,6 +46,20 @@ describe Megatile do
       megatile.reload.resource_tiles.count.should == 9
     end
   end
+  
+  
+  describe 'cache invalidation' do
+    let(:megatile) { create :megatile }
+    #let(:megatile_cache) { create :megatile_region_cache } #FIXME need to pass the megatile in here
+    before { megatile.spawn_resources }
+    it 'invalidates its cache when a contained resource is saved' do
+      megatile.json
+      Rails.cache.read(megatile.cache_key).should_not be_nil
+      megatile.resource_tiles.first.save!
+      Rails.cache.read(megatile.cache_key).should be_nil
+    end
+  end
+  
 
   context 'Listings' do
     let!(:listing) { create :listing }

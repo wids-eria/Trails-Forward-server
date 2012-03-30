@@ -6,32 +6,22 @@ class MegatilesController < ApplicationController
 
     authorize! :do_things, @world
 
-    if params.has_key? :x_min
-      # if @megatiles.count * @world.megatile_width > 1000
-      x_min = params[:x_min].to_i
-      x_max = params[:x_max].to_i
-      y_min = params[:y_min].to_i
-      y_max = params[:y_max].to_i
+    # if @megatiles.count * @world.megatile_width > 1000
+    x_min = params[:x_min].to_i
+    x_max = params[:x_max].to_i
+    y_min = params[:y_min].to_i
+    y_max = params[:y_max].to_i
 
-      if (x_max - x_min)*(y_max - y_min) > 2000
-        render :status => :request_entity_too_large, :text => "Request too large"
-        return
-      end
-
-      @megatiles = Megatile.where(:world_id => @world.id).where("x >= :x_min AND x<= :x_max AND y >= :y_min AND y <= :y_max",
-                                                                {:x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max}).includes(:resource_tiles)
-    else
-      if @world.width * @world.height > 2000
-        render :status => :request_entity_too_large, :text => "Request too large"
-        return
-      end
-      @megatiles = @world.megatiles
+    if (x_max - x_min)*(y_max - y_min) > 2000
+      render :status => :request_entity_too_large, :text => "Request too large"
+      return
     end
 
+    data = MegatileRegionCache.megatiles_in_region(@world.id, x_min, y_min, x_max, y_max)
+    ret = "{\"megatiles\": #{data}}"
+
     respond_to do |format|
-      format.xml  { render_for_api :megatile_with_resources, :xml  => @megatiles, :root => :megatiles  }
-      format.json { render_for_api :megatile_with_resources, :json => @megatiles, :root => :megatiles  }
-      format.mpac { render_for_api :megatile_with_resources, :mpac => @megatiles, :root => :megatiles }
+      format.json { render :text => ret, :content_type => 'application/json' }
     end
   end
 

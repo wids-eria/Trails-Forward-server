@@ -15,6 +15,9 @@ class Megatile < ActiveRecord::Base
   validates_uniqueness_of :x, :scope => [:y, :world_id]
   validates_uniqueness_of :y, :scope => [:x, :world_id]
 
+  after_save :invalidate_cache
+  belongs_to :megatile_region_cache
+
   def width
     world.try(:megatile_width)
   end
@@ -73,5 +76,20 @@ class Megatile < ActiveRecord::Base
   end
 
   api_accessible :megatiles_with_value, :extend => :megatile_with_value
+  
+  def json
+    Rails.cache.fetch(cache_key) do
+      MegatilePresenter.new(self).as_json
+    end
+  end
+  
+  def invalidate_cache
+    Rails.cache.delete cache_key
+    self.megatile_region_cache.invalidate if self.megatile_region_cache
+  end
+  
+  def cache_key
+    "megatile_with_resources #{self.id}"
+  end
 
 end

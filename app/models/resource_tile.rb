@@ -5,6 +5,8 @@ class ResourceTile < ActiveRecord::Base
   belongs_to :world
   has_many :agents
   has_many :resources
+  
+  after_save :invalidate_megatile_cache
 
   def self.dist
     @@dist ||= SimpleRandom.new
@@ -252,5 +254,9 @@ class ResourceTile < ActiveRecord::Base
 
   def <=> other
     self.location <=> other.location
+  end
+  
+  def invalidate_megatile_cache
+    megatile.invalidate_cache
   end
 end
