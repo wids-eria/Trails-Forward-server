@@ -6,6 +6,9 @@ set :rvm_ruby_string, '1.9.2'
 require 'bundler/capistrano'
 load 'deploy/assets'
 
+require 'capistrano/ext/multistage'
+set :stages, %w(production staging)
+set :default_stage, "staging"
 
 set :application, "trails_forward"
 set :repository,  "git@github.com:wids-eria/Trails-Forward-server.git"
@@ -59,6 +62,6 @@ namespace :deploy do
 
   desc "Load schema.rb into database"
   task :load_schema, :roles => :app do
-    run "cd #{current_path}; RAILS_ENV=production bundle exec rake db:schema:load"
+    run "cd #{current_path}; RAILS_ENV=#{rails_env} bundle exec rake db:schema:load"
   end
 end

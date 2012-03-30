@@ -21,6 +21,7 @@ gem 'ruby-units'
 gem 'simple-random'
 gem 'state_machine'
 gem 'capistrano'
+gem 'capistrano-ext'
 gem 'factory_girl_rails'
 
 group :development, :test do
