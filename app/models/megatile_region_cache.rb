@@ -21,7 +21,9 @@ class MegatileRegionCache <  ActiveRecord::Base
     coordinates.reverse_merge! x_min: 0, x_max: 0, y_min: 0, y_max: 0
 
     caches = MegatileRegionCache.where(:world_id => world_id)
-    caches = caches.where("x_min >= :x_min AND x_max<= :x_max AND y_min >= :y_min AND y_max <= :y_max", coordinates)
+
+    containing_conditions = "NOT (x_max < :x_min OR x_min > :x_max OR y_max < :y_min OR y_min > :y_max)"
+    caches = caches.where(containing_conditions, coordinates)
 
     jsonlist = caches.map { |cache| cache.json.strip[1..-2] }  #this should be one long list; we don't want the square brackets
 

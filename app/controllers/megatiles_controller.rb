@@ -17,7 +17,7 @@ class MegatilesController < ApplicationController
       return
     end
 
-    data = MegatileRegionCache.megatiles_in_region(@world.id, x_min, y_min, x_max, y_max)
+    data = MegatileRegionCache.megatiles_in_region(@world.id, x_min: x_min, y_min: y_min, x_max: x_max, y_max: y_max)
     ret = "{\"megatiles\": #{data}}"
 
     respond_to do |format|
