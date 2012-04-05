@@ -320,8 +320,8 @@ module TrailsForward
           pb.inc
         end
       end
-      
-      
+
+      WorldPresenter.new(world).save_png
     end
   end
 end

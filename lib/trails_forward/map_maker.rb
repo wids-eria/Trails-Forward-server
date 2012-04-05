@@ -20,22 +20,32 @@ module TrailsForward
                  error: ChunkyPNG::Color(:magenta) }
     end
 
+
+
     def generate_png filename
+      canvas = to_png
+
+      canvas.save filename
+    end
+
+    def to_png
       canvas = ChunkyPNG::Image.new width, height, color[:ground]
 
-      prog_bar = ProgressBar.new(File.basename(filename), resource_tiles.count)
-      prog_bar.expand_title
-      prog_bar.colorize :cyan
+      if Rails.env.development?
+        prog_bar = ProgressBar.new("Mapping #{resource_tiles.count} tiles", resource_tiles.count)
+        prog_bar.expand_title
+        prog_bar.colorize :cyan
+      end
       resource_tiles.with_agents.find_in_batches do |tiles|
         tiles.each do |tile|
           x, y = tile.location
           canvas[x, y] = color_tile tile
         end
-        prog_bar.inc tiles.size
+        prog_bar.inc tiles.size if Rails.env.development?
       end
-      prog_bar.finish
+      prog_bar.finish if Rails.env.development?
 
-      canvas.save filename
+      canvas
     end
 
   private
