@@ -304,7 +304,7 @@ module TrailsForward
         x_max = x_min + CACHE_REGION_WIDTH*world.megatile_width - 1
         0.step(world.height, CACHE_REGION_WIDTH * world.megatile_height) do |y_min|
           y_max = y_min + CACHE_REGION_WIDTH*world.megatile_height - 1
-          mrc = MegatileRegionCache.new 
+          mrc = MegatileRegionCache.new
           mrc.world = world
           mrc.x_min = x_min
           mrc.x_max = x_max
@@ -320,8 +320,8 @@ module TrailsForward
           pb.inc
         end
       end
-      
-      
+
+      WorldPresenter.new(world).save_png
     end
   end
 end

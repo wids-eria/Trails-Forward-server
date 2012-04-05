@@ -115,6 +115,7 @@ describe LandTile do
   it "bulldozes the land" do
     tile = LandTile.new
     tile.expects(:clear_resources)
+    tile.expects(:save!)
     tile.bulldoze!
   end
 
