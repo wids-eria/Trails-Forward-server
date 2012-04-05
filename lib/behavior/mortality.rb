@@ -1,7 +1,7 @@
 module Behavior
   module Mortality
     def die?
-      rand < self.daily_mortality_rate
+      rand < self.daily_mortality_rate.real
     end
 
     def die
