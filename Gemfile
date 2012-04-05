@@ -24,6 +24,7 @@ gem 'state_machine'
 gem 'capistrano'
 gem 'capistrano-ext'
 gem 'factory_girl_rails'
+gem 'stalker'
 
 group :development, :test do
   gem 'ruby-prof'

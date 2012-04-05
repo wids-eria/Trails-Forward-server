@@ -45,7 +45,7 @@ class Agent < ActiveRecord::Base
   end
 
   def tick!
-    save if tick && changed?
+    save! if tick && changed?
     @litter
   end
 
