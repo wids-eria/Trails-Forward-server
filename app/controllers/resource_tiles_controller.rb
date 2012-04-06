@@ -9,7 +9,7 @@ class ResourceTilesController < ApplicationController
     if params[:resource_tile_ids]
       ResourceTile.find(params["resource_tile_ids"]).sort
     else
-      ResourceTile.within_rectangle x_min: params[:x_min], y_min: params[:y_min], x_max: params[:x_max], y_max: params[:y_max]
+      ResourceTile.includes(:megatile).within_rectangle x_min: params[:x_min], y_min: params[:y_min], x_max: params[:x_max], y_max: params[:y_max]
     end
   end
 
