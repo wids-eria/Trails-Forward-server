@@ -207,6 +207,13 @@ class ResourceTile < ActiveRecord::Base
     template.add :permitted_actions
   end
 
+  api_accessible :resource_actions do |template|
+    template.add :id
+    template.add :x
+    template.add :y
+    template.add :permitted_actions
+  end
+
   api_accessible :resource, :extend => :resource_base do |template|
     # pass
   end

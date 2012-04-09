@@ -20,8 +20,8 @@ class ResourceTilesController < ApplicationController
       resource_tiles.each do |tile|
         tile.set_permitted_actions_method(player)
       end
-      format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
-      format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
+      format.xml  { render_for_api :resource_actions, :xml  => resource_tiles, :root => :resource_tiles  }
+      format.json { render_for_api :resource_actions, :json => resource_tiles, :root => :resource_tiles  }
     end
   end
 
