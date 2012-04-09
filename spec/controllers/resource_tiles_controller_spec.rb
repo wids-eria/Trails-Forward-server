@@ -14,6 +14,7 @@ describe ResourceTilesController do
     let(:json) { JSON.parse(response.body) }
     let(:tile_hashes) { json['resource_tiles'] }
     let(:locations) { tile_hashes.map {|tile| [tile['x'].to_i, tile['y'].to_i]} }
+    let(:ids) { tile_hashes.map{|tile| tile['id'] } }
 
     context 'with signed in player' do
 
@@ -36,9 +37,17 @@ describe ResourceTilesController do
           locations.should == [[2,1], [2,2], [3,1], [3,2]]
         end
 
+        context 'when other worlds present' do
+          let!(:other_tile) { create :resource_tile, x: 2, y: 2 }
+          it 'doesnt return tiles from them' do
+            get :permitted_actions, world_id: world.id, x_min: 1, y_min: 1, x_max: 3, y_max: 3, format: 'json'
+            ids.should_not include(other_tile.id)
+          end
+        end
+
         context 'when player does not own the tile' do
           example 'each resource_tile contains a list of permitted actions' do
-            get :permitted_actions, world_id: world.id, x: 2, y: 1, width: 1, height: 1, format: 'json'
+            get :permitted_actions, world_id: world.id, x_min: 2, y_min: 1, x_max: 2, y_max: 1, format: 'json'
             permitted_actions = tile_hashes.map{|tile| tile['permitted_actions']}.first
             permitted_actions.should == []
           end
@@ -49,7 +58,7 @@ describe ResourceTilesController do
             world.resource_tile_at(2, 1).megatile.update_attributes(owner: player)
           end
           example 'each resource_tile contains a list of permitted actions' do
-            get :permitted_actions, world_id: world.id, x: 2, y: 1, width: 1, height: 1, format: 'json'
+            get :permitted_actions, world_id: world.id, x_min: 2, y_min: 1, x_max: 2, y_max: 1, format: 'json'
             permitted_actions = tile_hashes.map{|tile| tile['permitted_actions']}.first
             permitted_actions.should == ['bulldoze']
           end

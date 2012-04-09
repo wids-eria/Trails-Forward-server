@@ -255,7 +255,7 @@ class ResourceTile < ActiveRecord::Base
   def <=> other
     self.location <=> other.location
   end
-  
+
   def invalidate_megatile_cache
     megatile.invalidate_cache
   end
