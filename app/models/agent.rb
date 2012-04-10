@@ -60,7 +60,7 @@ class Agent < ActiveRecord::Base
 private
 
   def setup_resource_tile
-    return unless x && y && world
+    return unless x && y && world_id.present?
     self.resource_tile ||= world.resource_tile_at(x, y)
   end
 end

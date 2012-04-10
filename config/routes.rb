@@ -31,7 +31,6 @@ TrailsForwardWorld::Application.routes.draw do
       resources :bids, :except => [:destroy, :update] do
         post :accept
         post :reject
-        post :cancel
       end
 
       member do
