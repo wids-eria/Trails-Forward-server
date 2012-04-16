@@ -3,27 +3,23 @@ require 'spec_helper'
 describe WorldPresenter do
   let(:world) { create :world_with_properties }
 
-  describe "#to_png" do
-    let(:canvas) { WorldPresenter.new(world) }
-    subject { canvas.to_png }
+  describe "#save_png" do
+    let(:path)      { "tmp/worlds/#{world.id}/images" }
+    let(:filename)  { "world.png" }
+    let(:full_path) { File.join(path, filename) }
 
-    it 'colors water and land correctly' do
-      world.resource_tiles do |tile|
-        subject[tile.x, tile.y].should == case tile.type
-                                          when WaterTile.to_s then ChunkyPNG::Color::WHITE
-                                          when LandTile.to_s  then ChunkyPNG::Color::BLACK
-                                          end
-      end
+    before do
+      presenter = WorldPresenter.new(world)
+      presenter.stubs(path_to: path)
+      presenter.save_png
     end
 
-  end
-
-
-  describe "#save_png" do
-    let(:filename) { "public/worlds/#{world.id}/images/world.png" }
-    before { WorldPresenter.new(world).save_png }
     it 'saves the map to disk' do
-      File.exists?(filename).should == true
+      File.exists?(full_path).should == true
+    end
+
+    after do
+      FileUtils.rm_rf "tmp/worlds"
     end
   end
 
