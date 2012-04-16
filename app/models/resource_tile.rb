@@ -99,7 +99,7 @@ class ResourceTile < ActiveRecord::Base
                             52 => :herbaceous,
                             71 => :herbaceous,
                             81 => :herbaceous,
-                            82 => :herbaceous,
+                            82 => :cultivated_crops,
                             90 => :wetland,
                             95 => :wetland,
                             255 => :excluded }
