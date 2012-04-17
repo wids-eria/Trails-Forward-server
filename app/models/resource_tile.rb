@@ -1,4 +1,5 @@
 class ResourceTile < ActiveRecord::Base
+  include ResourceTileZoning
   acts_as_api
 
   belongs_to :megatile
