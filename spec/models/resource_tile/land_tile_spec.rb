@@ -316,21 +316,24 @@ describe LandTile do
 
   context "harvesting trees" do
     let(:tile) { build :land_tile }
+
+    before do
+      tile.num_2_inch_diameter_trees  = 2
+      tile.num_4_inch_diameter_trees  = 4
+      tile.num_6_inch_diameter_trees  = 6
+      tile.num_8_inch_diameter_trees  = 8
+      tile.num_10_inch_diameter_trees = 10
+      tile.num_12_inch_diameter_trees = 12
+      tile.num_14_inch_diameter_trees = 14
+      tile.num_16_inch_diameter_trees = 16
+      tile.num_18_inch_diameter_trees = 18
+      tile.num_20_inch_diameter_trees = 20
+      tile.num_22_inch_diameter_trees = 22
+      tile.num_24_inch_diameter_trees = 24
+    end
+
     describe '#sawyer' do
       it "removes trees beyond target diameter distribution" do
-        tile.num_2_inch_diameter_trees  = 2
-        tile.num_4_inch_diameter_trees  = 4
-        tile.num_6_inch_diameter_trees  = 6
-        tile.num_8_inch_diameter_trees  = 8
-        tile.num_10_inch_diameter_trees = 10
-        tile.num_12_inch_diameter_trees = 12
-        tile.num_14_inch_diameter_trees = 14
-        tile.num_16_inch_diameter_trees = 16
-        tile.num_18_inch_diameter_trees = 18
-        tile.num_20_inch_diameter_trees = 20
-        tile.num_22_inch_diameter_trees = 22
-        tile.num_24_inch_diameter_trees = 24
-
         tile.sawyer [14,14,14,14,14,14,14,14,14,14,14,14]
 
         tile.num_2_inch_diameter_trees.should  == 2
@@ -345,6 +348,42 @@ describe LandTile do
         tile.num_20_inch_diameter_trees.should == 14
         tile.num_22_inch_diameter_trees.should == 14
         tile.num_24_inch_diameter_trees.should == 14
+      end
+    end
+
+    describe "#diameter_limit_cut" do
+      it "removes trees above diameter limit" do
+        tile.diameter_limit_cut above: 12
+
+        tile.num_2_inch_diameter_trees.should  == 2
+        tile.num_4_inch_diameter_trees.should  == 4
+        tile.num_6_inch_diameter_trees.should  == 6
+        tile.num_8_inch_diameter_trees.should  == 8
+        tile.num_10_inch_diameter_trees.should == 10
+        tile.num_12_inch_diameter_trees.should == 12
+        tile.num_14_inch_diameter_trees.should == 0
+        tile.num_16_inch_diameter_trees.should == 0
+        tile.num_18_inch_diameter_trees.should == 0
+        tile.num_20_inch_diameter_trees.should == 0
+        tile.num_22_inch_diameter_trees.should == 0
+        tile.num_24_inch_diameter_trees.should == 0
+      end
+
+      it "removes trees below diameter limit" do
+        tile.diameter_limit_cut below: 12
+
+        tile.num_2_inch_diameter_trees.should  == 0
+        tile.num_4_inch_diameter_trees.should  == 0
+        tile.num_6_inch_diameter_trees.should  == 0
+        tile.num_8_inch_diameter_trees.should  == 0
+        tile.num_10_inch_diameter_trees.should == 0
+        tile.num_12_inch_diameter_trees.should == 12
+        tile.num_14_inch_diameter_trees.should == 14
+        tile.num_16_inch_diameter_trees.should == 16
+        tile.num_18_inch_diameter_trees.should == 18
+        tile.num_20_inch_diameter_trees.should == 20
+        tile.num_22_inch_diameter_trees.should == 22
+        tile.num_24_inch_diameter_trees.should == 24
       end
     end
   end

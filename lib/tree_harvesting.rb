@@ -20,4 +20,17 @@ module TreeHarvesting
         end
       end
     end
+
+
+    def diameter_limit_cut options
+      size_counts = collect_tree_size_counts
+
+      if options[:above].present?
+        size_counts.fill(0, ((options[:above]/2)..-1)) 
+        sawyer size_counts
+      elsif options[:below].present?
+        size_counts.fill(0, (0...(options[:below]/2-1))) 
+        sawyer size_counts
+      end
+    end
 end
