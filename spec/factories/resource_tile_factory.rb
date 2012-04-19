@@ -1,20 +1,22 @@
 FactoryGirl.define do
   factory :resource_tile do
+    zone_type :none
+    landcover_class_code 255
     world
     megatile { Factory.create(:megatile, world: world) }
-  end
 
-  factory(:land_tile, class: LandTile, parent: :resource_tile) {}
+    factory :land_tile, class: LandTile do
+      factory :forest_tile do
+        tree_density 0.5
+      end
 
-  factory(:water_tile, class: WaterTile, parent: :resource_tile) do
-    zoning_code 255
-  end
+      factory :grass_tile do
+        tree_density nil
+      end
+    end
 
-  factory(:forest_tile, parent: :land_tile) do
-    tree_density 0.5
-  end
-
-  factory(:grass_tile, parent: :land_tile) do
-    tree_density nil
+    factory :water_tile, class: LandTile do
+      zoning_code 255
+    end
   end
 end

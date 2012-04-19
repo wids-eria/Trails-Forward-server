@@ -15,6 +15,9 @@ class ResourceTile < ActiveRecord::Base
     @@dist
   end
 
+  validates :zone_type, presence: true, inclusion: { in: valid_zone_types + valid_zone_types.map(&:to_s) }
+  validates :landcover_class_code, presence: true, inclusion: { in: (1..255) }
+
   # validates_uniqueness_of :x, :scope => [:y, :world_id]
   # validates_uniqueness_of :y, :scope => [:x, :world_id]
 
@@ -85,6 +88,7 @@ class ResourceTile < ActiveRecord::Base
         :logging => "Logging",
         :industry => "Industry" } }
   end
+
 
   def self.base_cover_type
     @base_cover_types ||= { 11 => :water,

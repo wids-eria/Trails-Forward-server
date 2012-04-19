@@ -108,15 +108,17 @@ module TrailsForward
     end
 
     def resource_gen location, megatile_id
+      puts "RESOURCE GEN"
+      options = { world_id: id, location: location, megatile_id: megatile_id }
       case rand(9)
       when 0
-        WaterTile.new world_id: id,
-          location: location,
-          megatile_id: megatile_id
+        Factory.build :water_tile, options
       when 1..6
-        deciduous_land_tile location, megatile_id
+        Factory.build :deciduous_land_tile, options
+        #deciduous_land_tile location, megatile_id
       else
-        residential_land_tile location, megatile_id
+        Factory.build :residential_land_tile, options
+        #residential_land_tile location, megatile_id
       end
     end
 
@@ -198,6 +200,7 @@ module TrailsForward
     end
 
     def place_resources
+      puts "PLACE"
       how_many_trees = (width * height * 0.40).round
 
       resource_progress_bar = ProgressBar.new('Resources', resource_tiles.count) if Rails.env.development?

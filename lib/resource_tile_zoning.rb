@@ -4,6 +4,10 @@ module ResourceTileZoning
   end
 
   module ClassMethods
+    def valid_zone_types
+      [:residential, :none, :protected]
+    end
+
     # to map from import csv
     def zone_type
       @zone_type ||= {
