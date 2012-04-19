@@ -263,9 +263,13 @@ class LandTile < ResourceTile
   def calculate_basal_area(tree_sizes, tree_size_counts)
     basal_area = 0
     tree_sizes.each_with_index do |tree_size, index|
-      basal_area += (tree_size-1) ** 2 * 0.005454 * tree_size_counts[index]
+      basal_area += basal_area_for_size(tree_size) * tree_size_counts[index]
     end
     basal_area
+  end
+
+  def basal_area_for_size(tree_size)
+    (tree_size-1) ** 2 * 0.005454154
   end
 
   # Describes the yearly proportion of trees in a diameter class that die

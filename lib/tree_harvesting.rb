@@ -33,4 +33,24 @@ module TreeHarvesting
         sawyer size_counts
       end
     end
+
+
+    def partial_selection_curve options
+      qratio = options[:qratio]
+      target_basal_area = options[:target_basal_area]
+
+      individual_basal_area = tree_sizes.collect{|tree_size| basal_area_for_size(tree_size) }
+
+      normalized_target_diameter_distribution = tree_sizes.count.times.collect{|n| qratio**n}.reverse
+
+      normalized_target_diameter_distribution_basal_area_sum = tree_sizes.count.times.collect do |index|
+        normalized_target_diameter_distribution[index] * individual_basal_area[index]
+      end.sum
+
+      target_diameter_distribution = normalized_target_diameter_distribution.collect do |distribution|
+        distribution * (normalized_target_diameter_distribution_basal_area_sum / target_basal_area)
+      end
+    end
+
+
 end
