@@ -53,4 +53,10 @@ module TreeHarvesting
     end
 
 
+    def partial_selection_cut options
+      vector = partial_selection_curve options
+      sawyer vector
+    end
+
+
 end

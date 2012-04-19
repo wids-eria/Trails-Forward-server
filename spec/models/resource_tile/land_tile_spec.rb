@@ -398,24 +398,36 @@ describe LandTile do
         expected_values = [51.82471065214322, 34.54980710142881, 23.033204734285874, 15.35546982285725, 10.236979881904833, 6.824653254603222, 4.549768836402148, 3.033179224268099, 2.022119482845399, 1.348079655230266, 0.8987197701535108, 0.5991465134356738]
         vector.map{|x| x.round(3)}.should == expected_values.map{|x| x.round(3)}
       end
-      it "removes trees in excess of target diameter distribution based on basal area and q-ratio" # do
-=begin
+
+      it "removes trees in excess of target diameter distribution based on basal area and q-ratio" do
+        tile.num_2_inch_diameter_trees  = 100
+        tile.num_4_inch_diameter_trees  = 1
+        tile.num_6_inch_diameter_trees  = 100
+        tile.num_8_inch_diameter_trees  = 1
+        tile.num_10_inch_diameter_trees = 100
+        tile.num_12_inch_diameter_trees = 1
+        tile.num_14_inch_diameter_trees = 100
+        tile.num_16_inch_diameter_trees = 1
+        tile.num_18_inch_diameter_trees = 100
+        tile.num_20_inch_diameter_trees = 1
+        tile.num_22_inch_diameter_trees = 100
+        tile.num_24_inch_diameter_trees = 1
+
         tile.partial_selection_cut target_basal_area: 100, qratio: 1.5
 
-        tile.num_2_inch_diameter_trees.should  == 0
-        tile.num_4_inch_diameter_trees.should  == 0
-        tile.num_6_inch_diameter_trees.should  == 0
-        tile.num_8_inch_diameter_trees.should  == 0
-        tile.num_10_inch_diameter_trees.should == 0
-        tile.num_12_inch_diameter_trees.should == 12
-        tile.num_14_inch_diameter_trees.should == 14
-        tile.num_16_inch_diameter_trees.should == 16
-        tile.num_18_inch_diameter_trees.should == 18
-        tile.num_20_inch_diameter_trees.should == 20
-        tile.num_22_inch_diameter_trees.should == 22
-        tile.num_24_inch_diameter_trees.should == 24
-=end
-      #end
+        tile.num_2_inch_diameter_trees.should  be_within(0.1).of(51.82)
+        tile.num_4_inch_diameter_trees.should  be_within(0.1).of(1.000)
+        tile.num_6_inch_diameter_trees.should  be_within(0.1).of(23.03)
+        tile.num_8_inch_diameter_trees.should  be_within(0.1).of(1.000)
+        tile.num_10_inch_diameter_trees.should be_within(0.1).of(10.24)
+        tile.num_12_inch_diameter_trees.should be_within(0.1).of(1.000)
+        tile.num_14_inch_diameter_trees.should be_within(0.1).of(4.550)
+        tile.num_16_inch_diameter_trees.should be_within(0.1).of(1.000)
+        tile.num_18_inch_diameter_trees.should be_within(0.1).of(2.022)
+        tile.num_20_inch_diameter_trees.should be_within(0.1).of(1.000)
+        tile.num_22_inch_diameter_trees.should be_within(0.1).of(0.899)
+        tile.num_24_inch_diameter_trees.should be_within(0.1).of(0.599)
+      end
     end
   end
 end
