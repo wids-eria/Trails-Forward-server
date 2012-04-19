@@ -1,4 +1,6 @@
 class LandTile < ResourceTile
+  include TreeHarvesting
+
   TREE_UPGROWTH_P = {
     shade_tolerant:    [0.0164, -0.0001, 0.0055, -0.0002, 0      ],
     mid_tolerant:      [0.0134, -0.0002, 0.0051, -0.0002, 0.00002],
