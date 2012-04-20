@@ -359,5 +359,17 @@ class LandTile < ResourceTile
     template.add :tree_size
     template.add :development_intensity
     template.add :imperviousness
+    template.add :num_2_inch_diameter_trees
+    template.add :num_4_inch_diameter_trees
+    template.add :num_6_inch_diameter_trees
+    template.add :num_8_inch_diameter_trees
+    template.add :num_10_inch_diameter_trees
+    template.add :num_12_inch_diameter_trees
+    template.add :num_14_inch_diameter_trees
+    template.add :num_16_inch_diameter_trees
+    template.add :num_18_inch_diameter_trees
+    template.add :num_20_inch_diameter_trees
+    template.add :num_22_inch_diameter_trees
+    template.add :num_24_inch_diameter_trees
   end
 end
