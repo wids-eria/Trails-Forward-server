@@ -314,4 +314,120 @@ describe LandTile do
     end
   end
 
+  context "harvesting trees" do
+    let(:tile) { build :land_tile }
+
+    before do
+      tile.num_2_inch_diameter_trees  = 2
+      tile.num_4_inch_diameter_trees  = 4
+      tile.num_6_inch_diameter_trees  = 6
+      tile.num_8_inch_diameter_trees  = 8
+      tile.num_10_inch_diameter_trees = 10
+      tile.num_12_inch_diameter_trees = 12
+      tile.num_14_inch_diameter_trees = 14
+      tile.num_16_inch_diameter_trees = 16
+      tile.num_18_inch_diameter_trees = 18
+      tile.num_20_inch_diameter_trees = 20
+      tile.num_22_inch_diameter_trees = 22
+      tile.num_24_inch_diameter_trees = 24
+    end
+
+    describe '#sawyer' do
+      it "removes trees beyond target diameter distribution" do
+        tile.sawyer [14,14,14,14,14,14,14,14,14,14,14,14]
+
+        tile.num_2_inch_diameter_trees.should  == 2
+        tile.num_4_inch_diameter_trees.should  == 4
+        tile.num_6_inch_diameter_trees.should  == 6
+        tile.num_8_inch_diameter_trees.should  == 8
+        tile.num_10_inch_diameter_trees.should == 10
+        tile.num_12_inch_diameter_trees.should == 12
+        tile.num_14_inch_diameter_trees.should == 14
+        tile.num_16_inch_diameter_trees.should == 14
+        tile.num_18_inch_diameter_trees.should == 14
+        tile.num_20_inch_diameter_trees.should == 14
+        tile.num_22_inch_diameter_trees.should == 14
+        tile.num_24_inch_diameter_trees.should == 14
+      end
+
+      # TODO refactor estimated** methods to return value of product
+      # NOTE merchantable height..affected by harvest in weird way.
+      #      basal area from old numbers not new?
+      it "returns value by product"
+    end
+
+    describe "#diameter_limit_cut" do
+      it "removes trees above diameter limit" do
+        tile.diameter_limit_cut above: 12
+
+        tile.num_2_inch_diameter_trees.should  == 2
+        tile.num_4_inch_diameter_trees.should  == 4
+        tile.num_6_inch_diameter_trees.should  == 6
+        tile.num_8_inch_diameter_trees.should  == 8
+        tile.num_10_inch_diameter_trees.should == 10
+        tile.num_12_inch_diameter_trees.should == 12
+        tile.num_14_inch_diameter_trees.should == 0
+        tile.num_16_inch_diameter_trees.should == 0
+        tile.num_18_inch_diameter_trees.should == 0
+        tile.num_20_inch_diameter_trees.should == 0
+        tile.num_22_inch_diameter_trees.should == 0
+        tile.num_24_inch_diameter_trees.should == 0
+      end
+
+      it "removes trees below diameter limit" do
+        tile.diameter_limit_cut below: 12
+
+        tile.num_2_inch_diameter_trees.should  == 0
+        tile.num_4_inch_diameter_trees.should  == 0
+        tile.num_6_inch_diameter_trees.should  == 0
+        tile.num_8_inch_diameter_trees.should  == 0
+        tile.num_10_inch_diameter_trees.should == 0
+        tile.num_12_inch_diameter_trees.should == 12
+        tile.num_14_inch_diameter_trees.should == 14
+        tile.num_16_inch_diameter_trees.should == 16
+        tile.num_18_inch_diameter_trees.should == 18
+        tile.num_20_inch_diameter_trees.should == 20
+        tile.num_22_inch_diameter_trees.should == 22
+        tile.num_24_inch_diameter_trees.should == 24
+      end
+    end
+
+    describe "#partial_selection_cut" do
+      it "returns a curve" do
+        vector = tile.partial_selection_curve target_basal_area: 100.0, qratio: 1.5
+        expected_values = [51.82471065214322, 34.54980710142881, 23.033204734285874, 15.35546982285725, 10.236979881904833, 6.824653254603222, 4.549768836402148, 3.033179224268099, 2.022119482845399, 1.348079655230266, 0.8987197701535108, 0.5991465134356738]
+        vector.map{|x| x.round(3)}.should == expected_values.map{|x| x.round(3)}
+      end
+
+      it "removes trees in excess of target diameter distribution based on basal area and q-ratio" do
+        tile.num_2_inch_diameter_trees  = 100
+        tile.num_4_inch_diameter_trees  = 1
+        tile.num_6_inch_diameter_trees  = 100
+        tile.num_8_inch_diameter_trees  = 1
+        tile.num_10_inch_diameter_trees = 100
+        tile.num_12_inch_diameter_trees = 1
+        tile.num_14_inch_diameter_trees = 100
+        tile.num_16_inch_diameter_trees = 1
+        tile.num_18_inch_diameter_trees = 100
+        tile.num_20_inch_diameter_trees = 1
+        tile.num_22_inch_diameter_trees = 100
+        tile.num_24_inch_diameter_trees = 1
+
+        tile.partial_selection_cut target_basal_area: 100, qratio: 1.5
+
+        tile.num_2_inch_diameter_trees.should  be_within(0.1).of(51.82)
+        tile.num_4_inch_diameter_trees.should  be_within(0.1).of(1.000)
+        tile.num_6_inch_diameter_trees.should  be_within(0.1).of(23.03)
+        tile.num_8_inch_diameter_trees.should  be_within(0.1).of(1.000)
+        tile.num_10_inch_diameter_trees.should be_within(0.1).of(10.24)
+        tile.num_12_inch_diameter_trees.should be_within(0.1).of(1.000)
+        tile.num_14_inch_diameter_trees.should be_within(0.1).of(4.550)
+        tile.num_16_inch_diameter_trees.should be_within(0.1).of(1.000)
+        tile.num_18_inch_diameter_trees.should be_within(0.1).of(2.022)
+        tile.num_20_inch_diameter_trees.should be_within(0.1).of(1.000)
+        tile.num_22_inch_diameter_trees.should be_within(0.1).of(0.899)
+        tile.num_24_inch_diameter_trees.should be_within(0.1).of(0.599)
+      end
+    end
+  end
 end
