@@ -1,4 +1,6 @@
 class ResourceTilesController < ApplicationController
+  respond_to :json
+
   before_filter :authenticate_user!
   skip_authorization_check :only => :permitted_actions
 
@@ -69,6 +71,13 @@ class ResourceTilesController < ApplicationController
       format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
       format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
     end
+  end
+
+  def update
+    authorize! :god_mode, resource_tile, params[:god_mode]
+    resource_tile.update_attributes(params[:resource_tile])
+
+    respond_with resource_tile
   end
 
 

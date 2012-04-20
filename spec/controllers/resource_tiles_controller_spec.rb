@@ -4,13 +4,21 @@ describe ResourceTilesController do
   include Devise::TestHelpers
   render_views
 
+  let(:world) { create :world_with_tiles }
   let(:player) { create :lumberjack, world: world }
   let(:user) { player.user }
 
   before { sign_in user }
 
+  describe '#update' do
+    let(:tile) { create :land_tile, world: world }
+    it 'updates a tile' do
+      put :update, world_id: world.id, id: tile.id, resource_tile: { num_2_inch_diameter_trees: 10.5 }, god_mode: 'iddqd'
+      ResourceTile.find(tile.id).num_2_inch_diameter_trees.should == 10.5
+    end
+  end
+
   describe '#permitted_actions' do
-    let(:world) { create :world_with_tiles }
     let(:json) { JSON.parse(response.body) }
     let(:tile_hashes) { json['resource_tiles'] }
     let(:locations) { tile_hashes.map {|tile| [tile['x'].to_i, tile['y'].to_i]} }

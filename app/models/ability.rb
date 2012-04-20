@@ -11,6 +11,10 @@ class Ability
       true
     end
 
+    can :god_mode, ResourceTile do |tile, god_mode|
+      god_mode == "iddqd"
+    end
+
     can :access_private_data, Player, :user_id => user.id
     can :access_private_data, User, :id => user.id
 
