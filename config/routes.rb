@@ -42,7 +42,7 @@ TrailsForwardWorld::Application.routes.draw do
       end
     end
 
-    resources :resource_tiles, :only => [:show] do
+    resources :resource_tiles, :only => [:show, :update] do
       member do
         post :bulldoze
         post :clearcut
