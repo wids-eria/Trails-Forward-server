@@ -18,8 +18,8 @@ class ResourceTile < ActiveRecord::Base
   validates :zone_type, presence: true, inclusion: { in: valid_zone_types + valid_zone_types.map(&:to_s) }
   validates :landcover_class_code, presence: true, inclusion: { in: (1..255) }
 
-  # validates_uniqueness_of :x, :scope => [:y, :world_id]
-  # validates_uniqueness_of :y, :scope => [:x, :world_id]
+  validates_uniqueness_of :x, :scope => [:y, :world_id]
+  validates_uniqueness_of :y, :scope => [:x, :world_id]
 
   # todo: Add validations for land_cover_type, zoning_code, and primary_use to be sure that they're in one of the below
 

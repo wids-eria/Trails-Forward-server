@@ -61,7 +61,7 @@ FactoryGirl.define do
       end
     end
 
-    factory :water_tile, class: LandTile do
+    factory :water_tile, class: WaterTile do
       zoning_code 255
     end
   end
