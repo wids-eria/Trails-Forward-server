@@ -108,17 +108,16 @@ module TrailsForward
     end
 
     def resource_gen location, megatile_id
-      puts "RESOURCE GEN"
       options = { world_id: id, location: location, megatile_id: megatile_id }
       case rand(9)
       when 0
         Factory.build :water_tile, options
       when 1..6
-        Factory.build :deciduous_land_tile, options
-        #deciduous_land_tile location, megatile_id
+        #Factory.build :deciduous_land_tile, options
+        deciduous_land_tile location, megatile_id
       else
-        Factory.build :residential_land_tile, options
-        #residential_land_tile location, megatile_id
+        #Factory.build :residential_land_tile, options
+        residential_land_tile location, megatile_id
       end
     end
 
