@@ -371,5 +371,7 @@ class LandTile < ResourceTile
     template.add :num_20_inch_diameter_trees
     template.add :num_22_inch_diameter_trees
     template.add :num_24_inch_diameter_trees
+    template.add :housing_capacity
+    template.add :housing_occupants
   end
 end

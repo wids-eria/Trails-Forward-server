@@ -75,9 +75,16 @@ class ResourceTilesController < ApplicationController
 
   def update
     authorize! :god_mode, resource_tile, params[:god_mode]
-    resource_tile.update_attributes(params[:resource_tile])
 
-    respond_with resource_tile
+    respond_to do |format|
+      if resource_tile.update_attributes(params[:resource_tile])
+        format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
+        format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
+      else
+        format.xml  { render :xml =>  resource_tile.errors, :status => :unprocessable_entity }
+        format.json { render :json => resource_tile.errors, :status => :unprocessable_entity }
+      end
+    end
   end
 
 

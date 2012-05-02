@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120418143523) do
+ActiveRecord::Schema.define(:version => 20120502213653) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -143,6 +143,8 @@ ActiveRecord::Schema.define(:version => 20120418143523) do
     t.float   "num_22_inch_diameter_trees"
     t.float   "num_24_inch_diameter_trees"
     t.string  "zone_type"
+    t.integer "housing_capacity",           :default => 0
+    t.integer "housing_occupants",          :default => 0
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
