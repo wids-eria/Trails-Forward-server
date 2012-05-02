@@ -38,14 +38,14 @@ module TrailsForward
           if opts[:populate]
             resource_gen [x, y], megatile_ids["#{x - (x % megatile_width)}:#{y - (y % megatile_height)}"].id
           else
-            [x, y, megatile_ids["#{x - (x % megatile_width)}:#{y - (y % megatile_height)}"].id, id]
+            [x, y, megatile_ids["#{x - (x % megatile_width)}:#{y - (y % megatile_height)}"].id, id, 'none', 255]
           end
         end
 
         if opts[:populate]
           ResourceTile.import batch_tiles, validate: false, timestamps: false
         else
-          ResourceTile.import %w(x y megatile_id world_id), batch_tiles, validate: false, timestamps: false
+          ResourceTile.import %w(x y megatile_id world_id zone_type landcover_class_code), batch_tiles, validate: false, timestamps: false
         end
 
         rt_progress_bar.inc(height) if Rails.env.development?
@@ -108,96 +108,33 @@ module TrailsForward
     end
 
     def resource_gen location, megatile_id
-      options = { world_id: id, location: location, megatile_id: megatile_id }
       case rand(9)
       when 0
-        Factory.build :water_tile, options
+        water_tile location, megatile_id
       when 1..6
-        Factory.build :deciduous_land_tile, options
+        deciduous_land_tile location, megatile_id
       else
-        Factory.build :residential_land_tile, options
+        residential_land_tile location, megatile_id
       end
     end
 
-    def deciduous_land_tile location, megatile_id 
-        LandTile.new world_id: id,
-          location: location,
-          megatile_id: megatile_id,
-          primary_use: nil,
-          people_density: 0,
-          housing_density: 0,
-          tree_density: 0.5 + rand / 2.0,
-          tree_size: 12.0,
-          num_2_inch_diameter_trees: 2,
-          num_4_inch_diameter_trees: 4,
-          num_6_inch_diameter_trees: 6,
-          num_8_inch_diameter_trees: 8,
-          num_10_inch_diameter_trees: 10,
-          num_12_inch_diameter_trees: 12,
-          num_14_inch_diameter_trees: 10,
-          num_16_inch_diameter_trees: 8,
-          num_18_inch_diameter_trees: 6,
-          num_20_inch_diameter_trees: 4,
-          num_22_inch_diameter_trees: 2,
-          num_24_inch_diameter_trees: 0,
-          landcover_class_code: ResourceTile.cover_type_number(:deciduous),
-          development_intensity: 0.0,
-          zoning_code: 6
+    def water_tile location, megatile_id
+      Factory.build :water_tile, world_id: id, location: location, megatile_id: megatile_id
+    end
+
+    def deciduous_land_tile location, megatile_id
+      Factory.build :deciduous_land_tile, world_id: id, location: location, megatile_id: megatile_id
     end
 
     def deciduous_land_tile_variant location, megatile_id
-        LandTile.new world_id: id,
-          location: location,
-          megatile_id: megatile_id,
-          primary_use: nil,
-          people_density: 0,
-          housing_density: 0,
-          tree_density: 0.5 + rand / 2.0,
-          tree_size: 12.0,
-          num_2_inch_diameter_trees: 48,
-          num_4_inch_diameter_trees: 28,
-          num_6_inch_diameter_trees: 22,
-          num_8_inch_diameter_trees: 18,
-          num_10_inch_diameter_trees: 14,
-          num_12_inch_diameter_trees: 12,
-          num_14_inch_diameter_trees: 10,
-          num_16_inch_diameter_trees: 8,
-          num_18_inch_diameter_trees: 6,
-          num_20_inch_diameter_trees: 4,
-          num_22_inch_diameter_trees: 2,
-          num_24_inch_diameter_trees: 0,
-          landcover_class_code: ResourceTile.cover_type_number(:deciduous),
-          development_intensity: 0.0,
-          zoning_code: 6
+      Factory.build :deciduous_land_tile_variant, world_id: id, location: location, megatile_id: megatile_id
     end
 
     def residential_land_tile location, megatile_id
-        people_density = 0.5 + rand / 2.0
-        LandTile.new world_id: id,
-          location: location,
-          megatile_id: megatile_id,
-          primary_use: "Residential",
-          zoning_code: 12,
-          people_density: people_density,
-          housing_density: people_density,
-          tree_density: rand * 0.1,
-          num_2_inch_diameter_trees: 48,
-          num_4_inch_diameter_trees: 28,
-          num_6_inch_diameter_trees: 22,
-          num_8_inch_diameter_trees: 18,
-          num_10_inch_diameter_trees: 14,
-          num_12_inch_diameter_trees: 12,
-          num_14_inch_diameter_trees: 10,
-          num_16_inch_diameter_trees: 8,
-          num_18_inch_diameter_trees: 6,
-          num_20_inch_diameter_trees: 4,
-          num_22_inch_diameter_trees: 2,
-          num_24_inch_diameter_trees: 0,
-          development_intensity: people_density
+      Factory.build :residential_land_tile, world_id: id, location: location, megatile_id: megatile_id
     end
 
     def place_resources
-      puts "PLACE"
       how_many_trees = (width * height * 0.40).round
 
       resource_progress_bar = ProgressBar.new('Resources', resource_tiles.count) if Rails.env.development?

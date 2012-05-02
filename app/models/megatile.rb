@@ -29,7 +29,7 @@ class Megatile < ActiveRecord::Base
   def spawn_resources
     (x...(x + width)).each do |x|
       (y...(y + height)).each do |y|
-        ResourceTile.create(:x => x, :y => y, :world => world, :megatile => self)
+        Factory.create :resource_tile, :x => x, :y => y, :world => world, :megatile => self
       end
     end
   end
