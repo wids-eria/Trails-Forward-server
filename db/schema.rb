@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120502213653) do
+ActiveRecord::Schema.define(:version => 20120502223349) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -145,6 +145,8 @@ ActiveRecord::Schema.define(:version => 20120502213653) do
     t.string  "zone_type"
     t.integer "housing_capacity",           :default => 0
     t.integer "housing_occupants",          :default => 0
+    t.boolean "harvest_area",               :default => false
+    t.integer "supported_saplings",         :default => 0
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"

@@ -373,5 +373,7 @@ class LandTile < ResourceTile
     template.add :num_24_inch_diameter_trees
     template.add :housing_capacity
     template.add :housing_occupants
+    template.add :harvest_area
+    template.add :supported_saplings
   end
 end
