@@ -210,6 +210,7 @@ class ResourceTile < ActiveRecord::Base
     template.add :type
     template.add :base_cover_type
     template.add :permitted_actions
+    template.add :zone_type
   end
 
   api_accessible :resource_actions do |template|
