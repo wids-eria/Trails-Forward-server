@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120504153757) do
+ActiveRecord::Schema.define(:version => 20120504165630) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -142,7 +142,7 @@ ActiveRecord::Schema.define(:version => 20120504153757) do
     t.float   "num_20_inch_diameter_trees"
     t.float   "num_22_inch_diameter_trees"
     t.float   "num_24_inch_diameter_trees"
-    t.string  "zone_type"
+    t.string  "zone_type",                  :default => "none"
     t.integer "housing_capacity",           :default => 0
     t.integer "housing_occupants",          :default => 0
     t.boolean "harvest_area",               :default => false
