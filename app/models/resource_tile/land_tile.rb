@@ -382,5 +382,6 @@ class LandTile < ResourceTile
     template.add :harvest_area
     template.add :supported_saplings
     template.add :tree_type
+    template.add :outpost
   end
 end
