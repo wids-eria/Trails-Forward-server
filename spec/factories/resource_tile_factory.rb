@@ -1,22 +1,21 @@
 FactoryGirl.define do
   factory :resource_tile do
     zone_type :none
-    landcover_class_code 255
+    landcover_class_code { ResourceTile.cover_type_number(:excluded) }
     world
     megatile { Factory.create(:megatile, world: world) }
 
     factory :land_tile, class: LandTile do
-      factory :forest_tile do
-        tree_density 0.5
-      end
+      landcover_class_code { ResourceTile.cover_type_number(:barren) }
 
       factory :grass_tile do
         tree_density nil
+        landcover_class_code { ResourceTile.cover_type_number(:grassland_herbaceous) }
       end
 
 
       # gutted from world_generation.rb
-      factory :deciduous_land_tile do
+      factory :deciduous_land_tile, aliases: [:forest_tile] do
         primary_use nil
         people_density 0
         housing_density 0

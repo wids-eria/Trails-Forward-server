@@ -58,5 +58,8 @@ module TreeHarvesting
       sawyer vector
     end
 
+    def clearcut
+      sawyer collect_tree_size_counts.map{ 0 }
+    end
 
 end

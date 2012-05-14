@@ -120,8 +120,8 @@ describe ResourceTilesController do
     end
 
     context 'passed a list of tiles' do
-      let(:land_tile1) { create :land_tile, world: world, megatile: megatile }
-      let(:land_tile2) { create :land_tile, world: world, megatile: megatile }
+      let(:land_tile1) { create :forest_tile, world: world, megatile: megatile }
+      let(:land_tile2) { create :forest_tile, world: world, megatile: megatile }
       let(:land_tiles) { [land_tile1, land_tile2] }
       let(:megatile_owner) { player }
 

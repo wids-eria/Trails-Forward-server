@@ -20,16 +20,20 @@ class LandTile < ResourceTile
   }
 
   def can_clearcut?
-    zoning_code != 255
+    begin
+      species_group
+    rescue 
+      return false
+    end
+
+    true
   end
 
   def clearcut!
     if can_clearcut?
       World.transaction do
         megatile.owner.balance += estimated_timber_value
-        self.tree_density = 0.0
-        self.land_cover_type = :barren
-        self.tree_size = 0.0
+        clearcut
         save!
       end
     else
@@ -95,19 +99,19 @@ class LandTile < ResourceTile
     sawtimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_volume"}.sum
   end
 
-  def estimated_tree_volume_for_size(size)
+  def estimated_tree_volume_for_size(size, tree_count)
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
     merchantable_height = merchantable_height(size, basal_area, site_index)
     single_tree_volume  = single_tree_volume(size, merchantable_height)
-    single_tree_volume * self.send("num_#{size}_inch_diameter_trees")
+    single_tree_volume * tree_count
   end
 
-  def estimated_tree_value_for_size(size)
+  def estimated_tree_value_for_size(size, tree_count)
     if (2..4).include? size
       return 0
     end
 
-    volume = estimated_tree_volume_for_size size
+    volume = estimated_tree_volume_for_size size, tree_count
 
     if poletimber_sizes.include?(size)
       cubic_feet_to_cords(volume) * cord_value
@@ -118,7 +122,7 @@ class LandTile < ResourceTile
 
   [2,4,6,8,10,12,14,16,18,20,22,24].each do |tree_size|
     define_method "estimated_#{tree_size}_inch_tree_value" do
-      estimated_tree_value_for_size tree_size
+      estimated_tree_value_for_size tree_size, self.send("num_#{tree_size}_inch_diameter_trees")
     end
   end
 
@@ -299,10 +303,12 @@ class LandTile < ResourceTile
     case self.landcover_class_code
     when 41
       :shade_tolerant
-    when 42, 95
+    when 42, 90
       :mid_tolerant
     when 43
       :shade_intolerant
+    else
+      raise 'No Trees'
     end
   end
 

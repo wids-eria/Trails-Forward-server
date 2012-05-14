@@ -114,18 +114,18 @@ class ResourceTilesController < ApplicationController
     a_ok = true
     resource_tiles.each do |tile|
       authorize! :clearcut, tile
-      if not tile.can_clearcut?
+      unless tile.can_clearcut?
         a_ok = false
       end
     end
-
-    resource_tiles.each &:clearcut!
 
     respond_to do |format|
       if not a_ok
         format.json { render :status => :forbidden, :json => {:text => "Action illegal for this land", :resource_tiles_debug => resource_tiles }}
       else
-        resource_tiles.each &:clearcut!
+        resource_tiles.each do |tile|
+          tile.clearcut!
+        end
 
         format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
         format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }

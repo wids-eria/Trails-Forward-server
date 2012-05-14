@@ -68,22 +68,12 @@ describe LandTile do
     end
   end
 
-  [1..17].each do |zoning_code|
-    example "zoning_code #{zoning_code} can be clear cut" do
-      tile = LandTile.new zoning_code: zoning_code
-      tile.can_clearcut?.should be_true
-    end
-  end
-  example "zoning_code 255 cannot be clear cut" do
-    tile = LandTile.new zoning_code: 255
-    tile.can_clearcut?.should be_false
-  end
-
   context "with world" do
     let(:world) { create :world_with_resources }
     let(:player) { create :player, world: world }
     let(:megatile) { world.megatiles.first }
-    let(:tile) { megatile.world.resource_tiles.select{|tile| tile.kind_of?(LandTile)}.first }
+    let(:tile) { create :forest_tile, world: world, megatile: megatile }
+
     before do
       tile.megatile.owner = player
       tile.tree_density = 1
@@ -93,10 +83,10 @@ describe LandTile do
     it "clear cuts the land" do
       lambda {
         tile.clearcut!
-      }.should change(tile, :tree_density).to(0.0)
+      }.should change(tile, :num_2_inch_diameter_trees).to(0)
       tile.save!
       tile.reload
-      tile.land_cover_type.should == :barren
+      tile.land_cover_type.should == :deciduous
     end
 
     it "awards tile owner the lumber value when clearcut" do
@@ -122,6 +112,36 @@ describe LandTile do
   it "has estimated value" do
     tile = LandTile.new
     tile.estimated_value.should > 0
+  end
+
+  context "#species_group" do
+    let(:tile) { LandTile.new }
+
+    it "returns shade tolerant" do
+      tile.landcover_class_code = 41
+      tile.species_group.should == :shade_tolerant
+    end
+
+    it "returns mid tolerant" do
+      tile.landcover_class_code = 42
+      tile.species_group.should == :mid_tolerant
+
+      tile.landcover_class_code = 90
+      tile.species_group.should == :mid_tolerant
+    end
+
+    it "returns shade intolerant" do
+      tile.landcover_class_code = 43
+      tile.species_group.should == :shade_intolerant
+    end
+
+    it "raises when unknown class code" do
+      tile.landcover_class_code = 95
+      lambda {
+        tile.species_group
+      }.should raise_error('No Trees')
+
+    end
   end
 
   context "timber value" do
@@ -182,22 +202,32 @@ describe LandTile do
       before do
         tile.stubs(species_group: :shade_tolerant)
       end
-      it "estimates 6 inch tree value" do
-        tile.num_6_inch_diameter_trees = 10
-        tile.stubs(calculate_basal_area: 100)
-        tile.estimated_6_inch_tree_value.should be_within(0.1).of(3.325163)
+
+      context "when on the tile" do
+        it "estimates 6 inch tree value" do
+          tile.num_6_inch_diameter_trees = 10
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_6_inch_tree_value.should be_within(0.1).of(3.325163)
+        end
+
+        it "estimates 14 inch tree value" do
+          tile.num_14_inch_diameter_trees = 10
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_14_inch_tree_value.should be_within(0.1).of(206.1207)
+        end
+
+        it "estimates 10 inch tree value" do
+          tile.num_10_inch_diameter_trees = 10
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_10_inch_tree_value.should be_within(0.1).of(9.2107)
+        end
       end
 
-      it "estimates 14 inch tree value" do
-        tile.num_14_inch_diameter_trees = 10
-        tile.stubs(calculate_basal_area: 100)
-        tile.estimated_14_inch_tree_value.should be_within(0.1).of(206.1207)
-      end
-
-      it "estimates 10 inch tree value" do
-        tile.num_10_inch_diameter_trees = 10
-        tile.stubs(calculate_basal_area: 100)
-        tile.estimated_10_inch_tree_value.should be_within(0.1).of(9.2107)
+      context "when passed a tree count" do
+        it "estimates 6 inch tree value" do
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_tree_value_for_size(6, 10).should be_within(0.1).of(3.325163)
+        end
       end
     end
 
@@ -427,6 +457,25 @@ describe LandTile do
         tile.num_20_inch_diameter_trees.should be_within(0.1).of(1.000)
         tile.num_22_inch_diameter_trees.should be_within(0.1).of(0.899)
         tile.num_24_inch_diameter_trees.should be_within(0.1).of(0.599)
+      end
+    end
+
+    describe '#clearcut' do
+      it 'removes all trees' do
+        tile.clearcut
+
+        tile.num_2_inch_diameter_trees.should  == 0
+        tile.num_4_inch_diameter_trees.should  == 0
+        tile.num_6_inch_diameter_trees.should  == 0
+        tile.num_8_inch_diameter_trees.should  == 0
+        tile.num_10_inch_diameter_trees.should == 0
+        tile.num_12_inch_diameter_trees.should == 0
+        tile.num_14_inch_diameter_trees.should == 0
+        tile.num_16_inch_diameter_trees.should == 0
+        tile.num_18_inch_diameter_trees.should == 0
+        tile.num_20_inch_diameter_trees.should == 0
+        tile.num_22_inch_diameter_trees.should == 0
+        tile.num_24_inch_diameter_trees.should == 0
       end
     end
   end
