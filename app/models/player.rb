@@ -8,6 +8,7 @@ class Player < ActiveRecord::Base
   attr_accessible :name, :user, :world, :balance
 
   validates_uniqueness_of :user_id, :scope => :world_id
+  validates_uniqueness_of :type,    :scope => :world_id
 
   has_many :megatiles, :inverse_of => :owner, :foreign_key => 'owner_id'
   has_many :resource_tiles, :through => :megatiles

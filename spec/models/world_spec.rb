@@ -21,7 +21,6 @@ describe World do
     subject { world }
     its(:resource_tiles) { should_not be_empty }
     its(:megatiles) { should_not be_empty }
-    its(:players) { should_not be_empty }
   end
 
   describe "#coords" do

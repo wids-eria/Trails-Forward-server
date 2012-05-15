@@ -9,7 +9,7 @@ Then /^a new world should exist$/ do
 end
 
 Given /^I have a world$/ do
-  @world = Factory :world_with_properties
+  @world = Factory :world_with_properties_and_users
 end
 
 Given /^I have an unowned megatile in the world$/ do

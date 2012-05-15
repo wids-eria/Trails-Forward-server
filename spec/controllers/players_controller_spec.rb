@@ -8,7 +8,7 @@ describe PlayersController do
     let(:user) { player.user }
     let(:player) { create :lumberjack }
     let(:other_user) { other_player.user }
-    let(:other_player) { create :player }
+    let(:other_player) { create :developer }
     let(:json) { JSON.parse(response.body) }
 
     before do

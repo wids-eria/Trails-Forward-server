@@ -30,7 +30,7 @@ describe Broker do
 
       it "gives seller balance" do
         seller.reload
-        seller.balance.should == 1100
+        seller.balance.should == 2000
       end
     end
 
@@ -69,7 +69,7 @@ describe Broker do
 
       it "gives seller balance" do
         seller.reload
-        seller.balance.should == 1100
+        seller.balance.should == 2000
       end
     end
 

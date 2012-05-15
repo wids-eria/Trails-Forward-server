@@ -31,6 +31,12 @@ FactoryGirl.define do
   factory :world_with_properties, parent: :world do
     after_create do |world, proxy|
       world.spawn_blank_tiles populate: true
+    end
+  end
+
+  factory :world_with_properties_and_users, parent: :world do
+    after_create do |world, proxy|
+      world.spawn_blank_tiles populate: true
       world.create_users_and_players
       world.create_starter_properties
     end
