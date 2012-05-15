@@ -81,24 +81,22 @@ class PlayersController < ApplicationController
 
   # POST /players
 
-  # def create
-  #   @user = User.find params[:user_id]
-  #   authorize! :create_player, @user
-  #
-  #   @player = Player.new(params[:player])
-  #   @player.user = @user
-  #   @player.balance = Player.default_balance #in case people get clever
-  #
-  #   respond_to do |format|
-  #     if @player.save
-  #       format.html { redirect_to(@player, :notice => 'Player was successfully created.') }
-  #       format.xml  { render :xml => @player, :status => :created, :location => @player }
-  #     else
-  #       format.html { render :action => "new" }
-  #       format.xml  { render :xml => @player.errors, :status => :unprocessable_entity }
-  #     end
-  #   end
-  # end
+  def create
+    authorize! :create_player, current_user
+    @player = current_user.players.build params[:player]
+    @player.world = World.find params[:world_id]
+    @player.balance = Player.default_balance
+
+    respond_to do |format|
+      if @player.save
+        format.xml  { render_for_api :player_private, :xml  => @player }
+        format.json { render_for_api :player_private, :json => @player }
+      else
+        format.xml  { render :xml  => @player.errors, :status => :unprocessable_entity }
+        format.json { render :json => @player.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
 
   def update
     @player = Player.find(params[:id])

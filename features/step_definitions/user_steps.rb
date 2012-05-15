@@ -1,10 +1,10 @@
 Given /^I have one user "([^"]*)" with password "([^"]*)"$/ do |email, password|
   @user_password = password
-  @user = User.new(:email => email,
-           :name => "Test User #{rand(420)}",
-           :password => password,
-           :password_confirmation => password)
-  @user.save!
+  @user = Factory(:user, :email => email, :name => "Test User #{rand(420)}", :password => password, :password_confirmation => password)
+end
+
+Given /^I have a user$/ do
+  @user = Factory :user
 end
 
 When /^I submit the user's email and password to the users_authenticate_for_token url$/ do
