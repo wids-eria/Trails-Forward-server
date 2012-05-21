@@ -228,6 +228,11 @@ describe LandTile do
           tile.stubs(calculate_basal_area: 100)
           tile.estimated_tree_value_for_size(6, 10).should be_within(0.1).of(3.325163)
         end
+
+        it "estimates 6 inch tree value with 0 count" do
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_tree_value_for_size(6, 0).should be_within(0.1).of(0.0)
+        end
       end
     end
 
@@ -345,7 +350,7 @@ describe LandTile do
   end
 
   context "harvesting trees" do
-    let(:tile) { build :land_tile }
+    let(:tile) { build :deciduous_land_tile }
 
     before do
       tile.num_2_inch_diameter_trees  = 2
@@ -360,6 +365,30 @@ describe LandTile do
       tile.num_20_inch_diameter_trees = 20
       tile.num_22_inch_diameter_trees = 22
       tile.num_24_inch_diameter_trees = 24
+    end
+
+    describe '#excess_tree_counts' do
+      it 'returns the number of trees above the requested count' do
+        excess = tile.excess_tree_counts [0,0,0,0,10,10,10,10,20,20,20,20]
+        excess.should == [2,4,6,8,0,2,4,6,0,0,2,4]
+      end
+    end
+
+    describe '#position_for_size' do
+      it 'returns array index for each size' do
+        tile.position_for_size(2).should == 0
+        tile.position_for_size(4).should == 1
+        tile.position_for_size(6).should == 2
+        tile.position_for_size(8).should == 3
+        tile.position_for_size(10).should == 4
+        tile.position_for_size(12).should == 5
+        tile.position_for_size(14).should == 6
+        tile.position_for_size(16).should == 7
+        tile.position_for_size(18).should == 8
+        tile.position_for_size(20).should == 9
+        tile.position_for_size(22).should == 10
+        tile.position_for_size(24).should == 11
+      end
     end
 
     describe '#sawyer' do
@@ -380,10 +409,27 @@ describe LandTile do
         tile.num_24_inch_diameter_trees.should == 14
       end
 
-      # TODO refactor estimated** methods to return value of product
       # NOTE merchantable height..affected by harvest in weird way.
       #      basal area from old numbers not new?
-      it "returns value by product"
+      context "when returning" do
+        let(:values) { tile.sawyer [0,0,0,0,0,0,0,0,0,0,0,0] }
+
+        it "gives poletimber value" do
+          values[:poletimber_value].should be_within(0.1).of(16.1415)
+        end
+
+        it "gives sawtimber value" do
+          values[:sawtimber_value].should be_within(0.1).of(7502.6357)
+        end
+
+        it "gives poletimber volume" do
+          values[:poletimber_volume].should be_within(0.1).of(172.1770)
+        end
+
+        it "gives sawtimber volume" do
+          values[:sawtimber_volume].should be_within(0.1).of(4526.7747)
+        end
+      end
     end
 
     describe "#diameter_limit_cut" do

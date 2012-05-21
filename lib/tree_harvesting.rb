@@ -1,3 +1,7 @@
+# TODO make into its own Sawyer class.. no need to be a mixin really if its dealing
+# with lists of sizes that can be passed to it.
+#
+
 module TreeHarvesting
     def self.included(base)
       base.extend ClassMethods
@@ -5,20 +9,48 @@ module TreeHarvesting
     module ClassMethods
     end
 
-    def trees_in_size(tree_size)
-      self.send "num_#{tree_size}_inch_diameter_trees"
+
+
+    def calculate_product_values_and_volumes_for target_diameter_distribution
+      excess_tree_counts = excess_tree_counts target_diameter_distribution
+
+      poletimber_value  = poletimber_sizes.collect{|size| estimated_tree_value_for_size size, excess_tree_counts[position_for_size(size)] }.sum
+      poletimber_volume = poletimber_sizes.collect{|size| estimated_tree_volume_for_size size, excess_tree_counts[position_for_size(size)] }.sum
+
+      sawtimber_value  = sawtimber_sizes.collect{|size| estimated_tree_value_for_size size, excess_tree_counts[position_for_size(size)] }.sum
+      sawtimber_volume = sawtimber_sizes.collect{|size| estimated_tree_volume_for_size size, excess_tree_counts[position_for_size(size)] }.sum
+
+      {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
     end
 
-    def set_trees_in_size(tree_size, value)
-      self.send "num_#{tree_size}_inch_diameter_trees=", value
+
+    def position_for_size tree_size
+      tree_size / 2 - 1
     end
+
+
+    def excess_tree_counts target_diameter_distribution
+      arr = []
+      tree_sizes.each_with_index do |tree_size, index|
+        if trees_in_size(tree_size) > target_diameter_distribution[index]
+          arr.push trees_in_size(tree_size) - target_diameter_distribution[index]
+        else
+          arr.push 0
+        end
+      end
+      arr
+    end
+
 
     def sawyer target_diameter_distribution
+      values_and_volumes = calculate_product_values_and_volumes_for target_diameter_distribution
+
       tree_sizes.each_with_index do |tree_size, index|
         if trees_in_size(tree_size) > target_diameter_distribution[index]
           set_trees_in_size(tree_size, target_diameter_distribution[index])
         end
       end
+      values_and_volumes
     end
 
 

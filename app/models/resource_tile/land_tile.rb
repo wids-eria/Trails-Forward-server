@@ -1,23 +1,9 @@
 class LandTile < ResourceTile
+  include TreeHelperMethods
+  include TreeGrowth
+  include TreeValue
   include TreeHarvesting
 
-  TREE_UPGROWTH_P = {
-    shade_tolerant:    [0.0164, -0.0001, 0.0055, -0.0002, 0      ],
-    mid_tolerant:      [0.0134, -0.0002, 0.0051, -0.0002, 0.00002],
-    shade_intolerant:  [0.0069, -0.0001, 0.0059, -0.0003, 0      ]
-  }
-
-  TREE_MORTALITY_P = {
-    shade_tolerant:   [0.0336, 0, -0.0018, 0.0001, -0.00002],
-    mid_tolerant:     [0.0417, 0, -0.0033, 0.0001,  0      ],
-    shade_intolerant: [0.0418, 0, -0.0009, 0     ,  0      ]
-  }
-
-  TREE_INGROWTH_PARAMETER = {
-    shade_tolerant:   [18.187, -0.097],
-    mid_tolerant:     [4.603,  -0.035],
-    shade_intolerant: [7.622,  -0.059]
-  }
 
   def can_clearcut?
     begin
@@ -67,21 +53,6 @@ class LandTile < ResourceTile
     end
   end
 
-  def poletimber_sizes
-    if shade_tolerant? || mid_tolerant?
-      [6,8,10]
-    elsif shade_intolerant?
-      [6,8]
-    end
-  end
-
-  def sawtimber_sizes
-    if shade_tolerant? || mid_tolerant?
-      [12,14,16,18,20,22,24]
-    elsif shade_intolerant?
-      [10,12,14,16,18,20,22,24]
-    end
-  end
 
   def estimated_poletimber_value
     poletimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_value"}.sum
@@ -125,10 +96,6 @@ class LandTile < ResourceTile
       estimated_tree_value_for_size tree_size, self.send("num_#{tree_size}_inch_diameter_trees")
     end
   end
-
-  def shade_intolerant?; species_group == :shade_intolerant; end
-  def shade_tolerant?; species_group == :shade_tolerant; end
-  def mid_tolerant?; species_group == :mid_tolerant; end
 
   def cord_value
     case species_group
@@ -218,7 +185,7 @@ class LandTile < ResourceTile
   end
 
   def collect_tree_size_counts
-    tree_sizes.collect {|diameter| self.send("num_#{diameter}_inch_diameter_trees") }
+    tree_sizes.collect {|diameter| trees_in_size diameter }
   end
 
   def site_index
@@ -258,7 +225,7 @@ class LandTile < ResourceTile
 
     # set values on model
     tree_sizes.each_with_index do |tree_size, index|
-      self.send("num_#{tree_size}_inch_diameter_trees=", tree_size_count_matrix[0,index])
+      set_trees_in_size tree_size, tree_size_count_matrix[0,index]
     end
 
     self.save!
