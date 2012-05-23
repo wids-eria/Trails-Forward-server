@@ -201,6 +201,23 @@ describe ResourceTilesController do
 
     describe '#partial_selection_cut' do
       it 'returns values and volumes of all the tiles cut' do
+        sawyer_results1 = land_tile1.partial_selection_cut target_basal_area: 100, qratio: 1.5
+        sawyer_results2 = land_tile2.partial_selection_cut target_basal_area: 100, qratio: 1.5
+
+
+        post 'partial_selection_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), target_basal_area: 100, qratio: 1.5, format: 'json'
+
+        response.body.should have_content('poletimber_value')
+        response.body.should have_content(sawyer_results1[:poletimber_value] + sawyer_results2[:poletimber_value])
+
+        response.body.should have_content('poletimber_volume')
+        response.body.should have_content(sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume])
+
+        response.body.should have_content('sawtimber_value')
+        response.body.should have_content(sawyer_results1[:sawtimber_value] + sawyer_results2[:sawtimber_value])
+
+        response.body.should have_content('sawtimber_volume')
+        response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
       end
     end
   end

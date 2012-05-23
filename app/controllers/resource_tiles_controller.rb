@@ -153,4 +153,24 @@ class ResourceTilesController < ApplicationController
       format.json { render json: sum }
     end
   end
+
+  def partial_selection_cut_list
+    authorize! :harvest, ResourceTile
+
+    results = resource_tiles.collect do |tile|
+      tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])
+    end
+
+    poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
+    poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
+    sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
+    sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
+
+    sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
+
+    respond_to do |format|
+      format.xml  { render xml: sum  }
+      format.json { render json: sum }
+    end
+  end
 end

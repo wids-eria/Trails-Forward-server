@@ -67,8 +67,9 @@ module TreeHarvesting
 
 
     def partial_selection_curve options
-      qratio = options[:qratio]
-      target_basal_area = options[:target_basal_area]
+      raise 'needs arguments' if options[:qratio].blank? || options[:target_basal_area].blank?
+      qratio = options[:qratio].to_f
+      target_basal_area = options[:target_basal_area].to_f
 
       individual_basal_area = tree_sizes.collect{|tree_size| basal_area_for_size(tree_size) }
 

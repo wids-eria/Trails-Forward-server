@@ -27,6 +27,12 @@ class LandTile < ResourceTile
     return results
   end
 
+  def partial_selection_cut! options
+    results = partial_selection_cut options
+    save!
+    return results
+  end
+
   def tick
   end
 

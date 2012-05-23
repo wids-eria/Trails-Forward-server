@@ -51,6 +51,7 @@ TrailsForwardWorld::Application.routes.draw do
 
       collection do
         post 'diameter_limit_cut', controller: :resource_tiles, action: :diameter_limit_cut_list
+        post 'partial_selection_cut', controller: :resource_tiles, action: :partial_selection_cut_list
         post 'bulldoze', :controller => :resource_tiles, :action => :bulldoze_list
         post 'clearcut', :controller => :resource_tiles, :action => :clearcut_list
         post 'build', :controller => :resource_tiles, :action => :build_list
