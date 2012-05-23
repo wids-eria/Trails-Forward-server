@@ -10,7 +10,6 @@ module TreeHarvesting
     end
 
 
-
     def calculate_product_values_and_volumes_for target_diameter_distribution
       excess_tree_counts = excess_tree_counts target_diameter_distribution
 
@@ -58,10 +57,10 @@ module TreeHarvesting
       size_counts = collect_tree_size_counts
 
       if options[:above].present?
-        size_counts.fill(0, ((options[:above]/2)..-1)) 
+        size_counts.fill(0, ((options[:above].to_i/2)..-1)) 
         sawyer size_counts
       elsif options[:below].present?
-        size_counts.fill(0, (0...(options[:below]/2-1))) 
+        size_counts.fill(0, (0...(options[:below].to_i/2-1))) 
         sawyer size_counts
       end
     end

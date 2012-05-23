@@ -74,6 +74,9 @@ class Ability
       player == listing.owner && listing == bid.listing
     end
 
+    # empty since client side handles rules for now
+    can :harvest, ResourceTile
+
     can :bulldoze, ResourceTile do |rt|
       rt.megatile.world.player_for_user(user) == rt.megatile.owner
     end

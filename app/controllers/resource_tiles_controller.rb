@@ -136,4 +136,14 @@ class ResourceTilesController < ApplicationController
   def build_list
     # not yet implemented
   end
+
+  def diameter_limit_cut_list
+    authorize! :harvest, ResourceTile
+    results = resource_tiles.collect{|tile| tile.diameter_limit_cut(above: params[:above], below: params[:below])}
+    poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
+    poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
+    sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
+    sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
+    render json: {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
+  end
 end

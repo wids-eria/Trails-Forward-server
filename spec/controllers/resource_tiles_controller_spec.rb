@@ -154,4 +154,38 @@ describe ResourceTilesController do
     let(:action) { :bulldoze }
     it_should_behave_like "resource tile changing action"
   end
+
+  # TODO move clearcut into here too
+  context 'harvesting' do
+    let(:world) { create :world }
+    let(:land_tile1) { create :deciduous_land_tile, world: world }
+    let(:land_tile2) { create :deciduous_land_tile, world: world }
+    let!(:tiles) { [land_tile1, land_tile2] }
+
+    describe '#diameter_limit_cut' do
+      it 'returns values and volumes of all the tiles cut' do
+        sawyer_results1 = land_tile1.diameter_limit_cut above: 12
+        sawyer_results2 = land_tile2.diameter_limit_cut above: 12
+
+        post 'diameter_limit_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), above: 12.to_s, format: 'json'
+
+        response.body.should have_content('poletimber_value')
+        response.body.should have_content(sawyer_results1[:poletimber_value] + sawyer_results2[:poletimber_value])
+
+        response.body.should have_content('poletimber_volume')
+        response.body.should have_content(sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume])
+
+        response.body.should have_content('sawtimber_value')
+        response.body.should have_content(sawyer_results1[:sawtimber_value] + sawyer_results2[:sawtimber_value])
+
+        response.body.should have_content('sawtimber_volume')
+        response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+      end
+    end
+
+    describe '#partial_selection_cut' do
+      it 'returns values and volumes of all the tiles cut' do
+      end
+    end
+  end
 end
