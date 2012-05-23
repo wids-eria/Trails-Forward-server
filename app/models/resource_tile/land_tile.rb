@@ -8,7 +8,7 @@ class LandTile < ResourceTile
   def can_clearcut?
     begin
       species_group
-    rescue 
+    rescue
       return false
     end
 
@@ -16,15 +16,15 @@ class LandTile < ResourceTile
   end
 
   def clearcut!
-    if can_clearcut?
-      World.transaction do
-        megatile.owner.balance += estimated_timber_value
-        clearcut
-        save!
-      end
-    else
-      raise "This land cannot be clearcut"
-    end
+    results = clearcut
+    save!
+    return results
+  end
+
+  def diameter_limit_cut! options
+    results = diameter_limit_cut options
+    save!
+    return results
   end
 
   def tick

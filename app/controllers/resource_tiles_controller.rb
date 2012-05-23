@@ -111,25 +111,22 @@ class ResourceTilesController < ApplicationController
   end
 
   def clearcut_list
-    a_ok = true
-    resource_tiles.each do |tile|
-      authorize! :clearcut, tile
-      unless tile.can_clearcut?
-        a_ok = false
-      end
-    end
+    authorize! :harvest, ResourceTile
 
     respond_to do |format|
-      if not a_ok
-        format.json { render :status => :forbidden, :json => {:text => "Action illegal for this land", :resource_tiles_debug => resource_tiles }}
-      else
-        resource_tiles.each do |tile|
-          tile.clearcut!
-        end
-
-        format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
-        format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
+      results = resource_tiles.collect do |tile|
+        tile.clearcut!
       end
+
+      poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
+      poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
+      sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
+      sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
+
+      sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
+
+      format.xml  { render xml: sum  }
+      format.json { render json: sum }
     end
   end
 
@@ -139,11 +136,21 @@ class ResourceTilesController < ApplicationController
 
   def diameter_limit_cut_list
     authorize! :harvest, ResourceTile
-    results = resource_tiles.collect{|tile| tile.diameter_limit_cut(above: params[:above], below: params[:below])}
+
+    results = resource_tiles.collect do |tile|
+      tile.diameter_limit_cut!(above: params[:above], below: params[:below])
+    end
+
     poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
     poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
     sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
     sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
-    render json: {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
+
+    sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
+
+    respond_to do |format|
+      format.xml  { render xml: sum  }
+      format.json { render json: sum }
+    end
   end
 end

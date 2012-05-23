@@ -89,12 +89,6 @@ describe LandTile do
       tile.land_cover_type.should == :deciduous
     end
 
-    it "awards tile owner the lumber value when clearcut" do
-      tile.expects(estimated_timber_value: 1)
-      lambda {
-        tile.clearcut!
-      }.should change { tile.megatile.owner.balance }
-    end
   end
 
   it "can be bulldozed" do
@@ -421,6 +415,7 @@ describe LandTile do
         it "gives sawtimber value" do
           values[:sawtimber_value].should be_within(0.1).of(7502.6357)
         end
+        
 
         it "gives poletimber volume" do
           values[:poletimber_volume].should be_within(0.1).of(172.1770)
