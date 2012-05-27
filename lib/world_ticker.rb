@@ -1,0 +1,3 @@
+class WorldTicker
+
+end

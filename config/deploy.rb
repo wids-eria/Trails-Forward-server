@@ -19,9 +19,9 @@ set :scm, :git
 set :user, :deploy
 ssh_options[:forward_agent] = true
 
-role :web, "terrordome.discovery.wisc.edu"
-role :app, "terrordome.discovery.wisc.edu"
-role :db,  "terrordome.discovery.wisc.edu", :primary => true # This is where Rails migrations will run
+role :web, "eria-1.morgridge.net"
+role :app, "eria-1.morgridge.net"
+role :db,  "eria-1.morgridge.net", :primary => true # This is where Rails migrations will run
 
 set :deploy_to, "/var/www/#{application}"
 set :deploy_via, :remote_cache
