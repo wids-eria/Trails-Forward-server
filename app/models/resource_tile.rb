@@ -7,6 +7,7 @@ class ResourceTile < ActiveRecord::Base
   has_many :agents
   has_many :resources
   serialize :residue, Hash
+  serialize :population, Hash
 
   after_save :invalidate_megatile_cache
 
