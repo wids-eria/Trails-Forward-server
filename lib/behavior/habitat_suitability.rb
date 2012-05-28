@@ -12,6 +12,10 @@ module Behavior
       end
     end
 
+    def habitat_suitability_for tile
+      habitat_suitability(tile.landcover_class_code) if tile && tile.landcover_class_code
+    end
+
     module ClassMethods
       def habitat_suitability habitat_hash = {}
         define_method :habitat_suitability_hash do
@@ -28,9 +32,10 @@ module Behavior
         end
       end
 
+
       def suitability_survival_modifier default = nil, &blk
         define_method :suitability_survival_modifier_for do |tile|
-          suitability = habitat_suitability(tile.landcover_class_code) if tile && tile.landcover_class_code
+          suitability = habitat_suitability_for(tile)
           suitability ? blk.call(suitability) : default
         end
 
@@ -41,7 +46,7 @@ module Behavior
 
       def suitability_fecundity_modifier default = nil, &blk
         define_method :suitability_fecundity_modifier_for do |tile|
-          suitability = habitat_suitability(tile.landcover_class_code) if tile && tile.landcover_class_code
+          suitability = habitat_suitability_for(tile)
           suitability ? blk.call(suitability) : default
         end
 

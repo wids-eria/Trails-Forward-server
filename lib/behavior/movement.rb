@@ -47,7 +47,6 @@ module Behavior
 
     module ClassMethods
       def calculate_offset_coordinates heading, distance
-        print "Calculate offset coordinates called with heading = #{heading} and distance = #{distance}"
         heading_in_radians = heading * (Math::PI / 180.0)
         x_offset = (distance * Math.sin(heading_in_radians)).round(2)
         y_offset = (distance * Math.cos(heading_in_radians)).round(2)
