@@ -29,11 +29,10 @@ describe Agent do
   end
   
   describe '#patch_ahead' do
-    let!(:agent) { create :agent}
+    let!(:agent) { create :agent, world: world}
+    let!(:world) { create :world_with_tiles }
+
     it 'can see whats in front of its face' do
-      puts "resource tiles are:     " + agent.world.resource_tiles.inspect
-      puts "current tile should be: " + agent.world.resource_tile_at(1, 1).inspect
-      puts "current tile is:        " + agent.resource_tile.inspect
       agent.patch_ahead.y.should == 2
     end
   end
