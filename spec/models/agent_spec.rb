@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Agent do
   it { should belong_to :resource_tile }
   it { should belong_to :world }
-  it { should have_db_column(:heading).of_type(:integer) }
+  it { should have_db_column(:heading).of_type(:float) }
 
   let(:world) { create(:world_with_tiles) }
   let(:agent) { build(:generic_agent, world: world) }
