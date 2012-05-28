@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(:version => 20120527013144) do
     t.integer "resource_tile_id"
     t.float   "x"
     t.float   "y"
-    t.integer "heading"
+    t.float   "heading"
     t.string  "state"
     t.integer "age",              :default => 0
   end

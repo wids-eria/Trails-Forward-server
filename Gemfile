@@ -38,7 +38,7 @@ group :development, :test do
     gem 'guard-rails'
     gem 'guard-rspec'
     gem 'guard-spork'
-    gem 'rb-fsevent'
+    gem 'rb-fsevent', '>0.9'
 
   gem 'capybara'
   gem 'database_cleaner'
