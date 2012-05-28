@@ -102,5 +102,15 @@ describe ResourceTile do
       resource_tile.location.should == [1, 3]
     end
   end
+
+  describe '#residue' do
+    let(:tile) { build :resource_tile }
+    it 'serializes a hash' do
+      tile.residue[:marten_id] = 123
+      tile.save!
+      tile.reload
+      tile.residue.should == {marten_id: 123}
+    end
+  end
   
 end

@@ -6,7 +6,8 @@ class ResourceTile < ActiveRecord::Base
   belongs_to :world
   has_many :agents
   has_many :resources
-  
+  serialize :residue, Hash
+
   after_save :invalidate_megatile_cache
 
   def self.dist
