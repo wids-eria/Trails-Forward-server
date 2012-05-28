@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120527013144) do
+ActiveRecord::Schema.define(:version => 20120527015703) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
