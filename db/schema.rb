@@ -175,19 +175,6 @@ ActiveRecord::Schema.define(:version => 20120607162038) do
     t.integer "resource_tile_id"
   end
 
-  create_table "surveys", :force => true do |t|
-    t.date     "capture_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "tile_surveys", :force => true do |t|
-    t.float    "poletimber_value"
-    t.float    "sawtimber_value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "users", :force => true do |t|
     t.string   "name"
     t.datetime "created_at"

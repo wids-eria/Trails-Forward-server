@@ -9,4 +9,6 @@ FactoryGirl.define do
   factory(:generic_agent, class: GenericAgent, parent: :agent) {}
   factory(:red_fox, class: RedFox, parent: :agent) {}
   factory(:tribble, class: Tribble, parent: :agent) {}
+  factory(:female_marten, class: FemaleMarten, parent: :agent) {}
+  factory(:male_marten, class: MaleMarten, parent: :agent) {}
 end
