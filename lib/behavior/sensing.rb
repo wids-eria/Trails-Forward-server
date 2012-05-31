@@ -1,7 +1,7 @@
 module Behavior
   module Sensing
     def max_view_distance
-      0
+      10
     end
 
     def tile_utility tile

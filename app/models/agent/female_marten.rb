@@ -2,13 +2,13 @@ class FemaleMarten < Marten
 
   TURN_SD = 90
 
-  def go
-    set actual_distance 0
+  def tick 
     forage
     check_death
     metabolize
     attempt_reproduction
     self.age += 1
+    set previous_location
   end
 
 
@@ -25,7 +25,7 @@ class FemaleMarten < Marten
           walk_forward 1
         else
         # entrance probability a function of hunger
-          modified_patch_entrance_probability = (patch_entrance_probability * (1 - (self.energy / max-energy))) 
+          modified_patch_entrance_probability = (PATCH_ENTRANCE_PROBABILITY * (1 - (self.energy / MAX-ENERGY))) 
           if rand < modified_patch_entrance_probability
             walk_forward 1
           else
@@ -42,7 +42,7 @@ class FemaleMarten < Marten
             # random
             #  turn rand(361)
             #  correlated +
-              turn self.normal_dist(0, self.turn_sd)
+              turn self.normal_dist(mean = 0, std = TURN_SD)
             # correlated - 
             # turn self.normal_dist 180 self.turn_sd
           end

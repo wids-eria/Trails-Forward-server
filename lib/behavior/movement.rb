@@ -41,6 +41,14 @@ module Behavior
       {location: [new_x, new_y], heading: new_heading}
     end
 
+
+    def face tile
+      from_location = location
+      to_location = [tile.x, tile.y]
+      self.heading = ((Math.atan2(to_location[1] - from_location[1], to_location[0] - from_location[0]) * (180/Math::PI)) + 90) % 360
+    end
+
+
     def self.included(base)
       base.extend ClassMethods
     end

@@ -15,7 +15,7 @@ class Marten < Agent
 
   MAX_ENERGY = 3334.8
   PATCH_ENTRANCE_PROBABILITY = 0.03
-  
+  max_view_distance 10 
    # approximate max energy (Kj) storage in reserves
    # body fat contains 39.7 kj/g - Buskirk and Harlow 1989
    # body composition mean 5.6% fat - Buskirk and Harlow 1989
@@ -24,49 +24,54 @@ class Marten < Agent
   # energy = max_energy #TODO: only during initialization
 
 # NEED TO ADD PERSISTENT VARIABLES:
-  attr_accessor :age, :energy
+  attr_accessor :age, :energy, :neighborhood, :previous_location #TODO: make this set previous x and y
  
   
 
-habitat_suitability barren_land: 0,
-                    coniferous_forest: 1,
-                    cultivated_crops: 0,
-                    deciduous_forest: 1,
-                    developed_high_intensity: 0,
+habitat_suitability open_water: 0,
+                    developed_open_space: 0,
                     developed_low_intensity: 0,
                     developed_medium_intensity: 0,
-                    developed_open_space: 0,
-                    emergent_herbaceous_wetlands: 0,
-                    excluded: 0,
-                    grassland_herbaceous: 0,
-                    mixed_forest: 1,
-                    open_water: 0,
-                    pasture_hay: 0,
+                    developed_high_intensity: 0,
+                    barren: 0,
+                    deciduous: 1,
+                    coniferous: 1,
+                    mixed: 1,
+                    dwarf_scrub: 0,
                     shrub_scrub: 0,
-                    woody_wetlands: 1
+                    grassland_herbaceous: 0,
+                    pasture_hay: 0,
+                    cultivated_crops: 0,
+                    forested_wetland: 1,
+                    emergent_herbaceous_wetland: 0,
+                    excluded: 0
 
   def day_of_year 
     world.current_date.yday
   end
 
   def forage
+    puts "FORAGE ENERGY = #{energy}"
     h = 0
+    active_hours = 0 #TODO: WTF IS THIS DOING??? 
     case day_of_year 
-    when 80..355
-      active_hours = 12
-    else
-      active_house = 8
+      when 80..355
+        active_hours = 12
+      else
+        active_hours = 8
     end
     while h < active_hours
       force_move_distance
       check_predation
       h += 1
+      set_previous_location
     end
   end
 
 
 
       def force_move_distance
+      puts "FORCE_MOVE_DISTANCE ENERGY = #{energy}"
         actual_dist = 0
         maximum_distance = calculate_maximum_distance
         while actual_dist < maximum_distance
@@ -91,12 +96,12 @@ habitat_suitability barren_land: 0,
 
           def select_forage_patch
             set_neighborhood
-            if neighborhood.empty?
-              face previous_patch
+            if self.neighborhood.empty?
+              face previous_location
             else
               # example for 'select' function:
               # vole_pop_neighborhood = neighborhood.select {tile.residue[:marten_id].nil? or tile.residue[:marten_id]==self.id}
-              face neighborhood.shuffle.max_by(&:vole_max_pop)
+              face self.neighborhood.shuffle.max_by(&:max_vole_pop)
 
             end  
           end
@@ -108,18 +113,19 @@ habitat_suitability barren_land: 0,
              # probability of kill in uncut forest 0.05 (calculated from Andruskiw's values; 0.8 kills/24 encounters)
              # probability of kill in 1 step = 1.52712 * 0.05 = 0.076356
              p_kill = 0.076356
-             
+             tile_here = self.world.resource_tile_at self.x, self.y 
              # modify p_kill based on vole population
-             if tile_here.vole_population < 1 #TODO need to access "tile_here" data
+             if tile_here.population[:vole_population] < 1 #TODO need to access "tile_here" data
                p_kill = 0
              else
                # discount p_kill based on proportion of vole capacity in patch
-               p_kill = (p_kill * (tile_here.vole_population / tile_here.vole_max_pop))
+               debugger
+               p_kill = (p_kill * (tile_here.population[:vole_population] / tile_here.vole_max_pop))
              end
 
              if rand > (1 - p_kill)
                energy = (energy + 140)
-               tile_here.vole_population = (tile_here.vole_population - 1)
+               tile_here.population[:vole_population] = (tile_here.population[:vole_population] - 1)
              end
 
            end
@@ -127,6 +133,7 @@ habitat_suitability barren_land: 0,
 
 
       def check_predation
+      puts "CHECK PREDATION ENERGY = #{energy}"
         if habitat_suitlability_for (tile.here) == 1 #TODO: double check this arg
           p_mort = Math.exp(Math.log(0.99897) / active_hours) # based on daily predation rates decomposed to hourly rates (from Thompson and Colgan (1994))
         else
@@ -140,12 +147,13 @@ habitat_suitability barren_land: 0,
 
 
 
- def metabolize
-      case day_of_year
+  def metabolize
+    puts "METABOLIZE ENERGY = #{energy}"
+    case day_of_year
       when 80..355
         energy -= 857 # field metabolic rate (above)
       else
-        energy -= 227 
+       energy -= 227 
     end
 
     if energy > MAX_ENERGY
@@ -156,11 +164,15 @@ habitat_suitability barren_land: 0,
 
 
   def check_death
+    puts "CHECK DEATH ENERGY = #{energy}"
     if energy < 0
       die
     end
   end
 
-
+  
+  def set_previous_location
+    previous_location = location
+  end
 
 end

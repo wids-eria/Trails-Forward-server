@@ -144,6 +144,14 @@ class ResourceTile < ActiveRecord::Base
     cover_types.invert[class_symbol.to_sym] || raise("Cover type #{class_symbol} not found")
   end
 
+  def max_vole_pop
+    if [41,42,43,90].include? self.landcover_class_code
+      10
+    else
+      0
+    end
+  end
+
   def location= coords
     self.x = coords[0]
     self.y = coords[1]
