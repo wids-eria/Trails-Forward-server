@@ -152,9 +152,20 @@ module TrailsForward
         tile_hash[col_with_trees] = determine_num_trees_from_tree_density tile_hash
       end
 
-      tile_hash[:zoning_code] = row_hash[:zoning]
-      tile_hash[:primary_use] = primary_use(tile_hash)
       tile_hash[:type] = tile_type(tile_hash)
+      tile_hash[:zoning_code] = row_hash[:zoning]      
+      tile_hash[:primary_use] = primary_use(tile_hash)
+
+      #work around noisy data
+      if tile_hash[:type] == "WaterTile"
+        tile_hash[:people_density] = 0
+        tile_hash[:housing_density] = 0
+        tile_hash[:development_intensity] = 0
+        tile_hash[:tree_density] = 0
+        tile_hash[:tree_size] = 0
+        tile_hash[:zoning_code] = 255
+      end
+      
       tile_hash
     end
 
@@ -321,7 +332,30 @@ module TrailsForward
         end
       end
 
+
+      puts("Calculating desirability")
+      #this shouldn't be necessary, but the importer doesn't do before_save callbacks
+      pb = progress_bar_class.new 'Local desirability scores', world.width * world.height
+      world.width.times do |x|
+        world.height.times do |y|
+          rt = world.resource_tile_at x, y
+          rt.update_local_desirability_score
+          rt.save!
+          pb.inc
+        end
+      end
+      
+      pb = progress_bar_class.new 'Total desirability scores', world.width * world.height
+      world.width.times do |x|
+        world.height.times do |y|
+          rt = world.resource_tile_at x, y
+          rt.update_total_desirability_score!
+          pb.inc
+        end
+      end
+
       WorldPresenter.new(world).save_png
     end
+  
   end
 end

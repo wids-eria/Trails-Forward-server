@@ -1,5 +1,6 @@
 class ResourceTile < ActiveRecord::Base
   include ResourceTileZoning
+  include LandScoring
   acts_as_api
 
   belongs_to :megatile
@@ -10,6 +11,7 @@ class ResourceTile < ActiveRecord::Base
   serialize :population, Hash
 
   after_save :invalidate_megatile_cache
+  before_save :update_local_desirability_score
 
   def self.dist
     @@dist ||= SimpleRandom.new
@@ -204,6 +206,10 @@ class ResourceTile < ActiveRecord::Base
       end
     end
   end
+  
+  def neighbors distance = 1
+    self.world.resource_tiles.within_rectangle :x_min => self.x - distance, :x_max => self.x + distance, :y_min => self.y - distance, :y_max => self.y + distance
+  end
 
   api_accessible :resource_base do |template|
     template.add :id
@@ -213,6 +219,8 @@ class ResourceTile < ActiveRecord::Base
     template.add :base_cover_type
     template.add :permitted_actions
     template.add :zone_type
+    template.add :local_desirability_score
+    template.add :total_desirability_score
   end
 
   api_accessible :resource_actions do |template|

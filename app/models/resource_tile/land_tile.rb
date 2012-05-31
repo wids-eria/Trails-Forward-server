@@ -328,6 +328,23 @@ class LandTile < ResourceTile
     totalprice
   end
 
+  def tree_count
+    count = 0
+    count += self.num_2_inch_diameter_trees  || 0
+    count += self.num_4_inch_diameter_trees  || 0
+    count += self.num_4_inch_diameter_trees  || 0
+    count += self.num_8_inch_diameter_trees  || 0
+    count += self.num_10_inch_diameter_trees || 0
+    count += self.num_12_inch_diameter_trees || 0
+    count += self.num_14_inch_diameter_trees || 0
+    count += self.num_16_inch_diameter_trees || 0
+    count += self.num_18_inch_diameter_trees || 0
+    count += self.num_20_inch_diameter_trees || 0
+    count += self.num_22_inch_diameter_trees || 0
+    count += self.num_24_inch_diameter_trees || 0
+    count
+  end
+
   api_accessible :resource, :extend => :resource_base do |template|
     template.add :primary_use
     template.add :zoning_code
