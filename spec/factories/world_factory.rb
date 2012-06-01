@@ -7,6 +7,7 @@ FactoryGirl.define do
     height 6
     megatile_width 3
     megatile_height 3
+    turn_started_at { DateTime.now }
   end
 
   factory :world_with_tiles, parent: :world do
