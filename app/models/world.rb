@@ -212,6 +212,8 @@ class World < ActiveRecord::Base
     template.add :created_at
     template.add :updated_at
     template.add :players, :template => :id_and_name
+    template.add :turn_started_at
+    template.add :current_turn
   end
 
 private

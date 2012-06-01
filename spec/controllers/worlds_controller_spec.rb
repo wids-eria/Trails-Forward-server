@@ -17,7 +17,18 @@ describe WorldsController do
     it 'returns time in seconds' do
       get :time_left_for_turn, id: world.id, format: 'json'
       response.should be_success
-      json["time_left"].should be_within(1.0).of(1499)
+      json["time_left"].should be_within(2.0).of(1499)
+    end
+  end
+
+  describe '#turn' do
+    it 'updates the turn if it can proceed' do
+      WorldTicker.any_instance.stubs(:can_process_turn? => true)
+      lambda {
+        put :turn, id: world.id, format: 'json'
+        response.should be_success
+        world.reload
+      }.should change(world, :current_turn)
     end
   end
 

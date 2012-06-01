@@ -85,4 +85,29 @@ class WorldsController < ApplicationController
     end
   end
 
+  def turn
+    world = World.find(params[:id])
+    authorize! :show_world, world
+
+    manager = WorldTicker.new world: world
+    can_proceed = manager.can_process_turn?
+
+    respond_to do |format|
+      if can_proceed
+        world.current_turn += 1
+        world.turn_started_at = DateTime.now
+
+        if world.save
+          format.xml  { render_for_api :world_without_tiles, :xml  => world }
+          format.json { render_for_api :world_without_tiles, :json => world, :root => :world  }
+        else
+          format.xml  { render :xml  => world.errors, :status => :unprocessable_entity }
+          format.json { render :json => world.errors, :status => :unprocessable_entity }
+        end
+      else
+        format.xml  { render  xml: {can_proceed: false} }
+        format.json { render json: {can_proceed: false} }
+      end
+    end
+  end
 end
