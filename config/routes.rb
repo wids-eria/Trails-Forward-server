@@ -9,11 +9,13 @@ TrailsForwardWorld::Application.routes.draw do
 
   resources :worlds, :only => [:index, :show] do
     member do
-      put :submit_turn
       get :time_left_for_turn
     end
 
     resources :players, :only => [:index, :show, :create], :controller => :world_players do
+      collection do
+        put :submit_turn
+      end
       get :bids_placed
       get :bids_received
     end

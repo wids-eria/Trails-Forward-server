@@ -72,4 +72,17 @@ class WorldsController < ApplicationController
   #     format.xml  { head :ok }
   #   end
   # end
+
+  def time_left_for_turn
+    world = World.find(params[:id])
+    authorize! :show_world, world
+
+    manager = WorldTicker.new world: world
+
+    respond_to do |format|
+      format.xml  { render  xml: {time_left: manager.time_left} }
+      format.json { render json: {time_left: manager.time_left} }
+    end
+  end
+
 end
