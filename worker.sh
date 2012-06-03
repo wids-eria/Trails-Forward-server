@@ -4,4 +4,4 @@
 rvm use 1.9.2
 
 cd /home/deploy/applications/trails_forward/current
-nice stalk lib/jobs/agent_tick.rb
+nice stalk lib/jobs/jobs.rb

@@ -22,7 +22,6 @@ end
 job 'batch.tick' do |args|
   agents = Agent.find args["agent_ids"]
   agents.each do |agent|
-    Rails.logger.info "*"*69
     agent.tick!
     tick_complete_stalk.put(agent.id)
   end
