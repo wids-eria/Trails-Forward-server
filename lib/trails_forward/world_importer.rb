@@ -136,6 +136,7 @@ module TrailsForward
 
       tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
       tile_hash[:housing_density] = housing_density_percent(row_hash[:housing_density].to_f)
+      tile_hash[:housing_capacity] = tile_hash[:housing_density] * 100
       tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
       tile_hash[:frontage] = row_hash[:frontage].to_f
       tile_hash[:lakesize] = row_hash[:lakesize].to_f
