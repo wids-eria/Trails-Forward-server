@@ -247,7 +247,7 @@ module TrailsForward
       pb.finish
 
       import_columns = [ :megatile_id, :x, :y, :type, :zoning_code, :world_id,
-                         :primary_use, :people_density, :housing_density,
+                         :primary_use, :people_density, :housing_density, :housing_capacity,
                          :tree_density, :development_intensity, :tree_size,
                          :imperviousness, :frontage, :lakesize, :soil,
                          :landcover_class_code, :num_2_inch_diameter_trees,
