@@ -25,6 +25,7 @@ gem 'state_machine'
 gem 'capistrano'
 gem 'capistrano-ext'
 gem 'factory_girl_rails'
+gem 'will_paginate'
 
 group :development, :test do
   gem 'sqlite3'

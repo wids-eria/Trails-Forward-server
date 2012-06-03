@@ -40,6 +40,8 @@ class ResourceTile < ActiveRecord::Base
   # scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
 
   scope :with_agents, include: [:agents]
+  
+  scope :most_desirable, order("total_desirability_score DESC")
 
   scope :in_square_range, lambda { |radius, x, y|
     x_min = (x - radius).floor
