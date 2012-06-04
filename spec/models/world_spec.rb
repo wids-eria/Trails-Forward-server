@@ -52,6 +52,20 @@ describe World do
 
     its(:current_date) { should == world.start_date + 1.day }
   end
+  
+  describe "#migrate_population_to_most_desirable_tiles!" do
+    let(:world) { create :world_with_resources, :width => 42, :height => 42 }
+    it "migrates people to the best spots" do
+      rt = world.resource_tile_at 2, 2
+      rt.total_desirability_score = 10
+      rt.housing_capacity = 42
+      rt.housing_occupants = 0
+      rt.save!
+      world.migrate_population_to_most_desirable_tiles! 1
+      rt.reload
+      rt.housing_occupants.should == 1
+    end
+  end
 
   context "world api" do
     let(:world) { build :world, start_date: Date.today - 10.days, current_date: Date.today }

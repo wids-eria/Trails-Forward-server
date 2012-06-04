@@ -119,19 +119,19 @@ module TrailsForward
     end
 
     def water_tile location, megatile_id
-      Factory.build :water_tile, world_id: id, location: location, megatile_id: megatile_id
+      FactoryGirl.build :water_tile, world_id: id, location: location, megatile_id: megatile_id
     end
 
     def deciduous_land_tile location, megatile_id
-      Factory.build :deciduous_land_tile, world_id: id, location: location, megatile_id: megatile_id
+      FactoryGirl.build :deciduous_land_tile, world_id: id, location: location, megatile_id: megatile_id
     end
 
     def deciduous_land_tile_variant location, megatile_id
-      Factory.build :deciduous_land_tile_variant, world_id: id, location: location, megatile_id: megatile_id
+      FactoryGirl.build :deciduous_land_tile_variant, world_id: id, location: location, megatile_id: megatile_id
     end
 
     def residential_land_tile location, megatile_id
-      Factory.build :residential_land_tile, world_id: id, location: location, megatile_id: megatile_id
+      FactoryGirl.build :residential_land_tile, world_id: id, location: location, megatile_id: megatile_id
     end
 
     def place_resources
