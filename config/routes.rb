@@ -7,13 +7,13 @@ TrailsForwardWorld::Application.routes.draw do
     resources :players, :only => [:index, :show, :update, :edit, :destroy]
   end
 
-  resources :worlds, :only => [:index, :show] do
+  resources :worlds, :only => [:index, :show, :update] do
     member do
       get :time_left_for_turn
       put :turn
     end
 
-    resources :players, :only => [:index, :show, :create], :controller => :world_players do
+    resources :players, :only => [:index, :create], :controller => :world_players do
       collection do
         put :submit_turn
       end

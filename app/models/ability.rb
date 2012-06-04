@@ -23,7 +23,9 @@ class Ability
     can :access_private_data, User, :id => user.id
 
     can :create_player, User
-    can :update_player, Player, :user_id => user.id
+    can :update_player, Player do
+      true
+    end
 
     can :index_user_players, :all
     can :show_player, :all
