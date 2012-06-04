@@ -223,6 +223,10 @@ class ResourceTile < ActiveRecord::Base
     template.add :zone_type
     template.add :local_desirability_score
     template.add :total_desirability_score
+    template.add :can_be_surveyed
+    template.add :is_surveyed
+    template.add :bought_by_developer
+    template.add :bought_by_timber_company
   end
 
   api_accessible :resource_actions do |template|

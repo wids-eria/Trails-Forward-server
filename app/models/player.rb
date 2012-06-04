@@ -36,6 +36,8 @@ class Player < ActiveRecord::Base
 
   api_accessible :player_private, :extend => :player_public do |template|
     template.add :balance
+    template.add :pending_balance
+    template.add :quest_points
   end
 
   api_accessible :player_private_with_megatiles, :extend => :player_private do |template|

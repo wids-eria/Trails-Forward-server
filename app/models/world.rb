@@ -214,6 +214,7 @@ class World < ActiveRecord::Base
     template.add :players, :template => :id_and_name
     template.add :turn_started_at
     template.add :current_turn
+    template.add :timber_count
   end
 
 private

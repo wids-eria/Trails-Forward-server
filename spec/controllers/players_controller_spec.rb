@@ -37,6 +37,8 @@ describe PlayersController do
                                         "type"=>"Lumberjack",
                                         "world_id"=>player.world.id,
                                         "world_name"=>player.world.name,
+                                        "quest_points"=>player.quest_points,
+                                        "pending_balance"=>player.pending_balance,
                                         "balance"=>player.balance} ] }
       end
     end
