@@ -11,6 +11,10 @@ class Ability
       true
     end
 
+    can :update_world, World do
+      true
+    end
+
     can :god_mode, ResourceTile do |tile, god_mode|
       god_mode == "iddqd"
     end

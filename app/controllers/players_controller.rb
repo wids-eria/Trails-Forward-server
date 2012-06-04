@@ -70,10 +70,12 @@ class PlayersController < ApplicationController
     respond_to do |format|
       if @player.update_attributes(params[:player])
         format.html { redirect_to(@player, :notice => 'Player was successfully updated.') }
-        format.xml  { head :ok }
+        format.xml  { render_for_api :player_private, :xml  => @player }
+        format.json { render_for_api :player_private, :json => @player }
       else
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @player.errors, :status => :unprocessable_entity }
+        format.xml  { render :xml  => @player.errors, :status => :unprocessable_entity }
+        format.json { render :json => @player.errors, :status => :unprocessable_entity }
       end
     end
   end

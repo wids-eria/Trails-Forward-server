@@ -49,19 +49,22 @@ class WorldsController < ApplicationController
   #   end
   # end
   #
-  # def update
-  #   @world = World.find(params[:id])
-  #
-  #   respond_to do |format|
-  #     if @world.update_attributes(params[:world])
-  #       format.html { redirect_to(@world, :notice => 'World was successfully updated.') }
-  #       format.xml  { head :ok }
-  #     else
-  #       format.html { render :action => "edit" }
-  #       format.xml  { render :xml => @world.errors, :status => :unprocessable_entity }
-  #     end
-  #   end
-  # end
+
+  def update
+    @world = world.find(params[:id])
+    authorize! :update_world, @world
+
+    respond_to do |format|
+      if @world.update_attributes(params[:world])
+        format.xml  { render_for_api :world_private, :xml  => @world }
+        format.json { render_for_api :world_private, :json => @world }
+      else
+        format.xml  { render :xml  => @world.errors, :status => :unprocessable_entity }
+        format.json { render :json => @world.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
   #
   # def destroy
   #   @world = World.find(params[:id])
