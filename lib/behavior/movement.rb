@@ -5,13 +5,15 @@ module Behavior
     end
 
     def walk_forward distance
-      offset = self.class.calculate_offset_coordinates self.heading, distance 
-      self.x += offset[0]
-      self.y += offset[1]
+      offset = self.class.calculate_offset_coordinates self.heading, distance    
+      location = [self.x + offset[0], self.y + offset[1]]
+      #self.x += offset[0]
+      #self.y += offset[1]
     end
 
     def turn degrees
       self.heading += degrees
+      self.heading %= 360
     end
 
     def position_after_move distance

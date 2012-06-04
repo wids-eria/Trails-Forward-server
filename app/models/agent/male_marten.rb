@@ -7,7 +7,6 @@ class MaleMarten < Marten
     check_death
     metabolize
     self.age += 1
-    set previous_location
   end
 
 
@@ -17,11 +16,16 @@ class MaleMarten < Marten
       def move_one_patch
         marten_turn
         target = patch_ahead 1
+        puts "TARGET = #{target.x}, #{target.y}"
         self.neighborhood = nearby_tiles :radius => 1
+        #TODO: removes current tile from neighborhood - not sure if this approach is best, but otherwise will blow up 'face' atan2 function if move target = current tile
+        tile_here = self.world.resource_tile_at self.x, self.y 
+        self.neighborhood.delete_if{|tile| tile.id == tile_here.id}
 
         
         # check scent of patch ahead to see if it's someone else's
-        if (target.residue[:marten_id].nil? or target.residue[:marten_id]==self.id)
+        # if near edge of world, target = nil
+        if target.nil? == false and (target.residue.empty? or target.residue[:marten_id]==self.id)
           
           if habitat_suitability_for (target) == 1
             walk_forward 1
@@ -48,7 +52,7 @@ class MaleMarten < Marten
       def marten_turn
         # different turn methods
         # random
-          turn rand(361)
+          turn rand(360)
         #  correlated +
         #  turn self.normal_dist 0 self.turn_sd
         # correlated - 

@@ -24,7 +24,7 @@ class Marten < Agent
   # energy = max_energy #TODO: only during initialization
 
 # NEED TO ADD PERSISTENT VARIABLES:
-  attr_accessor :age, :energy, :neighborhood, :previous_location #TODO: make this set previous x and y
+  attr_accessor :age, :energy, :neighborhood, :previous_location, :active_hours #TODO: make this set previous x and y
  
   
 
@@ -56,15 +56,14 @@ habitat_suitability open_water: 0,
     active_hours = 0 #TODO: WTF IS THIS DOING??? 
     case day_of_year 
       when 80..355
-        active_hours = 12
+        self.active_hours = 12
       else
-        active_hours = 8
+        self.active_hours = 8
     end
     while h < active_hours
+      puts "hour = #{h}"
       force_move_distance
-      check_predation
       h += 1
-      set_previous_location
     end
   end
 
@@ -74,9 +73,14 @@ habitat_suitability open_water: 0,
       puts "FORCE_MOVE_DISTANCE ENERGY = #{energy}"
         actual_dist = 0
         maximum_distance = calculate_maximum_distance
+        puts "Max Dist = #{maximum_distance}"
         while actual_dist < maximum_distance
+          puts "ACTUAL DIST = #{actual_dist}"
           move_one_patch
           hunt
+          check_predation
+          set_previous_location
+          puts "LOCATION = #{location}"
           actual_dist += 1
           if energy > MAX_ENERGY * 1.5
             set energy MAX_ENERGY
@@ -101,9 +105,16 @@ habitat_suitability open_water: 0,
             else
               # example for 'select' function:
               # vole_pop_neighborhood = neighborhood.select {tile.residue[:marten_id].nil? or tile.residue[:marten_id]==self.id}
-              face self.neighborhood.shuffle.max_by(&:max_vole_pop)
+              begin
+                # occasionally chooses current location, blows up atan2 in 'face'
+                new_target = self.neighborhood.shuffle.max_by(&:max_vole_pop)
+                face new_target
+              rescue
+                debugger
+              end
 
-            end  
+            end 
+            puts "forage patche selected"
           end
 
 
@@ -115,29 +126,32 @@ habitat_suitability open_water: 0,
              p_kill = 0.076356
              tile_here = self.world.resource_tile_at self.x, self.y 
              # modify p_kill based on vole population
-             if tile_here.population[:vole_population] < 1 #TODO need to access "tile_here" data
-               p_kill = 0
-             else
-               # discount p_kill based on proportion of vole capacity in patch
+             begin
+               if tile_here.population[:vole_population] < 1 #TODO need to access "tile_here" data
+                 p_kill = 0
+               else
+                 # discount p_kill based on proportion of vole capacity in patch
+                 p_kill = (p_kill * (tile_here.population[:vole_population] / tile_here.max_vole_pop))
+               end
+             rescue
                debugger
-               p_kill = (p_kill * (tile_here.population[:vole_population] / tile_here.vole_max_pop))
              end
-
              if rand > (1 - p_kill)
-               energy = (energy + 140)
+               self.energy += 140
                tile_here.population[:vole_population] = (tile_here.population[:vole_population] - 1)
              end
+             puts "hunt completed"
 
            end
 
 
 
       def check_predation
-      puts "CHECK PREDATION ENERGY = #{energy}"
-        if habitat_suitlability_for (tile.here) == 1 #TODO: double check this arg
-          p_mort = Math.exp(Math.log(0.99897) / active_hours) # based on daily predation rates decomposed to hourly rates (from Thompson and Colgan (1994))
+        puts "CHECK PREDATION ENERGY = #{energy}"
+        if habitat_suitability_for (self.world.resource_tile_at self.x, self.y) == 1 #TODO: double check this arg
+          p_mort = Math.exp(Math.log(0.99897) / self.active_hours) # based on daily predation rates decomposed to hourly rates (from Thompson and Colgan (1994))
         else
-          p_mort = Math.exp(Math.log(0.99555) / active_hours)
+          p_mort = Math.exp(Math.log(0.99555) / self.active_hours)
         end
 
         if rand > p_mort 
@@ -149,11 +163,13 @@ habitat_suitability open_water: 0,
 
   def metabolize
     puts "METABOLIZE ENERGY = #{energy}"
+    puts 'METABOLIZE ENERGY = #{energy}'
+    puts "METABOLIZE ENERGY = #{energy}"
     case day_of_year
       when 80..355
-        energy -= 857 # field metabolic rate (above)
+        self.energy -= 857 # field metabolic rate (above)
       else
-       energy -= 227 
+        self.energy -= 227 
     end
 
     if energy > MAX_ENERGY

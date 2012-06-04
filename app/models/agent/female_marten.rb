@@ -8,7 +8,6 @@ class FemaleMarten < Marten
     metabolize
     attempt_reproduction
     self.age += 1
-    set previous_location
   end
 
 
