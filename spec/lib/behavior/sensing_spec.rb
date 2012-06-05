@@ -20,7 +20,7 @@ end
 
 describe Agent do
   let(:agent) { Agent.new }
-  its(:max_view_distance) { should == 0 }
+  its(:max_view_distance) { should == 10 }
 
   describe '#tile_utility' do
     it 'defaults to 0.5' do

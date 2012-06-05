@@ -6,9 +6,9 @@ module Behavior
 
     def walk_forward distance
       offset = self.class.calculate_offset_coordinates self.heading, distance    
-      location = [self.x + offset[0], self.y + offset[1]]
       #self.x += offset[0]
       #self.y += offset[1]
+      self.location = [self.x + offset[0], self.y + offset[1]]
     end
 
     def turn degrees
@@ -46,7 +46,7 @@ module Behavior
 
     def face tile
       from_location = location
-      to_location = [tile.x, tile.y]
+      to_location = [tile.x + 0.5, tile.y+ 0.5]
       self.heading = ((Math.atan2(to_location[1] - from_location[1], to_location[0] - from_location[0]) * (180/Math::PI)) + 90) % 360
     end
 
@@ -57,9 +57,9 @@ module Behavior
 
     module ClassMethods
       def calculate_offset_coordinates heading, distance
-        heading_in_radians = heading * (Math::PI / 180.0)
-        x_offset = (distance * Math.sin(heading_in_radians)).round(2)
-        y_offset = (distance * Math.cos(heading_in_radians)).round(2)
+        heading_in_radians = (360 - heading) * (Math::PI / 180.0)
+        x_offset = -(distance * Math.sin(heading_in_radians)).round(2)
+        y_offset = -(distance * Math.cos(heading_in_radians)).round(2)
         [x_offset, y_offset]
       end
 

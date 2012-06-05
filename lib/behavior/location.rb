@@ -1,8 +1,14 @@
 module Behavior
   module Location
     def location= coords
-      self.x, self.y = coords
-      self.resource_tile = world.resource_tile_at(self.x.floor, self.y.floor)
+      #begin
+        #puts "LOC: #{x} #{y}"
+        self.x, self.y = coords
+        self.resource_tile = world.resource_tile_at(self.x.floor, self.y.floor)
+      #rescue Exception => e
+      #  puts "IN LOCATION"
+      #  debugger
+      #end
     end
 
     def location

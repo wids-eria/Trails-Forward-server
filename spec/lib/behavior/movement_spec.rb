@@ -18,7 +18,7 @@ describe MovingAgent do
   let(:agent) { MovingAgent.new x: 0, y: 0 }
   subject { agent }
 
-  it { should be_move }
+  #it { should be_move }
   describe '#move' do
     before do
       agent.stubs(:world => stub('resource_tile_at', :resource_tile_at => ResourceTile.new(x: agent.x.floor, y: agent.y.floor)))
@@ -35,5 +35,15 @@ describe MovingAgent do
     end
     
     its(:location) { should == [1, 2]}
+  end
+
+  describe '#walk_forward 90 degree heading' do 
+    let(:agent) { build :agent}
+    before do
+      agent.heading = 90
+      agent.walk_forward 1
+    end
+    
+    its(:location) { should == [2, 1]}
   end
 end
