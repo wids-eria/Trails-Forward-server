@@ -15,8 +15,9 @@ class MaleMarten < Marten
   # sex-specific sub-routines that feed into move_one_patch function 
       def move_one_patch
         marten_turn
-        target = patch_ahead 1
-        puts "TARGET = #{target.x}, #{target.y}"
+        self.target = patch_ahead 1
+        #debugger
+        #puts "TARGET = #{target.inspect}"
         self.neighborhood = nearby_tiles :radius => 1
         #TODO: removes current tile from neighborhood - not sure if this approach is best, but otherwise will blow up 'face' atan2 function if move target = current tile
         tile_here = self.world.resource_tile_at self.x, self.y 
@@ -25,26 +26,36 @@ class MaleMarten < Marten
         
         # check scent of patch ahead to see if it's someone else's
         # if near edge of world, target = nil
-        if target.nil? == false and (target.residue.empty? or target.residue[:marten_id]==self.id)
-          
-          if habitat_suitability_for (target) == 1
-            walk_forward 1
-          else
+        #if target.nil? == true
+        #  debugger
+        #end
+        if self.target.nil?
+          select_forage_patch
+        elsif target.residue[:marten_id].nil? || target.residue[:marten_id]==self.id
+          if habitat_suitability_for(self.target) != 1
           # entrance probability a function of hunger
             modified_patch_entrance_probability = (PATCH_ENTRANCE_PROBABILITY * (1 - (self.energy / MAX_ENERGY))) 
-            if rand < modified_patch_entrance_probability
-              walk_forward 1
-            else
+            if rand > modified_patch_entrance_probability
               select_forage_patch 
-              walk_forward 1
+              #puts "suitability of target = #{habitat_suitability_for(target)}"
+              #puts "target residue empty? = #{target.residue.empty?}"
+              #puts "target residue mine? = #{target.residue[:marten_id]==self.id}"
+              #puts "selected forage patch"
             end
           end
         else
           modified_patch_entrance_probability = (PATCH_ENTRANCE_PROBABILITY * (1 - (self.energy / MAX_ENERGY))) 
-          if rand < modified_patch_entrance_probability
-            walk_forward 1
+          if rand > modified_patch_entrance_probability
+            select_forage_patch
           end
         end
+        #puts "-" * 30
+        #puts "previous location = #{previous_location}"
+        #puts "current location = #{self.location}"
+        #puts "heading = #{self.heading}"
+        #puts "target = #{self.target}"
+        face self.target
+        walk_forward 1
       end
 
 

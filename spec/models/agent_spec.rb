@@ -348,7 +348,43 @@ describe Agent do
 
       context 'passed a distance of 1' do
         let(:distance) { 1 }
-        it { should == [0.71, 0.71] }
+        it { should == [0.71, -0.71] }
+      end
+    end
+    
+    context 'with heading 90' do
+      let(:heading) { 90 }
+
+      context 'passed a distance of 1' do
+        let(:distance) { 1 }
+        it { should == [1, 0] }
+      end
+    end
+    
+    context 'with heading 180' do
+      let(:heading) { 180 }
+
+      context 'passed a distance of 1' do
+        let(:distance) { 1 }
+        it { should == [0, 1] }
+      end
+    end
+    
+    context 'with heading 270' do
+      let(:heading) { 270 }
+
+      context 'passed a distance of 1' do
+        let(:distance) { 1 }
+        it { should == [-1, 0] }
+      end
+    end
+    
+    context 'with heading 360' do
+      let(:heading) { 360 }
+
+      context 'passed a distance of 1' do
+        let(:distance) { 1 }
+        it { should == [0, -1] }
       end
     end
   end

@@ -16,22 +16,25 @@ class FemaleMarten < Marten
   # sex-specific sub-routines that feed into move_one_patch function 
       def move_one_patch
         marten_turn
-        target = patch_ahead 1
-        neighborhood = nearby_tiles 1
-        
-          
-        if habitat_suitability_for (target) == 1
-          walk_forward 1
+        self.target = patch_ahead 1
+        self.neighborhood = nearby_tiles :radius => 1  #TODO: apparently this doesn't work for females
+        #puts "Neighborhood size = #{self.neighborhood.length}"
+        tile_here = self.world.resource_tile_at self.x, self.y 
+        self.neighborhood.delete_if{|tile| tile.id == tile_here.id}
+
+        if self.target.nil?
+          select_forage_patch
+        elsif habitat_suitability_for(self.target) == 1
         else
         # entrance probability a function of hunger
-          modified_patch_entrance_probability = (PATCH_ENTRANCE_PROBABILITY * (1 - (self.energy / MAX-ENERGY))) 
+          modified_patch_entrance_probability = (PATCH_ENTRANCE_PROBABILITY * (1 - (self.energy / MAX_ENERGY))) 
           if rand < modified_patch_entrance_probability
-            walk_forward 1
           else
             select_forage_patch 
-            walk_forward 1
           end
         end
+        face self.target
+        walk_forward 1
       end
 
 
@@ -41,7 +44,7 @@ class FemaleMarten < Marten
             # random
             #  turn rand(361)
             #  correlated +
-              turn self.normal_dist(mean = 0, std = TURN_SD)
+              turn Agent.normal_dist std = TURN_SD, mean = 0
             # correlated - 
             # turn self.normal_dist 180 self.turn_sd
           end
@@ -50,7 +53,7 @@ class FemaleMarten < Marten
 
       def set_neighborhood
         # determine surrounding tiles that are "suitable"
-        neighborhood = nearby_tiles.select {|tile| habitat_suitlability_for(tile) == 1} #TODO: have to check approach to selecting 'suitable' tiles in neighborhood
+        self.neighborhood = self.neighborhood.select {|tile| habitat_suitability_for(tile) == 1}
       end
 
 
