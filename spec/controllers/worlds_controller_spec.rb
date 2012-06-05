@@ -15,6 +15,7 @@ describe WorldsController do
 
   describe '#time_left_for_turn' do
     it 'returns time in seconds' do
+      WorldTicker.any_instance.stubs(:turn_duration => 30.minutes)
       get :time_left_for_turn, id: world.id, format: 'json'
       response.should be_success
       json["time_left"].should be_within(2.0).of(1499)

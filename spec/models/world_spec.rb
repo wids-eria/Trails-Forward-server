@@ -84,4 +84,18 @@ describe World do
     end
   end
 
+  context "when there are houses and people" do
+    describe "#human_population" do
+      it "returns sum of people on all tiles"
+    end
+
+    describe "#livable_tiles_count" do
+      it "returns count of tiles that have housing capacity"
+    end
+  end
+
+  describe "#marten_population" do
+    it "returns count of martens in the world"
+  end
+
 end
