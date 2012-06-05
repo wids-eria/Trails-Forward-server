@@ -24,6 +24,8 @@ class World < ActiveRecord::Base
   validates :start_date, :presence => true
   validates :current_date, :presence => true
 
+  validates :turn_started_at, :presence => true
+
   validate :world_dimensions_are_consistent
 
   def manager
