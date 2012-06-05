@@ -7,6 +7,10 @@ describe WorldTicker do
   let(:player3) { create :developer  }
   let(:world)   { create :world, players: [player1, player2, player3] }
 
+  before do
+    world_ticker.turn_duration = 30.minutes
+  end
+
   context 'when time not elapsed' do
     let(:now) { DateTime.now }
 

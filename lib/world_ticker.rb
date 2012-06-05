@@ -1,8 +1,9 @@
 class WorldTicker
-  attr_accessor :world
+  attr_accessor :world, :turn_duration
 
   def initialize options = {}
     self.world = options[:world]
+    self.turn_duration = 5.minutes
   end
 
   def can_process_turn?
@@ -21,6 +22,6 @@ class WorldTicker
   end
 
   def elapse_time
-    world.turn_started_at.to_datetime + 30.minutes
+    world.turn_started_at.to_datetime + turn_duration
   end
 end
