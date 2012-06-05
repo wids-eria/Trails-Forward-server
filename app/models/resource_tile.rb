@@ -227,6 +227,8 @@ class ResourceTile < ActiveRecord::Base
     template.add :is_surveyed
     template.add :bought_by_developer
     template.add :bought_by_timber_company
+    template.add :outpost_requested
+    template.add :survey_requested
   end
 
   api_accessible :resource_actions do |template|
