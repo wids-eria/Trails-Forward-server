@@ -88,7 +88,8 @@ class Ability
     end
     
     can :build_outpost, ResourceTile do |rt|
-      rt.world.player_for_user(user).class == Developer &&
+      #TODO: put this back
+      #rt.world.player_for_user(user).class == Developer &&
       rt.landcover_class_code == 21 &&
       rt.zoning_code >= 3 && ![6,10,16, 255].include?(rt.zoning_code)
     end
