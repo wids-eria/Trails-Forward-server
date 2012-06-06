@@ -55,6 +55,7 @@ TrailsForwardWorld::Application.routes.draw do
         post :bulldoze
         post :clearcut
         post :build
+        post :build_outpost
       end
 
       collection do

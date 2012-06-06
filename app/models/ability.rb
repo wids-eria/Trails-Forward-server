@@ -86,6 +86,12 @@ class Ability
     can :bulldoze, ResourceTile do |rt|
       rt.megatile.world.player_for_user(user) == rt.megatile.owner
     end
+    
+    can :build_outpost, ResourceTile do |rt|
+      rt.world.player_for_user(user).class == Developer &&
+      rt.landcover_class_code == 21 &&
+      rt.zoning_code >= 3 && ![6,10,16, 255].include?(rt.zoning_code)
+    end
 
     can :clearcut, ResourceTile do |rt|
       player = rt.megatile.world.player_for_user(user)

@@ -145,6 +145,27 @@ describe ResourceTilesController do
     end
   end
 
+
+  describe '#build_outpost' do
+    let(:world) { create :world_with_tiles }
+    let(:player) { create :developer, world: world }
+    let(:user) { player.user }
+    
+    it 'makes the tiles around it surveyable' do
+      rt = world.resource_tile_at 1,1
+      rt.landcover_class_code = 21
+      rt.zoning_code = 4
+      rt.save!
+      megatile = rt.megatile
+      megatile.owner = player
+      megatile.save!
+      
+      post 'build_outpost', world_id: world.to_param, id: rt.id, format: 'json', god_mode: 'iddqd'
+
+      response.body.should have_content('tiles')
+    end
+  end
+  
   describe '#bulldoze' do
     let(:action) { :bulldoze }
     it_should_behave_like "resource tile changing action"

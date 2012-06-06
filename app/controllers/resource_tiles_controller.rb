@@ -87,6 +87,24 @@ class ResourceTilesController < ApplicationController
     end
   end
 
+  def build_outpost
+    authorize! :build_outpost, resource_tile
+    resource_tile.outpost = true
+    resource_tile.save!
+    
+    tiles = resource_tile.neighbors 20
+    tiles.each do |rt|
+      if rt.class == LandTile 
+        rt.can_be_surveyed = true
+        rt.save!
+      end
+    end
+    respond_to do |format|
+      format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :tiles  }
+      format.json { render_for_api :resource, :json => resource_tiles, :root => :tiles  }
+    end
+  end
+
 
   # TODO move the double logic into cancan, so it calls tiles can_bulldoze?
   def bulldoze_list
