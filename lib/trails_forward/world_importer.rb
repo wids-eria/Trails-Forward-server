@@ -355,8 +355,10 @@ module TrailsForward
         end
       end
 
+      world.update_marten_suitable_tile_count
+      world.save!
+
       WorldPresenter.new(world).save_png
     end
-  
   end
 end

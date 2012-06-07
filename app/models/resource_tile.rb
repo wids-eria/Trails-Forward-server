@@ -42,6 +42,9 @@ class ResourceTile < ActiveRecord::Base
   scope :with_agents, include: [:agents]
   
   scope :most_desirable, order("total_desirability_score DESC")
+  
+  MARTEN_SUITABLE_CLASS_CODES = [41,42,43,91]
+  scope :marten_suitable, where(:landcover_class_code => MARTEN_SUITABLE_CLASS_CODES)
 
   scope :in_square_range, lambda { |radius, x, y|
     x_min = (x - radius).floor
@@ -229,6 +232,7 @@ class ResourceTile < ActiveRecord::Base
     template.add :bought_by_timber_company
     template.add :outpost_requested
     template.add :survey_requested
+    template.add lambda{|rt| rt.is_marten_suitable?}, :as => :is_marten_suitable
   end
 
   api_accessible :resource_actions do |template|
@@ -289,5 +293,9 @@ class ResourceTile < ActiveRecord::Base
 
   def invalidate_megatile_cache
     megatile.invalidate_cache
+  end
+  
+  def is_marten_suitable?
+    MARTEN_SUITABLE_CLASS_CODES.include? self.landcover_class_code
   end
 end

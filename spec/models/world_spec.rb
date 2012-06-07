@@ -95,7 +95,11 @@ describe World do
   end
 
   describe "#marten_population" do
-    it "returns count of martens in the world"
+    let(:world) { create :world_with_resources, :width => 9, :height => 9 }
+    it "returns count of martens in the world" do
+      world.update_marten_suitable_tile_count
+      world.marten_suitable_tile_count.should == world.resource_tiles.marten_suitable.count
+    end
   end
 
 end
