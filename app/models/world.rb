@@ -230,7 +230,8 @@ class World < ActiveRecord::Base
   end
 
   def update_marten_suitable_tile_count
-    self.marten_suitable_tile_count = resource_tiles.marten_suitable.count
+    #self.marten_suitable_tile_count = resource_tiles.marten_suitable.count
+    self.marten_suitable_tile_count = resource_tiles.where(:marten_suitability => 1).count
   end
 
   def human_population
@@ -241,6 +242,18 @@ class World < ActiveRecord::Base
     resource_tiles.where('housing_capacity > 0').count
   end
 
+  def update_marten_suitability
+    self.resource_tiles.each do |tile| 
+      tile.calculate_marten_suitability
+      tile.save
+    end
+  end
+  
+  def update_marten_suitability_and_count_of_suitable_tiles
+    update_marten_suitability
+    update_marten_suitable_tile_count
+  end
+  
   api_accessible :world_without_tiles do |template|
     template.add :id
     template.add :name

@@ -104,10 +104,17 @@ describe World do
   end
 
   describe "#marten_population" do
-    let(:world) { create :world_with_resources, :width => 9, :height => 9 }
+    let!(:world) {create :world}
+    let!(:tile_1) {create :deciduous_land_tile, :num_24_inch_diameter_trees => 12, :num_20_inch_diameter_trees => 10, :world => world}
+    let!(:tile_2) {create :deciduous_land_tile, :num_24_inch_diameter_trees => 12, :num_20_inch_diameter_trees => 10, :world => world}
+    let!(:tile_3) {create :deciduous_land_tile, :num_24_inch_diameter_trees => 12, :num_20_inch_diameter_trees => 10, :world => world}
+    let!(:tile_4) {create :deciduous_land_tile, :world => world}
+
     it "returns count of martens in the world" do
+      #debugger
+      world.update_marten_suitability
       world.update_marten_suitable_tile_count
-      world.marten_suitable_tile_count.should == world.resource_tiles.marten_suitable.count
+      world.marten_suitable_tile_count.should == 3
     end
   end
 

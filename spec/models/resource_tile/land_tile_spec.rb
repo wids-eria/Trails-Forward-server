@@ -520,4 +520,30 @@ describe LandTile do
       end
     end
   end
+
+  context "assess marten suitability" do
+    let(:tile) { build :deciduous_land_tile }
+
+    before do
+      tile.num_2_inch_diameter_trees  = 2
+      tile.num_4_inch_diameter_trees  = 4
+      tile.num_6_inch_diameter_trees  = 6
+      tile.num_8_inch_diameter_trees  = 8
+      tile.num_10_inch_diameter_trees = 10
+      tile.num_12_inch_diameter_trees = 12
+      tile.num_14_inch_diameter_trees = 14
+      tile.num_16_inch_diameter_trees = 16
+      tile.num_18_inch_diameter_trees = 18
+      tile.num_20_inch_diameter_trees = 20
+      tile.num_22_inch_diameter_trees = 22
+      tile.num_24_inch_diameter_trees = 24
+    end
+
+
+    describe '#assess suitability' do
+      it 'checks the suitability of a tile for marten' do
+        tile.calculate_marten_suitability.should == 1
+      end
+    end
+  end
 end

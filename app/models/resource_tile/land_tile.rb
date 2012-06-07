@@ -285,6 +285,22 @@ class LandTile < ResourceTile
     end
   end
 
+  def calculate_marten_suitability
+    if [41,42,43,91].include? self.landcover_class_code
+      size_array = self.collect_tree_size_counts
+      if size_array[0,5].sum < size_array[6,11].sum
+        self.marten_suitability = 1
+      else
+        self.marten_suitability = 0
+      end
+    else self.marten_suitability = 0
+    end
+    #puts "Marten Suitability = #{marten_suitability}"
+  end
+
+
+
+
   def estimated_value
     # MatLab equation:
     # lntotalprice=bdum.*coeff(1,1)+lntotalacres.*coeff(1,2)+lntot2.*coeff(1,3)+lnfrontage.*coeff(1,4)+lnf2.*coeff(1,5)+lnlakesize.*coeff(1,6);
