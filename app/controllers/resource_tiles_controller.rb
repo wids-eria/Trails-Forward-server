@@ -89,19 +89,21 @@ class ResourceTilesController < ApplicationController
 
   def build_outpost
     authorize! :build_outpost, resource_tile
-    resource_tile.outpost = true
-    resource_tile.save!
     
-    tiles = resource_tile.neighbors 20
-    tiles.each do |rt|
-      if rt.class == LandTile 
-        rt.can_be_surveyed = true
-        rt.save!
+    tiles = resource_tile.neighbors(20)
+    tiles.update_all(:can_be_surveyed => true)
+
+    resource_tile.reload
+    resource_tile.outpost = true
+
+    if resource_tile.save      
+      respond_to do |format|
+        format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :resource_tiles  }
+        format.json { render_for_api :resource, :json => resource_tiles, :root => :resource_tiles  }
       end
-    end
-    respond_to do |format|
-      format.xml  { render_for_api :resource, :xml  => resource_tiles, :root => :tiles  }
-      format.json { render_for_api :resource, :json => resource_tiles, :root => :tiles  }
+    else
+      format.xml  { render :xml =>  resource_tile.errors, :status => :unprocessable_entity }
+      format.json { render :json => resource_tile.errors, :status => :unprocessable_entity }
     end
   end
 
