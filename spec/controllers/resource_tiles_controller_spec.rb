@@ -162,7 +162,7 @@ describe ResourceTilesController do
       
       post 'build_outpost', world_id: world.to_param, id: rt.id, format: 'json', god_mode: 'iddqd'
 
-      response.body.should have_content('tiles')
+      response.body.should have_content('resource_tiles')
     end
   end
   
