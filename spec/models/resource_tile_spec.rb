@@ -122,9 +122,4 @@ describe ResourceTile do
       tile.population.should == {voles: 123}
     end
   end
-
-
-  describe '#marten_population' do
-    it 'returns count of martens on tile'
-  end
 end
