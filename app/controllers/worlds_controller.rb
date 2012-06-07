@@ -51,7 +51,7 @@ class WorldsController < ApplicationController
   #
 
   def update
-    @world = world.find(params[:id])
+    @world = World.find(params[:id])
     authorize! :update_world, @world
 
     respond_to do |format|
