@@ -1,5 +1,5 @@
 require 'spec_helper'
-
+=begin
 describe MaleMarten do
  let(:male_marten) {create :male_marten} 
  it 'ticks' do
@@ -13,5 +13,6 @@ describe FemaleMarten do
    female_marten.tick
  end
 end
+=end
 
 
