@@ -85,12 +85,21 @@ describe World do
   end
 
   context "when there are houses and people" do
+    let!(:world) { create :world  }
+    let!(:tile1) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 0 }
+    let!(:tile2) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 5 }
+    let!(:tile3) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 5 }
+    let!(:tile4) { create :resource_tile, world: world, housing_capacity: 0 }
     describe "#human_population" do
-      it "returns sum of people on all tiles"
+      it "returns sum of people on all tiles" do
+        world.human_population.should == 10
+      end
     end
 
     describe "#livable_tiles_count" do
-      it "returns count of tiles that have housing capacity"
+      it "returns count of tiles that have housing capacity" do
+        world.livable_tiles_count.should == 3
+      end
     end
   end
 

@@ -233,6 +233,14 @@ class World < ActiveRecord::Base
     self.marten_suitable_tile_count = resource_tiles.marten_suitable.count
   end
 
+  def human_population
+    resource_tiles.sum(:housing_occupants)
+  end
+
+  def livable_tiles_count
+    resource_tiles.where('housing_capacity > 0').count
+  end
+
   api_accessible :world_without_tiles do |template|
     template.add :id
     template.add :name
@@ -249,6 +257,8 @@ class World < ActiveRecord::Base
     template.add :current_turn
     template.add :timber_count
     template.add :marten_suitable_tile_count
+    template.add :human_population
+    template.add :livable_tiles_count
   end
 
 private
