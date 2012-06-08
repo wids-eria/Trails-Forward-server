@@ -48,9 +48,16 @@ module TrailsForward
       density / 100.0
     end
 
+#    def self.housing_density_percent density
+#      case density
+#      when 1..6 then (2 ** (density + 1)) / 128.0
+#      else 0.0
+#      end
+#    end
+
     def self.housing_density_percent density
       case density
-      when 1..6 then (2 ** (density + 1)) / 128.0
+      when 1..10 then (density / 10)
       else 0.0
       end
     end
@@ -136,7 +143,7 @@ module TrailsForward
 
       tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
       tile_hash[:housing_density] = housing_density_percent(row_hash[:housing_density].to_f)
-      tile_hash[:housing_capacity] = tile_hash[:housing_density] * 100
+      tile_hash[:housing_capacity] = housing_density_percent(row_hash[:house_count].to_f) * 100
       tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
       tile_hash[:frontage] = row_hash[:frontage].to_f
       tile_hash[:lakesize] = row_hash[:lakesize].to_f
@@ -197,6 +204,7 @@ module TrailsForward
                       :col => header.index("COL"),
                       :cover_class => header.index("LANDCOV2001"),
                       :imperviousness => header.index("IMPERV%2001"),
+                      :house_count => header.index("HOUSES1996"),
                       :housing_density => header.index("HDEN00"),
                       :forest_density => header.index("CANOPY%2001"),
                       :frontage => header.index("FRONTAGE"),
@@ -293,15 +301,15 @@ module TrailsForward
       # end
       # pb.finish
 
-      pb = progress_bar_class.new 'Players', PLAYER_TYPES.count
-      PLAYER_TYPES.each_with_index do |player_klass, idx|
-        user = Factory :user,
-          name: "User #{world_id}-#{idx}",
-          email: "u#{world.id}-#{idx}@example.com"
-        player = player_klass.create :user => user, :world => world, :balance => 1000
-        pb.inc
-      end
-      pb.finish
+#     pb = progress_bar_class.new 'Players', PLAYER_TYPES.count
+#     PLAYER_TYPES.each_with_index do |player_klass, idx|
+#       user = Factory :user,
+#         name: "User #{world_id}-#{idx}",
+#         email: "u#{world.id}-#{idx}@example.com"
+#       player = player_klass.create :user => user, :world => world, :balance => 1000
+#       pb.inc
+#     end
+#     pb.finish
 
       puts("##{world_id} - #{name} generated".green) if show_progress
       

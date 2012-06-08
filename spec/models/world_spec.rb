@@ -109,12 +109,14 @@ describe World do
     let!(:tile_2) {create :deciduous_land_tile, :num_24_inch_diameter_trees => 12, :num_20_inch_diameter_trees => 10, :world => world}
     let!(:tile_3) {create :deciduous_land_tile, :num_24_inch_diameter_trees => 12, :num_20_inch_diameter_trees => 10, :world => world}
     let!(:tile_4) {create :deciduous_land_tile, :world => world}
-
+    let!(:tile_5) {create :deciduous_land_tile_variant, :world => world}
+    let!(:tile_6) {create :deciduous_land_tile_variant, :num_18_inch_diameter_trees => 0, :num_20_inch_diameter_trees => 0, :num_22_inch_diameter_trees => 0, :num_24_inch_diameter_trees => 0, :world => world}
+  
     it "returns count of martens in the world" do
       #debugger
       world.update_marten_suitability
       world.update_marten_suitable_tile_count
-      world.marten_suitable_tile_count.should == 3
+      world.marten_suitable_tile_count.should == 6
     end
   end
 

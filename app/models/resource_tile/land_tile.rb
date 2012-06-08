@@ -288,7 +288,11 @@ class LandTile < ResourceTile
   def calculate_marten_suitability
     if [41,42,43,91].include? self.landcover_class_code
       size_array = self.collect_tree_size_counts
-      if size_array[0,5].sum < size_array[6,11].sum
+      small_tree_basal_area = calculate_basal_area(tree_sizes[0,5], size_array[0,5])
+      large_tree_basal_area = calculate_basal_area(tree_sizes[6,12], size_array[6,12])
+      puts "small trees = #{small_tree_basal_area}"
+      puts "large trees = #{large_tree_basal_area}"
+      if small_tree_basal_area < large_tree_basal_area
         self.marten_suitability = 1
       else
         self.marten_suitability = 0
