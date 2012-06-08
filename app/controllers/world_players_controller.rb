@@ -90,4 +90,20 @@ class WorldPlayersController < ApplicationController
     end
 
   end
+  
+  def destroy
+    @player = Player.find(params[:id])
+    @world_id = @player.id
+    authorize! :god_mode, @player, params[:god_mode]
+
+    if @player.destroy
+      respond_to do |format|
+        format.html { redirect_to(world_url @world_id) }
+        format.xml  { head :ok }
+      end
+    else
+      format.xml  { render :xml  => player.errors, :status => :unprocessable_entity }
+      format.json { render :json => player.errors, :status => :unprocessable_entity }
+    end
+  end
 end

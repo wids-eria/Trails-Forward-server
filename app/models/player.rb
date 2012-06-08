@@ -25,6 +25,7 @@ class Player < ActiveRecord::Base
   api_accessible :id_and_name do |template|
     template.add :id
     template.add 'user.name', :as => :name
+    template.add 'user.id', :as => :user_id
     template.add :type
     template.add :world_id
     template.add 'world.name', :as => :world_name

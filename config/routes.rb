@@ -13,7 +13,7 @@ TrailsForwardWorld::Application.routes.draw do
       put :turn
     end
 
-    resources :players, :only => [:index, :create], :controller => :world_players do
+    resources :players, :only => [:index, :create, :destroy], :controller => :world_players do
       collection do
         put :submit_turn
       end

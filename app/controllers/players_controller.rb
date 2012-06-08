@@ -79,16 +79,4 @@ class PlayersController < ApplicationController
       end
     end
   end
-
-  def destroy
-    @player = Player.find(params[:id])
-    authorize! :destroy_player, @player
-
-    @player.destroy
-
-    respond_to do |format|
-      format.html { redirect_to(players_url) }
-      format.xml  { head :ok }
-    end
-  end
 end
