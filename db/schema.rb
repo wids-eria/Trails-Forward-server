@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120608222452) do
+ActiveRecord::Schema.define(:version => 20120608232338) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -163,7 +163,7 @@ ActiveRecord::Schema.define(:version => 20120608222452) do
     t.boolean "bought_by_timber_company",   :default => false
     t.boolean "outpost_requested",          :default => false
     t.boolean "survey_requested",           :default => false
-    t.integer "marten_suitability"
+    t.integer "marten_suitability",         :default => 0
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
@@ -223,7 +223,7 @@ ActiveRecord::Schema.define(:version => 20120608222452) do
     t.integer  "current_turn",               :default => 1
     t.datetime "turn_started_at"
     t.integer  "timber_count",               :default => 0
-    t.integer  "marten_suitable_tile_count"
+    t.integer  "marten_suitable_tile_count", :default => 0
   end
 
 end
