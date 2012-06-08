@@ -80,4 +80,15 @@ describe WorldTicker do
       end
     end
   end
+
+  describe '#turn' do
+    it "turns" do
+      world_ticker.turn
+    end
+
+    it 'transfers money to players'
+    it 'grows trees'
+    it 'calculates marten suitability'
+    it 'calculates housing suitability'
+  end
 end

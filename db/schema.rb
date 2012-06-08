@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120607162038) do
+ActiveRecord::Schema.define(:version => 20120608222452) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(:version => 20120607162038) do
     t.boolean "bought_by_timber_company",   :default => false
     t.boolean "outpost_requested",          :default => false
     t.boolean "survey_requested",           :default => false
+    t.integer "marten_suitability"
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"

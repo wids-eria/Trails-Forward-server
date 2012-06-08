@@ -97,8 +97,8 @@ class WorldsController < ApplicationController
 
     respond_to do |format|
       if can_proceed
-        world.current_turn += 1
-        world.turn_started_at = DateTime.now
+
+        world.turn
 
         if world.save
           format.xml  { render_for_api :world_without_tiles, :xml  => world }
