@@ -99,6 +99,7 @@ class WorldPlayersController < ApplicationController
     if @player.destroy
       respond_to do |format|
         format.html { redirect_to(world_url @world_id) }
+        format.json { head :ok }
         format.xml  { head :ok }
       end
     else
