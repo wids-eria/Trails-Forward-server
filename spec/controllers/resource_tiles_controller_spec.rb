@@ -200,7 +200,7 @@ describe ResourceTilesController do
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
         
         world.reload
-        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
       end
     end
 
@@ -226,7 +226,7 @@ describe ResourceTilesController do
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
         
         world.reload
-        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
       end
     end
 
@@ -252,7 +252,7 @@ describe ResourceTilesController do
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
         
         world.reload
-        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
       end
     end
   end
