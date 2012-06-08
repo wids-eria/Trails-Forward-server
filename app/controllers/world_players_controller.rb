@@ -59,6 +59,7 @@ class WorldPlayersController < ApplicationController
     @player = current_user.players.build params[:player]
     @player.world = World.find params[:world_id]
     @player.balance = Player.default_balance
+    @player.type = params[:player][:type]
 
     respond_to do |format|
       if @player.save
