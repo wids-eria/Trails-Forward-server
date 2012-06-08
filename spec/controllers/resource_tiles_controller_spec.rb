@@ -180,6 +180,8 @@ describe ResourceTilesController do
 
     describe '#diameter_limit_cut' do
       it 'returns values and volumes of all the tiles cut' do
+        old_timber_count = world.timber_count
+        
         sawyer_results1 = land_tile1.diameter_limit_cut above: 12
         sawyer_results2 = land_tile2.diameter_limit_cut above: 12
 
@@ -196,14 +198,19 @@ describe ResourceTilesController do
 
         response.body.should have_content('sawtimber_volume')
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        
+        world.reload
+        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
       end
     end
 
     describe '#clearcut' do
       it 'returns values and volumes of all the tiles cut' do
+        old_timber_count = world.timber_count
+        
         sawyer_results1 = land_tile1.clearcut
         sawyer_results2 = land_tile2.clearcut
-
+        
         post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), above: 12.to_s, format: 'json'
 
         response.body.should have_content('poletimber_value')
@@ -217,14 +224,18 @@ describe ResourceTilesController do
 
         response.body.should have_content('sawtimber_volume')
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        
+        world.reload
+        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
       end
     end
 
     describe '#partial_selection_cut' do
       it 'returns values and volumes of all the tiles cut' do
+        old_timber_count = world.timber_count
+        
         sawyer_results1 = land_tile1.partial_selection_cut target_basal_area: 100, qratio: 1.5
         sawyer_results2 = land_tile2.partial_selection_cut target_basal_area: 100, qratio: 1.5
-
 
         post 'partial_selection_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), target_basal_area: 100, qratio: 1.5, format: 'json'
 
@@ -239,6 +250,9 @@ describe ResourceTilesController do
 
         response.body.should have_content('sawtimber_volume')
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        
+        world.reload
+        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
       end
     end
   end
