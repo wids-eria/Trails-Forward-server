@@ -18,7 +18,7 @@ end
 Stalker.job 'resource_tile.marten_suitability' do |args|
 
     tile = ResourceTile.find args['resource_tile_id']
-    tile.calculate_marten_suitability
+    tile.calculate_marten_suitability!
 
     marten_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(tile.world_id, :marten))
     marten_complete_stalk.put(tile.id)

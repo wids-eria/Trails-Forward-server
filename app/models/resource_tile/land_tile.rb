@@ -290,6 +290,11 @@ class LandTile < ResourceTile
     end
   end
 
+  def calculate_marten_suitability!
+    calculate_marten_suitability
+    save!
+  end
+
   def calculate_marten_suitability
     if [41,42,43,91].include? self.landcover_class_code
       size_array = self.collect_tree_size_counts
