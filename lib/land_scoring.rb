@@ -15,8 +15,7 @@ module LandScoring
   module ClassMethods
   end
   
-  def calculate_local_desirability_score
-    
+  def calculate_local_desirability_score   
     if self.base_cover_type == :water
       2
     else

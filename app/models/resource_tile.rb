@@ -299,10 +299,14 @@ class ResourceTile < ActiveRecord::Base
   def is_marten_suitable?
     if self.type == 'LandTile'
       ### let's assume this is up to date... (stupid)
-      self.calculate_marten_suitability
+      self.calculate_marten_suitability   #it would be awesome if this were faster
       self.marten_suitability >= 0.5
     else
       false
     end
   end
+  
+  # def is_marten_suitable_fast?
+  #   MARTEN_SUITABLE_CLASS_CODES.include? self.landcover_class_code
+  # end
 end
