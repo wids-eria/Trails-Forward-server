@@ -64,5 +64,5 @@ def turn_a_world(world)
    world.save!
 end
 
-turn_a_world(World.find(10))
+turn_a_world(World.find(ARGV[0]))
 
