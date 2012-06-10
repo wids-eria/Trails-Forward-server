@@ -14,7 +14,7 @@ def turn_a_world(world)
         marten_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(world.id, :marten))
   desirability_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(world.id, :desirability))
 
-  turn_manager = WorldTurn.new world
+  turn_manager = WorldTurn.new world: world
 
   # TREES
    puts "growing trees"
@@ -24,7 +24,6 @@ def turn_a_world(world)
 
    world.resource_tiles.land_tiles.count.times do
      message = tree_complete_stalk.reserve
-     print "."
      message.delete
    end
 
@@ -37,7 +36,6 @@ def turn_a_world(world)
 
    world.resource_tiles.land_tiles.count.times do
      message = marten_complete_stalk.reserve
-     print "."
      message.delete
    end
 
@@ -46,23 +44,22 @@ def turn_a_world(world)
    # HOUSING
    puts "desire"
    world.resource_tiles.each do |tile|
-     Stalker.enqueue('resource_tile.update_total_desirability', resource_tile_id: tile.id)
+     Stalker.enqueue('resource_tile.desirability', resource_tile_id: tile.id)
    end
 
    world.resource_tiles.count.times do
-     message = desire_complete_stalk.reserve
-     print "."
+     message = desirability_complete_stalk.reserve
      message.delete
    end
 
    # PEOPLE
-   turn.migrate_people
+   turn_manager.migrate_people
 
    # MONEY
-   turn.transfer_money
+   turn_manager.transfer_money
 
    # END TURN
-   turn.advance_turn
+   turn_manager.advance_turn
 
    world.save!
 end
