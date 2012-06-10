@@ -98,7 +98,7 @@ class WorldsController < ApplicationController
     respond_to do |format|
       if can_proceed
 
-        world.turn
+        manager.turn
 
         if world.save
           format.xml  { render_for_api :world_without_tiles, :xml  => world }
