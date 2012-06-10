@@ -1,4 +1,4 @@
-class WorldTicker
+class WorldTurn
   attr_accessor :world, :turn_duration
 
   def initialize options = {}
@@ -27,11 +27,11 @@ class WorldTicker
 
   def turn
     transfer_money
-    grow_trees
-    marten_simulation
-
-    self.world.current_turn += 1
-    self.world.turn_started_at = DateTime.now
+    grow_trees # job
+    marten_simulation # job
+    # housing desirability
+    # electric slide
+    advance_turn
   end
 
   def transfer_money
@@ -49,4 +49,13 @@ class WorldTicker
   def marten_simulation
     world.update_marten_suitability_and_count_of_suitable_tiles
   end
+
+  def advance_turn
+    self.world.current_turn += 1
+    self.world.turn_started_at = DateTime.now
+  end
 end
+
+
+# cron, set turn flag on worlds (ready to tick)
+# cron, fire jobs?
