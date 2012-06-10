@@ -80,7 +80,7 @@ class WorldsController < ApplicationController
     world = World.find(params[:id])
     authorize! :show_world, world
 
-    manager = WorldTicker.new world: world
+    manager = WorldTurn.new world: world
 
     respond_to do |format|
       format.xml  { render  xml: {time_left: manager.time_left} }
@@ -92,7 +92,7 @@ class WorldsController < ApplicationController
     world = World.find(params[:id])
     authorize! :show_world, world
 
-    manager = WorldTicker.new world: world
+    manager = WorldTurn.new world: world
     can_proceed = manager.can_process_turn?
 
     respond_to do |format|

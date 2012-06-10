@@ -229,6 +229,12 @@ class World < ActiveRecord::Base
     puts "#{places_with_people.count} tiles are now occupied"
   end
 
+  def update_total_desirability_scores!
+    resource_tiles.each do |tile|
+      tile.update_total_desirability_score!
+    end
+  end
+
   def update_marten_suitable_tile_count
     #self.marten_suitable_tile_count = resource_tiles.marten_suitable.count
     self.marten_suitable_tile_count = resource_tiles.where(:marten_suitability => 1).count

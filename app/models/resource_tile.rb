@@ -28,6 +28,7 @@ class ResourceTile < ActiveRecord::Base
   # todo: Add validations for land_cover_type, zoning_code, and primary_use to be sure that they're in one of the below
 
   scope :with_trees, where('tree_density > 0')
+  scope :land_tiles, where(type: 'LandTile')
 
   scope :within_rectangle, lambda{|opts|
     min_x = opts[:x_min].to_i

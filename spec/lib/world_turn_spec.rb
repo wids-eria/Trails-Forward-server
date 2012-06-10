@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe WorldTicker do
-  let(:world_ticker) { WorldTicker.new world: world }
+describe WorldTurn do
+  let(:world_turn) { WorldTurn.new world: world }
   let(:player1) { create :lumberjack }
   let(:player2) { create :conserver  }
   let(:player3) { create :developer  }
   let(:world)   { create :world, players: [player1, player2, player3] }
 
   before do
-    world_ticker.turn_duration = 30.minutes
+    world_turn.turn_duration = 30.minutes
   end
 
   context 'when time not elapsed' do
@@ -29,7 +29,7 @@ describe WorldTicker do
         player2.last_turn_played = 5
         player3.last_turn_played = 5
 
-        world_ticker.can_process_turn?.should == true
+        world_turn.can_process_turn?.should == true
       end
 
       it 'doesnt allow a turn if all players are not ready' do
@@ -42,12 +42,12 @@ describe WorldTicker do
         player2.last_turn_played = 5
         player3.last_turn_played = 5
 
-        world_ticker.can_process_turn?.should == false
+        world_turn.can_process_turn?.should == false
       end
     end
 
     describe '#time_left' do
-      let(:time_left) { world_ticker.time_left }
+      let(:time_left) { world_turn.time_left }
       it 'returns seconds until turn end' do
         time_left.should == 1500
         time_left.should be_an(Integer)
@@ -70,20 +70,20 @@ describe WorldTicker do
         player2.last_turn_played = 5
         player3.last_turn_played = 5
 
-        world_ticker.can_process_turn?.should == true
+        world_turn.can_process_turn?.should == true
       end
     end
 
     describe '#time_left' do
       it 'returns seconds since turn ended' do
-        world_ticker.time_left.should == -1800
+        world_turn.time_left.should == -1800
       end
     end
   end
 
   describe '#turn' do
     it "turns" do
-      world_ticker.turn
+      world_turn.turn
     end
 
     it 'transfers money to players'

@@ -198,6 +198,11 @@ class LandTile < ResourceTile
     80
   end
 
+  def grow_trees!
+    grow_trees
+  end
+
+  # TODO dont save
   def grow_trees
     return if species_group.blank?
 

@@ -27,10 +27,10 @@ class WorldTurn
 
   def turn
     transfer_money
-    grow_trees # job
-    marten_simulation # job
-    # housing desirability
-    # electric slide
+    grow_trees
+    marten_simulation
+    land_desirability
+    migrate_people
     advance_turn
   end
 
@@ -46,13 +46,22 @@ class WorldTurn
     world.grow_trees!
   end
 
+  def land_desirability
+    world.update_total_desirability_scores!
+  end
+
+  def migrate_people
+     world.migrate_population_to_most_desirable_tiles! 5000
+  end
+
   def marten_simulation
     world.update_marten_suitability_and_count_of_suitable_tiles
   end
 
   def advance_turn
-    self.world.current_turn += 1
-    self.world.turn_started_at = DateTime.now
+    world.current_turn += 1
+    world.turn_started_at = DateTime.now
+    # TODO change state
   end
 end
 
