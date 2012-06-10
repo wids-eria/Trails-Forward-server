@@ -12,6 +12,7 @@ Stalker.job 'resource_tile.grow_trees' do |args|
 
     tree_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(tile.world_id, :trees))
     tree_complete_stalk.put(tile.id)
+    tree_complete_stalk.close
 end
 
 Stalker.job 'resource_tile.marten_suitability' do |args|
@@ -21,6 +22,7 @@ Stalker.job 'resource_tile.marten_suitability' do |args|
 
     marten_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(tile.world_id, :marten))
     marten_complete_stalk.put(tile.id)
+    marten_complete_stalk.close
 end
 
 Stalker.job 'resource_tile.desirability' do |args|
@@ -29,4 +31,5 @@ Stalker.job 'resource_tile.desirability' do |args|
 
     desirability_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(tile.world_id, :desirability))
     desirability_complete_stalk.put(tile.id)
+    desirability_complete_stalk.close
 end

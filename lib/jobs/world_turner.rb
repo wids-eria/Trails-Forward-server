@@ -53,12 +53,15 @@ def turn_a_world(world)
    end
 
    # PEOPLE
+   puts "migrating people"
    turn_manager.migrate_people
 
    # MONEY
+   puts "transfering money"
    turn_manager.transfer_money
 
    # END TURN
+   puts "advancing turn"
    turn_manager.advance_turn
 
    world.save!
