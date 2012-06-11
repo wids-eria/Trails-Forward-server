@@ -115,7 +115,6 @@ describe World do
     it "returns count of martens in the world" do
       #debugger
       world.update_marten_suitability
-      world.update_marten_suitable_tile_count
       world.marten_suitable_tile_count.should == 6
     end
   end
