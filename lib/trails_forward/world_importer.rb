@@ -349,7 +349,6 @@ module TrailsForward
         world.height.times do |y|
           rt = world.resource_tile_at x, y
           rt.calculate_marten_suitability true if rt.type == 'LandTile'
-          rt.update_local_desirability_score
           rt.save!
           pb.inc
         end
@@ -364,7 +363,6 @@ module TrailsForward
         end
       end
 
-      world.update_marten_suitable_tile_count
       world.save!
 
       WorldPresenter.new(world).save_png
