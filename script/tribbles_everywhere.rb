@@ -65,7 +65,7 @@ num_tribbles.times do
     location = [rand * world_width, rand * world_height]
     resource_tile = world.resource_tile_at(*location.map(&:floor))
   end until resource_tile.type == 'LandTile' && resource_tile.tree_density > 0.4
-  tribble = Factory.create :tribble,
+  tribble = FactoryGirl.create :tribble,
                             world: world,
                             location: location,
                             heading: rand(360).round,

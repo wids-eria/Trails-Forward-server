@@ -35,7 +35,7 @@ describe Broker do
     end
 
     it "processes bid on a tile with listings" do
-      listing = Factory.create :listing, megatile_grouping: offered_land, owner: seller
+      listing = FactoryGirl.create :listing, megatile_grouping: offered_land, owner: seller
 
       world.manager.broker.process_sale(bid)
     end
@@ -50,7 +50,7 @@ describe Broker do
   end
 
   context "solicited bid" do
-    let!(:listing) { Factory.create :listing, megatile_grouping: offered_land, owner: seller }
+    let!(:listing) { FactoryGirl.create :listing, megatile_grouping: offered_land, owner: seller }
     let!(:bid) { Bid.create! bidder: bidder, current_owner: seller, money: 1000, listing: listing }
 
     before do
@@ -75,7 +75,7 @@ describe Broker do
 
     context "with multiple listings" do
       let!(:offered_land2) { create :megatile_grouping, megatiles: [sellers_tile] }
-      let!(:listing2) { Factory.create :listing, megatile_grouping: offered_land2, owner: seller }
+      let!(:listing2) { FactoryGirl.create :listing, megatile_grouping: offered_land2, owner: seller }
 
       it "processes a bid for a listing and cancels the other listings" do
         listing2.status.should == Listing.verbiage[:active]

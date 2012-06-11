@@ -8,9 +8,9 @@ FactoryGirl.define do
     megatiles do
       # these factories are too interdependent, causing stray worlds.
       if owner.present?
-        new_megatiles = single_megatile ? [Factory.create(:megatile, owner: owner, world: owner.world)] : []
+        new_megatiles = single_megatile ? [FactoryGirl.create(:megatile, owner: owner, world: owner.world)] : []
       else
-        new_megatiles = single_megatile ? [Factory.create(:megatile, owner: owner)] : []
+        new_megatiles = single_megatile ? [FactoryGirl.create(:megatile, owner: owner)] : []
       end
     end
 

@@ -66,7 +66,7 @@ num_red_foxes.times do
     location = [rand * world_width, rand * world_height]
     resource_tile = world.resource_tile_at(*location.map(&:floor))
   end until resource_tile.type == 'LandTile' && resource_tile.tree_density > 0.4
-  red_fox = Factory.create :red_fox,
+  red_fox = FactoryGirl.create :red_fox,
                             world: world,
                             location: location,
                             heading: rand(360).round,

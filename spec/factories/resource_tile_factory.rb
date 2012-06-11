@@ -3,7 +3,7 @@ FactoryGirl.define do
     zone_type :none
     landcover_class_code { ResourceTile.cover_type_number(:excluded) }
     world
-    megatile { Factory.create(:megatile, world: world) }
+    megatile { FactoryGirl.create(:megatile, world: world) }
 
     factory :land_tile, class: LandTile do
       landcover_class_code { ResourceTile.cover_type_number(:barren) }
