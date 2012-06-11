@@ -297,9 +297,9 @@ class LandTile < ResourceTile
     save!
   end
 
-  def calculate_marten_suitability
-    if trees_have_changed? or (self.small_tree_basal_area == nil) or (self.large_tree_basal_area == nil)
-      memoize_basal_area 
+  def calculate_marten_suitability(force = false)
+    if force or trees_have_changed? or (self.small_tree_basal_area == nil) or (self.large_tree_basal_area == nil)
+      memoize_basal_area force
     end
     
     return if (self.small_tree_basal_area == nil) or (self.large_tree_basal_area == nil)

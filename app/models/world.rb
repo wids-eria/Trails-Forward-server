@@ -249,8 +249,8 @@ class World < ActiveRecord::Base
   end
 
   def update_marten_suitability
-    self.resource_tiles.each do |tile| 
-      tile.calculate_marten_suitability
+    self.resource_tiles.land_tiles.each do |tile| 
+      tile.calculate_marten_suitability true
       tile.save
     end
   end
