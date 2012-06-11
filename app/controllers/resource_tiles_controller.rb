@@ -93,6 +93,10 @@ class ResourceTilesController < ApplicationController
     tiles = resource_tile.neighbors(20)
     tiles.update_all(:can_be_surveyed => true)
 
+    bounding_box = { x_min: tiles.collect(&:x).min, x_max: tiles.collect(&:x).max, y_min: tiles.collect(&:y).min, y_max: tiles.collect(&:y).max }
+
+    MegatileRegionCache.in_region(world.id, bounding_box).each(&:invalidate)
+
     resource_tile.reload
     resource_tile.outpost = true
 
