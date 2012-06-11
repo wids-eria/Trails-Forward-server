@@ -7,6 +7,11 @@ class MegatileRegionCache <  ActiveRecord::Base
   validates_uniqueness_of :x_min, :scope => [:world_id, :y_min, :y_max, :x_max]
   validates_uniqueness_of :x_max, :scope => [:world_id, :y_min, :x_min, :y_max]
 
+  scope :in_region, lambda { |world_id, coordinates|
+    exclusion_box = "NOT (x_max < :x_min OR x_min > :x_max OR y_max < :y_min OR y_min > :y_max)"
+    where(world_id: world_id).where(exclusion_box, coordinates)
+  }
+
   def self.combine_json(jsonlist)
     ret = "["
     list_length = jsonlist.count
@@ -20,15 +25,12 @@ class MegatileRegionCache <  ActiveRecord::Base
   def self.megatiles_in_region(world_id, coordinates) 
     coordinates.reverse_merge! x_min: 0, x_max: 0, y_min: 0, y_max: 0
 
-    caches = MegatileRegionCache.where(:world_id => world_id)
-
-    containing_conditions = "NOT (x_max < :x_min OR x_min > :x_max OR y_max < :y_min OR y_min > :y_max)"
-    caches = caches.where(containing_conditions, coordinates)
-
+    caches = MegatileRegionCache.in_region(world_id, coordinates)
     jsonlist = caches.map { |cache| cache.json.strip[1..-2] }  #this should be one long list; we don't want the square brackets
 
     MegatileRegionCache.combine_json jsonlist
   end
+
 
   def json
     Rails.cache.fetch(cache_key) do
