@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120611020646) do
+ActiveRecord::Schema.define(:version => 20120611205008) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -134,18 +134,18 @@ ActiveRecord::Schema.define(:version => 20120611020646) do
     t.integer "soil"
     t.integer "landcover_class_code"
     t.integer "zoning_code"
-    t.integer "num_2_inch_diameter_trees",  :default => 0,      :null => false
-    t.integer "num_4_inch_diameter_trees",  :default => 0,      :null => false
-    t.integer "num_6_inch_diameter_trees",  :default => 0,      :null => false
-    t.integer "num_8_inch_diameter_trees",  :default => 0,      :null => false
-    t.integer "num_10_inch_diameter_trees", :default => 0,      :null => false
-    t.integer "num_12_inch_diameter_trees", :default => 0,      :null => false
-    t.integer "num_14_inch_diameter_trees", :default => 0,      :null => false
-    t.integer "num_16_inch_diameter_trees", :default => 0,      :null => false
-    t.integer "num_18_inch_diameter_trees", :default => 0,      :null => false
-    t.integer "num_20_inch_diameter_trees", :default => 0,      :null => false
-    t.integer "num_22_inch_diameter_trees", :default => 0,      :null => false
-    t.integer "num_24_inch_diameter_trees", :default => 0,      :null => false
+    t.float   "num_2_inch_diameter_trees",  :default => 0.0,    :null => false
+    t.float   "num_4_inch_diameter_trees",  :default => 0.0,    :null => false
+    t.float   "num_6_inch_diameter_trees",  :default => 0.0,    :null => false
+    t.float   "num_8_inch_diameter_trees",  :default => 0.0,    :null => false
+    t.float   "num_10_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_12_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_14_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_16_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_18_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_20_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_22_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_24_inch_diameter_trees", :default => 0.0,    :null => false
     t.string  "zone_type",                  :default => "none"
     t.integer "housing_capacity",           :default => 0
     t.integer "housing_occupants",          :default => 0
@@ -177,6 +177,19 @@ ActiveRecord::Schema.define(:version => 20120611020646) do
     t.float   "value"
     t.integer "world_id"
     t.integer "resource_tile_id"
+  end
+
+  create_table "surveys", :force => true do |t|
+    t.date     "capture_date"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "tile_surveys", :force => true do |t|
+    t.float    "poletimber_value"
+    t.float    "sawtimber_value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", :force => true do |t|
