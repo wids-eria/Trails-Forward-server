@@ -292,8 +292,8 @@ class LandTile < ResourceTile
     end
   end
 
-  def calculate_marten_suitability!
-    calculate_marten_suitability
+  def calculate_marten_suitability!(force = false)
+    calculate_marten_suitability force
     save!
   end
 
