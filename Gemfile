@@ -24,6 +24,7 @@ gem 'simple-random'
 gem 'state_machine'
 gem 'capistrano'
 gem 'capistrano-ext'
+gem 'rvm-capistrano'
 gem 'factory_girl_rails'
 gem 'will_paginate'
 
