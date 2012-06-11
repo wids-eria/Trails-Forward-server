@@ -40,7 +40,7 @@ def turn_a_world(world)
    #   message.delete
    # end
 
-   world.update_marten_suitable_tile_count
+   # world.update_marten_suitable_tile_count
 
    # HOUSING
    puts "desire"
