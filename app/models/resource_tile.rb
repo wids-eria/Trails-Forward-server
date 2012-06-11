@@ -45,7 +45,7 @@ class ResourceTile < ActiveRecord::Base
   scope :most_desirable, order("total_desirability_score DESC")
   
   MARTEN_SUITABLE_CLASS_CODES = [41,42,43,91]
-  scope :marten_suitable, where(:landcover_class_code => MARTEN_SUITABLE_CLASS_CODES)
+  scope :marten_suitable, where(:landcover_class_code => MARTEN_SUITABLE_CLASS_CODES).where('small_tree_basal_area < large_tree_basal_area')
 
   scope :in_square_range, lambda { |radius, x, y|
     x_min = (x - radius).floor
@@ -300,13 +300,10 @@ class ResourceTile < ActiveRecord::Base
     if self.type == 'LandTile'
       ### let's assume this is up to date... (stupid)
       self.calculate_marten_suitability   #it would be awesome if this were faster
-      self.marten_suitability >= 0.5
+      self.marten_suitability >= 0.75
     else
       false
     end
   end
   
-  # def is_marten_suitable_fast?
-  #   MARTEN_SUITABLE_CLASS_CODES.include? self.landcover_class_code
-  # end
 end

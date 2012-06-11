@@ -302,7 +302,9 @@ class LandTile < ResourceTile
       memoize_basal_area 
     end
     
-    if [41,42,43,91].include? self.landcover_class_code
+    return if (self.small_tree_basal_area == nil) or (self.large_tree_basal_area == nil)
+    
+    if MARTEN_SUITABLE_CLASS_CODES.include? self.landcover_class_code
       if small_tree_basal_area < large_tree_basal_area
         self.marten_suitability = 1
       else
