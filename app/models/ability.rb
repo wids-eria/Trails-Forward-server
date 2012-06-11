@@ -94,7 +94,7 @@ class Ability
     can :build_outpost, ResourceTile do |rt|
       #TODO: put this back
       #rt.world.player_for_user(user).class == Developer &&
-      rt.landcover_class_code == 21 &&
+      [21,22,23,24].include?(rt.landcover_class_code) &&
       rt.zoning_code >= 3 && ![6,10,16, 255].include?(rt.zoning_code)
     end
 
