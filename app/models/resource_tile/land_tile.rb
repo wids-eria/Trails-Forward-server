@@ -4,6 +4,8 @@ class LandTile < ResourceTile
   include TreeValue
   include TreeHarvesting
 
+  before_save :memoize_basal_area
+  before_save :calculate_marten_suitability  #kevin wants to move this to an observer later, and that's aok with me
 
   def can_clearcut?
     begin
@@ -296,10 +298,11 @@ class LandTile < ResourceTile
   end
 
   def calculate_marten_suitability
+    if trees_have_changed? or (self.small_tree_basal_area == nil) or (self.large_tree_basal_area == nil)
+      memoize_basal_area 
+    end
+    
     if [41,42,43,91].include? self.landcover_class_code
-      size_array = self.collect_tree_size_counts
-      small_tree_basal_area = calculate_basal_area(tree_sizes[0,5], size_array[0,5])
-      large_tree_basal_area = calculate_basal_area(tree_sizes[6,12], size_array[6,12])
       if small_tree_basal_area < large_tree_basal_area
         self.marten_suitability = 1
       else
@@ -310,7 +313,25 @@ class LandTile < ResourceTile
     #puts "Marten Suitability = #{marten_suitability}"
   end
 
+  def memoize_basal_area(force = false)
+    if trees_have_changed? or force
+      size_array = self.collect_tree_size_counts
+      self.small_tree_basal_area = calculate_basal_area(tree_sizes[0,5], size_array[0,5])
+      self.large_tree_basal_area = calculate_basal_area(tree_sizes[6,12], size_array[6,12])
+    end
+  end
 
+  def trees_have_changed?
+    tree_fields= [:num_2_inch_diameter_trees, :num_4_inch_diameter_trees,
+      :num_6_inch_diameter_trees, :num_8_inch_diameter_trees,
+      :num_10_inch_diameter_trees, :num_12_inch_diameter_trees,
+      :num_14_inch_diameter_trees, :num_16_inch_diameter_trees, 
+      :num_18_inch_diameter_trees, :num_20_inch_diameter_trees,
+      :num_22_inch_diameter_trees, :num_24_inch_diameter_trees].map do |foo| foo.to_s end
+    changed_trees = self.changed_attributes.keys & tree_fields
+    ret = changed_trees.length > 0
+    ret
+  end
 
 
   def estimated_value

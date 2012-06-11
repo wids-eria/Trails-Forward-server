@@ -29,15 +29,16 @@ def turn_a_world(world)
 
 
    # MARTENS
-   puts "martens"
-   world.resource_tiles.land_tiles.each do |tile|
-     Stalker.enqueue('resource_tile.marten_suitability', resource_tile_id: tile.id)
-   end
-
-   world.resource_tiles.land_tiles.count.times do
-     message = marten_complete_stalk.reserve
-     message.delete
-   end
+   puts "martens"  
+   # Good news! no longer needed because this happens already as the trees are grown
+   # world.resource_tiles.land_tiles.each do |tile|
+   #   Stalker.enqueue('resource_tile.marten_suitability', resource_tile_id: tile.id)
+   # end
+   # 
+   # world.resource_tiles.land_tiles.count.times do
+   #   message = marten_complete_stalk.reserve
+   #   message.delete
+   # end
 
    world.update_marten_suitable_tile_count
 

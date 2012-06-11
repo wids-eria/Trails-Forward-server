@@ -542,6 +542,7 @@ describe LandTile do
 
     describe '#assess suitability' do
       it 'checks the suitability of a tile for marten' do
+        #tile.memoize_basal_area true #force
         tile.calculate_marten_suitability.should == 1
       end
     end
