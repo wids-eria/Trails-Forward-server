@@ -237,7 +237,7 @@ class World < ActiveRecord::Base
 
   def update_marten_suitable_tile_count
     #self.marten_suitable_tile_count = resource_tiles.marten_suitable.count
-    self.marten_suitable_tile_count = resource_tiles.where('marten_suitability >= 0.5').count
+    self.marten_suitable_tile_count = resource_tiles.marten_suitable.count
   end
 
   def human_population
