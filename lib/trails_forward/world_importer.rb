@@ -348,7 +348,7 @@ module TrailsForward
       world.width.times do |x|
         world.height.times do |y|
           rt = world.resource_tile_at x, y
-          rt.calculate_marten_suitability
+          rt.calculate_marten_suitability if rt.type == 'LandTile'
           rt.update_local_desirability_score
           rt.save!
           pb.inc
