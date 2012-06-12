@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120611205008) do
+ActiveRecord::Schema.define(:version => 20120612154948) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -177,19 +177,6 @@ ActiveRecord::Schema.define(:version => 20120611205008) do
     t.float   "value"
     t.integer "world_id"
     t.integer "resource_tile_id"
-  end
-
-  create_table "surveys", :force => true do |t|
-    t.date     "capture_date"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  create_table "tile_surveys", :force => true do |t|
-    t.float    "poletimber_value"
-    t.float    "sawtimber_value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "users", :force => true do |t|
