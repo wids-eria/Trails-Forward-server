@@ -16,7 +16,11 @@ def turn_a_world(world)
 
   turn_manager = WorldTurn.new world: world
 
-  # TREES
+  world.turn_state = 'processing'
+  world.save!
+  puts 'World state: processing'
+
+   # TREES
    land_tile_count = world.resource_tiles.land_tiles.count
    world.resource_tiles.land_tiles.each do |tile|
      Stalker.enqueue('resource_tile.grow_trees', resource_tile_id: tile.id)

@@ -62,6 +62,7 @@ class WorldTurn
     world.current_turn += 1
     world.turn_started_at = DateTime.now
     world.current_date += 4.years
+    world.turn_state = "playing"
     # TODO change state
   end
 end
