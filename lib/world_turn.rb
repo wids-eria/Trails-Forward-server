@@ -61,6 +61,7 @@ class WorldTurn
   def advance_turn
     world.current_turn += 1
     world.turn_started_at = DateTime.now
+    world.current_date += 4.years
     # TODO change state
   end
 end

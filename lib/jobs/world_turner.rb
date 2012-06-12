@@ -60,16 +60,19 @@ def turn_a_world(world)
    desire_bar.finish
 
    # PEOPLE
-   puts "migrating people"
+   people_bar = ProgressBar.new 'People', 1
    turn_manager.migrate_people
+   people_bar.finish
 
    # MONEY
-   puts "transfering money"
+   money_bar = ProgressBar.new 'Money', 1
    turn_manager.transfer_money
+   money_bar.finish
 
    # END TURN
-   puts "advancing turn"
+   turn_bar = ProgressBar.new 'Advance', 1
    turn_manager.advance_turn
+   turn_bar.finish
 
    world.save!
 end
