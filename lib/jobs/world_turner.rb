@@ -17,15 +17,18 @@ def turn_a_world(world)
   turn_manager = WorldTurn.new world: world
 
   # TREES
-   puts "growing trees"
+   land_tile_count = world.resource_tiles.land_tiles.count
    world.resource_tiles.land_tiles.each do |tile|
      Stalker.enqueue('resource_tile.grow_trees', resource_tile_id: tile.id)
    end
 
-   world.resource_tiles.land_tiles.count.times do
+   tree_bar = ProgressBar.new 'GrowTrees', land_tile_count
+   land_tile_count.times do
      message = tree_complete_stalk.reserve
+     tree_bar.inc
      message.delete
    end
+  tree_bar.finish
 
 
    # MARTENS
@@ -43,15 +46,18 @@ def turn_a_world(world)
    # world.update_marten_suitable_tile_count
 
    # HOUSING
-   puts "desire"
+   resource_tile_count = world.resource_tiles.count
    world.resource_tiles.each do |tile|
      Stalker.enqueue('resource_tile.desirability', resource_tile_id: tile.id)
    end
 
-   world.resource_tiles.count.times do
+   desire_bar = ProgressBar.new 'Desirability', resource_tile_count
+   resource_tile_count.times do
      message = desirability_complete_stalk.reserve
+     desire_bar.inc
      message.delete
    end
+   desire_bar.finish
 
    # PEOPLE
    puts "migrating people"

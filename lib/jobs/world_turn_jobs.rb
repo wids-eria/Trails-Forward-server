@@ -8,7 +8,7 @@ end
 Stalker.job 'resource_tile.grow_trees' do |args|
 
     tile = ResourceTile.find args['resource_tile_id']
-    tile.grow_trees! if tile.can_clearcut?
+    tile.grow_trees!(4) if tile.can_clearcut?
 
     tree_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(tile.world_id, :trees))
     tree_complete_stalk.put(tile.id)

@@ -200,8 +200,9 @@ class LandTile < ResourceTile
     80
   end
 
-  def grow_trees!
-    grow_trees
+  def grow_trees! years = 1
+    years.times { grow_trees }
+    self.save!
   end
 
   # TODO dont save
@@ -241,7 +242,6 @@ class LandTile < ResourceTile
       set_trees_in_size tree_size, tree_size_count_matrix[0,index]
     end
 
-    self.save!
   end
 
   def calculate_basal_area(tree_sizes, tree_size_counts)
