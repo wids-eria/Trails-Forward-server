@@ -10,7 +10,7 @@ TrailsForwardWorld::Application.routes.draw do
   resources :worlds, :only => [:index, :show, :update] do
     member do
       get :time_left_for_turn
-      put :turn
+      get :turn_state
     end
 
     resources :players, :only => [:index, :create, :destroy], :controller => :world_players do

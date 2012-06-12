@@ -56,8 +56,8 @@ class WorldsController < ApplicationController
 
     respond_to do |format|
       if @world.update_attributes(params[:world])
-        format.xml  { render_for_api :world_private, :xml  => @world }
-        format.json { render_for_api :world_private, :json => @world }
+        format.xml  { render_for_api :world_without_tiles, :xml  => @world }
+        format.json { render_for_api :world_without_tiles, :json => @world }
       else
         format.xml  { render :xml  => @world.errors, :status => :unprocessable_entity }
         format.json { render :json => @world.errors, :status => :unprocessable_entity }
@@ -76,15 +76,15 @@ class WorldsController < ApplicationController
   #   end
   # end
 
-  def time_left_for_turn
+  def turn_state
     world = World.find(params[:id])
     authorize! :show_world, world
 
     manager = WorldTurn.new world: world
 
     respond_to do |format|
-      format.xml  { render  xml: {time_left: manager.time_left} }
-      format.json { render json: {time_left: manager.time_left} }
+      format.xml  { render  xml: {time_left: manager.time_left, state: world.turn_state} }
+      format.json { render json: {time_left: manager.time_left, state: world.turn_state} }
     end
   end
 
