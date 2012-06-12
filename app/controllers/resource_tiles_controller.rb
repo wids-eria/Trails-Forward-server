@@ -95,7 +95,7 @@ class ResourceTilesController < ApplicationController
 
     bounding_box = { x_min: tiles.collect(&:x).min, x_max: tiles.collect(&:x).max, y_min: tiles.collect(&:y).min, y_max: tiles.collect(&:y).max }
 
-    MegatileRegionCache.in_region(world.id, bounding_box).each(&:invalidate)
+    tiles.collect(&:megatile).uniq.each(&:invalidate_cache)
 
     resource_tile.reload
     resource_tile.outpost = true
