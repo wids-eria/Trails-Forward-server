@@ -4,4 +4,4 @@
 rvm use 1.9.2
 
 cd /home/deploy/applications/trails_forward/current
-nice RAILS_ENV=staging stalk lib/jobs/jobs.rb
+RAILS_ENV=staging nice stalk lib/jobs/jobs.rb
