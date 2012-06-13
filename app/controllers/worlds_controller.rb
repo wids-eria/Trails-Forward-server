@@ -88,6 +88,35 @@ class WorldsController < ApplicationController
     end
   end
 
+  def advance_turn
+    world = World.find(params[:id])
+    authorize! :show_world, world
+    manager = WorldTurn.new world: world
+    manager.advance_turn
+
+    if world.save
+      format.xml  { render_for_api :world_without_tiles, :xml  => world }
+      format.json { render_for_api :world_without_tiles, :json => world, :root => :world  }
+    else
+      format.xml  { render :xml  => world.errors, :status => :unprocessable_entity }
+      format.json { render :json => world.errors, :status => :unprocessable_entity }
+    end
+  end
+
+  def processing
+    world = World.find(params[:id])
+    authorize! :show_world, world
+
+    world.turn_state = 'processing'
+    if world.save
+      format.xml  { render_for_api :world_without_tiles, :xml  => world }
+      format.json { render_for_api :world_without_tiles, :json => world, :root => :world  }
+    else
+      format.xml  { render :xml  => world.errors, :status => :unprocessable_entity }
+      format.json { render :json => world.errors, :status => :unprocessable_entity }
+    end
+  end
+
   def turn
     world = World.find(params[:id])
     authorize! :show_world, world
