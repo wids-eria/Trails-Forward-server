@@ -15,8 +15,8 @@ module Jobs::WorldTurner
     world.save!
 
      # TREES
-     land_tile_count = world.resource_tiles.limit(1000).land_tiles.count
-     world.resource_tiles.limit(1000).land_tiles.each do |tile|
+     land_tile_count = world.resource_tiles.land_tiles.count
+     world.resource_tiles.land_tiles.each do |tile|
        Stalker.enqueue('resource_tile.grow_trees', resource_tile_id: tile.id)
      end
 
@@ -42,8 +42,8 @@ module Jobs::WorldTurner
      # world.update_marten_suitable_tile_count
 
      # HOUSING
-     resource_tile_count = world.resource_tiles.limit(1000).count
-     world.resource_tiles.limit(1000).each do |tile|
+     resource_tile_count = world.resource_tiles.count
+     world.resource_tiles.each do |tile|
        Stalker.enqueue('resource_tile.desirability', resource_tile_id: tile.id)
      end
 
