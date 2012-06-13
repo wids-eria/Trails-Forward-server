@@ -7,6 +7,7 @@ class WorldTurn
   end
 
   def can_process_turn?
+    return false if world.players.empty?
     world.players.all? do |player|
       played_current_turn = player.last_turn_played == world.current_turn
 
@@ -56,6 +57,14 @@ class WorldTurn
 
   def marten_simulation
     world.update_marten_suitability_and_count_of_suitable_tiles
+  end
+
+  def mark_for_processing
+    world.turn_state = "ready_for_processing"
+  end
+
+  def processing
+    world.turn_state = "processing"
   end
 
   def advance_turn

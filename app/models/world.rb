@@ -28,6 +28,9 @@ class World < ActiveRecord::Base
 
   validate :world_dimensions_are_consistent
 
+  scope :in_play, where(turn_state: 'playing')
+  scope :ready_for_processing, where(turn_state: 'ready_for_processing')
+
   def manager
     @manager ||= GameWorldManager.for_world(self)
   end

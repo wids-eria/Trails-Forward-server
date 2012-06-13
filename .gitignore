@@ -4,7 +4,7 @@ config/database.yml
 db/*.sqlite3
 db/*.sql
 doc/world_pngs/*.png
-log/*.log
+log/*
 public/worlds/
 tmp/
 **/.DS_Store

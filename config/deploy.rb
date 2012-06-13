@@ -4,6 +4,12 @@ set :rvm_type, :system
 require 'bundler/capistrano'
 load 'deploy/assets'
 
+
+set :whenever_command, "bundle exec whenever"
+set :whenever_environment, defer { stage }
+require "whenever/capistrano"
+
+
 require 'capistrano/ext/multistage'
 set :stages, %w(production staging)
 set :default_stage, "staging"

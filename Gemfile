@@ -27,6 +27,7 @@ gem 'capistrano-ext'
 gem 'rvm-capistrano'
 gem 'factory_girl_rails'
 gem 'will_paginate'
+gem 'whenever', require: false
 
 group :development, :test do
   gem 'sqlite3'
