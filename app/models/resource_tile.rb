@@ -297,7 +297,7 @@ class ResourceTile < ActiveRecord::Base
   end
   
   def is_marten_suitable?
-    if self.type == 'LandTile'
+    if self.kind_of? LandTile
       self.calculate_marten_suitability   
       self.marten_suitability >= 0.75
     else

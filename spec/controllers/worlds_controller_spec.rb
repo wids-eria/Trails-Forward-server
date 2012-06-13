@@ -13,24 +13,12 @@ describe WorldsController do
     sign_in user
   end
 
-  describe '#time_left_for_turn' do
+  describe '#turn_state' do
     it 'returns time in seconds' do
       WorldTurn.any_instance.stubs(:turn_duration => 30.minutes)
-      get :time_left_for_turn, id: world.id, format: 'json'
+      get :turn_state, id: world.id, format: 'json'
       response.should be_success
       json["time_left"].should be_within(2.0).of(1499)
     end
   end
-
-  describe '#turn' do
-    it 'updates the turn if it can proceed' do
-      WorldTurn.any_instance.stubs(:can_process_turn? => true)
-      lambda {
-        put :turn, id: world.id, format: 'json'
-        response.should be_success
-        world.reload
-      }.should change(world, :current_turn)
-    end
-  end
-
 end
