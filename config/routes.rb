@@ -11,8 +11,6 @@ TrailsForwardWorld::Application.routes.draw do
     member do
       get :time_left_for_turn
       get :turn_state
-      put :advance_turn
-      put :processing
     end
 
     resources :players, :only => [:index, :create, :destroy], :controller => :world_players do

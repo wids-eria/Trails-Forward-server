@@ -82,6 +82,13 @@ class WorldPlayersController < ApplicationController
 
     respond_to do |format|
       if player.save
+
+        manager = WorldTurn.new world: world
+        if manager.can_process_turn?
+          manager.mark_for_processing
+          world.save
+        end
+
         format.xml  { render_for_api :player_private, :xml  => player }
         format.json { render_for_api :player_private, :json => player }
       else
