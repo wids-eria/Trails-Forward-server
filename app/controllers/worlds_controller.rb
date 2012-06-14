@@ -82,9 +82,12 @@ class WorldsController < ApplicationController
 
     manager = WorldTurn.new world: world
 
+    state = world.turn_state
+    state = "processing" unless state == "playing"
+
     respond_to do |format|
-      format.xml  { render  xml: {time_left: manager.time_left, state: world.turn_state} }
-      format.json { render json: {time_left: manager.time_left, state: world.turn_state} }
+      format.xml  { render  xml: {time_left: manager.time_left, state: state} }
+      format.json { render json: {time_left: manager.time_left, state: state} }
     end
   end
 
