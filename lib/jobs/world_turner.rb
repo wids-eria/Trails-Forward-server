@@ -1,5 +1,8 @@
 require File.join(Rails.root, 'lib', 'jobs', 'world_turn_jobs')
 
+ProgressBar.color_status
+ProgressBar.iter_rate_mode
+
 module Jobs::WorldTurner
   def self.turn_a_world(world)
     log = Logger.new(File.join("log", "world_#{world.id}_turns"), 'daily')
@@ -15,48 +18,50 @@ module Jobs::WorldTurner
     world.save!
 
      # TREES
-     land_tile_count = world.resource_tiles.land_tiles.count
-     world.resource_tiles.land_tiles.each do |tile|
-       Stalker.enqueue('resource_tile.grow_trees', resource_tile_id: tile.id)
+     batch_size = 100
+     batch_count = -1
+     world.resource_tiles.harvestable.find_in_batches(batch_size: batch_size) do |tiles|
+       Stalker.enqueue('resource_tile.grow_tree_batch', resource_tile_ids: tiles.collect(&:id))
+       batch_count += 1
      end
 
+     bar = ProgressBar.new "Trees", batch_count
      log.info "Grow Trees"
-     land_tile_count.times do |n|
+
+     batch_count.times do |n|
        message = tree_complete_stalk.reserve
-       log.info "trees: #{n}/#{land_tile_count}"
        message.delete
+
+       log.info "trees: #{n}/#{batch_count}"
+       bar.inc
      end
+     bar.finish
 
-     # MARTENS
-     #Log.info "martens"  
-     # Good news! no longer needed because this happens already as the trees are grown
-     # world.resource_tiles.land_tiles.each do |tile|
-     #   Stalker.enqueue('resource_tile.marten_suitability', resource_tile_id: tile.id)
-     # end
-     # 
-     # world.resource_tiles.land_tiles.count.times do
-     #   message = marten_complete_stalk.reserve
-     #   message.delete
-     # end
-
-     # world.update_marten_suitable_tile_count
 
      # HOUSING
-     resource_tile_count = world.resource_tiles.count
-     world.resource_tiles.each do |tile|
-       Stalker.enqueue('resource_tile.desirability', resource_tile_id: tile.id)
+     batch_size = 100
+     batch_count = -1
+     world.resource_tiles.find_in_batches(batch_size:batch_size) do |tiles|
+       Stalker.enqueue('resource_tile.desirability_batch', resource_tile_ids: tiles.collect(&:id))
+       batch_count += 1
      end
 
+     bar = ProgressBar.new "Desirability", batch_count
      log.info "Desirability"
-     resource_tile_count.times do |n|
+     batch_count.times do |n|
        message = desirability_complete_stalk.reserve
-       log.info "desire: #{n}/#{resource_tile_count}"
        message.delete
+
+       log.info "desire: #{n}/#{batch_count}"
+       bar.inc
      end
+     bar.finish
 
      # PEOPLE
+     bar = ProgressBar.new "Desirability", 1 
      log.info "People"
      turn_manager.migrate_people
+     bar.finish
 
      # MONEY
      log.info "Money"

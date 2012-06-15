@@ -206,6 +206,8 @@ class World < ActiveRecord::Base
   end
   
   def migrate_population_to_most_desirable_tiles!(population)
+    log = Logger.new(File.join("log", "world_#{self.id}_turns"), 'daily')
+
     #zero out occupancy
     ResourceTile.connection.execute("UPDATE resource_tiles SET housing_occupants = 0 WHERE world_id=#{self.id}")
   
@@ -225,6 +227,7 @@ class World < ActiveRecord::Base
         rt.save!
         break if population <= 0
       end 
+      log.info "population remaining #{population}"
       break if population <= 0
     end 
 

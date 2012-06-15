@@ -7,8 +7,8 @@ class ResourceTile < ActiveRecord::Base
   belongs_to :world
   has_many :agents
   has_many :resources
-  serialize :residue, Hash
-  serialize :population, Hash
+  #serialize :residue, Hash
+  #serialize :population, Hash
 
   after_save :invalidate_megatile_cache
   before_save :update_local_desirability_score
@@ -29,6 +29,7 @@ class ResourceTile < ActiveRecord::Base
 
   scope :with_trees, where('tree_density > 0')
   scope :land_tiles, where(type: 'LandTile')
+  scope :harvestable, where(landcover_class_code: [41,42,43,90])
 
   scope :within_rectangle, lambda{|opts|
     min_x = opts[:x_min].to_i
