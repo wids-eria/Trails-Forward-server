@@ -52,7 +52,7 @@ class WorldTurn
   end
 
   def migrate_people
-     world.migrate_population_to_most_desirable_tiles! 5000
+     world.migrate_population_to_most_desirable_tiles! 2000
   end
 
   def marten_simulation
