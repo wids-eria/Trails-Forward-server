@@ -7,11 +7,8 @@ class WorldPlayersController < ApplicationController
 
     authorize! :index_user_players, @user
 
-    if can? :access_private_data, @user
-      template_to_use = :player_private
-    else
-      template_to_use = :player_public
-    end
+    # temporarily just show private to everyone for GLS
+    template_to_use = :player_private
 
     respond_to do |format|
       format.html # index.html.erb
