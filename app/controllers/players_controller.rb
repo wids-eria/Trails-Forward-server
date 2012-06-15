@@ -8,11 +8,8 @@ class PlayersController < ApplicationController
 
     authorize! :index_user_players, @user
 
-    if can? :access_private_data, @user
-      template_to_use = :player_private
-    else
-      template_to_use = :player_public
-    end
+    # temporary for GLS
+    template_to_use = :player_private
 
     respond_to do |format|
       format.html # index.html.erb
@@ -28,11 +25,8 @@ class PlayersController < ApplicationController
 
     authorize! :show_player, @player
 
-    if can? :access_private_data, @player
-      template_to_use = :player_private_with_megatiles
-    else
-      template_to_use = :player_public_with_megatiles
-    end
+    # temporary for GLS
+    template_to_use = :player_private_with_megatiles
 
     respond_to do |format|
       format.html # index.html.erb
