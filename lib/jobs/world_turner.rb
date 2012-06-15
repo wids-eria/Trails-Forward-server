@@ -14,6 +14,7 @@ module Jobs::WorldTurner
     turn_manager = WorldTurn.new world: world
 
     log.info "World state: processing"
+    log.info "start: #{DateTime.now.to_s(:db)}"
     turn_manager.processing
     world.save!
 
@@ -72,6 +73,7 @@ module Jobs::WorldTurner
      turn_manager.advance_turn
 
      log.info "Turn complete, world in play"
+     log.info "end: #{DateTime.now.to_s(:db)}"
      world.save!
 
             tree_complete_stalk.close
