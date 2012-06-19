@@ -5,7 +5,7 @@ class Player < ActiveRecord::Base
     1000
   end
 
-  attr_accessible :name, :user, :world, :balance, :pending_balance
+  attr_accessible :name, :user, :world, :balance, :pending_balance, :quest_points
 
   validates_uniqueness_of :user_id, :scope => :world_id
   validates_uniqueness_of :type,    :scope => :world_id
