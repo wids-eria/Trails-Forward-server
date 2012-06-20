@@ -7,7 +7,7 @@ class Player < ActiveRecord::Base
     1000
   end
 
-  attr_accessible :name, :user, :world, :balance, :pending_balance, :quest_points
+  attr_accessible :name, :user, :world, :balance, :pending_balance, :quest_points, :completed_quests
 
   validates_uniqueness_of :user_id, :scope => :world_id
   validates_uniqueness_of :type,    :scope => :world_id
@@ -41,6 +41,7 @@ class Player < ActiveRecord::Base
     template.add :balance
     template.add :pending_balance
     template.add :quest_points
+    template.add :completed_quests
   end
 
   api_accessible :player_private_with_megatiles, :extend => :player_private do |template|
