@@ -25,7 +25,12 @@ describe PlayersController do
                                         "user_id"=>player.user.id,
                                         "type"=>"Lumberjack",
                                         "world_id"=>player.world.id,
-                                        "world_name"=>player.world.name} ] }
+                                        "world_name"=>player.world.name,
+                                        # FIXME remove once player api is fixed
+                                        "quest_points"=>player.quest_points,
+                                        "pending_balance"=>player.pending_balance,
+                                        "balance"=>player.balance,
+                                        "completed_quests"=>[]} ] }
       end
     end
 
@@ -41,7 +46,8 @@ describe PlayersController do
                                         "world_name"=>player.world.name,
                                         "quest_points"=>player.quest_points,
                                         "pending_balance"=>player.pending_balance,
-                                        "balance"=>player.balance} ] }
+                                        "balance"=>player.balance,
+                                        "completed_quests"=>[]} ] }
       end
     end
   end
