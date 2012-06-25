@@ -1,7 +1,7 @@
 class Player < ActiveRecord::Base
   acts_as_api
 
-  serialize :completed_quests, Array
+  serialize :quests, Hash
 
   def self.default_balance
     1000
