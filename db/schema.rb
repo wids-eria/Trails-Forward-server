@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120620210425) do
+ActiveRecord::Schema.define(:version => 20120627232703) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -114,7 +114,7 @@ ActiveRecord::Schema.define(:version => 20120620210425) do
     t.datetime "last_turn_played_at"
     t.integer  "quest_points",        :default => 0
     t.integer  "pending_balance",     :default => 0
-    t.string   "completed_quests"
+    t.text     "quests"
   end
 
   create_table "resource_tiles", :force => true do |t|
