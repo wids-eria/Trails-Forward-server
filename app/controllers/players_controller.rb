@@ -30,8 +30,8 @@ class PlayersController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render_for_api template_to_use, :xml  => @player  }
-      format.json  { render_for_api template_to_use, :json  => @player  }
+      format.xml  { render_for_api template_to_use, :xml  => @player, :root => :player }
+      format.json  { render_for_api template_to_use, :json  => @player, :root => :player }
     end
   end
 
