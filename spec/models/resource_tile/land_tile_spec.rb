@@ -341,6 +341,18 @@ describe LandTile do
 
       new_num_trees.should < old_num_trees
     end
+
+    it "fookin grows" do
+      tile.landcover_class_code = 43
+      tile.tree_sizes.each{|size| tile.set_trees_in_size(size, 3.0)}
+      100.times { tile.grow_trees }
+
+      tile.trees_in_size(2).should be_within(50).of(250.0)
+      tile.trees_in_size(4).should be_within(10).of(100.0)
+      tile.trees_in_size(6).should be_within(10).of(50.0)
+      tile.trees_in_size(8).should be_within(4).of(28.0)
+      tile.trees_in_size(24).should be_within(1).of(1.0)
+    end
   end
 
   context "harvesting trees" do

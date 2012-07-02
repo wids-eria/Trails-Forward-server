@@ -260,8 +260,7 @@ class LandTile < ResourceTile
   def determine_mortality_rate(diameter, species, site_index)
     # debugger if diameter = 8 && species == :shade_tolerant
     TREE_MORTALITY_P[species][0] +
-      TREE_MORTALITY_P[species][1] * (diameter-1) +
-      # TREE_MORTALITY_P[species][2] * basal_area +
+      TREE_MORTALITY_P[species][2] * (diameter-1) +
       TREE_MORTALITY_P[species][3] * (diameter-1)**2 +
       TREE_MORTALITY_P[species][4] * site_index * (diameter-1)
   end
