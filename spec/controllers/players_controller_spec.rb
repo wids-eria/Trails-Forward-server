@@ -30,7 +30,7 @@ describe PlayersController do
                                         "quest_points"=>player.quest_points,
                                         "pending_balance"=>player.pending_balance,
                                         "balance"=>player.balance,
-                                        "completed_quests"=>[]} ] }
+                                        "quests"=>{}} ] }
       end
     end
 
@@ -47,7 +47,7 @@ describe PlayersController do
                                         "quest_points"=>player.quest_points,
                                         "pending_balance"=>player.pending_balance,
                                         "balance"=>player.balance,
-                                        "completed_quests"=>[]} ] }
+                                        "quests"=>{}} ] }
       end
     end
   end
