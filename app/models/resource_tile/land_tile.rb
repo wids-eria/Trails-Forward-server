@@ -217,16 +217,17 @@ class LandTile < ResourceTile
     basal_area = calculate_basal_area(tree_sizes, tree_size_count_matrix.flat_map.to_a)
 
     tree_sizes.each_with_index do |tree_size, index|
-      survival_rate = 1 - determine_mortality_rate(tree_size, species_group, site_index)
-      upgrowth_rate = determine_upgrowth_rate(tree_size, species_group, site_index, basal_area)
-      retention_rate = 1 - upgrowth_rate
+      mortality_rate = determine_mortality_rate(tree_size, species_group, site_index)
+      upgrowth_rate  = determine_upgrowth_rate(tree_size, species_group, site_index, basal_area)
 
-      transition_matrix.send "[]=", index,index, survival_rate * retention_rate
+      mortality_rate = [0, mortality_rate].max
+      upgrowth_rate  = [0, upgrowth_rate].max
+
+      transition_matrix.send "[]=", index,index, (1 - upgrowth_rate - mortality_rate)
 
       # derive sub diagonal from each element in the diagonal except last element
       if index < (tree_sizes.count - 1)
-        #transition_matrix.send "[]=", index+1, index, upgrowth_rate
-        transition_matrix.send "[]=", index+1, index, survival_rate * upgrowth_rate
+        transition_matrix.send "[]=", index+1, index, upgrowth_rate
       end
     end
 
@@ -253,7 +254,7 @@ class LandTile < ResourceTile
   end
 
   def basal_area_for_size(tree_size)
-    (tree_size-1) ** 2 * 0.005454154
+    (tree_size) ** 2 * 0.005454154
   end
 
   # Describes the yearly proportion of trees in a diameter class that die

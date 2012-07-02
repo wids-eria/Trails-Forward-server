@@ -13,7 +13,7 @@ module TreeGrowth
 
   # Col 2 is michigan variant.
   TREE_MORTALITY_P = {
-    shade_tolerant:   [0.0336, 0, -0.0018, 0.0001, -0.00002],
+    shade_tolerant:   [0.033573, 0, -0.00175, 0.00013, -0.0000169],
     mid_tolerant:     [0.0417, 0, -0.0033, 0.0001,  0      ],
     shade_intolerant: [0.0418, 0, -0.0009, 0     ,  0      ]
   }

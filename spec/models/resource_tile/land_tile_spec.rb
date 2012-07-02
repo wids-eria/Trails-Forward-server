@@ -342,16 +342,28 @@ describe LandTile do
       new_num_trees.should < old_num_trees
     end
 
-    it "fookin grows" do
-      tile.landcover_class_code = 43
-      tile.tree_sizes.each{|size| tile.set_trees_in_size(size, 3.0)}
-      100.times { tile.grow_trees }
+    describe "fookin grows" do
+      before do
+        tile.landcover_class_code = 41
+        tile.tree_sizes.each{|size| tile.set_trees_in_size(size, 3.0)}
+        100.times { tile.grow_trees }
+      end
 
-      tile.trees_in_size(2).should be_within(50).of(250.0)
-      tile.trees_in_size(4).should be_within(10).of(100.0)
-      tile.trees_in_size(6).should be_within(10).of(50.0)
-      tile.trees_in_size(8).should be_within(4).of(28.0)
-      tile.trees_in_size(24).should be_within(1).of(1.0)
+      it "the 2s" do
+        tile.trees_in_size(2).should be_within(50).of(250.0)
+      end
+      it "the 4s" do
+        tile.trees_in_size(4).should be_within(10).of(100.0)
+      end
+      it "the 6s" do
+        tile.trees_in_size(6).should be_within(10).of(50.0)
+      end
+      it "the 8s" do
+        tile.trees_in_size(8).should be_within(4).of(28.0)
+      end
+      it "the 24s" do
+        tile.trees_in_size(24).should be_within(0.5).of(1.0)
+      end
     end
   end
 
@@ -557,6 +569,13 @@ describe LandTile do
         #tile.memoize_basal_area true #force
         tile.calculate_marten_suitability.should == 1
       end
+    end
+  end
+
+  context "#basal_area_for_size" do
+    let(:tile) { LandTile.new }
+    it "fookin works" do
+      tile.basal_area_for_size(2).should be_within(0.0001).of(0.0218166)
     end
   end
 end
