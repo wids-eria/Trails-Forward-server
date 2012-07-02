@@ -6,7 +6,7 @@ module TreeGrowth
   end
 
   TREE_UPGROWTH_P = {
-    shade_tolerant:    [0.0164, -0.0001, 0.0055, -0.0002, 0      ],
+    shade_tolerant:    [0.016405, -0.000128, 0.005542, -0.000206, 0 ],
     mid_tolerant:      [0.0134, -0.0002, 0.0051, -0.0002, 0.00002],
     shade_intolerant:  [0.0069, -0.0001, 0.0059, -0.0003, 0      ]
   }
@@ -19,7 +19,7 @@ module TreeGrowth
   }
 
   TREE_INGROWTH_PARAMETER = {
-    shade_tolerant:   [18.187, -0.097],
+    shade_tolerant:   [18.186617, -0.096585],
     mid_tolerant:     [4.603,  -0.035],
     shade_intolerant: [7.622,  -0.059]
   }

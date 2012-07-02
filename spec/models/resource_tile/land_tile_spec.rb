@@ -362,8 +362,13 @@ describe LandTile do
       end
 
       it "groweth" do
-        upgrowth = tile.determine_upgrowth_rate(2, :shade_tolerant, 80, 45.542401)
+        upgrowth = tile.determine_upgrowth_rate(2, :shade_tolerant, 80, 42.542401)
         upgrowth.should be_within(0.001).of(0.0212)
+      end
+
+      it "ingroweth" do
+        ingrowth = tile.determine_ingrowth_number(:shade_tolerant, 42.542401)
+        ingrowth.should be_within(0.01).of(14.0777)
       end
 
       context "when it fookin grows" do

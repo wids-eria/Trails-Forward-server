@@ -227,7 +227,6 @@ class LandTile < ResourceTile
     tree_size_count_matrix = tree_size_count_matrix * transition_matrix
 
     # add sapling
-    basal_area = calculate_basal_area(tree_sizes, tree_size_count_matrix.flat_map.to_a)
     ingrowth_count = tree_size_count_matrix.flat_map.to_a[0] + determine_ingrowth_number(species_group, basal_area)
     tree_size_count_matrix.send "[]=", 0,0, ingrowth_count
 
