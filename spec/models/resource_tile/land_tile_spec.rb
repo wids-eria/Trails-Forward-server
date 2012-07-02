@@ -342,27 +342,50 @@ describe LandTile do
       new_num_trees.should < old_num_trees
     end
 
-    describe "fookin grows" do
+    context "tree calculations" do
       before do
         tile.landcover_class_code = 41
         tile.tree_sizes.each{|size| tile.set_trees_in_size(size, 3.0)}
-        100.times { tile.grow_trees }
       end
 
-      it "the 2s" do
-        tile.trees_in_size(2).should be_within(50).of(250.0)
+      it "has friggin 36 trees" do
+        tile.collect_tree_size_counts.sum.should be_within(0.001).of(36.0)
       end
-      it "the 4s" do
-        tile.trees_in_size(4).should be_within(10).of(100.0)
+
+      it "has a friggin basal area" do
+        tile.calculate_basal_area(tile.tree_sizes, tile.collect_tree_size_counts).should be_within(0.0001).of(42.542401)
       end
-      it "the 6s" do
-        tile.trees_in_size(6).should be_within(10).of(50.0)
+
+      it "is mortal" do
+        mortality = tile.determine_mortality_rate(2, :shade_tolerant, 80)
+        mortality.should be_within(0.001).of(0.0279)
       end
-      it "the 8s" do
-        tile.trees_in_size(8).should be_within(4).of(28.0)
+
+      it "groweth" do
+        upgrowth = tile.determine_upgrowth_rate(2, :shade_tolerant, 80, 45.542401)
+        upgrowth.should be_within(0.001).of(0.0212)
       end
-      it "the 24s" do
-        tile.trees_in_size(24).should be_within(0.5).of(1.0)
+
+      context "when it fookin grows" do
+        before do
+          100.times { tile.grow_trees }
+        end
+
+        it "the 2s" do
+          tile.trees_in_size(2).should be_within(50).of(250.0)
+        end
+        it "the 4s" do
+          tile.trees_in_size(4).should be_within(10).of(100.0)
+        end
+        it "the 6s" do
+          tile.trees_in_size(6).should be_within(10).of(50.0)
+        end
+        it "the 8s" do
+          tile.trees_in_size(8).should be_within(4).of(28.0)
+        end
+        it "the 24s" do
+          tile.trees_in_size(24).should be_within(0.5).of(1.0)
+        end
       end
     end
   end

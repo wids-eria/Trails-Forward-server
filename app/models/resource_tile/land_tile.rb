@@ -188,14 +188,6 @@ class LandTile < ResourceTile
     volume * 12 * SCRIBNER_FACTOR[species_group][size_class]
   end
 
-  def tree_sizes
-    [2,4,6,8,10,12,14,16,18,20,22,24]
-  end
-
-  def collect_tree_size_counts
-    tree_sizes.collect {|diameter| trees_in_size diameter }
-  end
-
   def site_index
     80
   end
@@ -236,7 +228,8 @@ class LandTile < ResourceTile
 
     # add sapling
     basal_area = calculate_basal_area(tree_sizes, tree_size_count_matrix.flat_map.to_a)
-    tree_size_count_matrix.send "[]=", 0,0, determine_ingrowth_number(species_group, basal_area)
+    ingrowth_count = tree_size_count_matrix.flat_map.to_a[0] + determine_ingrowth_number(species_group, basal_area)
+    tree_size_count_matrix.send "[]=", 0,0, ingrowth_count
 
     # set values on model
     tree_sizes.each_with_index do |tree_size, index|
@@ -261,18 +254,18 @@ class LandTile < ResourceTile
   def determine_mortality_rate(diameter, species, site_index)
     # debugger if diameter = 8 && species == :shade_tolerant
     TREE_MORTALITY_P[species][0] +
-      TREE_MORTALITY_P[species][2] * (diameter-1) +
-      TREE_MORTALITY_P[species][3] * (diameter-1)**2 +
-      TREE_MORTALITY_P[species][4] * site_index * (diameter-1)
+      TREE_MORTALITY_P[species][2] * (diameter) +
+      TREE_MORTALITY_P[species][3] * (diameter)**2 +
+      TREE_MORTALITY_P[species][4] * site_index * (diameter)
   end
 
   # Describes the yearly proportion of trees moving from one diameter class to the next
   def determine_upgrowth_rate diameter, species, site_index, basal_area
     TREE_UPGROWTH_P[species][0] +
       TREE_UPGROWTH_P[species][1] * basal_area +
-      TREE_UPGROWTH_P[species][2] * (diameter-1) +
-      TREE_UPGROWTH_P[species][3] * (diameter-1) ** 2 +
-      TREE_UPGROWTH_P[species][4] * site_index * (diameter-1)
+      TREE_UPGROWTH_P[species][2] * (diameter) +
+      TREE_UPGROWTH_P[species][3] * (diameter) ** 2 +
+      TREE_UPGROWTH_P[species][4] * site_index * (diameter)
   end
 
   def determine_ingrowth_number(species_group, basal_area)
