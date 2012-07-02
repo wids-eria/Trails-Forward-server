@@ -3,7 +3,7 @@ class WorldTurn
 
   def initialize options = {}
     self.world = options[:world]
-    self.turn_duration = world.time_duration.minutes
+    self.turn_duration = world.turn_duration.minutes
   end
 
   def can_process_turn?
