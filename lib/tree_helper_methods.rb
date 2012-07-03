@@ -5,6 +5,21 @@ module TreeHelperMethods
   module ClassMethods
   end
 
+  def site_index
+    80.0
+  end
+
+  def calculate_basal_area(tree_sizes, tree_size_counts)
+    basal_area = 0
+    tree_sizes.each_with_index do |tree_size, index|
+      basal_area += basal_area_for_size(tree_size) * tree_size_counts[index]
+    end
+    basal_area
+  end
+
+  def basal_area_for_size(tree_size)
+    (tree_size) ** 2 * 0.005454154
+  end
   def tree_sizes
     [2,4,6,8,10,12,14,16,18,20,22,24]
   end
@@ -57,4 +72,32 @@ module TreeHelperMethods
     end
   end
 
+  def trees_have_changed?
+    tree_fields= [:num_2_inch_diameter_trees, :num_4_inch_diameter_trees,
+      :num_6_inch_diameter_trees, :num_8_inch_diameter_trees,
+      :num_10_inch_diameter_trees, :num_12_inch_diameter_trees,
+      :num_14_inch_diameter_trees, :num_16_inch_diameter_trees, 
+      :num_18_inch_diameter_trees, :num_20_inch_diameter_trees,
+      :num_22_inch_diameter_trees, :num_24_inch_diameter_trees].map do |foo| foo.to_s end
+    changed_trees = self.changed_attributes.keys & tree_fields
+    ret = changed_trees.length > 0
+    ret
+  end
+
+  def tree_count
+    count = 0
+    count += self.num_2_inch_diameter_trees  || 0
+    count += self.num_4_inch_diameter_trees  || 0
+    count += self.num_4_inch_diameter_trees  || 0
+    count += self.num_8_inch_diameter_trees  || 0
+    count += self.num_10_inch_diameter_trees || 0
+    count += self.num_12_inch_diameter_trees || 0
+    count += self.num_14_inch_diameter_trees || 0
+    count += self.num_16_inch_diameter_trees || 0
+    count += self.num_18_inch_diameter_trees || 0
+    count += self.num_20_inch_diameter_trees || 0
+    count += self.num_22_inch_diameter_trees || 0
+    count += self.num_24_inch_diameter_trees || 0
+    count
+  end
 end
