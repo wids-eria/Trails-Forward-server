@@ -189,7 +189,7 @@ class LandTile < ResourceTile
   end
 
   def site_index
-    80
+    80.0
   end
 
   def grow_trees! years = 1
@@ -197,45 +197,6 @@ class LandTile < ResourceTile
     self.save!
   end
 
-  # TODO dont save
-  def grow_trees
-    return if species_group.blank?
-
-    tree_size_counts = collect_tree_size_counts 
-
-    tree_size_count_matrix = Matrix[tree_size_counts]
-    transition_matrix = Matrix.identity tree_sizes.length
-
-    basal_area = calculate_basal_area(tree_sizes, tree_size_count_matrix.flat_map.to_a)
-
-    tree_sizes.each_with_index do |tree_size, index|
-      mortality_rate = determine_mortality_rate(tree_size, species_group, site_index)
-      upgrowth_rate  = determine_upgrowth_rate(tree_size, species_group, site_index, basal_area)
-
-      mortality_rate = [0, mortality_rate].max
-      upgrowth_rate  = [0, upgrowth_rate].max
-
-      transition_matrix.send "[]=", index,index, (1 - upgrowth_rate - mortality_rate)
-
-      # derive sub diagonal from each element in the diagonal except last element
-      if index < (tree_sizes.count - 1)
-        transition_matrix.send "[]=", index+1, index, upgrowth_rate
-      end
-    end
-
-    # apply matrix
-    tree_size_count_matrix = tree_size_count_matrix * transition_matrix
-
-    # add sapling
-    ingrowth_count = tree_size_count_matrix.flat_map.to_a[0] + determine_ingrowth_number(species_group, basal_area)
-    tree_size_count_matrix.send "[]=", 0,0, ingrowth_count
-
-    # set values on model
-    tree_sizes.each_with_index do |tree_size, index|
-      set_trees_in_size tree_size, tree_size_count_matrix[0,index]
-    end
-
-  end
 
   def calculate_basal_area(tree_sizes, tree_size_counts)
     basal_area = 0
@@ -249,40 +210,6 @@ class LandTile < ResourceTile
     (tree_size) ** 2 * 0.005454154
   end
 
-  # Describes the yearly proportion of trees in a diameter class that die
-  def determine_mortality_rate(diameter, species, site_index)
-    # debugger if diameter = 8 && species == :shade_tolerant
-    TREE_MORTALITY_P[species][0] +
-      TREE_MORTALITY_P[species][2] * (diameter) +
-      TREE_MORTALITY_P[species][3] * (diameter)**2 +
-      TREE_MORTALITY_P[species][4] * site_index * (diameter)
-  end
-
-  # Describes the yearly proportion of trees moving from one diameter class to the next
-  def determine_upgrowth_rate diameter, species, site_index, basal_area
-    TREE_UPGROWTH_P[species][0] +
-      TREE_UPGROWTH_P[species][1] * basal_area +
-      TREE_UPGROWTH_P[species][2] * (diameter) +
-      TREE_UPGROWTH_P[species][3] * (diameter) ** 2 +
-      TREE_UPGROWTH_P[species][4] * site_index * (diameter)
-  end
-
-  def determine_ingrowth_number(species_group, basal_area)
-    TREE_INGROWTH_PARAMETER[species_group][0] + TREE_INGROWTH_PARAMETER[species_group][1] * basal_area
-  end
-
-  def species_group
-    case self.landcover_class_code
-    when 41
-      :shade_tolerant
-    when 42, 90
-      :mid_tolerant
-    when 43
-      :shade_intolerant
-    else
-      raise 'No Trees'
-    end
-  end
 
   def calculate_marten_suitability!(force = false)
     calculate_marten_suitability force

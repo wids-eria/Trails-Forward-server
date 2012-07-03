@@ -343,6 +343,7 @@ describe LandTile do
     end
 
     context "tree calculations" do
+      let(:basal_area) { 42.5424005174 }
       before do
         tile.landcover_class_code = 41
         tile.tree_sizes.each{|size| tile.set_trees_in_size(size, 3.0)}
@@ -353,43 +354,83 @@ describe LandTile do
       end
 
       it "has a friggin basal area" do
-        tile.calculate_basal_area(tile.tree_sizes, tile.collect_tree_size_counts).should be_within(0.0001).of(42.542401)
+        tile.calculate_basal_area(tile.tree_sizes, tile.collect_tree_size_counts).should be_within(0.00001).of(basal_area)
       end
 
       it "is mortal" do
         mortality = tile.determine_mortality_rate(2, :shade_tolerant, 80)
-        mortality.should be_within(0.001).of(0.0279)
+        mortality.should be_within(0.000001).of(0.0278866)
+
+        mortality = tile.determine_mortality_rate(12, :shade_tolerant, 80)
+        mortality.should be_within(0.000001).of(0.0150546)
+
+        mortality = tile.determine_mortality_rate(24, :shade_tolerant, 80)
+        mortality.should be_within(0.000001).of(0.0339762)
       end
 
-      it "groweth" do
-        upgrowth = tile.determine_upgrowth_rate(2, :shade_tolerant, 80, 42.542401)
-        upgrowth.should be_within(0.001).of(0.0212)
+      it "upgroweth" do
+        upgrowth = tile.determine_upgrowth_rate(2, :shade_tolerant, 80, basal_area)
+        upgrowth.should be_within(0.00001).of(0.0212195727)
+
+        upgrowth = tile.determine_upgrowth_rate(12, :shade_tolerant, 80, basal_area)
+        upgrowth.should be_within(0.00001).of(0.0477995727)
+
+        upgrowth = tile.determine_upgrowth_rate(24, :shade_tolerant, 80, basal_area)
+        upgrowth.should be_within(0.00001).of(0.0)
       end
 
       it "ingroweth" do
-        ingrowth = tile.determine_ingrowth_number(:shade_tolerant, 42.542401)
-        ingrowth.should be_within(0.01).of(14.0777)
+        ingrowth = tile.determine_ingrowth_number(:shade_tolerant, basal_area)
+        ingrowth.should be_within(0.000001).of(14.077659246)
       end
 
-      context "when it fookin grows" do
+      context "when it fookin grows for 1 year" do
+        before do
+          tile.grow_trees
+        end
+
+        it "dun growed" do
+          given_counts = tile.collect_tree_size_counts
+          expected_counts = [
+            16.9303,
+             2.9044,
+             2.9202,
+             2.9328,
+             2.9424,
+             2.9488,
+             2.9521,
+             2.9522,
+             2.9493,
+             2.9432,
+             2.9340,
+             2.9976
+          ]
+
+          given_counts.each_with_index do |count, index|
+            count.should be_within(0.001).of(expected_counts[index])
+          end
+        end
+      end
+
+      context "when it fookin grows for 100 years" do
         before do
           100.times { tile.grow_trees }
         end
 
         it "the 2s" do
-          tile.trees_in_size(2).should be_within(50).of(250.0)
+          tile.trees_in_size(2).should be_within(0.0001).of(260.61338)
         end
         it "the 4s" do
-          tile.trees_in_size(4).should be_within(10).of(100.0)
+          tile.trees_in_size(4).should be_within(0.0001).of(97.89054)
         end
         it "the 6s" do
-          tile.trees_in_size(6).should be_within(10).of(50.0)
+          tile.trees_in_size(6).should be_within(0.0001).of(49.35273)
         end
         it "the 8s" do
-          tile.trees_in_size(8).should be_within(4).of(28.0)
+          tile.trees_in_size(8).should be_within(0.0001).of(28.05495)
         end
         it "the 24s" do
-          tile.trees_in_size(24).should be_within(0.5).of(1.0)
+          tile.trees_in_size(24).should be_within(0.0001).of(1.42479)
         end
       end
     end
