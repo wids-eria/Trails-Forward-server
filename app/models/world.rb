@@ -22,7 +22,7 @@ class World < ActiveRecord::Base
   validates :megatile_height, :numericality => {:greater_than => 0}
   validates :name, :presence => true
   validates :start_date, :presence => true
-  validates :current_date, :presence => true
+  validates :year_current, :presence => true
 
   validates :turn_started_at, :presence => true
 
@@ -98,17 +98,7 @@ class World < ActiveRecord::Base
   end
 
   def tick
-    tick_agents
-    age_agents!
-
-    tick_tiles
-
-    self.reload
-    self.current_date += tick_length
-  end
-
-  def tick_length
-    1.day
+    raise 'use the world turn manager'
   end
 
   def tick_agents
@@ -197,8 +187,14 @@ class World < ActiveRecord::Base
     change_requests.where(:complete => false)
   end
 
-  def year_current
-    current_date.year
+  # FIXME: reverting back to integer for year, since database bonks out after
+  # the date year 9999 in a date field
+  def current_date
+    start_date + (year_current - start_date.year).years
+  end
+
+  def current_date=(value)
+    self.year_current = value.year
   end
 
   def year_start

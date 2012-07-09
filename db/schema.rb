@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120702185304) do
+ActiveRecord::Schema.define(:version => 20120709213916) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -223,12 +223,12 @@ ActiveRecord::Schema.define(:version => 20120702185304) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "start_date"
-    t.date     "current_date"
     t.integer  "current_turn",    :default => 1
     t.datetime "turn_started_at"
     t.integer  "timber_count",    :default => 0
     t.string   "turn_state",      :default => "play"
     t.integer  "turn_duration",   :default => 15
+    t.integer  "year_current",    :default => 0
   end
 
 end

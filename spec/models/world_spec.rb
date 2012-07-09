@@ -119,4 +119,17 @@ describe World do
     end
   end
 
+  describe '#year_current' do
+    let(:world) { create :world, start_date: Date.today }
+    it 'doesnt overflow from database' do
+      world.current_date = world.start_date + 99999.years
+      world.save!
+
+      world.reload
+      world.year_current.should == world.start_date.year + 99999
+
+      world.current_date.should == world.start_date + 99999.years
+    end
+  end
+
 end
