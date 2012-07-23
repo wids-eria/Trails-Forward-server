@@ -5,7 +5,7 @@ ProgressBar.iter_rate_mode
 
 module Jobs::WorldTurner
   def self.turn_a_world(world)
-    log = Logger.new(File.join("log", "world_#{world.id}_turns"), 'daily')
+    log = TimeStampLogger.new(File.join("log", "world_#{world.id}_turns"), 'daily')
 
             tree_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(world.id, :trees))
           marten_complete_stalk = Beanstalk::Pool.new(['localhost:11300'], pool_name(world.id, :marten))
@@ -14,7 +14,6 @@ module Jobs::WorldTurner
     turn_manager = WorldTurn.new world: world
 
     log.info "World state: processing"
-    log.info "start: #{DateTime.now.to_s(:db)}"
     turn_manager.processing
     world.save!
 
@@ -73,7 +72,6 @@ module Jobs::WorldTurner
      turn_manager.advance_turn
 
      log.info "Turn complete, world in play"
-     log.info "end: #{DateTime.now.to_s(:db)}"
      world.save!
 
             tree_complete_stalk.close
