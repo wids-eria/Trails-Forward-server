@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120709213916) do
+ActiveRecord::Schema.define(:version => 20120723213327) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -154,8 +154,6 @@ ActiveRecord::Schema.define(:version => 20120709213916) do
     t.integer "supported_saplings",         :default => 0
     t.string  "tree_type",                  :default => "none"
     t.boolean "outpost",                    :default => false
-    t.text    "residue"
-    t.text    "population"
     t.float   "local_desirability_score",   :default => 0.0
     t.float   "total_desirability_score",   :default => 0.0
     t.boolean "can_be_surveyed",            :default => false
@@ -167,6 +165,8 @@ ActiveRecord::Schema.define(:version => 20120709213916) do
     t.integer "marten_suitability",         :default => 0
     t.float   "small_tree_basal_area"
     t.float   "large_tree_basal_area"
+    t.float   "marten_population",          :default => 0.0
+    t.float   "vole_population",            :default => 0.0
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"

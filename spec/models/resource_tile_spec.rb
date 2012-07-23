@@ -103,26 +103,4 @@ describe ResourceTile do
     end
   end
 
-# FIXME removed to speed up turns (serialize always saves)
-=begin
-  describe '#residue' do
-    let(:tile) { build :resource_tile }
-    it 'serializes a hash' do
-      tile.residue[:marten_id] = 123
-      tile.save!
-      tile.reload
-      tile.residue.should == {marten_id: 123}
-    end
-  end
-
-  describe '#population' do
-    let(:tile) { build :resource_tile }
-    it 'serializes a hash' do
-      tile.population[:voles] = 123
-      tile.save!
-      tile.reload
-      tile.population.should == {voles: 123}
-    end
-  end
-=end
 end

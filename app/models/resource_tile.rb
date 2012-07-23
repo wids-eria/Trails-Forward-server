@@ -7,8 +7,6 @@ class ResourceTile < ActiveRecord::Base
   belongs_to :world
   has_many :agents
   has_many :resources
-  #serialize :residue, Hash
-  #serialize :population, Hash
 
   after_save :invalidate_megatile_cache
   before_save :update_local_desirability_score
