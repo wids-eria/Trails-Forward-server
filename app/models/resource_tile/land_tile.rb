@@ -166,5 +166,7 @@ class LandTile < ResourceTile
     template.add :supported_saplings
     template.add :tree_type
     template.add :outpost
+    template.add :marten_population
+    template.add :vole_population
   end
 end
