@@ -37,22 +37,6 @@ describe World do
     end
   end
 
-  describe "#tick" do
-    let(:world) { create :world }
-    let(:start_date) { world.start_date }
-
-    subject{ world }
-
-    before do
-      world.stubs(tick_agents: true,
-                 tick_tiles: true,
-                 tick_length: 1.day)
-      world.tick
-    end
-
-    its(:current_date) { should == world.start_date + 1.day }
-  end
-  
   describe "#migrate_population_to_most_desirable_tiles!" do
     let(:world) { create :world_with_resources, :width => 42, :height => 42 }
     it "migrates people to the best spots" do

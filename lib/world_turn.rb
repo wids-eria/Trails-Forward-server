@@ -26,6 +26,7 @@ class WorldTurn
     world.turn_started_at.to_datetime + turn_duration
   end
 
+  # A single turn, use background jobs instead if you want parallel
   def turn
     transfer_money
     grow_trees
