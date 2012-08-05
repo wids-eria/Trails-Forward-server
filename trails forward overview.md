@@ -67,6 +67,7 @@ Timber Companies can develop survey capacity by hiring Foresters. This is identi
 
 ### Yarding Upgrades
 Each of these has an impact on the area harvested. This impact kills a proportionate amount of small plants/trees and animals in the area.  
+
 1. **Horse Team** - The player starts with one of these.
 2. **Skidder** 
 3. **Forwarder**
@@ -80,6 +81,7 @@ Each of these has an impact on the area harvested. This impact kills a proportio
 
 ### Transportation Upgrades
 These need to be fleshed out more, but here are two to start with.
+
 1. **Pick up truck** - The player starts with one of these and cannot buy another.
 2. **Loader** 
 3. **Logging Truck** 
