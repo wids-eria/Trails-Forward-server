@@ -68,7 +68,7 @@ Timber Companies can develop survey capacity by hiring Foresters (costs 15% more
 ### Yarding Upgrades
 Each of these has an impact on the area harvested. This impact kills a proportionate amount of small plants/trees and animals in the area.  
 
-1. **Horse Team** - The player starts with one of these.
+1. **Horse Team** - The player has a borrowed horse team (from his Grandfather) for 8 years.
 2. **Skidder** 
 3. **Forwarder**
 
@@ -102,7 +102,7 @@ Conservation Nonprofit Tech Tree
 Conservationists become able to better protect the environment by hiring Foresters, recruiting volunteers, and building outposts and parks.
 
 ### Staffing Upgrades 
-1. [**Forester**](http://en.wikipedia.org/wiki/Forester) - Necessary to do any of the Conservationists actions. A Forester can survey up to 8 acres per day. Player starts with one but can hire more. Cost is $60k/year.
+1. [**Forester**](http://en.wikipedia.org/wiki/Forester) - Necessary to do any of the Conservationist's actions. A Forester can survey up to 8 acres per day. Player starts with one but can hire more. Cost is $60k/year.
 2. **Volunteer** - Each volunteer can augment a Forester's survey range by 1 acres/day. A Forester can only supervise 6 volunteers. First year cost to train a volunteer is $5k. Having volunteers increases the donation rate to the Conservationist.
 
 ### Intertubes
@@ -115,3 +115,24 @@ Conservationists become able to better protect the environment by hiring Foreste
 
 Quests
 ======
+
+Timber Company Quests
+---------------------
+These numbers will require some fiddling.
+
+### Getting Started ###
+The player must harvest at least 100 (reasonable??) marketable logs. 
+This requires the player to survey some land to find suitable locations to buy (or lease access) then harvest.
+The numbers in this quest should be tweaked to make the You're On Your Own quest doable.
+
+### You're On Your Own ###
+Grandpa congratulates you on getting started, but needs his horse crew back. The horses are getting old and it's time for you to learn how hard keeping a team employed is for a small business owner.
+Player must hire a horse crew, then harvest another 100 logs.
+
+### Big Stick ###
+Harvest 1000 logs.
+
+### Eco Friendly ###
+Build a sustainable harvest operation that markets 10,000 logs year for 20 years. 
+
+
