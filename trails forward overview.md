@@ -1,4 +1,4 @@
-Overview 7
+Overview
 ========
 Trails Forward (TF) is a manyplayer role playing game in a shared, persistent simulation of Vilas County, WI. Eventually the game will take place over the historical arc of European settlement of the county, allowing the player to start in the mid 19th Century and shape the county's development to the present day. This gives players the ability to investigate the causes of why the world they help shape does or does not resemble present-day Vilas. For now, game play will begin in contemporary Vilas (circa 2000), and play forward from there.
 
@@ -137,5 +137,56 @@ Buy 200 acres.
 
 ### Eco Friendly ###
 Build a sustainable harvest operation that markets 10,000 logs year for 20 years. 
+
+
+Developers:
+can build properties (multiple types: hotels, luxury vacation homes, vacation condos)
+can build parks (contracted by Conservationist)
+can donate land (presumably to Conservationists) (possibly political capital)
+can bulldoze parcels (consequences: expensive, parcel ready to build on)
+can contract with Timber to harvest parcels (consequences: net profit (generates income as %), parcel ready to build on, might take longer than bulldozing as it depends on Timber)
+
+creates market for Timber products, increased development increases price for Timber
+
+Cares about desireability of parcels (and surrouding ones), zoning, ?
+
+Impacted by: eco-sensitivity of parcel, ongoing desireability of parcels (affects ongoing income)
+
+Need to know more about:
+rates of activity - how long to complete a development project of each type? to grow as a business? some acres/year as reasonable approx?
+Process of development - steps, tools, factors involved.
+
+Possible factors to consider:
+- permits
+- timber / raw resources
+- market of renters / tenants
+- quality of parcels and nearby
+- endangered species (chance encounters)
+- fines, governmental risks (e.g., developing on protected parcel)
+
+Lobbying
+- explicit signal of intent, consequent negotiation
+
+Transportation - weak vs strong network and access mediation
+
+Zoning
+
+NPCs
+- Government / State - builds roads, levies fines/regulation, etc.
+- Farmers - farming parcels, competing for land use
+- Bird watchers
+- Hunters
+- 
+- generally need to articulate how npc's impact the world and how they communicate with players
+
+
+Conservationist
+can contract with Developer to create park and increase desireability
+citizen scientist and provide sightings of varmints of interest
+
+core mechanic - buy land and license - protect/ control
+next rev: manage access - ie, transportation
+
+
 
 
