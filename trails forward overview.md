@@ -132,6 +132,9 @@ Player must hire a horse crew, then harvest another 100 logs.
 ### Big Stick ###
 Harvest 1000 logs.
 
+### Room To Grow ###
+Buy 200 acres.
+
 ### Eco Friendly ###
 Build a sustainable harvest operation that markets 10,000 logs year for 20 years. 
 
