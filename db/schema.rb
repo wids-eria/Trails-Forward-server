@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120723213327) do
+ActiveRecord::Schema.define(:version => 20120807182046) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -98,11 +98,13 @@ ActiveRecord::Schema.define(:version => 20120723213327) do
   end
 
   create_table "megatiles", :force => true do |t|
-    t.integer "world_id"
-    t.integer "x"
-    t.integer "y"
-    t.integer "owner_id"
-    t.integer "megatile_region_cache_id"
+    t.integer  "world_id"
+    t.integer  "x"
+    t.integer  "y"
+    t.integer  "owner_id"
+    t.integer  "megatile_region_cache_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "players", :force => true do |t|

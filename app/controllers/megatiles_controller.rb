@@ -15,8 +15,10 @@ class MegatilesController < ApplicationController
     data = MegatileRegionCache.megatiles_in_region(@world.id, x_min: x_min, y_min: y_min, x_max: x_max, y_max: y_max)
     ret = "{\"megatiles\": #{data}}"
 
-    respond_to do |format|
-      format.json { render :text => ret, :content_type => 'application/json' }
+    if stale?(:last_modified => Date.today)
+      respond_to do |format|
+        format.json { render :text => ret, :content_type => 'application/json' }
+      end
     end
   end
 

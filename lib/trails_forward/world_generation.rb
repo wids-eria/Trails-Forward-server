@@ -13,13 +13,14 @@ module TrailsForward
     end
 
     def spawn_megatiles
+      now = DateTime.now
       megatile_list = megatile_coords.collect do |x, y|
-        [x, y, id]
+        [x, y, id, now, now]
       end
 
       mt_progress_bar = ProgressBar.new('Megatiles', megatile_list.count / 1000) if Rails.env.development?
       megatile_list.each_slice(1000) do |megatile_slice|
-        Megatile.import %w(x y world_id), megatile_slice,
+        Megatile.import %w(x y world_id created_at updated_at), megatile_slice,
           validate: false, timestamps: false
 
         mt_progress_bar.inc if Rails.env.development?
