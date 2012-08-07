@@ -14,6 +14,18 @@ Each acre has properties describing its characteristics, such as whether it is l
 
 Saleable parcels of the landscape are exclusively 3x3 acres, though each square acre can be operated on (e.g., clearcut) individually by the player.
 
+Some uses of land (e.g., building apartments) require that the land be zoned appropriately. Players can lobby using Political Capital for zoning changes that enable them to do what they want, and can also lobby against others' proposed changes. [Vilas County's zoning regulations](http://www.vilascountyzoning.com/forms/Zoning%20District%20Use%20Table.pdf) are very loose, so zoning is only a minor impediment to changes to the landscape. *All players gain two Political Capital points per turn*, but these *expire after 3 turns*. Some player actions can generate more Political Capital. In the case of a zoning dispute, the state (i.e., the game) will take whatever action has the most Political Capital committed. 
+
+Non-Player Characters
+=====================
+NPCs are also present in the game world, and are meant to represent a variety of different perspectives.
+We need to create NPC agents for:
+* **Farmers** - Farming parcels, competing for land use
+* **Bird watchers** - Complain when important birds have their habitat reduced. They will donate money to Conservationists that are improving bird habitability of the world (e.g., if bird quest achievement obtained). They may even lobby against zoning changes that would interfere.
+* **Hunters** 
+
+NPCs communicate to players by sending messages to them ("You received a letter from the Vilas Marten Lovers Association..."). They may also buy land and lobby for/against zoning changes (e.g., to farm land).
+
 
 Player Abilities
 ================
@@ -25,7 +37,14 @@ Timber Company Abilities
 ------------------------
 Timber Companies have the unique ability to harvest trees and sell them at market for money, as well as the ability to plant saplings.
 
-Timber Cos can enact several different harvest strategies: Clearcut, an Arbogast Cut, and Diameter Limit Cut. Clearcut removes all trees from a tile. The Arbogast Cut (also known as BDq) removes a sampling of trees from a tile across a range of sizes, using a q-ratio to determine how many trees of each size to cut, relative to the next larger size (see: http://www.metla.fi/silvafennica/full/sf34/sf343223.pdf). The Diameter Limit Cut cuts all trees above a given size threshold (e.g., cut all trees larger than 16in diameter). These different cuts offer the opportunity to enact different growth and harvest strategies, which may be needed to achieve certain player goals. For example, if the player only wants to sell large trees, then the diameter limit may be appropriate.
+Timber Cos can enact several different harvest strategies: 
+* **Clearcut** - Removes all trees from a tile. 
+* [**Arbogast Cut**](http://www.metla.fi/silvafennica/full/sf34/sf343223.pdf) (also known as BDq) - Removes a sampling of trees from a tile across a range of sizes, using a q-ratio to determine how many trees of each size to cut, relative to the next larger size. 
+* **Diameter Limit Cut** - Cuts all trees above a given size threshold (e.g., cut all trees larger than 16in diameter). 
+
+These different cuts offer the opportunity to enact different growth and harvest strategies, which may be needed to achieve certain player goals. For example, if the player only wants to sell large trees, then the diameter limit may be appropriate.
+
+The Timber Company can either harvest from its own land, or get contracts to harvest from another's land. These contracts may require the player to give a percentage of earnings to the land owner. 
 
 The Timber Company's ability to harvest trees is determined by its progress on the Timber Co Tech Tree. Progress on the tech tree gives the player the ability to harvest more quickly, over a larger area, or using more complex cutting strategies (e.g., the BDq cut requires more skill due to its need of careful measurement and sampling). 
 
@@ -33,13 +52,31 @@ Timber Companies that have significantly advanced on the tech tree (by Hiring Fo
 
 Developer Abilities
 -------------------
-Developers have the unique ability to create buildings. For now this ability is restricted to homes, but this could conceivably later include commercial/industrial facilities, such as mills. 
+Developers have the unique ability to create buildings. For now this ability is restricted to homes and parks, but this could conceivably later include commercial/industrial facilities, such as mills. 
 
 Developers can build homes at different sizes and densities, ranging from secluded luxury cabins to dense apartment buildings. These properties generate revenue as long as they are owned and occupied, but also cost annual upkeep. Occupancy is determined by the simulation, which moves the county's population around annually to the most desirable places to live. 
 
+The developer's building activities can increase the market value of timber, which can make the Timber Companies richer, but also increase the cost of building.
+ 
+The Developers actions are:
+* **Build homes** - Multiple types available are: hotels, luxury vacation homes, vacation condos. These have different levels of density/capacity and size. 
+* **Build parks** - This is either upon request by a conservationist, or must immediately be donated to a conservationist player. If for donation, then the developer immediately 10 Political Capital points.
+* **Bulldoze parcels** - A resource tile must be cleared before it can be built on. This can be done by bulldozing, or by giving a Timber Company access to clearcut the land. Bulldozing is faster, but doesn't generate revenue from the forest product value. Bulldozing clears everything on the tile, including destroying any animal or plant life. 
+
+The annual rent that the developer receives is a function of the occupation rate of the housing he/she has built, and the desirability of the occupied properties. Desirability is inversely related to population density, and directly related to ecological health of the property's surroundings. More desirable properties are more likely to get rented, but are also likely to house fewer people. 
+
+The developer should make careful use of survey data to avoid building in places that contain endangered species. Massive political capital and financial penalties apply. However, if a developer discovers such a critter and donates the land to a conservationist, s/he gets lots of political capital.
+
+
 Conservation Nonprofits
 -----------------------
-Conservation Nonprofits (or Conservationists) have the ability to survey land for detailed data about plant and animal species, to reintroduce animal species, to plant trees, and to build and operate parks for revenue. Conservation groups generate revenue by generating survey data for others, or by receiving donations. It costs a Conservationist considerably less to do a survey than it does a Timber Company. 
+Conservation Nonprofits (or Conservationists) have the ability to 
+* Survey land for detailed data about plant and animal species 
+* Reintroduce animal species
+* Plant trees - *all species or just some?*
+* Build and operate parks for revenue. 
+
+Conservation groups generate revenue by generating survey data for others, or by receiving donations. It costs a Conservationist considerably less to do a survey than it does a Timber Company. 
 
 Tech Trees
 ==========
@@ -95,7 +132,10 @@ These need to be fleshed out more, but here are two to start with.
 
 Housing Developer Tech Tree
 ---------------------------
-To be completed.
+**Need help from Steve here**:
+rates of activity - how long to complete a development project of each type? to grow as a business? some acres/year as reasonable approx?
+Process of development - steps, tools, factors involved.
+
 
 Conservation Nonprofit Tech Tree
 --------------------------------
@@ -111,7 +151,7 @@ Conservationists become able to better protect the environment by hiring Foreste
 
 ### Buildings
 1. **Outpost** - Enables the conservationist to get free survey data about a megatile tile and its immediate neighbors, as long as the player has at least two foresters. Cost is $200k to build, and $100k/year. 
-2. **Park** - An outpost can be converted in to a natural park. This protects the tile's neighbors from others' purchase, increases donations (admissions fees), but also has a negative impact on the land (e.g, people taking wood turtles as pets).
+2. **Park** - An outpost can be converted in to a natural park. This protects the tile's neighbors from others' purchase, increases donations (admissions fees), but also has a negative impact on the land (e.g, people taking wood turtles as pets). This action requires a paid contract with a Developer. Developers can also donate parks to a conservationist, which yields 10 Political Capital points. 
 
 Quests
 ======
@@ -138,54 +178,6 @@ Buy 200 acres.
 ### Eco Friendly ###
 Build a sustainable harvest operation that markets 10,000 logs year for 20 years. 
 
-
-Developers:
-can build properties (multiple types: hotels, luxury vacation homes, vacation condos)
-can build parks (contracted by Conservationist)
-can donate land (presumably to Conservationists) (possibly political capital)
-can bulldoze parcels (consequences: expensive, parcel ready to build on)
-can contract with Timber to harvest parcels (consequences: net profit (generates income as %), parcel ready to build on, might take longer than bulldozing as it depends on Timber)
-
-creates market for Timber products, increased development increases price for Timber
-
-Cares about desireability of parcels (and surrouding ones), zoning, ?
-
-Impacted by: eco-sensitivity of parcel, ongoing desireability of parcels (affects ongoing income)
-
-Need to know more about:
-rates of activity - how long to complete a development project of each type? to grow as a business? some acres/year as reasonable approx?
-Process of development - steps, tools, factors involved.
-
-Possible factors to consider:
-- permits
-- timber / raw resources
-- market of renters / tenants
-- quality of parcels and nearby
-- endangered species (chance encounters)
-- fines, governmental risks (e.g., developing on protected parcel)
-
-Lobbying
-- explicit signal of intent, consequent negotiation
-
-Transportation - weak vs strong network and access mediation
-
-Zoning
-
-NPCs
-- Government / State - builds roads, levies fines/regulation, etc.
-- Farmers - farming parcels, competing for land use
-- Bird watchers
-- Hunters
-- 
-- generally need to articulate how npc's impact the world and how they communicate with players
-
-
-Conservationist
-can contract with Developer to create park and increase desireability
-citizen scientist and provide sightings of varmints of interest
-
-core mechanic - buy land and license - protect/ control
-next rev: manage access - ie, transportation
 
 
 
