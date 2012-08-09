@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem 'rails'
 gem 'rake'
 gem 'stalker'
+gem 'memcache-client'
 
 gem 'activerecord-import'
 gem 'acts_as_api', git: 'git://github.com/fabrik42/acts_as_api.git'

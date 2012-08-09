@@ -22,6 +22,8 @@ TrailsForwardWorld::Application.configure do
 
   config.log_level = :info
 
+  config.cache_store = :mem_cache_store
+
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin
 
