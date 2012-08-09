@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120807182046) do
+ActiveRecord::Schema.define(:version => 20120809154545) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -106,6 +106,9 @@ ActiveRecord::Schema.define(:version => 20120807182046) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "megatiles", ["megatile_region_cache_id", "updated_at"], :name => "index_megatiles_on_megatile_region_cache_id_and_updated_at"
+  add_index "megatiles", ["world_id", "updated_at"], :name => "index_megatiles_on_world_id_and_updated_at"
 
   create_table "players", :force => true do |t|
     t.integer  "user_id"

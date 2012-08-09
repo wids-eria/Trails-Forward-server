@@ -28,7 +28,9 @@ class MegatileRegionCache <  ActiveRecord::Base
     caches = MegatileRegionCache.in_region(world_id, coordinates)
     jsonlist = caches.map { |cache| cache.json.strip[1..-2] }  #this should be one long list; we don't want the square brackets
 
-    MegatileRegionCache.combine_json jsonlist
+    json = MegatileRegionCache.combine_json jsonlist
+    last_modified = Megatile.where(megatile_region_cache_id: caches.map(&:id)).maximum(:updated_at)
+    {last_modified: last_modified, json: json}
   end
 
 
