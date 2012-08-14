@@ -34,6 +34,10 @@ TrailsForwardWorld::Application.routes.draw do
     end
 
     resources :megatiles, :only => [:index, :show] do
+      member do
+        put :buy
+      end
+
       resources :listings, :except => [:destroy, :update]
 
       resources :bids, :except => [:destroy, :update] do

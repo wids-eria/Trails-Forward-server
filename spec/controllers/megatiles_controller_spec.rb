@@ -6,7 +6,8 @@ describe MegatilesController do
 
   let(:single_megatile_world) { create :world_with_resources, width: 3, height: 3 }
   let(:the_world) { single_megatile_world }
-  let(:player) { create :lumberjack, world: the_world }
+  let(:player)  { create :lumberjack, world: the_world }
+  let(:player2) { create :lumberjack, world: the_world }
   let(:user) { player.user }
 
   before do
@@ -49,4 +50,53 @@ describe MegatilesController do
       end
     end
   end
+
+  describe '#buy' do
+    let(:megatile) { the_world.megatiles.first }
+
+    it 'becomes yours and funds are removed if its unowned and you have the funds' do
+      player.balance = 1000
+      player.save!
+      put :buy, world_id: the_world.to_param, id: megatile.to_param, format: :json
+      response.status.should == 200
+
+      megatile.reload
+      megatile.owner.should == player
+
+      player.reload
+      player.balance.should == 900
+    end
+
+    it 'doesnt become yours if owned' do
+      player.balance = 1000
+      player.save!
+      megatile.owner = player2
+      megatile.save!
+
+      put :buy, world_id: the_world.to_param, id: megatile.to_param, format: :json
+      response.status.should == 422
+
+      megatile.reload
+      megatile.owner.should == player2
+
+      player.reload
+      player.balance.should == 1000
+    end
+
+    it 'doesnt become yours if you dont have enough' do
+      player.balance = 10
+      player.save!
+
+      put :buy, world_id: the_world.to_param, id: megatile.to_param, format: :json
+      response.status.should == 422
+
+      megatile.reload
+      megatile.owner.should be_nil
+
+      player.reload
+      player.balance.should == 10
+
+    end
+  end
+
 end

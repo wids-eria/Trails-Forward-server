@@ -57,4 +57,42 @@ class MegatilesController < ApplicationController
       format.json { render_for_api :megatiles_with_value, :json => @megatiles, :root => :megatiles  }
     end
   end
+
+
+  def buy
+    megatile = Megatile.find(params[:id])
+    authorize! :do_things, megatile.world
+
+    player = megatile.world.player_for_user(current_user)
+
+    puts megatile.owner.inspect
+    if megatile.owner.present?
+      puts "hi1"
+      respond_to do |format|
+        format.xml  { render  xml: { errors: ["Already owned"] }, status: :unprocessable_entity }
+        format.json { render json: { errors: ["Already owned"] }, status: :unprocessable_entity }
+      end
+    else
+      megatile.owner = player
+      player.balance -= 100
+
+      begin
+        ActiveRecord::Base.transaction do
+          if megatile.save && player.save
+            respond_to do |format|
+              format.xml  { head :ok }
+              format.json { head :ok }
+            end
+          else
+            raise ActiveRecord::RecordInvalid.new(player)
+          end
+        end
+      rescue ActiveRecord::RecordInvalid
+        respond_to do |format|
+          format.xml  { render  xml: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+          format.json { render json: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+        end
+      end
+    end
+  end
 end
