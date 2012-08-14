@@ -54,7 +54,7 @@ describe MegatilesController do
   describe '#buy' do
     let(:megatile) { the_world.megatiles.first }
 
-    it 'becomes yours and funds are removed if its unowned and you have the funds' do
+    it 'becomes yours and funds are removed' do
       player.balance = 1000
       player.save!
       put :buy, world_id: the_world.to_param, id: megatile.to_param, format: :json
