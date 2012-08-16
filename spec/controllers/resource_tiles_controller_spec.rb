@@ -5,7 +5,8 @@ describe ResourceTilesController do
   render_views
 
   let(:world) { create :world_with_tiles }
-  let(:player) { create :lumberjack, world: world }
+  let(:player) { create :lumberjack, world: world, balance: 1000 }
+  let(:player2) { create :lumberjack, world: world }
   let(:user) { player.user }
 
   before { sign_in user }
@@ -174,8 +175,13 @@ describe ResourceTilesController do
   # TODO move clearcut into here too
   context 'harvesting' do
     let(:world) { create :world }
-    let(:land_tile1) { create :deciduous_land_tile, world: world }
-    let(:land_tile2) { create :deciduous_land_tile, world: world }
+    let(:megatile) { create :megatile, owner: player, world: world }
+    let!(:land_tile1) { create :deciduous_land_tile, world: world, megatile: megatile }
+    let!(:land_tile2) { create :deciduous_land_tile, world: world, megatile: megatile }
+
+    let(:other_megatile) { create :megatile, owner: player2, world: world }
+    let!(:other_tile) { create :deciduous_land_tile, world: world, megatile: other_megatile }
+
     let!(:tiles) { [land_tile1, land_tile2] }
 
     describe '#diameter_limit_cut' do
@@ -211,7 +217,7 @@ describe ResourceTilesController do
         sawyer_results1 = land_tile1.clearcut
         sawyer_results2 = land_tile2.clearcut
         
-        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), above: 12.to_s, format: 'json'
+        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
 
         response.body.should have_content('poletimber_value')
         response.body.should have_content(sawyer_results1[:poletimber_value] + sawyer_results2[:poletimber_value])
@@ -227,6 +233,28 @@ describe ResourceTilesController do
         
         world.reload
         world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
+
+        player.reload.balance.should == 990
+      end
+
+      it 'doesnt clearcut if not owned by you' do
+        old_timber_count = world.timber_count
+        assert_raises CanCan::AccessDenied do
+          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [other_tile].map(&:to_param), format: 'json'
+        end
+        world.reload.timber_count.should == old_timber_count
+        player.reload.balance.should == 1000
+      end
+
+      it 'doesnt clearcut if not enough money' do
+        old_timber_count = world.timber_count
+
+        player.balance = 2
+        player.save!
+
+        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+        world.reload.timber_count.should == old_timber_count
+        player.reload.balance.should == 2
       end
     end
 

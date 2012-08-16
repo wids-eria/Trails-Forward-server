@@ -79,6 +79,9 @@ class MegatilesController < ApplicationController
       begin
         ActiveRecord::Base.transaction do
           if megatile.save && player.save
+
+            megatile.invalidate_cache
+
             respond_to do |format|
               format.xml  { head :ok }
               format.json { head :ok }

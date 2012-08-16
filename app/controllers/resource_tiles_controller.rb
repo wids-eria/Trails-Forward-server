@@ -135,24 +135,46 @@ class ResourceTilesController < ApplicationController
   end
 
   def clearcut_list
-    authorize! :harvest, ResourceTile
+    resource_tiles.each do |tile|
+      authorize! :clearcut, tile
+    end
 
-    respond_to do |format|
-      results = resource_tiles.collect do |tile|
-        tile.clearcut!
+    player = world.player_for_user(current_user)
+    player.balance -= 5 * resource_tiles.count
+
+    begin
+      ActiveRecord::Base.transaction do
+        if player.save
+
+          results = resource_tiles.collect do |tile|
+            tile.clearcut!
+          end
+
+          poletimber_value  = results.collect{|results| results[:poletimber_value ]}.sum
+          poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
+          sawtimber_value   = results.collect{|results| results[:sawtimber_value  ]}.sum
+          sawtimber_volume  = results.collect{|results| results[:sawtimber_volume ]}.sum
+
+          sum = { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
+                   sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume }
+
+          World.update_counters world.id, timber_count: sum[:sawtimber_volume]
+
+          resource_tiles.collect(&:megatile).uniq.each(&:invalidate_cache)
+
+          respond_to do |format|
+            format.xml  { render  xml: sum }
+            format.json { render json: sum }
+          end
+        else
+          raise ActiveRecord::RecordInvalid.new(player)
+        end
       end
-
-      poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
-      poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-      sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
-      sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
-
-      sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
-
-      World.connection.update("UPDATE worlds SET timber_count = timber_count + #{sum[:sawtimber_volume]} WHERE id = #{world.id}")
-
-      format.xml  { render xml: sum  }
-      format.json { render json: sum }
+    rescue ActiveRecord::RecordInvalid
+      respond_to do |format|
+        format.xml  { render  xml: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+        format.json { render json: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+      end
     end
   end
 

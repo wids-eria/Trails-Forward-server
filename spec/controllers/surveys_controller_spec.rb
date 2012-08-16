@@ -31,7 +31,7 @@ describe SurveysController do
       survey.player.should == player
 
       player.reload
-      player.balance.should == 900
+      player.balance.should == 975
     end
 
     it 'returns error if not enough funds' do
