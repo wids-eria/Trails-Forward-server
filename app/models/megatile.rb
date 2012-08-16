@@ -10,6 +10,8 @@ class Megatile < ActiveRecord::Base
   has_many :bids_on, :through => :megatile_groupings
   has_many :bids_offering, :through => :megatile_groupings
 
+  has_many :surveys
+
   validates_presence_of :world
 
   validates_uniqueness_of :x, :scope => [:y, :world_id]

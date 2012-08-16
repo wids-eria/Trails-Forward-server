@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120809154545) do
+ActiveRecord::Schema.define(:version => 20120816000452) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -189,14 +189,24 @@ ActiveRecord::Schema.define(:version => 20120809154545) do
     t.date     "capture_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "num_2in_trees",  :default => 0.0
+    t.float    "num_4in_trees",  :default => 0.0
+    t.float    "num_6in_trees",  :default => 0.0
+    t.float    "num_8in_trees",  :default => 0.0
+    t.float    "num_10in_trees", :default => 0.0
+    t.float    "num_12in_trees", :default => 0.0
+    t.float    "num_14in_trees", :default => 0.0
+    t.float    "num_16in_trees", :default => 0.0
+    t.float    "num_18in_trees", :default => 0.0
+    t.float    "num_20in_trees", :default => 0.0
+    t.float    "num_22in_trees", :default => 0.0
+    t.float    "num_24in_trees", :default => 0.0
+    t.integer  "player_id"
+    t.integer  "megatile_id"
   end
 
-  create_table "tile_surveys", :force => true do |t|
-    t.float    "poletimber_value"
-    t.float    "sawtimber_value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+  add_index "surveys", ["megatile_id"], :name => "index_surveys_on_megatile_id"
+  add_index "surveys", ["player_id"], :name => "index_surveys_on_player_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"
