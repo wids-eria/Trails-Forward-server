@@ -1,6 +1,6 @@
 class CreateSurveyTable < ActiveRecord::Migration
   def change 
-    create_table :resources do |t|
+    create_table :surveys do |t|
       t.timestamps
     end
   end
