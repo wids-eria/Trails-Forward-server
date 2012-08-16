@@ -179,10 +179,8 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
   add_index "resource_tiles", ["world_id", "x", "y"], :name => "index_resource_tiles_on_world_id_and_x_and_y", :unique => true
 
   create_table "resources", :force => true do |t|
-    t.string  "type"
-    t.float   "value"
-    t.integer "world_id"
-    t.integer "resource_tile_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "surveys", :force => true do |t|
