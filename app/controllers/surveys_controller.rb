@@ -11,8 +11,8 @@ class SurveysController < ApplicationController
     @surveys = megatile.surveys.where(player_id: player.id)
 
     respond_to do |format|
-      format.xml  { render  xml: @surveys }
-      format.json { render json: @surveys }
+      format.xml  { render_for_api :survey,  xml: @surveys }
+      format.json { render_for_api :survey, json: @surveys }
     end
   end
 
@@ -31,8 +31,8 @@ class SurveysController < ApplicationController
       ActiveRecord::Base.transaction do
         if @survey.save && player.save
           respond_to do |format|
-            format.xml  { render  xml: @survey, status: :created }
-            format.json { render json: @survey, status: :created }
+            format.xml  { render_for_api :survey,  xml: @survey, status: :created }
+            format.json { render_for_api :survey, json: @survey, status: :created }
           end
         else
           raise ActiveRecord::RecordInvalid.new(player)

@@ -1,4 +1,6 @@
 class Survey < ActiveRecord::Base
+  acts_as_api
+
   belongs_to :megatile
   belongs_to :player
 
@@ -17,5 +19,24 @@ class Survey < ActiveRecord::Base
     survey.num_22in_trees = survey.megatile.resource_tiles.collect(&:num_22_inch_diameter_trees).sum
     survey.num_24in_trees = survey.megatile.resource_tiles.collect(&:num_24_inch_diameter_trees).sum
     survey
+  end
+
+  api_accessible :survey do |template|
+    template.add :id
+    template.add :player_id
+    template.add :num_2in_trees
+    template.add :num_4in_trees
+    template.add :num_6in_trees
+    template.add :num_8in_trees
+    template.add :num_10in_trees
+    template.add :num_12in_trees
+    template.add :num_14in_trees
+    template.add :num_16in_trees
+    template.add :num_18in_trees
+    template.add :num_20in_trees
+    template.add :num_22in_trees
+    template.add :num_24in_trees
+    template.add :created_at
+    template.add :updated_at
   end
 end
