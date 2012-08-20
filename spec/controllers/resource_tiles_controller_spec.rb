@@ -253,6 +253,7 @@ describe ResourceTilesController do
         player.save!
 
         post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+        response.status.should == 422
         world.reload.timber_count.should == old_timber_count
         player.reload.balance.should == 2
       end
