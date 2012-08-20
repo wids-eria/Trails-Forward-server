@@ -58,6 +58,10 @@ class ResourceTile < ActiveRecord::Base
     end
   }
 
+  def self.clearcut_cost
+    5
+  end
+
   def self.landcover_description landcover_code
     cover_type_sym = ResourceTile.cover_type_symbol(landcover_code)
     self.verbiage[:land_cover_type][cover_type_sym]

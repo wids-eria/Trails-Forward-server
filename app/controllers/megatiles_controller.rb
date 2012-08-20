@@ -65,16 +65,14 @@ class MegatilesController < ApplicationController
 
     player = megatile.world.player_for_user(current_user)
 
-    puts megatile.owner.inspect
     if megatile.owner.present?
-      puts "hi1"
       respond_to do |format|
         format.xml  { render  xml: { errors: ["Already owned"] }, status: :unprocessable_entity }
         format.json { render json: { errors: ["Already owned"] }, status: :unprocessable_entity }
       end
     else
       megatile.owner = player
-      player.balance -= 100
+      player.balance -= Megatile.cost
 
       begin
         ActiveRecord::Base.transaction do

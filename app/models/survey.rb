@@ -4,6 +4,10 @@ class Survey < ActiveRecord::Base
   belongs_to :megatile
   belongs_to :player
 
+  def self.cost
+    25
+  end
+
   def self.of(options = {})
     survey = Survey.new options
     survey.num_2in_trees  = survey.megatile.resource_tiles.collect(&:num_2_inch_diameter_trees ).sum

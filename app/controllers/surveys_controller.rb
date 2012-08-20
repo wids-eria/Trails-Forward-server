@@ -25,7 +25,7 @@ class SurveysController < ApplicationController
 
     @survey = Survey.of megatile: megatile, player: player
 
-    player.balance -= 25
+    player.balance -= Survey.cost
 
     begin
       ActiveRecord::Base.transaction do

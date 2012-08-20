@@ -140,11 +140,12 @@ class ResourceTilesController < ApplicationController
     end
 
     player = world.player_for_user(current_user)
-    player.balance -= 5 * resource_tiles.count
+    cost = ResourceTile.clearcut_cost * resource_tiles.count
+    player.balance -= cost
 
     begin
       ActiveRecord::Base.transaction do
-        if player.save
+        if player.valid?
 
           results = resource_tiles.collect do |tile|
             tile.clearcut!
@@ -154,6 +155,9 @@ class ResourceTilesController < ApplicationController
           poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
           sawtimber_value   = results.collect{|results| results[:sawtimber_value  ]}.sum
           sawtimber_volume  = results.collect{|results| results[:sawtimber_volume ]}.sum
+
+          profit = sawtimber_value + poletimber_value - cost
+          Player.update_counters player.id, balance: profit
 
           sum = { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
                    sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume }

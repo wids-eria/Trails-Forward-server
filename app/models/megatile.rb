@@ -20,6 +20,10 @@ class Megatile < ActiveRecord::Base
   after_save :invalidate_cache
   belongs_to :megatile_region_cache
 
+  def self.cost
+    100
+  end
+
   def width
     world.try(:megatile_width)
   end

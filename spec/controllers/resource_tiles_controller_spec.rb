@@ -213,28 +213,34 @@ describe ResourceTilesController do
     describe '#clearcut' do
       it 'returns values and volumes of all the tiles cut' do
         old_timber_count = world.timber_count
-        
+
         sawyer_results1 = land_tile1.clearcut
         sawyer_results2 = land_tile2.clearcut
-        
+        old_balance = player.balance
+        poletimber_value  = sawyer_results1[:poletimber_value]  + sawyer_results2[:poletimber_value]
+        poletimber_volume = sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
+        sawtimber_value   = sawyer_results1[:sawtimber_value]   + sawyer_results2[:sawtimber_value]
+        sawtimber_volume  = sawyer_results1[:sawtimber_volume]  + sawyer_results2[:sawtimber_volume]
+
+
         post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
 
         response.body.should have_content('poletimber_value')
-        response.body.should have_content(sawyer_results1[:poletimber_value] + sawyer_results2[:poletimber_value])
+        response.body.should have_content(poletimber_value)
 
         response.body.should have_content('poletimber_volume')
-        response.body.should have_content(sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume])
+        response.body.should have_content(poletimber_volume)
 
         response.body.should have_content('sawtimber_value')
-        response.body.should have_content(sawyer_results1[:sawtimber_value] + sawyer_results2[:sawtimber_value])
+        response.body.should have_content(sawtimber_value)
 
         response.body.should have_content('sawtimber_volume')
-        response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
-        
-        world.reload
-        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
+        response.body.should have_content(sawtimber_volume)
 
-        player.reload.balance.should == 990
+        world.reload
+        world.timber_count.should == (old_timber_count + sawtimber_volume).round
+
+        player.reload.balance.should == (old_balance - 10 + sawtimber_value + poletimber_value).to_i
       end
 
       it 'doesnt clearcut if not owned by you' do
