@@ -178,6 +178,7 @@ describe ResourceTilesController do
     let(:megatile) { create :megatile, owner: player, world: world }
     let!(:land_tile1) { create :deciduous_land_tile, world: world, megatile: megatile }
     let!(:land_tile2) { create :deciduous_land_tile, world: world, megatile: megatile }
+    let!(:unharvestable_tile) { create :residential_land_tile, world: world, megatile: megatile }
 
     let(:other_megatile) { create :megatile, owner: player2, world: world }
     let!(:other_tile) { create :deciduous_land_tile, world: world, megatile: other_megatile }
@@ -262,6 +263,13 @@ describe ResourceTilesController do
         response.status.should == 422
         world.reload.timber_count.should == old_timber_count
         player.reload.balance.should == 2
+      end
+
+      it 'strips out non clearcutable land' do
+        assert_nothing_raised do
+          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [land_tile1, unharvestable_tile].map(&:to_param), format: 'json'
+        end
+        response.should be_successful
       end
     end
 

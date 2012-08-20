@@ -9,9 +9,13 @@ class ResourceTilesController < ApplicationController
 
   expose(:resource_tiles) do
     if params[:resource_tile_ids]
-      ResourceTile.find(params["resource_tile_ids"]).sort
+      tiles = ResourceTile.where(id: params["resource_tile_ids"])
+      tiles = tiles.harvestable if @clearcut
+      tiles
     else
-      world.resource_tiles.includes(:megatile => :owner).within_rectangle x_min: params[:x_min], y_min: params[:y_min], x_max: params[:x_max], y_max: params[:y_max]
+      tiles = world.resource_tiles
+      tiles = tiles.harvestable if @clearcut
+      tiles.includes(:megatile => :owner).within_rectangle x_min: params[:x_min], y_min: params[:y_min], x_max: params[:x_max], y_max: params[:y_max]
     end
   end
 
@@ -135,6 +139,7 @@ class ResourceTilesController < ApplicationController
   end
 
   def clearcut_list
+    @clearcut = true
     resource_tiles.each do |tile|
       authorize! :clearcut, tile
     end
