@@ -11,25 +11,37 @@ class MegatilesController < ApplicationController
     x_max = params[:x_max].to_i
     y_min = params[:y_min].to_i
     y_max = params[:y_max].to_i
+    coordinate_box = { :x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max  }
 
-    data = MegatileRegionCache.megatiles_in_region(@world.id, x_min: x_min, y_min: y_min, x_max: x_max, y_max: y_max)
-    ret = "{\"megatiles\": #{data[:json]}}"
-
-    if stale?(:last_modified => data[:last_modified])
+    data = Megatile.in_region @world.id, coordinate_box
+    # if defined? request.env['HTTP_IF_MODIFIED_SINCE']
+    #   data = data.where('updated_at > ?', request.env['HTTP_IF_MODIFIED_SINCE'])
+    # end
+    
+    ret = data.map do |mt|
+      {:id => mt.id, :x => mt.x, :y => mt.y} #, :updated_at => mt.updated_at.rfc2822}
+    end
+    
+    #puts "megatile index (#{request.env['HTTP_IF_MODIFIED_SINCE']} *** #{params.inspect}) ====> #{ret.inspect}"
+    
+    if ret and ret.count > 0 
       respond_to do |format|
         format.json { render :text => ret, :content_type => 'application/json' }
       end
+    # else
+    #   render :nothing => true, :status => 304
     end
   end
 
   def show
     @megatile = Megatile.find(params[:id])
     authorize! :do_things, @megatile.world
-
-
-    respond_to do |format|
-      format.xml  { render_for_api :megatile_with_resources, :xml  => @megatile, :root => :megatile  }
-      format.json { render_for_api :megatile_with_resources, :json => @megatile, :root => :megatile  }
+    
+    if stale?(:last_modified => @megatile.updated_at)
+      respond_to do |format|
+        format.xml  { render_for_api :megatile_with_resources, :xml  => @megatile, :root => :megatile  }
+        format.json { render_for_api :megatile_with_resources, :json => @megatile, :root => :megatile  }
+      end
     end
   end
 

@@ -19,6 +19,12 @@ class Megatile < ActiveRecord::Base
 
   after_save :invalidate_cache
   belongs_to :megatile_region_cache
+  
+  scope :in_region, lambda { |world_id, coordinates|
+    exclusion_box = "NOT (x < :x_min OR x> :x_max OR y < :y_min OR y > :y_max)"
+    where(world_id: world_id).where(exclusion_box, coordinates)
+  }
+  
 
   def self.cost
     100

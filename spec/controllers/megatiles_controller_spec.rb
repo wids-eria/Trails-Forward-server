@@ -34,21 +34,41 @@ describe MegatilesController do
       end
     end
 
+    ### THIS ISN'T NEEDED NOW BECAUSE THIS DATA CAN NO LONGER EXPIRE ###
+    # describe 'with old last modified date' do
+    #   it 'returns data' do
+    #     @request.env['HTTP_IF_MODIFIED_SINCE'] = (the_world.megatiles.first.updated_at - 10.days).rfc2822
+    #     get :index, world_id: the_world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 2, format: 'json'
+    #     response.should be_success
+    #   end
+    # end
+    # 
+    # describe 'with new last modified date' do
+    #   it 'returns not modified' do
+    #     @request.env['HTTP_IF_MODIFIED_SINCE'] = the_world.megatiles.first.updated_at.rfc2822
+    #     get :index, world_id: the_world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 2, format: 'json'
+    #     response.status.should == 304
+    #   end
+    # end
+  end
+  
+  describe '#show' do 
+    let(:megatile) { the_world.megatiles.first }
     describe 'with old last modified date' do
       it 'returns data' do
-        @request.env['HTTP_IF_MODIFIED_SINCE'] = (the_world.megatiles.first.updated_at - 10.days).rfc2822
-        get :index, world_id: the_world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 2, format: 'json'
+        @request.env['HTTP_IF_MODIFIED_SINCE'] = (megatile.updated_at - 10.days).rfc2822
+        get :show, world_id: the_world.id,  id: megatile.id, format: 'json'
         response.should be_success
       end
     end
-
+    
     describe 'with new last modified date' do
       it 'returns not modified' do
-        @request.env['HTTP_IF_MODIFIED_SINCE'] = the_world.megatiles.first.updated_at.rfc2822
-        get :index, world_id: the_world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 2, format: 'json'
+        @request.env['HTTP_IF_MODIFIED_SINCE'] = megatile.updated_at.rfc2822
+        get :show, world_id: the_world.id, id: megatile.id,  format: 'json'
         response.status.should == 304
       end
-    end
+    end    
   end
 
   describe '#buy' do
