@@ -16,7 +16,7 @@ set :default_stage, "staging"
 
 set :application, "trails_forward"
 set :repository,  "git@github.com:wids-eria/Trails-Forward-server.git"
-set :branch, "gls_arcade"
+set :branch, "light_indices"
 
 set :scm, :git
 
