@@ -12,8 +12,6 @@ describe MegatilesController do
 
   before do
     sign_in user
-
-    create :megatile_region_cache, world: the_world, megatiles: the_world.megatiles
   end
 
   describe '#index' do

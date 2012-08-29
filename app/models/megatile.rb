@@ -16,9 +16,6 @@ class Megatile < ActiveRecord::Base
 
   validates_uniqueness_of :x, :scope => [:y, :world_id]
   validates_uniqueness_of :y, :scope => [:x, :world_id]
-
-  after_save :invalidate_cache
-  belongs_to :megatile_region_cache
   
   scope :in_region, lambda { |world_id, coordinates|
     exclusion_box = "NOT (x < :x_min OR x> :x_max OR y < :y_min OR y > :y_max)"
@@ -98,7 +95,6 @@ class Megatile < ActiveRecord::Base
   
   def invalidate_cache
     Rails.cache.delete cache_key
-    self.megatile_region_cache.invalidate if self.megatile_region_cache
   end
   
   def cache_key

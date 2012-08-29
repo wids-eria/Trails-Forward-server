@@ -14,7 +14,6 @@ describe SurveysController do
   before do
     sign_in user
 
-    create :megatile_region_cache, world: the_world, megatiles: the_world.megatiles
   end
 
   describe 'buying a survey' do

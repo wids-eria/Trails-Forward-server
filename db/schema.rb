@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120816000452) do
+ActiveRecord::Schema.define(:version => 20120828222652) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -85,16 +85,6 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
   create_table "megatile_groupings_megatiles", :force => true do |t|
     t.integer "megatile_id"
     t.integer "megatile_grouping_id"
-  end
-
-  create_table "megatile_region_caches", :force => true do |t|
-    t.integer  "world_id"
-    t.integer  "x_min"
-    t.integer  "x_max"
-    t.integer  "y_min"
-    t.integer  "y_max"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "megatiles", :force => true do |t|
