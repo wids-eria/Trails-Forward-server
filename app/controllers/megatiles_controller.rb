@@ -26,7 +26,7 @@ class MegatilesController < ApplicationController
     
     if ret and ret.count > 0 
       respond_to do |format|
-        format.json { render :text => {:megatiles => ret}, :content_type => 'application/json' }
+        format.json { render :json => {:megatiles => ret}, :content_type => 'application/json' }
       end
     # else
     #   render :nothing => true, :status => 304
