@@ -236,6 +236,10 @@ GEM
       rubyzip
     shoulda-matchers (1.0.0)
     simple-random (0.9.3)
+    simplecov (0.6.4)
+      multi_json (~> 1.0)
+      simplecov-html (~> 0.5.3)
+    simplecov-html (0.5.3)
     spork (0.9.0.rc9)
     sprockets (2.0.3)
       hike (~> 1.2)
@@ -313,6 +317,7 @@ DEPENDENCIES
   rvm-capistrano
   shoulda-matchers
   simple-random
+  simplecov
   spork (= 0.9.0.rc9)
   sqlite3
   stalker
