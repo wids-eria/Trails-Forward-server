@@ -12,16 +12,13 @@ class MegatilesController < ApplicationController
     y_min = params[:y_min].to_i
     y_max = params[:y_max].to_i
 
-    if (x_max - x_min)*(y_max - y_min) > 2000
-      render :status => :request_entity_too_large, :text => "Request too large"
-      return
-    end
-
     data = MegatileRegionCache.megatiles_in_region(@world.id, x_min: x_min, y_min: y_min, x_max: x_max, y_max: y_max)
-    ret = "{\"megatiles\": #{data}}"
+    ret = "{\"megatiles\": #{data[:json]}}"
 
-    respond_to do |format|
-      format.json { render :text => ret, :content_type => 'application/json' }
+    if stale?(:last_modified => data[:last_modified])
+      respond_to do |format|
+        format.json { render :text => ret, :content_type => 'application/json' }
+      end
     end
   end
 
@@ -58,6 +55,45 @@ class MegatilesController < ApplicationController
     respond_to do |format|
       format.xml  { render_for_api :megatiles_with_value, :xml  => @megatiles, :root => :megatiles  }
       format.json { render_for_api :megatiles_with_value, :json => @megatiles, :root => :megatiles  }
+    end
+  end
+
+
+  def buy
+    megatile = Megatile.find(params[:id])
+    authorize! :do_things, megatile.world
+
+    player = megatile.world.player_for_user(current_user)
+
+    if megatile.owner.present?
+      respond_to do |format|
+        format.xml  { render  xml: { errors: ["Already owned"] }, status: :unprocessable_entity }
+        format.json { render json: { errors: ["Already owned"] }, status: :unprocessable_entity }
+      end
+    else
+      megatile.owner = player
+      player.balance -= Megatile.cost
+
+      begin
+        ActiveRecord::Base.transaction do
+          if megatile.save && player.save
+
+            megatile.invalidate_cache
+
+            respond_to do |format|
+              format.xml  { head :ok }
+              format.json { head :ok }
+            end
+          else
+            raise ActiveRecord::RecordInvalid.new(player)
+          end
+        end
+      rescue ActiveRecord::RecordInvalid
+        respond_to do |format|
+          format.xml  { render  xml: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+          format.json { render json: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+        end
+      end
     end
   end
 end

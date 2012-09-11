@@ -17,6 +17,8 @@ TrailsForwardWorld::Application.configure do
   config.action_mailer.raise_delivery_errors = false
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
+  config.cache_store = :mem_cache_store
+
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 

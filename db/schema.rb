@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120409182341) do
+ActiveRecord::Schema.define(:version => 20120816000452) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(:version => 20120409182341) do
     t.integer "resource_tile_id"
     t.float   "x"
     t.float   "y"
-    t.integer "heading"
+    t.float   "heading"
     t.string  "state"
     t.integer "age",              :default => 0
   end
@@ -98,18 +98,28 @@ ActiveRecord::Schema.define(:version => 20120409182341) do
   end
 
   create_table "megatiles", :force => true do |t|
-    t.integer "world_id"
-    t.integer "x"
-    t.integer "y"
-    t.integer "owner_id"
-    t.integer "megatile_region_cache_id"
+    t.integer  "world_id"
+    t.integer  "x"
+    t.integer  "y"
+    t.integer  "owner_id"
+    t.integer  "megatile_region_cache_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
+  add_index "megatiles", ["megatile_region_cache_id", "updated_at"], :name => "index_megatiles_on_megatile_region_cache_id_and_updated_at"
+  add_index "megatiles", ["world_id", "updated_at"], :name => "index_megatiles_on_world_id_and_updated_at"
+
   create_table "players", :force => true do |t|
-    t.integer "user_id"
-    t.integer "world_id"
-    t.integer "balance"
-    t.string  "type"
+    t.integer  "user_id"
+    t.integer  "world_id"
+    t.integer  "balance",             :default => 0
+    t.string   "type"
+    t.integer  "last_turn_played",    :default => 0
+    t.datetime "last_turn_played_at"
+    t.integer  "quest_points",        :default => 0
+    t.integer  "pending_balance",     :default => 0
+    t.text     "quests"
   end
 
   create_table "resource_tiles", :force => true do |t|
@@ -130,42 +140,71 @@ ActiveRecord::Schema.define(:version => 20120409182341) do
     t.integer "soil"
     t.integer "landcover_class_code"
     t.integer "zoning_code"
-    t.float   "num_2_inch_diameter_trees"
-    t.float   "num_4_inch_diameter_trees"
-    t.float   "num_6_inch_diameter_trees"
-    t.float   "num_8_inch_diameter_trees"
-    t.float   "num_10_inch_diameter_trees"
-    t.float   "num_12_inch_diameter_trees"
-    t.float   "num_14_inch_diameter_trees"
-    t.float   "num_16_inch_diameter_trees"
-    t.float   "num_18_inch_diameter_trees"
-    t.float   "num_20_inch_diameter_trees"
-    t.float   "num_22_inch_diameter_trees"
-    t.float   "num_24_inch_diameter_trees"
+    t.float   "num_2_inch_diameter_trees",  :default => 0.0,    :null => false
+    t.float   "num_4_inch_diameter_trees",  :default => 0.0,    :null => false
+    t.float   "num_6_inch_diameter_trees",  :default => 0.0,    :null => false
+    t.float   "num_8_inch_diameter_trees",  :default => 0.0,    :null => false
+    t.float   "num_10_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_12_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_14_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_16_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_18_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_20_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_22_inch_diameter_trees", :default => 0.0,    :null => false
+    t.float   "num_24_inch_diameter_trees", :default => 0.0,    :null => false
+    t.string  "zone_type",                  :default => "none"
+    t.integer "housing_capacity",           :default => 0
+    t.integer "housing_occupants",          :default => 0
+    t.boolean "harvest_area",               :default => false
+    t.integer "supported_saplings",         :default => 0
+    t.string  "tree_type",                  :default => "none"
+    t.boolean "outpost",                    :default => false
+    t.float   "local_desirability_score",   :default => 0.0
+    t.float   "total_desirability_score",   :default => 0.0
+    t.boolean "can_be_surveyed",            :default => false
+    t.boolean "is_surveyed",                :default => false
+    t.boolean "bought_by_developer",        :default => false
+    t.boolean "bought_by_timber_company",   :default => false
+    t.boolean "outpost_requested",          :default => false
+    t.boolean "survey_requested",           :default => false
+    t.integer "marten_suitability",         :default => 0
+    t.float   "small_tree_basal_area"
+    t.float   "large_tree_basal_area"
+    t.float   "marten_population",          :default => 0.0
+    t.float   "vole_population",            :default => 0.0
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
+  add_index "resource_tiles", ["world_id", "type"], :name => "index_resource_tiles_on_world_id_and_type"
   add_index "resource_tiles", ["world_id", "x", "y"], :name => "index_resource_tiles_on_world_id_and_x_and_y", :unique => true
 
   create_table "resources", :force => true do |t|
-    t.string  "type"
-    t.float   "value"
-    t.integer "world_id"
-    t.integer "resource_tile_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "surveys", :force => true do |t|
     t.date     "capture_date"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "num_2in_trees",  :default => 0.0
+    t.float    "num_4in_trees",  :default => 0.0
+    t.float    "num_6in_trees",  :default => 0.0
+    t.float    "num_8in_trees",  :default => 0.0
+    t.float    "num_10in_trees", :default => 0.0
+    t.float    "num_12in_trees", :default => 0.0
+    t.float    "num_14in_trees", :default => 0.0
+    t.float    "num_16in_trees", :default => 0.0
+    t.float    "num_18in_trees", :default => 0.0
+    t.float    "num_20in_trees", :default => 0.0
+    t.float    "num_22in_trees", :default => 0.0
+    t.float    "num_24in_trees", :default => 0.0
+    t.integer  "player_id"
+    t.integer  "megatile_id"
   end
 
-  create_table "tile_surveys", :force => true do |t|
-    t.float    "poletimber_value"
-    t.float    "sawtimber_value"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+  add_index "surveys", ["megatile_id"], :name => "index_surveys_on_megatile_id"
+  add_index "surveys", ["player_id"], :name => "index_surveys_on_player_id"
 
   create_table "users", :force => true do |t|
     t.string   "name"
@@ -197,7 +236,12 @@ ActiveRecord::Schema.define(:version => 20120409182341) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "start_date"
-    t.date     "current_date"
+    t.integer  "current_turn",    :default => 1
+    t.datetime "turn_started_at"
+    t.integer  "timber_count",    :default => 0
+    t.string   "turn_state",      :default => "play"
+    t.integer  "turn_duration",   :default => 15
+    t.integer  "year_current",    :default => 0
   end
 
 end

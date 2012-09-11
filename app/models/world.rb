@@ -22,9 +22,14 @@ class World < ActiveRecord::Base
   validates :megatile_height, :numericality => {:greater_than => 0}
   validates :name, :presence => true
   validates :start_date, :presence => true
-  validates :current_date, :presence => true
+  validates :year_current, :presence => true
+
+  validates :turn_started_at, :presence => true
 
   validate :world_dimensions_are_consistent
+
+  scope :in_play, where(turn_state: 'playing')
+  scope :ready_for_processing, where(turn_state: 'ready_for_processing')
 
   def manager
     @manager ||= GameWorldManager.for_world(self)
@@ -93,17 +98,7 @@ class World < ActiveRecord::Base
   end
 
   def tick
-    tick_agents
-    age_agents!
-
-    tick_tiles
-
-    self.reload
-    self.current_date += tick_length
-  end
-
-  def tick_length
-    1.day
+    raise 'use the world turn manager'
   end
 
   def tick_agents
@@ -192,14 +187,79 @@ class World < ActiveRecord::Base
     change_requests.where(:complete => false)
   end
 
-  def year_current
-    current_date.year
+  # FIXME: reverting back to integer for year, since database bonks out after
+  # the date year 9999 in a date field
+  def current_date
+    start_date + (year_current - start_date.year).years
+  end
+
+  def current_date=(value)
+    self.year_current = value.year
   end
 
   def year_start
     start_date.year
   end
+  
+  def migrate_population_to_most_desirable_tiles!(population)
+    log = TimeStampLogger.new(File.join("log", "world_#{self.id}_turns"), 'daily')
 
+    #zero out occupancy
+    ResourceTile.connection.execute("UPDATE resource_tiles SET housing_occupants = 0 WHERE world_id=#{self.id}")
+  
+    #stick people in the best places first, and prefer less populated over more populated 
+    places_with_people = []
+  
+    #Can't do the following because order is ignored by find_in_batches
+    #    world.resource_tiles.most_desirable.where('housing_capacity > 0').find_in_batches do |group|
+    batch_size = 10
+    ((self.width * self.height)/batch_size).ceil.times do |page|
+      group = self.resource_tiles.most_desirable.paginate(:page => page + 1, :per_page => batch_size).to_a
+      best_places = group.sort {|x, y| x.housing_capacity <=> y.housing_capacity }
+      best_places.each do |rt|
+        rt.housing_occupants = [rt.housing_capacity, population].min
+        population -= [rt.housing_capacity, population].min
+        places_with_people << rt
+        rt.save!
+        break if population <= 0
+      end 
+      log.info "population remaining #{population}"
+      break if population <= 0
+    end 
+
+    #TODO: give rent to owners of occupied land.
+    puts "#{places_with_people.count} tiles are now occupied"
+  end
+
+  def update_total_desirability_scores!
+    resource_tiles.each do |tile|
+      tile.update_total_desirability_score!
+    end
+  end
+
+  def human_population
+    resource_tiles.sum(:housing_occupants)
+  end
+
+  def livable_tiles_count
+    resource_tiles.where('housing_capacity > 0').count
+  end
+
+  def update_marten_suitability
+    self.resource_tiles.land_tiles.each do |tile| 
+      tile.calculate_marten_suitability true
+      tile.save
+    end
+  end
+  
+  def update_marten_suitability_and_count_of_suitable_tiles
+    update_marten_suitability
+  end
+  
+  def marten_suitable_tile_count
+    self.resource_tiles.marten_suitable.count
+  end
+  
   api_accessible :world_without_tiles do |template|
     template.add :id
     template.add :name
@@ -212,6 +272,12 @@ class World < ActiveRecord::Base
     template.add :created_at
     template.add :updated_at
     template.add :players, :template => :id_and_name
+    template.add :turn_started_at
+    template.add :current_turn
+    template.add :timber_count
+    template.add :marten_suitable_tile_count
+    template.add :human_population
+    template.add :livable_tiles_count
   end
 
 private

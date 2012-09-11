@@ -11,15 +11,25 @@ class Ability
       true
     end
 
+    can :update_world, World do
+      true
+    end
+
     can :god_mode, ResourceTile do |tile, god_mode|
+      god_mode == "iddqd"
+    end
+    
+    can :god_mode, Player do |player, god_mode|
       god_mode == "iddqd"
     end
 
     can :access_private_data, Player, :user_id => user.id
     can :access_private_data, User, :id => user.id
 
-    can :create_player, User, :id => user.id
-    can :update_player, Player, :user_id => user.id
+    can :create_player, User
+    can :update_player, Player do
+      true
+    end
 
     can :index_user_players, :all
     can :show_player, :all
@@ -74,8 +84,18 @@ class Ability
       player == listing.owner && listing == bid.listing
     end
 
+    # empty since client side handles rules for now
+    can :harvest, ResourceTile
+
     can :bulldoze, ResourceTile do |rt|
       rt.megatile.world.player_for_user(user) == rt.megatile.owner
+    end
+    
+    can :build_outpost, ResourceTile do |rt|
+      #TODO: put this back
+      #rt.world.player_for_user(user).class == Developer &&
+      [21,22,23,24].include?(rt.landcover_class_code) &&
+      rt.zoning_code >= 3 && ![6,10,16, 255].include?(rt.zoning_code)
     end
 
     can :clearcut, ResourceTile do |rt|

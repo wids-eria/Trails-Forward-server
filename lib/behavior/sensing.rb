@@ -8,6 +8,13 @@ module Behavior
       0.5
     end
 
+    def patch_ahead distance = 1
+      offset = self.class.calculate_offset_coordinates self.heading, distance
+      px = self.x + offset[0]
+      py = self.y + offset[1]
+      self.world.resource_tile_at px, py
+    end
+
     def best_nearby_tile
       tile_utilities = nearby_tiles.map {|t| [tile_utility(t), t]}.sort
       best_utility = tile_utilities.map(&:first).max

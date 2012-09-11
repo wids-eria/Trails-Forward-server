@@ -1,12 +1,15 @@
 class ResourceTile < ActiveRecord::Base
+  include ResourceTileZoning
+  include LandScoring
   acts_as_api
 
   belongs_to :megatile
   belongs_to :world
   has_many :agents
   has_many :resources
-  
+
   after_save :invalidate_megatile_cache
+  before_save :update_local_desirability_score
 
   def self.dist
     @@dist ||= SimpleRandom.new
@@ -14,12 +17,17 @@ class ResourceTile < ActiveRecord::Base
     @@dist
   end
 
-  # validates_uniqueness_of :x, :scope => [:y, :world_id]
-  # validates_uniqueness_of :y, :scope => [:x, :world_id]
+  validates :zone_type, presence: true, inclusion: { in: valid_zone_types + valid_zone_types.map(&:to_s) }
+  validates :landcover_class_code, presence: true, inclusion: { in: (1..255) }
+
+  validates_uniqueness_of :x, :scope => [:y, :world_id]
+  validates_uniqueness_of :y, :scope => [:x, :world_id]
 
   # todo: Add validations for land_cover_type, zoning_code, and primary_use to be sure that they're in one of the below
 
   scope :with_trees, where('tree_density > 0')
+  scope :land_tiles, where(type: 'LandTile')
+  scope :harvestable, where(landcover_class_code: [41,42,43,90])
 
   scope :within_rectangle, lambda{|opts|
     min_x = opts[:x_min].to_i
@@ -32,6 +40,11 @@ class ResourceTile < ActiveRecord::Base
   # scope :for_types, lambda { |types| where(type: types.map{|t| t.to_s.classify}) }
 
   scope :with_agents, include: [:agents]
+  
+  scope :most_desirable, order("total_desirability_score DESC")
+  
+  MARTEN_SUITABLE_CLASS_CODES = [41,42,43,91]
+  scope :marten_suitable, where(:landcover_class_code => MARTEN_SUITABLE_CLASS_CODES).where('small_tree_basal_area < large_tree_basal_area')
 
   scope :in_square_range, lambda { |radius, x, y|
     x_min = (x - radius).floor
@@ -44,6 +57,10 @@ class ResourceTile < ActiveRecord::Base
       where("x >= ? AND x < ? AND y >= ? AND y < ?", x_min, x_max, y_min, y_max)
     end
   }
+
+  def self.clearcut_cost
+    5
+  end
 
   def self.landcover_description landcover_code
     cover_type_sym = ResourceTile.cover_type_symbol(landcover_code)
@@ -84,6 +101,7 @@ class ResourceTile < ActiveRecord::Base
         :logging => "Logging",
         :industry => "Industry" } }
   end
+
 
   def self.base_cover_type
     @base_cover_types ||= { 11 => :water,
@@ -197,6 +215,10 @@ class ResourceTile < ActiveRecord::Base
       end
     end
   end
+  
+  def neighbors distance = 1
+    self.world.resource_tiles.within_rectangle :x_min => self.x - distance, :x_max => self.x + distance, :y_min => self.y - distance, :y_max => self.y + distance
+  end
 
   api_accessible :resource_base do |template|
     template.add :id
@@ -205,6 +227,16 @@ class ResourceTile < ActiveRecord::Base
     template.add :type
     template.add :base_cover_type
     template.add :permitted_actions
+    template.add :zone_type
+    template.add :local_desirability_score
+    template.add :total_desirability_score
+    template.add :can_be_surveyed
+    template.add :is_surveyed
+    template.add :bought_by_developer
+    template.add :bought_by_timber_company
+    template.add :outpost_requested
+    template.add :survey_requested
+    template.add lambda{|rt| rt.is_marten_suitable?}, :as => :is_marten_suitable
   end
 
   api_accessible :resource_actions do |template|
@@ -266,4 +298,14 @@ class ResourceTile < ActiveRecord::Base
   def invalidate_megatile_cache
     megatile.invalidate_cache
   end
+  
+  def is_marten_suitable?
+    if self.kind_of? LandTile
+      self.calculate_marten_suitability   
+      self.marten_suitability >= 0.75
+    else
+      false
+    end
+  end
+  
 end

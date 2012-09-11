@@ -7,6 +7,7 @@ FactoryGirl.define do
     height 6
     megatile_width 3
     megatile_height 3
+    turn_started_at { DateTime.now }
   end
 
   factory :world_with_tiles, parent: :world do
@@ -29,6 +30,12 @@ FactoryGirl.define do
   end
 
   factory :world_with_properties, parent: :world do
+    after_create do |world, proxy|
+      world.spawn_blank_tiles populate: true
+    end
+  end
+
+  factory :world_with_properties_and_users, parent: :world do
     after_create do |world, proxy|
       world.spawn_blank_tiles populate: true
       world.create_users_and_players

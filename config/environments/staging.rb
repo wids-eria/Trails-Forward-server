@@ -20,7 +20,9 @@ TrailsForwardWorld::Application.configure do
   # Print deprecation notices to the Rails logger
   config.active_support.deprecation = :log
 
-  config.log_level = :debug
+  config.log_level = :info
+
+  config.cache_store = :mem_cache_store
 
   # Only use best-standards-support built into browsers
   config.action_dispatch.best_standards_support = :builtin

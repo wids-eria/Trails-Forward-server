@@ -2,6 +2,8 @@ source 'http://rubygems.org'
 
 gem 'rails'
 gem 'rake'
+gem 'stalker'
+gem 'memcache-client'
 
 gem 'activerecord-import'
 gem 'acts_as_api', git: 'git://github.com/fabrik42/acts_as_api.git'
@@ -23,7 +25,10 @@ gem 'simple-random'
 gem 'state_machine'
 gem 'capistrano'
 gem 'capistrano-ext'
+gem 'rvm-capistrano'
 gem 'factory_girl_rails'
+gem 'will_paginate'
+gem 'whenever', require: false
 
 group :development, :test do
   gem 'sqlite3'
@@ -37,7 +42,7 @@ group :development, :test do
     gem 'guard-rails'
     gem 'guard-rspec'
     gem 'guard-spork'
-    gem 'rb-fsevent'
+    gem 'rb-fsevent', '>0.9'
 
   gem 'capybara'
   gem 'database_cleaner'
@@ -58,3 +63,4 @@ end
 group :production do
   gem 'exceptional'
 end
+gem 'simplecov'

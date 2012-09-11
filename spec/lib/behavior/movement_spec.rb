@@ -27,4 +27,13 @@ describe MovingAgent do
 
     its(:location) { should == [1, 1] }
   end
+  
+  describe '#walk_forward' do 
+    let(:agent) { build :agent}
+    before do
+      agent.walk_forward 1
+    end
+    
+    its(:location) { should == [1, 2]}
+  end
 end

@@ -68,22 +68,12 @@ describe LandTile do
     end
   end
 
-  [1..17].each do |zoning_code|
-    example "zoning_code #{zoning_code} can be clear cut" do
-      tile = LandTile.new zoning_code: zoning_code
-      tile.can_clearcut?.should be_true
-    end
-  end
-  example "zoning_code 255 cannot be clear cut" do
-    tile = LandTile.new zoning_code: 255
-    tile.can_clearcut?.should be_false
-  end
-
   context "with world" do
     let(:world) { create :world_with_resources }
     let(:player) { create :player, world: world }
     let(:megatile) { world.megatiles.first }
-    let(:tile) { megatile.world.resource_tiles.select{|tile| tile.kind_of?(LandTile)}.first }
+    let(:tile) { create :forest_tile, world: world, megatile: megatile }
+
     before do
       tile.megatile.owner = player
       tile.tree_density = 1
@@ -93,18 +83,12 @@ describe LandTile do
     it "clear cuts the land" do
       lambda {
         tile.clearcut!
-      }.should change(tile, :tree_density).to(0.0)
+      }.should change(tile, :num_2_inch_diameter_trees).to(0)
       tile.save!
       tile.reload
-      tile.land_cover_type.should == :barren
+      tile.land_cover_type.should == :deciduous
     end
 
-    it "awards tile owner the lumber value when clearcut" do
-      tile.expects(estimated_timber_value: 1)
-      lambda {
-        tile.clearcut!
-      }.should change { tile.megatile.owner.balance }
-    end
   end
 
   it "can be bulldozed" do
@@ -122,6 +106,36 @@ describe LandTile do
   it "has estimated value" do
     tile = LandTile.new
     tile.estimated_value.should > 0
+  end
+
+  context "#species_group" do
+    let(:tile) { LandTile.new }
+
+    it "returns shade tolerant" do
+      tile.landcover_class_code = 41
+      tile.species_group.should == :shade_tolerant
+    end
+
+    it "returns mid tolerant" do
+      tile.landcover_class_code = 42
+      tile.species_group.should == :mid_tolerant
+
+      tile.landcover_class_code = 90
+      tile.species_group.should == :mid_tolerant
+    end
+
+    it "returns shade intolerant" do
+      tile.landcover_class_code = 43
+      tile.species_group.should == :shade_intolerant
+    end
+
+    it "raises when unknown class code" do
+      tile.landcover_class_code = 95
+      lambda {
+        tile.species_group
+      }.should raise_error('No Trees')
+
+    end
   end
 
   context "timber value" do
@@ -182,22 +196,37 @@ describe LandTile do
       before do
         tile.stubs(species_group: :shade_tolerant)
       end
-      it "estimates 6 inch tree value" do
-        tile.num_6_inch_diameter_trees = 10
-        tile.stubs(calculate_basal_area: 100)
-        tile.estimated_6_inch_tree_value.should be_within(0.1).of(3.325163)
+
+      context "when on the tile" do
+        it "estimates 6 inch tree value" do
+          tile.num_6_inch_diameter_trees = 10
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_6_inch_tree_value.should be_within(0.1).of(3.325163)
+        end
+
+        it "estimates 14 inch tree value" do
+          tile.num_14_inch_diameter_trees = 10
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_14_inch_tree_value.should be_within(0.1).of(206.1207)
+        end
+
+        it "estimates 10 inch tree value" do
+          tile.num_10_inch_diameter_trees = 10
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_10_inch_tree_value.should be_within(0.1).of(9.2107)
+        end
       end
 
-      it "estimates 14 inch tree value" do
-        tile.num_14_inch_diameter_trees = 10
-        tile.stubs(calculate_basal_area: 100)
-        tile.estimated_14_inch_tree_value.should be_within(0.1).of(206.1207)
-      end
+      context "when passed a tree count" do
+        it "estimates 6 inch tree value" do
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_tree_value_for_size(6, 10).should be_within(0.1).of(3.325163)
+        end
 
-      it "estimates 10 inch tree value" do
-        tile.num_10_inch_diameter_trees = 10
-        tile.stubs(calculate_basal_area: 100)
-        tile.estimated_10_inch_tree_value.should be_within(0.1).of(9.2107)
+        it "estimates 6 inch tree value with 0 count" do
+          tile.stubs(calculate_basal_area: 100)
+          tile.estimated_tree_value_for_size(6, 0).should be_within(0.1).of(0.0)
+        end
       end
     end
 
@@ -312,10 +341,103 @@ describe LandTile do
 
       new_num_trees.should < old_num_trees
     end
+
+    context "tree calculations" do
+      let(:basal_area) { 42.5424005174 }
+      before do
+        tile.landcover_class_code = 41
+        tile.tree_sizes.each{|size| tile.set_trees_in_size(size, 3.0)}
+      end
+
+      it "has friggin 36 trees" do
+        tile.collect_tree_size_counts.sum.should be_within(0.001).of(36.0)
+      end
+
+      it "has a friggin basal area" do
+        tile.calculate_basal_area(tile.tree_sizes, tile.collect_tree_size_counts).should be_within(0.00001).of(basal_area)
+      end
+
+      it "is mortal" do
+        mortality = tile.determine_mortality_rate(2, :shade_tolerant, 80)
+        mortality.should be_within(0.000001).of(0.0278866)
+
+        mortality = tile.determine_mortality_rate(12, :shade_tolerant, 80)
+        mortality.should be_within(0.000001).of(0.0150546)
+
+        mortality = tile.determine_mortality_rate(24, :shade_tolerant, 80)
+        mortality.should be_within(0.000001).of(0.0339762)
+      end
+
+      it "upgroweth" do
+        upgrowth = tile.determine_upgrowth_rate(2, :shade_tolerant, 80, basal_area)
+        upgrowth.should be_within(0.00001).of(0.0212195727)
+
+        upgrowth = tile.determine_upgrowth_rate(12, :shade_tolerant, 80, basal_area)
+        upgrowth.should be_within(0.00001).of(0.0477995727)
+
+        upgrowth = tile.determine_upgrowth_rate(24, :shade_tolerant, 80, basal_area)
+        upgrowth.should be_within(0.00001).of(0.0)
+      end
+
+      it "ingroweth" do
+        ingrowth = tile.determine_ingrowth_number(:shade_tolerant, basal_area)
+        ingrowth.should be_within(0.000001).of(14.077659246)
+      end
+
+      context "when it fookin grows for 1 year" do
+        before do
+          tile.grow_trees
+        end
+
+        it "dun growed" do
+          given_counts = tile.collect_tree_size_counts
+          expected_counts = [
+            16.9303,
+             2.9044,
+             2.9202,
+             2.9328,
+             2.9424,
+             2.9488,
+             2.9521,
+             2.9522,
+             2.9493,
+             2.9432,
+             2.9340,
+             2.9976
+          ]
+
+          given_counts.each_with_index do |count, index|
+            count.should be_within(0.001).of(expected_counts[index])
+          end
+        end
+      end
+
+      context "when it fookin grows for 100 years" do
+        before do
+          100.times { tile.grow_trees }
+        end
+
+        it "the 2s" do
+          tile.trees_in_size(2).should be_within(0.0001).of(260.61338)
+        end
+        it "the 4s" do
+          tile.trees_in_size(4).should be_within(0.0001).of(97.89054)
+        end
+        it "the 6s" do
+          tile.trees_in_size(6).should be_within(0.0001).of(49.35273)
+        end
+        it "the 8s" do
+          tile.trees_in_size(8).should be_within(0.0001).of(28.05495)
+        end
+        it "the 24s" do
+          tile.trees_in_size(24).should be_within(0.0001).of(1.42479)
+        end
+      end
+    end
   end
 
   context "harvesting trees" do
-    let(:tile) { build :land_tile }
+    let(:tile) { build :deciduous_land_tile }
 
     before do
       tile.num_2_inch_diameter_trees  = 2
@@ -330,6 +452,30 @@ describe LandTile do
       tile.num_20_inch_diameter_trees = 20
       tile.num_22_inch_diameter_trees = 22
       tile.num_24_inch_diameter_trees = 24
+    end
+
+    describe '#excess_tree_counts' do
+      it 'returns the number of trees above the requested count' do
+        excess = tile.excess_tree_counts [0,0,0,0,10,10,10,10,20,20,20,20]
+        excess.should == [2,4,6,8,0,2,4,6,0,0,2,4]
+      end
+    end
+
+    describe '#position_for_size' do
+      it 'returns array index for each size' do
+        tile.position_for_size(2).should == 0
+        tile.position_for_size(4).should == 1
+        tile.position_for_size(6).should == 2
+        tile.position_for_size(8).should == 3
+        tile.position_for_size(10).should == 4
+        tile.position_for_size(12).should == 5
+        tile.position_for_size(14).should == 6
+        tile.position_for_size(16).should == 7
+        tile.position_for_size(18).should == 8
+        tile.position_for_size(20).should == 9
+        tile.position_for_size(22).should == 10
+        tile.position_for_size(24).should == 11
+      end
     end
 
     describe '#sawyer' do
@@ -350,10 +496,28 @@ describe LandTile do
         tile.num_24_inch_diameter_trees.should == 14
       end
 
-      # TODO refactor estimated** methods to return value of product
       # NOTE merchantable height..affected by harvest in weird way.
       #      basal area from old numbers not new?
-      it "returns value by product"
+      context "when returning" do
+        let(:values) { tile.sawyer [0,0,0,0,0,0,0,0,0,0,0,0] }
+
+        it "gives poletimber value" do
+          values[:poletimber_value].should be_within(0.1).of(16.1415)
+        end
+
+        it "gives sawtimber value" do
+          values[:sawtimber_value].should be_within(0.1).of(7502.6357)
+        end
+        
+
+        it "gives poletimber volume" do
+          values[:poletimber_volume].should be_within(0.1).of(172.1770)
+        end
+
+        it "gives sawtimber volume" do
+          values[:sawtimber_volume].should be_within(0.1).of(4526.7747)
+        end
+      end
     end
 
     describe "#diameter_limit_cut" do
@@ -428,6 +592,59 @@ describe LandTile do
         tile.num_22_inch_diameter_trees.should be_within(0.1).of(0.899)
         tile.num_24_inch_diameter_trees.should be_within(0.1).of(0.599)
       end
+    end
+
+    describe '#clearcut' do
+      it 'removes all trees' do
+        tile.clearcut
+
+        tile.num_2_inch_diameter_trees.should  == 0
+        tile.num_4_inch_diameter_trees.should  == 0
+        tile.num_6_inch_diameter_trees.should  == 0
+        tile.num_8_inch_diameter_trees.should  == 0
+        tile.num_10_inch_diameter_trees.should == 0
+        tile.num_12_inch_diameter_trees.should == 0
+        tile.num_14_inch_diameter_trees.should == 0
+        tile.num_16_inch_diameter_trees.should == 0
+        tile.num_18_inch_diameter_trees.should == 0
+        tile.num_20_inch_diameter_trees.should == 0
+        tile.num_22_inch_diameter_trees.should == 0
+        tile.num_24_inch_diameter_trees.should == 0
+      end
+    end
+  end
+
+  context "assess marten suitability" do
+    let(:tile) { build :deciduous_land_tile }
+
+    before do
+      tile.num_2_inch_diameter_trees  = 2
+      tile.num_4_inch_diameter_trees  = 4
+      tile.num_6_inch_diameter_trees  = 6
+      tile.num_8_inch_diameter_trees  = 8
+      tile.num_10_inch_diameter_trees = 10
+      tile.num_12_inch_diameter_trees = 12
+      tile.num_14_inch_diameter_trees = 14
+      tile.num_16_inch_diameter_trees = 16
+      tile.num_18_inch_diameter_trees = 18
+      tile.num_20_inch_diameter_trees = 20
+      tile.num_22_inch_diameter_trees = 22
+      tile.num_24_inch_diameter_trees = 24
+    end
+
+
+    describe '#assess suitability' do
+      it 'checks the suitability of a tile for marten' do
+        #tile.memoize_basal_area true #force
+        tile.calculate_marten_suitability.should == 1
+      end
+    end
+  end
+
+  context "#basal_area_for_size" do
+    let(:tile) { LandTile.new }
+    it "fookin works" do
+      tile.basal_area_for_size(2).should be_within(0.0001).of(0.0218166)
     end
   end
 end

@@ -5,7 +5,8 @@ describe ResourceTilesController do
   render_views
 
   let(:world) { create :world_with_tiles }
-  let(:player) { create :lumberjack, world: world }
+  let(:player) { create :lumberjack, world: world, balance: 1000 }
+  let(:player2) { create :lumberjack, world: world }
   let(:user) { player.user }
 
   before { sign_in user }
@@ -120,8 +121,8 @@ describe ResourceTilesController do
     end
 
     context 'passed a list of tiles' do
-      let(:land_tile1) { create :land_tile, world: world, megatile: megatile }
-      let(:land_tile2) { create :land_tile, world: world, megatile: megatile }
+      let(:land_tile1) { create :forest_tile, world: world, megatile: megatile }
+      let(:land_tile2) { create :forest_tile, world: world, megatile: megatile }
       let(:land_tiles) { [land_tile1, land_tile2] }
       let(:megatile_owner) { player }
 
@@ -145,13 +146,157 @@ describe ResourceTilesController do
     end
   end
 
-  describe '#clearcut' do
-    let(:action) { :clearcut }
-    it_should_behave_like "resource tile changing action"
-  end
 
+  describe '#build_outpost' do
+    let(:world) { create :world_with_tiles }
+    let(:player) { create :developer, world: world }
+    let(:user) { player.user }
+    
+    it 'makes the tiles around it surveyable' do
+      rt = world.resource_tile_at 1,1
+      rt.landcover_class_code = 21
+      rt.zoning_code = 4
+      rt.save!
+      megatile = rt.megatile
+      megatile.owner = player
+      megatile.save!
+      
+      post 'build_outpost', world_id: world.to_param, id: rt.id, format: 'json', god_mode: 'iddqd'
+
+      response.body.should have_content('resource_tiles')
+    end
+  end
+  
   describe '#bulldoze' do
     let(:action) { :bulldoze }
     it_should_behave_like "resource tile changing action"
+  end
+
+  # TODO move clearcut into here too
+  context 'harvesting' do
+    let(:world) { create :world }
+    let(:megatile) { create :megatile, owner: player, world: world }
+    let!(:land_tile1) { create :deciduous_land_tile, world: world, megatile: megatile }
+    let!(:land_tile2) { create :deciduous_land_tile, world: world, megatile: megatile }
+    let!(:unharvestable_tile) { create :residential_land_tile, world: world, megatile: megatile }
+
+    let(:other_megatile) { create :megatile, owner: player2, world: world }
+    let!(:other_tile) { create :deciduous_land_tile, world: world, megatile: other_megatile }
+
+    let!(:tiles) { [land_tile1, land_tile2] }
+
+    describe '#diameter_limit_cut' do
+      it 'returns values and volumes of all the tiles cut' do
+        old_timber_count = world.timber_count
+        
+        sawyer_results1 = land_tile1.diameter_limit_cut above: 12
+        sawyer_results2 = land_tile2.diameter_limit_cut above: 12
+
+        post 'diameter_limit_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), above: 12.to_s, format: 'json'
+
+        response.body.should have_content('poletimber_value')
+        response.body.should have_content(sawyer_results1[:poletimber_value] + sawyer_results2[:poletimber_value])
+
+        response.body.should have_content('poletimber_volume')
+        response.body.should have_content(sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume])
+
+        response.body.should have_content('sawtimber_value')
+        response.body.should have_content(sawyer_results1[:sawtimber_value] + sawyer_results2[:sawtimber_value])
+
+        response.body.should have_content('sawtimber_volume')
+        response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        
+        world.reload
+        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
+      end
+    end
+
+    describe '#clearcut' do
+      it 'returns values and volumes of all the tiles cut' do
+        old_timber_count = world.timber_count
+
+        sawyer_results1 = land_tile1.clearcut
+        sawyer_results2 = land_tile2.clearcut
+        old_balance = player.balance
+        poletimber_value  = sawyer_results1[:poletimber_value]  + sawyer_results2[:poletimber_value]
+        poletimber_volume = sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
+        sawtimber_value   = sawyer_results1[:sawtimber_value]   + sawyer_results2[:sawtimber_value]
+        sawtimber_volume  = sawyer_results1[:sawtimber_volume]  + sawyer_results2[:sawtimber_volume]
+
+
+        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+
+        response.body.should have_content('poletimber_value')
+        response.body.should have_content(poletimber_value)
+
+        response.body.should have_content('poletimber_volume')
+        response.body.should have_content(poletimber_volume)
+
+        response.body.should have_content('sawtimber_value')
+        response.body.should have_content(sawtimber_value)
+
+        response.body.should have_content('sawtimber_volume')
+        response.body.should have_content(sawtimber_volume)
+
+        world.reload
+        world.timber_count.should == (old_timber_count + sawtimber_volume).round
+
+        player.reload.balance.should == (old_balance - 10 + sawtimber_value + poletimber_value).to_i
+      end
+
+      it 'doesnt clearcut if not owned by you' do
+        old_timber_count = world.timber_count
+        assert_raises CanCan::AccessDenied do
+          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [other_tile].map(&:to_param), format: 'json'
+        end
+        world.reload.timber_count.should == old_timber_count
+        player.reload.balance.should == 1000
+      end
+
+      it 'doesnt clearcut if not enough money' do
+        old_timber_count = world.timber_count
+
+        player.balance = 2
+        player.save!
+
+        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+        response.status.should == 422
+        world.reload.timber_count.should == old_timber_count
+        player.reload.balance.should == 2
+      end
+
+      it 'strips out non clearcutable land' do
+        assert_nothing_raised do
+          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [land_tile1, unharvestable_tile].map(&:to_param), format: 'json'
+        end
+        response.should be_successful
+      end
+    end
+
+    describe '#partial_selection_cut' do
+      it 'returns values and volumes of all the tiles cut' do
+        old_timber_count = world.timber_count
+        
+        sawyer_results1 = land_tile1.partial_selection_cut target_basal_area: 100, qratio: 1.5
+        sawyer_results2 = land_tile2.partial_selection_cut target_basal_area: 100, qratio: 1.5
+
+        post 'partial_selection_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), target_basal_area: 100, qratio: 1.5, format: 'json'
+
+        response.body.should have_content('poletimber_value')
+        response.body.should have_content(sawyer_results1[:poletimber_value] + sawyer_results2[:poletimber_value])
+
+        response.body.should have_content('poletimber_volume')
+        response.body.should have_content(sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume])
+
+        response.body.should have_content('sawtimber_value')
+        response.body.should have_content(sawyer_results1[:sawtimber_value] + sawyer_results2[:sawtimber_value])
+
+        response.body.should have_content('sawtimber_volume')
+        response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        
+        world.reload
+        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
+      end
+    end
   end
 end

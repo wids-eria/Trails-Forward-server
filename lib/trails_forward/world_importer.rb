@@ -48,9 +48,16 @@ module TrailsForward
       density / 100.0
     end
 
+#    def self.housing_density_percent density
+#      case density
+#      when 1..6 then (2 ** (density + 1)) / 128.0
+#      else 0.0
+#      end
+#    end
+
     def self.housing_density_percent density
       case density
-      when 1..6 then (2 ** (density + 1)) / 128.0
+      when 1..10 then (density / 10)
       else 0.0
       end
     end
@@ -136,6 +143,7 @@ module TrailsForward
 
       tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
       tile_hash[:housing_density] = housing_density_percent(row_hash[:housing_density].to_f)
+      tile_hash[:housing_capacity] = housing_density_percent(row_hash[:house_count].to_f) * 100
       tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
       tile_hash[:frontage] = row_hash[:frontage].to_f
       tile_hash[:lakesize] = row_hash[:lakesize].to_f
@@ -152,9 +160,20 @@ module TrailsForward
         tile_hash[col_with_trees] = determine_num_trees_from_tree_density tile_hash
       end
 
-      tile_hash[:zoning_code] = row_hash[:zoning]
-      tile_hash[:primary_use] = primary_use(tile_hash)
       tile_hash[:type] = tile_type(tile_hash)
+      tile_hash[:zoning_code] = row_hash[:zoning]      
+      tile_hash[:primary_use] = primary_use(tile_hash)
+
+      #work around noisy data
+      if tile_hash[:type] == "WaterTile"
+        tile_hash[:people_density] = 0
+        tile_hash[:housing_density] = 0
+        tile_hash[:development_intensity] = 0
+        tile_hash[:tree_density] = 0
+        tile_hash[:tree_size] = 0
+        tile_hash[:zoning_code] = 255
+      end
+      
       tile_hash
     end
 
@@ -185,6 +204,7 @@ module TrailsForward
                       :col => header.index("COL"),
                       :cover_class => header.index("LANDCOV2001"),
                       :imperviousness => header.index("IMPERV%2001"),
+                      :house_count => header.index("HOUSES1996"),
                       :housing_density => header.index("HDEN00"),
                       :forest_density => header.index("CANOPY%2001"),
                       :frontage => header.index("FRONTAGE"),
@@ -235,7 +255,7 @@ module TrailsForward
       pb.finish
 
       import_columns = [ :megatile_id, :x, :y, :type, :zoning_code, :world_id,
-                         :primary_use, :people_density, :housing_density,
+                         :primary_use, :people_density, :housing_density, :housing_capacity,
                          :tree_density, :development_intensity, :tree_size,
                          :imperviousness, :frontage, :lakesize, :soil,
                          :landcover_class_code, :num_2_inch_diameter_trees,
@@ -281,15 +301,15 @@ module TrailsForward
       # end
       # pb.finish
 
-      pb = progress_bar_class.new 'Players', PLAYER_TYPES.count
-      PLAYER_TYPES.each_with_index do |player_klass, idx|
-        user = Factory :user,
-          name: "User #{world_id}-#{idx}",
-          email: "u#{world.id}-#{idx}@example.com"
-        player = player_klass.create :user => user, :world => world, :balance => 1000
-        pb.inc
-      end
-      pb.finish
+#     pb = progress_bar_class.new 'Players', PLAYER_TYPES.count
+#     PLAYER_TYPES.each_with_index do |player_klass, idx|
+#       user = Factory :user,
+#         name: "User #{world_id}-#{idx}",
+#         email: "u#{world.id}-#{idx}@example.com"
+#       player = player_klass.create :user => user, :world => world, :balance => 1000
+#       pb.inc
+#     end
+#     pb.finish
 
       puts("##{world_id} - #{name} generated".green) if show_progress
       
@@ -320,6 +340,30 @@ module TrailsForward
           pb.inc
         end
       end
+
+
+      puts("Calculating desirability")
+      #this shouldn't be necessary, but the importer doesn't do before_save callbacks
+      pb = progress_bar_class.new 'Local desirability scores', world.width * world.height
+      world.width.times do |x|
+        world.height.times do |y|
+          rt = world.resource_tile_at x, y
+          rt.calculate_marten_suitability true if rt.type == 'LandTile'
+          rt.save!
+          pb.inc
+        end
+      end
+      
+      pb = progress_bar_class.new 'Total desirability scores', world.width * world.height
+      world.width.times do |x|
+        world.height.times do |y|
+          rt = world.resource_tile_at x, y
+          rt.update_total_desirability_score!
+          pb.inc
+        end
+      end
+
+      world.save!
 
       WorldPresenter.new(world).save_png
     end

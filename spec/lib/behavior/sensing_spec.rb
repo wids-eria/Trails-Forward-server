@@ -27,6 +27,15 @@ describe Agent do
       agent.tile_utility(ResourceTile.new).should == 0.5
     end
   end
+  
+  describe '#patch_ahead' do
+    let!(:agent) { create :agent, world: world}
+    let!(:world) { create :world_with_tiles }
+
+    it 'can see whats in front of its face' do
+      agent.patch_ahead.y.should == 2
+    end
+  end
 end
 
 describe SensingAgent do

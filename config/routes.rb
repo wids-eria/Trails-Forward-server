@@ -7,8 +7,16 @@ TrailsForwardWorld::Application.routes.draw do
     resources :players, :only => [:index, :show, :update, :edit, :destroy]
   end
 
-  resources :worlds, :only => [:index, :show] do
-    resources :players, :only => [:index, :show] do
+  resources :worlds, :only => [:index, :show, :update] do
+    member do
+      get :time_left_for_turn
+      get :turn_state
+    end
+
+    resources :players, :only => [:index, :create, :destroy], :controller => :world_players do
+      collection do
+        put :submit_turn
+      end
       get :bids_placed
       get :bids_received
     end
@@ -33,7 +41,10 @@ TrailsForwardWorld::Application.routes.draw do
         post :reject
       end
 
+      resources :surveys, :only => [:index, :show, :create]
+
       member do
+        put :buy
         get :appraise
       end
 
@@ -47,9 +58,12 @@ TrailsForwardWorld::Application.routes.draw do
         post :bulldoze
         post :clearcut
         post :build
+        post :build_outpost
       end
 
       collection do
+        post 'diameter_limit_cut', controller: :resource_tiles, action: :diameter_limit_cut_list
+        post 'partial_selection_cut', controller: :resource_tiles, action: :partial_selection_cut_list
         post 'bulldoze', :controller => :resource_tiles, :action => :bulldoze_list
         post 'clearcut', :controller => :resource_tiles, :action => :clearcut_list
         post 'build', :controller => :resource_tiles, :action => :build_list

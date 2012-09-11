@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe ResourceTile do
   it { should have_many :agents }
+  it { should validate_presence_of :zone_type }
+  it { should validate_presence_of :landcover_class_code }
   let(:resource_tile) { build :resource_tile }
 
   describe 'scope' do
@@ -100,5 +102,5 @@ describe ResourceTile do
       resource_tile.location.should == [1, 3]
     end
   end
-  
+
 end

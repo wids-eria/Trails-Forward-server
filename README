@@ -27,6 +27,15 @@ To run the tests:
 
 $ rake
 
+
+Notes on world ticking:
+
+* config/schedule.rb runs on deploy to installs two Cron jobs. TurnScheduler#mark_for_processing, and #turn_next_world
+* each world tick is handled by Jobs::WorldTurner#turn_a_world which queues up a bunch of beanstalk jobs to be processed by stalker processes.
+* WorldTurn (not -er) encapsulates logic for a single turn.
+
+
+
 This file is part of TrailsForward.
 
     TrailsForward is free software: you can redistribute it and/or modify

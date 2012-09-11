@@ -24,8 +24,7 @@ end
 
 Then /^that resource tile should have no trees$/ do
   @my_resource_tile.reload
-  @my_resource_tile.tree_density.should == 0.0
-  @my_resource_tile.tree_size.should == 0.0
+  @my_resource_tile.collect_tree_size_counts.map(&:to_i).should == Array.new(12,0)
 end
 
 Then /^my bank balance should increase$/ do
@@ -51,14 +50,12 @@ When /^I clearcut a list containing that resource tile on the megatile that I ow
     :auth_token => @user.authentication_token,
     :resource_tile_ids => [@my_resource_tile.id]
   decoded = ActiveSupport::JSON.decode(@response.body)
-  decoded.has_key?("resource_tiles").should be true
   #decoded["resource_tiles[0]"].has_key?("id").should be true
 end
 
 Then /^the list containing that resource tile should have no trees$/ do
   @my_resource_tile.reload
-  @my_resource_tile.tree_density.should == 0.0
-  @my_resource_tile.tree_size.should == 0.0
+  @my_resource_tile.collect_tree_size_counts.should == Array.new(12,0)
 end
 
 When /^I clearcut a list containing that resource tile on the owned megatile Then I should get an error$/ do

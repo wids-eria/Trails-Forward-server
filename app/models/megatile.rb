@@ -10,6 +10,8 @@ class Megatile < ActiveRecord::Base
   has_many :bids_on, :through => :megatile_groupings
   has_many :bids_offering, :through => :megatile_groupings
 
+  has_many :surveys
+
   validates_presence_of :world
 
   validates_uniqueness_of :x, :scope => [:y, :world_id]
@@ -17,6 +19,10 @@ class Megatile < ActiveRecord::Base
 
   after_save :invalidate_cache
   belongs_to :megatile_region_cache
+
+  def self.cost
+    100
+  end
 
   def width
     world.try(:megatile_width)
@@ -29,7 +35,7 @@ class Megatile < ActiveRecord::Base
   def spawn_resources
     (x...(x + width)).each do |x|
       (y...(y + height)).each do |y|
-        ResourceTile.create(:x => x, :y => y, :world => world, :megatile => self)
+        FactoryGirl.create :resource_tile, :x => x, :y => y, :world => world, :megatile => self
       end
     end
   end
@@ -62,6 +68,7 @@ class Megatile < ActiveRecord::Base
     template.add :id
     template.add :x
     template.add :y
+    template.add :updated_at
   end
 
   api_accessible :megatile_with_resources, :extend => :id_and_name do |template|

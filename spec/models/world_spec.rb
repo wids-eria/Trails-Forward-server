@@ -21,7 +21,6 @@ describe World do
     subject { world }
     its(:resource_tiles) { should_not be_empty }
     its(:megatiles) { should_not be_empty }
-    its(:players) { should_not be_empty }
   end
 
   describe "#coords" do
@@ -38,20 +37,18 @@ describe World do
     end
   end
 
-  describe "#tick" do
-    let(:world) { create :world }
-    let(:start_date) { world.start_date }
-
-    subject{ world }
-
-    before do
-      world.stubs(tick_agents: true,
-                 tick_tiles: true,
-                 tick_length: 1.day)
-      world.tick
+  describe "#migrate_population_to_most_desirable_tiles!" do
+    let(:world) { create :world_with_resources, :width => 42, :height => 42 }
+    it "migrates people to the best spots" do
+      rt = world.resource_tile_at 2, 2
+      rt.total_desirability_score = 10
+      rt.housing_capacity = 42
+      rt.housing_occupants = 0
+      rt.save!
+      world.migrate_population_to_most_desirable_tiles! 1
+      rt.reload
+      rt.housing_occupants.should == 1
     end
-
-    its(:current_date) { should == world.start_date + 1.day }
   end
 
   context "world api" do
@@ -68,6 +65,54 @@ describe World do
       it "returns the year from the start date" do
         world.year_start.should == (Date.today-10.days).year
       end
+    end
+  end
+
+  context "when there are houses and people" do
+    let!(:world) { create :world  }
+    let!(:tile1) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 0 }
+    let!(:tile2) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 5 }
+    let!(:tile3) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 5 }
+    let!(:tile4) { create :resource_tile, world: world, housing_capacity: 0 }
+    describe "#human_population" do
+      it "returns sum of people on all tiles" do
+        world.human_population.should == 10
+      end
+    end
+
+    describe "#livable_tiles_count" do
+      it "returns count of tiles that have housing capacity" do
+        world.livable_tiles_count.should == 3
+      end
+    end
+  end
+
+  describe "#marten_population" do
+    let!(:world) {create :world}
+    let!(:tile_1) {create :deciduous_land_tile, :num_24_inch_diameter_trees => 12, :num_20_inch_diameter_trees => 10, :world => world}
+    let!(:tile_2) {create :deciduous_land_tile, :num_24_inch_diameter_trees => 12, :num_20_inch_diameter_trees => 10, :world => world}
+    let!(:tile_3) {create :deciduous_land_tile, :num_24_inch_diameter_trees => 12, :num_20_inch_diameter_trees => 10, :world => world}
+    let!(:tile_4) {create :deciduous_land_tile, :world => world}
+    let!(:tile_5) {create :deciduous_land_tile_variant, :world => world}
+    let!(:tile_6) {create :deciduous_land_tile_variant, :num_18_inch_diameter_trees => 0, :num_20_inch_diameter_trees => 0, :num_22_inch_diameter_trees => 0, :num_24_inch_diameter_trees => 0, :world => world}
+  
+    it "returns count of martens in the world" do
+      #debugger
+      world.update_marten_suitability
+      world.marten_suitable_tile_count.should == 6
+    end
+  end
+
+  describe '#year_current' do
+    let(:world) { create :world, start_date: Date.today }
+    it 'doesnt overflow from database' do
+      world.current_date = world.start_date + 99999.years
+      world.save!
+
+      world.reload
+      world.year_current.should == world.start_date.year + 99999
+
+      world.current_date.should == world.start_date + 99999.years
     end
   end
 

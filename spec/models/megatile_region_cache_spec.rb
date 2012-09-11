@@ -20,27 +20,27 @@ describe MegatileRegionCache do
 
     it "queries a box containing 1 cache region" do
       data = MegatileRegionCache.megatiles_in_region(world.id, x_min: 0, x_max: 1, y_min: 0, y_max: 1)
-      data.should == [1,2,3].to_json
+      data[:json].should == [1,2,3].to_json
     end
 
     it "queries a strip containing 2 cache regions" do
       data = MegatileRegionCache.megatiles_in_region(world.id, x_min: 0, x_max: 3, y_min: 0, y_max: 1)
-      data.should == [1,2,3,1,2,3].to_json
+      data[:json].should == [1,2,3,1,2,3].to_json
     end
 
     it "queries a strip inside 2 cache regions" do
       data = MegatileRegionCache.megatiles_in_region(world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 1)
-      data.should == [1,2,3,1,2,3].to_json
+      data[:json].should == [1,2,3,1,2,3].to_json
     end
 
     it "queries a box containing all 4 cache regions" do
       data = MegatileRegionCache.megatiles_in_region(world.id, x_min: 0, x_max: 4, y_min: 0, y_max: 4)
-      data.should == [1,2,3, 1,2,3, 1,2,3, 1,2,3].to_json
+      data[:json].should == [1,2,3, 1,2,3, 1,2,3, 1,2,3].to_json
     end
 
     it "queries a box inside all 4 cache regions" do
       data = MegatileRegionCache.megatiles_in_region(world.id, x_min: 1, x_max: 2, y_min: 1, y_max: 2)
-      data.should == [1,2,3, 1,2,3, 1,2,3, 1,2,3].to_json
+      data[:json].should == [1,2,3, 1,2,3, 1,2,3, 1,2,3].to_json
     end
   end
 end

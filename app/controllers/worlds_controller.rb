@@ -49,19 +49,22 @@ class WorldsController < ApplicationController
   #   end
   # end
   #
-  # def update
-  #   @world = World.find(params[:id])
-  #
-  #   respond_to do |format|
-  #     if @world.update_attributes(params[:world])
-  #       format.html { redirect_to(@world, :notice => 'World was successfully updated.') }
-  #       format.xml  { head :ok }
-  #     else
-  #       format.html { render :action => "edit" }
-  #       format.xml  { render :xml => @world.errors, :status => :unprocessable_entity }
-  #     end
-  #   end
-  # end
+
+  def update
+    @world = World.find(params[:id])
+    authorize! :update_world, @world
+
+    respond_to do |format|
+      if @world.update_attributes(params[:world])
+        format.xml  { render_for_api :world_without_tiles, :xml  => @world }
+        format.json { render_for_api :world_without_tiles, :json => @world }
+      else
+        format.xml  { render :xml  => @world.errors, :status => :unprocessable_entity }
+        format.json { render :json => @world.errors, :status => :unprocessable_entity }
+      end
+    end
+  end
+
   #
   # def destroy
   #   @world = World.find(params[:id])
@@ -72,4 +75,77 @@ class WorldsController < ApplicationController
   #     format.xml  { head :ok }
   #   end
   # end
+
+  def turn_state
+    world = World.find(params[:id])
+    authorize! :show_world, world
+
+    manager = WorldTurn.new world: world
+
+    state = world.turn_state
+    state = "processing" unless state == "playing"
+
+    time_left = manager.time_left
+    time_left = 0 if state == "processing"
+
+    respond_to do |format|
+      format.xml  { render  xml: {time_left: time_left, state: state} }
+      format.json { render json: {time_left: time_left, state: state} }
+    end
+  end
+
+  def advance_turn
+    world = World.find(params[:id])
+    authorize! :show_world, world
+    manager = WorldTurn.new world: world
+    manager.advance_turn
+
+    if world.save
+      format.xml  { render_for_api :world_without_tiles, :xml  => world }
+      format.json { render_for_api :world_without_tiles, :json => world, :root => :world  }
+    else
+      format.xml  { render :xml  => world.errors, :status => :unprocessable_entity }
+      format.json { render :json => world.errors, :status => :unprocessable_entity }
+    end
+  end
+
+  def processing
+    world = World.find(params[:id])
+    authorize! :show_world, world
+
+    world.turn_state = 'processing'
+    if world.save
+      format.xml  { render_for_api :world_without_tiles, :xml  => world }
+      format.json { render_for_api :world_without_tiles, :json => world, :root => :world  }
+    else
+      format.xml  { render :xml  => world.errors, :status => :unprocessable_entity }
+      format.json { render :json => world.errors, :status => :unprocessable_entity }
+    end
+  end
+
+  def turn
+    world = World.find(params[:id])
+    authorize! :show_world, world
+
+    manager = WorldTurn.new world: world
+    can_proceed = manager.can_process_turn?
+
+    respond_to do |format|
+      if can_proceed
+
+        manager.turn
+
+        if world.save
+          format.xml  { render_for_api :world_without_tiles, :xml  => world }
+          format.json { render_for_api :world_without_tiles, :json => world, :root => :world  }
+        else
+          format.xml  { render :xml  => world.errors, :status => :unprocessable_entity }
+          format.json { render :json => world.errors, :status => :unprocessable_entity }
+        end
+      else
+        format.xml  { render  xml: {can_proceed: false} }
+        format.json { render json: {can_proceed: false} }
+      end
+    end
+  end
 end

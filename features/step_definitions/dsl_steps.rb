@@ -27,7 +27,7 @@ When /^(\d+) of those agents are ticked (\d+) times$/ do |num_agents, num_ticks|
   end
 
   num_ticks.to_i.times do
-    @world.tick
+    @world.agents.each(&:tick)
   end
 end
 

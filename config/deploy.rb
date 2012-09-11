@@ -1,10 +1,14 @@
-$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
-
-require 'rvm/capistrano'
 set :rvm_ruby_string, '1.9.2'
+set :rvm_type, :system
 
 require 'bundler/capistrano'
 load 'deploy/assets'
+
+
+set :whenever_command, "bundle exec whenever"
+set :whenever_environment, defer { stage }
+require "whenever/capistrano"
+
 
 require 'capistrano/ext/multistage'
 set :stages, %w(production staging)
@@ -12,16 +16,16 @@ set :default_stage, "staging"
 
 set :application, "trails_forward"
 set :repository,  "git@github.com:wids-eria/Trails-Forward-server.git"
-set :branch, "master"
+set :branch, "gls_arcade"
 
 set :scm, :git
 
 set :user, :deploy
 ssh_options[:forward_agent] = true
 
-role :web, "terrordome.discovery.wisc.edu"
-role :app, "terrordome.discovery.wisc.edu"
-role :db,  "terrordome.discovery.wisc.edu", :primary => true # This is where Rails migrations will run
+role :web, "eria-1.morgridge.net"
+role :app, "eria-1.morgridge.net"
+role :db,  "eria-1.morgridge.net", :primary => true # This is where Rails migrations will run
 
 set :deploy_to, "/var/www/#{application}"
 set :deploy_via, :remote_cache
@@ -38,6 +42,7 @@ namespace :deploy do
   desc "Symlinks the database.yml"
   task :symlink_db, :roles => :app do
     run "ln -nfs #{deploy_to}/shared/config/database.yml #{release_path}/config/database.yml"
+    run "ln -nfs #{deploy_to}/shared/config/crossdomain.xml #{release_path}/public/crossdomain.xml"
   end
 
   task :symlink_world_images, :roles => :app do
@@ -47,6 +52,7 @@ namespace :deploy do
   desc "Restarting mod_rails with restart.txt"
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "touch #{current_path}/tmp/restart.txt"
+    run "god restart trails_forward"
   end
 
   [:start, :stop].each do |t|

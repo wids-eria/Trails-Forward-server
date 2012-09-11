@@ -1,0 +1,1 @@
+RAILS_ENV=staging rails runner script/world_generator.rb script/data/eagle.csv 
