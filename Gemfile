@@ -6,7 +6,9 @@ gem 'stalker'
 gem 'memcache-client'
 
 gem 'activerecord-import'
-gem 'acts_as_api', git: 'git://github.com/fabrik42/acts_as_api.git'
+#gem 'acts_as_api', git: 'git://github.com/fabrik42/acts_as_api.git'
+gem 'acts_as_api', git: 'git://github.com/bennytheshap/acts_as_api.git'
+
 gem 'bamfcsv'
 gem 'cancan'
 gem 'chunky_png'
