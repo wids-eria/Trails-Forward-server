@@ -9,10 +9,10 @@ GIT
       activesupport (>= 3.0.0)
 
 GIT
-  remote: git://github.com/fabrik42/acts_as_api.git
-  revision: 74df68cf147b6fed84b5fdc18777493267b45f8f
+  remote: git://github.com/bennytheshap/acts_as_api.git
+  revision: d36aa4383d3ca78f446351ec997d82fe8c1a98b2
   specs:
-    acts_as_api (0.3.11)
+    acts_as_api (0.4.1)
       activemodel (>= 3.0.0)
       activesupport (>= 3.0.0)
       rack (>= 1.1.0)
@@ -63,7 +63,7 @@ GEM
     bamfcsv (0.3.2)
     bcrypt-ruby (3.0.1)
     beanstalk-client (1.1.1)
-    builder (3.0.0)
+    builder (3.0.3)
     cancan (1.6.7)
     capistrano (2.9.0)
       highline
@@ -141,7 +141,7 @@ GEM
       spork (>= 0.8.4)
     highline (1.6.9)
     hike (1.2.1)
-    i18n (0.6.0)
+    i18n (0.6.1)
     json (1.6.4)
     json_pure (1.7.3)
     linecache19 (0.5.12)
