@@ -65,3 +65,4 @@ end
 group :production do
   gem 'exceptional'
 end
+gem 'simplecov'
