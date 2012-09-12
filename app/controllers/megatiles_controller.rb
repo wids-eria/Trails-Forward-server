@@ -1,3 +1,5 @@
+require 'time'
+
 class MegatilesController < ApplicationController
   before_filter :authenticate_user!
 
@@ -14,12 +16,15 @@ class MegatilesController < ApplicationController
     coordinate_box = { :x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max  }
 
     data = Megatile.in_region @world.id, coordinate_box
-    # if defined? request.env['HTTP_IF_MODIFIED_SINCE']
-    #   data = data.where('updated_at > ?', request.env['HTTP_IF_MODIFIED_SINCE'])
-    # end
+
+    if defined? request.env['HTTP_IF_MODIFIED_SINCE'] and request.env['HTTP_IF_MODIFIED_SINCE'] != nil
+      modified_since = Time.rfc2822 request.env['HTTP_IF_MODIFIED_SINCE']
+      #puts "**** HTTP_IF_MODIFIED_SINCE = #{modified_since.inspect}. Class = #{modified_since.class}"
+      data = data.where('updated_at > ?', modified_since)
+    end
     
     ret = data.map do |mt|
-      {:id => mt.id, :x => mt.x, :y => mt.y} #, :updated_at => mt.updated_at.rfc2822}
+      {:id => mt.id, :x => mt.x, :y => mt.y, :updated_at => mt.updated_at.rfc2822} 
     end
     
     #puts "megatile index (#{request.env['HTTP_IF_MODIFIED_SINCE']} *** #{params.inspect}) ====> #{ret.inspect}"
@@ -28,8 +33,8 @@ class MegatilesController < ApplicationController
       respond_to do |format|
         format.json { render :json => {:megatiles => ret}, :content_type => 'application/json' }
       end
-    # else
-    #   render :nothing => true, :status => 304
+    else
+      render :nothing => true, :status => 304
     end
   end
 

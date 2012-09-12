@@ -9,6 +9,7 @@ class ResourceTile < ActiveRecord::Base
   has_many :resources
 
   after_save :invalidate_megatile_cache
+  after_save :touch_megatile
   before_save :update_local_desirability_score
 
   def self.dist
@@ -297,6 +298,10 @@ class ResourceTile < ActiveRecord::Base
 
   def invalidate_megatile_cache
     megatile.invalidate_cache
+  end
+  
+  def touch_megatile
+    megatile.touch
   end
   
   def is_marten_suitable?
