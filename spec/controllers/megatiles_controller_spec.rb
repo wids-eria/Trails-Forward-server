@@ -9,6 +9,7 @@ describe MegatilesController do
   let(:player)  { create :lumberjack, world: the_world }
   let(:player2) { create :lumberjack, world: the_world }
   let(:user) { player.user }
+  let(:json) { JSON.parse(response.body) }
 
   before do
     sign_in user
@@ -16,40 +17,50 @@ describe MegatilesController do
 
   describe '#index' do
     describe 'JSON for nested resource tiles' do
-      context 'land tiles' do
-        before do
-          the_world.resource_tiles.each do |rt|
-            rt.update_attribute :type, 'LandTile'
-          end
-        end
-        context 'the player owns' do
-          example 'includes bulldoze and clearcut permitted actions' do
-            the_world.resource_tile_at(0, 0).megatile.update_attributes(owner: player)
-            get :index, world_id: the_world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 2, format: 'json'
-            response.should be_success
-          end
-        end
+      it 'returns only id coordinates and timestamp' do
+        the_world.resource_tile_at(0, 0).megatile.update_attributes(owner: player)
+        get :index, world_id: the_world.id, x_min: 0, x_max: 2, y_min: 0, y_max: 2, format: 'json'
+        response.should be_success
+        json['megatiles'].first.keys.should == ['id', 'x', 'y', 'updated_at']
       end
     end
   end
-  
+
   describe '#show' do 
     let(:megatile) { the_world.megatiles.first }
+
+    before do
+      the_world.resource_tiles.each do |rt|
+        rt.update_attribute :type, 'LandTile'
+      end
+
+      the_world.resource_tiles.first.update_attribute :type, 'LandTile'
+      the_world.resource_tiles.last.update_attribute  :type, 'WaterTile'
+    end
+
     describe 'with old last modified date' do
-      it 'returns data' do
+      # NOTE make sure water tiles return tree info so client doesnt barf.
+      # FIXME for eventual removal.
+      it 'returns trees on water tiles and land tiles' do
         @request.env['HTTP_IF_MODIFIED_SINCE'] = (megatile.updated_at - 10.days).rfc2822
         get :show, world_id: the_world.id,  id: megatile.id, format: 'json'
         response.should be_success
+
+         land_tile = json['megatile']['resource_tiles'].first
+        water_tile = json['megatile']['resource_tiles'].last
+
+         land_tile.keys.include?('num_2_inch_diameter_trees').should be_true
+        water_tile.keys.include?('num_2_inch_diameter_trees').should be_true
       end
     end
-    
+
     describe 'with new last modified date' do
       it 'returns not modified' do
         @request.env['HTTP_IF_MODIFIED_SINCE'] = megatile.updated_at.rfc2822
         get :show, world_id: the_world.id, id: megatile.id,  format: 'json'
         response.status.should == 304
       end
-    end    
+    end
   end
 
   describe '#buy' do
