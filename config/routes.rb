@@ -1,4 +1,5 @@
 TrailsForwardWorld::Application.routes.draw do
+
   devise_for :users
 
   match "/users/authenticate_for_token" => "users#authenticate_for_token"
@@ -70,6 +71,8 @@ TrailsForwardWorld::Application.routes.draw do
         get 'permitted_actions', :controller => :resource_tiles, :action => :permitted_actions
       end
     end
+
+    resources :messages
   end
 
   root :to => "welcome#index"
