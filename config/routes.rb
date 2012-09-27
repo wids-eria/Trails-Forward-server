@@ -72,7 +72,12 @@ TrailsForwardWorld::Application.routes.draw do
       end
     end
 
-    resources :messages
+    resources :messages do
+      member do
+        put :read
+        put :archive
+      end
+    end
   end
 
   root :to => "welcome#index"

@@ -42,7 +42,7 @@ describe MessagesController do
     sign_in logged_in_player.user
   end
 
-  describe "GET index" do
+  describe "GET #index" do
     it "assigns all messages as @messages" do
       get :index, shared_params
       response.should be_successful
@@ -50,7 +50,7 @@ describe MessagesController do
     end
   end
 
-  describe "GET show" do
+  describe "GET #show" do
     it "assigns the requested message as @message" do
       get :show, shared_params.merge(id: message.to_param)
       response.should be_successful
@@ -58,20 +58,38 @@ describe MessagesController do
     end
   end
 
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new Message" do
-        expect {
-          post :create, shared_params.merge(:message => valid_attributes.merge(:recipient_id => player2.id))
-        }.to change(Message, :count).by(1)
+  describe "POST #create" do
+    it "creates a new Message" do
+      expect {
+        post :create, shared_params.merge(:message => valid_attributes.merge(:recipient_id => player2.id))
+      }.to change(Message, :count).by(1)
 
-        message = Message.last
-        message.sender.should == logged_in_player
-        message.recipient.should == player2
-      end
+      message = Message.last
+      message.sender.should == logged_in_player
+      message.recipient.should == player2
     end
   end
 
-  it 'can be marked as read'
-  it 'can be marked as archived'
+  describe 'PUT #update' do
+    it 'changes attributes' do
+      put :update, shared_params.merge(id: message.to_param, message: { subject: 'New Subject' })
+      Message.find(message).subject.should == "New Subject"
+    end
+  end
+
+  describe 'PUT #archive' do
+    it 'marks message archived' do
+      Message.find(message).archived?.should == false
+      put :archive, shared_params.merge(id: message.to_param)
+      Message.find(message).archived?.should == true
+    end
+  end
+
+  describe 'PUT #read' do
+    it 'marks message read' do
+      Message.find(message).read?.should == false
+      put :read, shared_params.merge(id: message.to_param)
+      Message.find(message).read?.should == true
+    end
+  end
 end

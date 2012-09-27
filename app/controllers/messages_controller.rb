@@ -15,7 +15,7 @@ class MessagesController < ApplicationController
 
 
   def show
-    message = Message.find(params[:id])
+    message = Message.find params[:id]
 
     respond_to do |format|
       format.json { render json: message }
@@ -24,8 +24,49 @@ class MessagesController < ApplicationController
 
 
   def create
-    message = Message.new(params[:message])
+    message = Message.new params[:message]
     message.sender = current_player
+
+    respond_to do |format|
+      if message.save
+        format.json { render json: message, status: :created, location: [world, message] }
+      else
+        format.json { render json: message.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+
+  def update
+    message = Message.find params[:id]
+
+    respond_to do |format|
+      if message.update_attributes params[:message]
+        format.json { render json: message, status: :created, location: [world, message] }
+      else
+        format.json { render json: message.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+
+  def read
+    message = Message.find params[:id]
+    message.read
+
+    respond_to do |format|
+      if message.save
+        format.json { render json: message, status: :created, location: [world, message] }
+      else
+        format.json { render json: message.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
+
+  def archive
+    message = Message.find(params[:id])
+    message.archive
 
     respond_to do |format|
       if message.save
