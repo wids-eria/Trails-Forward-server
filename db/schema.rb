@@ -11,7 +11,8 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121012023037) do
+ActiveRecord::Schema.define(:version => 20121012200659) do
+
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
     t.string  "name",     :null => false
@@ -80,7 +81,7 @@ ActiveRecord::Schema.define(:version => 20121012023037) do
 
   create_table "logging_equipment_templates", :force => true do |t|
     t.string   "name"
-    t.string   "type"
+    t.string   "equipment_type"
     t.text     "market_description"
     t.integer  "initial_cost_min"
     t.integer  "initial_cost_max"

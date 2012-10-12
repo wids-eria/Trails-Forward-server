@@ -1,9 +1,6 @@
-<div class="container">
+<ul class="breadcrumb lead">
+  <li><%= link_to "Logging Equipment Templates", logging_equipment_templates %><span class="divider">/</span></li>
+  <li class="active">New</li>
+</ul>
 
-  <ul class="breadcrumb lead">
-    <li><%= link_to "Logging Equipment Templates", logging_equipment_templates %><span class="divider">/</span></li>
-    <li class="active">New</li>
-  </ul>
-
-  <%= render 'form' %>
-</div>
+<%= render 'form' %>
