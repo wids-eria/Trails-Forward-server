@@ -63,33 +63,39 @@ class ResourceTilesController < ApplicationController
     end
   end
 
-  def build
-    # not yet implemented
-  end
-
   # GET /world/:world_id/resource_tiles/1
   def show
     authorize! :do_things, resource_tile.world
 
     respond_to do |format|
-      format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
       format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
     end
   end
-
-  def update
-    authorize! :god_mode, resource_tile, params[:god_mode]
-
-    respond_to do |format|
-      if resource_tile.update_attributes(params[:resource_tile])
-        format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
+  
+  def build
+    authorize! :build, resource_tile
+    construction_type = params[:type]
+    
+    if resource_tile.can_build?
+      case construction_type
+        when "single family"
+          Craftsman.new.build_single_family_home! resource_tile
+        when "vacation"
+          Craftsman.new.build_vacation_home! resource_tile
+        when "apartment"
+          Craftsman.new.build_apartment! resource_tile
+        else
+          raise "Unknown build type requested!"
+      end
+      respond_to do |format|
         format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
-      else
-        format.xml  { render :xml =>  resource_tile.errors, :status => :unprocessable_entity }
-        format.json { render :json => resource_tile.errors, :status => :unprocessable_entity }
+      end
+    else
+      respond_to do |format|
+        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
       end
     end
-  end
+  end #build
 
   def build_outpost
     authorize! :build_outpost, resource_tile

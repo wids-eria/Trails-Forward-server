@@ -167,6 +167,31 @@ describe ResourceTilesController do
     end
   end
   
+  describe '#build' do
+    let(:world) { create :world_with_resources }
+    let(:player) { create :developer, world: world }
+    let(:user) { player.user }
+    
+    it 'builds a vacation home' do
+      pine_sawtimber_used_before = world.pine_sawtimber_used_this_turn      
+      rt = world.resource_tile_at 1,1
+      rt.type = 'LandTile'
+      rt.save!
+      rt.reload
+      
+      mt = rt.megatile
+      rt.can_build?().should == true
+      
+      mt.owner = player
+      mt.save!
+      
+      post 'build', world_id: world.to_param, id: rt.id, format: 'json', type: "vacation"
+      response.body.should have_content('resource_tile')
+      world.reload
+      world.pine_sawtimber_used_this_turn.should > pine_sawtimber_used_before
+    end
+  end
+  
   describe '#bulldoze' do
     let(:action) { :bulldoze }
     it_should_behave_like "resource tile changing action"

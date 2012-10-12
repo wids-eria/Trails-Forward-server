@@ -16,11 +16,11 @@ class Ability
     end
 
     can :god_mode, ResourceTile do |tile, god_mode|
-      god_mode == "iddqd"
+      false
     end
     
     can :god_mode, Player do |player, god_mode|
-      god_mode == "iddqd"
+      false
     end
 
     can :access_private_data, Player, :user_id => user.id
@@ -91,6 +91,11 @@ class Ability
       rt.megatile.world.player_for_user(user) == rt.megatile.owner
     end
     
+    can :build, ResourceTile do |rt|
+      player = rt.megatile.world.player_for_user(user)
+      player == rt.megatile.owner && player.class == Developer
+    end
+      
     can :build_outpost, ResourceTile do |rt|
       #TODO: put this back
       #rt.world.player_for_user(user).class == Developer &&

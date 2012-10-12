@@ -16,6 +16,10 @@ class LandTile < ResourceTile
 
     true
   end
+  
+  def can_build?
+    true
+  end
 
   def clearcut!
     results = clearcut

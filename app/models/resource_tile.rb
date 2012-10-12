@@ -266,6 +266,10 @@ class ResourceTile < ActiveRecord::Base
   def bulldoze!
 
   end
+  
+  def can_build?
+    false
+  end
 
   def estimated_value
     nil
@@ -274,7 +278,7 @@ class ResourceTile < ActiveRecord::Base
   def all_actions
     %w(bulldoze clearcut)
   end
-
+  
   def permitted_actions player = nil
     return non_owner_permitted_actions unless player
     if megatile.owner == player
