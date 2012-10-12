@@ -56,6 +56,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'spork', '0.9.0.rc9'
   gem 'tattletail'
+  gem 'thin'
 end
 
 group :test do

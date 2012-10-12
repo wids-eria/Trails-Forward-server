@@ -13,6 +13,11 @@ TrailsForwardWorld::Application.routes.draw do
       get :time_left_for_turn
       get :turn_state
     end
+    
+    resource :pricing, :controller => :pricing, :only => [] do
+      get :pine_sawtimber
+    end
+    
 
     resources :players, :only => [:index, :create, :destroy], :controller => :world_players do
       collection do

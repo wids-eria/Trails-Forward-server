@@ -41,6 +41,8 @@ module TreeHarvesting
     end
 
 
+    ###WARNING TODO 
+    # FIXME    this should be sawyer! since it affects the cut counts in the world
     def sawyer target_diameter_distribution
       values_and_volumes = calculate_product_values_and_volumes_for target_diameter_distribution
 
