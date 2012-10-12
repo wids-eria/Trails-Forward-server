@@ -173,7 +173,8 @@ describe ResourceTilesController do
     let(:user) { player.user }
     
     it 'builds a vacation home' do
-      pine_sawtimber_used_before = world.pine_sawtimber_used_this_turn      
+      pine_sawtimber_used_before = world.pine_sawtimber_used_this_turn    
+      player_balance_before = player.balance  
       rt = world.resource_tile_at 1,1
       rt.type = 'LandTile'
       rt.save!
@@ -188,7 +189,9 @@ describe ResourceTilesController do
       post 'build', world_id: world.to_param, id: rt.id, format: 'json', type: "vacation"
       response.body.should have_content('resource_tile')
       world.reload
+      player.reload
       world.pine_sawtimber_used_this_turn.should > pine_sawtimber_used_before
+      player_balance_before.should > player.balance
     end
   end
   
