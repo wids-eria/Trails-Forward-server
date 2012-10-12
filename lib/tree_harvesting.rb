@@ -49,6 +49,11 @@ module TreeHarvesting
           set_trees_in_size(tree_size, target_diameter_distribution[index])
         end
       end
+      
+      if species_group == :shade_intolerant #i.e., Pine
+        World.update_counters world.id, :pine_sawtimber_cut_this_turn => values_and_volumes[:sawtimber_volume]
+      end
+      
       values_and_volumes
     end
 

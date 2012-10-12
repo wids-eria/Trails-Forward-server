@@ -60,6 +60,29 @@ FactoryGirl.define do
         development_intensity 0.0
         zoning_code 6
       end
+      
+      factory :coniferous_land_tile do
+        primary_use nil
+        people_density 0
+        housing_density 0
+        tree_density { 0.5 + rand / 2.0 }
+        tree_size 12.0
+        num_2_inch_diameter_trees 2
+        num_4_inch_diameter_trees 4
+        num_6_inch_diameter_trees 6
+        num_8_inch_diameter_trees 8
+        num_10_inch_diameter_trees 10
+        num_12_inch_diameter_trees 12
+        num_14_inch_diameter_trees 10
+        num_16_inch_diameter_trees 14
+        num_18_inch_diameter_trees 6
+        num_20_inch_diameter_trees 18
+        num_22_inch_diameter_trees 2
+        num_24_inch_diameter_trees 0
+        landcover_class_code { ResourceTile.cover_type_number(:coniferous) }
+        development_intensity 0.0
+        zoning_code 6
+      end
 
       factory :residential_land_tile do
         primary_use "Residential"

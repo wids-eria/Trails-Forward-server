@@ -63,9 +63,9 @@ module TreeHelperMethods
     case self.landcover_class_code
     when 41
       :shade_tolerant
-    when 42, 90
+    when 43, 90
       :mid_tolerant
-    when 43
+    when 42
       :shade_intolerant
     else
       raise 'No Trees'

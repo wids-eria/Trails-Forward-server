@@ -279,6 +279,10 @@ class World < ActiveRecord::Base
     template.add :livable_tiles_count
   end
 
+  def pine_sawtimber_price
+    Pricing.new(self).pine_sawtimber_price
+  end
+
 private
 
   def world_dimensions_are_consistent

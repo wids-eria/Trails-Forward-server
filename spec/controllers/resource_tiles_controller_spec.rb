@@ -176,8 +176,8 @@ describe ResourceTilesController do
   context 'harvesting' do
     let(:world) { create :world }
     let(:megatile) { create :megatile, owner: player, world: world }
-    let!(:land_tile1) { create :deciduous_land_tile, world: world, megatile: megatile }
-    let!(:land_tile2) { create :deciduous_land_tile, world: world, megatile: megatile }
+    let!(:land_tile1) { create :coniferous_land_tile, world: world, megatile: megatile }
+    let!(:land_tile2) { create :coniferous_land_tile, world: world, megatile: megatile }
     let!(:unharvestable_tile) { create :residential_land_tile, world: world, megatile: megatile }
 
     let(:other_megatile) { create :megatile, owner: player2, world: world }
@@ -187,7 +187,11 @@ describe ResourceTilesController do
 
     describe '#diameter_limit_cut' do
       it 'returns values and volumes of all the tiles cut' do
-        old_timber_count = world.timber_count
+        old_timber_count = world.pine_sawtimber_cut_this_turn
+        
+        land_tile1.species_group.should == :shade_intolerant
+        land_tile2.species_group.should == :shade_intolerant
+        
         
         sawyer_results1 = land_tile1.diameter_limit_cut above: 12
         sawyer_results2 = land_tile2.diameter_limit_cut above: 12
@@ -207,7 +211,8 @@ describe ResourceTilesController do
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
         
         world.reload
-        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
+        world.pine_sawtimber_cut_this_turn.should > old_timber_count
+        #world.pine_sawtimber_cut_this_turn.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
       end
     end
 

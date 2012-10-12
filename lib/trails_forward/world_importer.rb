@@ -227,6 +227,13 @@ module TrailsForward
       pb = progress_bar_class.new 'World', 1
       world = Factory :world, width: world_width, height: world_height, name: name
       world_id = world.id
+      
+      world.pine_sawtimber_base_price = 0.147
+      world.pine_sawtimber_supply_coefficient = 0.001
+      world.pine_sawtimber_demand_coefficient = 0.001
+      world.pine_sawtimber_min_price = 0.01
+      world.pine_sawtimber_max_price = 1.0
+      
       pb.finish
 
       world.spawn_megatiles

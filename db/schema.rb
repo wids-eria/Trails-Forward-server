@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120925145102) do
+ActiveRecord::Schema.define(:version => 20121012023037) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -237,12 +237,18 @@ ActiveRecord::Schema.define(:version => 20120925145102) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "start_date"
-    t.integer  "current_turn",    :default => 1
+    t.integer  "current_turn",                      :default => 1
     t.datetime "turn_started_at"
-    t.integer  "timber_count",    :default => 0
-    t.string   "turn_state",      :default => "play"
-    t.integer  "turn_duration",   :default => 15
-    t.integer  "year_current",    :default => 0
+    t.string   "turn_state",                        :default => "play"
+    t.integer  "turn_duration",                     :default => 15
+    t.integer  "year_current",                      :default => 0
+    t.float    "pine_sawtimber_base_price"
+    t.float    "pine_sawtimber_supply_coefficient"
+    t.float    "pine_sawtimber_demand_coefficient"
+    t.integer  "pine_sawtimber_min_price"
+    t.integer  "pine_sawtimber_max_price"
+    t.float    "pine_sawtimber_cut_this_turn",      :default => 0.0
+    t.float    "pine_sawtimber_used_this_turn",     :default => 0.0
   end
 
 end

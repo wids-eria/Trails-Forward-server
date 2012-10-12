@@ -7,6 +7,15 @@ FactoryGirl.define do
     height 6
     megatile_width 3
     megatile_height 3
+    
+    pine_sawtimber_base_price  0.147
+    pine_sawtimber_supply_coefficient  0.001
+    pine_sawtimber_demand_coefficient  0.001
+    pine_sawtimber_min_price  0.01
+    pine_sawtimber_max_price  1.0
+    pine_sawtimber_cut_this_turn  0
+    pine_sawtimber_used_this_turn  0
+    
     turn_started_at { DateTime.now }
   end
 

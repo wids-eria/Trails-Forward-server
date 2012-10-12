@@ -205,8 +205,6 @@ class ResourceTilesController < ApplicationController
 
     sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
 
-    World.connection.update("UPDATE worlds SET timber_count = timber_count + #{sum[:sawtimber_volume]} WHERE id = #{world.id}")
-
     respond_to do |format|
       format.xml  { render xml: sum  }
       format.json { render json: sum }
@@ -227,8 +225,6 @@ class ResourceTilesController < ApplicationController
 
     sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
     
-    World.connection.update("UPDATE worlds SET timber_count = timber_count + #{sum[:sawtimber_volume]} WHERE id = #{world.id}")
-
     respond_to do |format|
       format.xml  { render xml: sum  }
       format.json { render json: sum }
