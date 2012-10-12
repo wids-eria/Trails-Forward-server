@@ -14,7 +14,7 @@ TrailsForwardWorld::Application.routes.draw do
       get :turn_state
     end
     
-    resource :pricing, :controller => :pricing, :only => [] do
+    resource :pricing, :controller => :world_pricing, :only => [] do
       get :pine_sawtimber
     end
     

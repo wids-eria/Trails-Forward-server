@@ -1,6 +1,8 @@
-class WorldPlayersController < ApplicationController
+class WorldPricingController < ApplicationController
+  skip_authorization_check
+  
   def pine_sawtimber
-    @world =  World.find(params[:id])
+    @world =  World.find(params[:world_id])
     @price = @world.pine_sawtimber_price
     
     respond_to do |format|
