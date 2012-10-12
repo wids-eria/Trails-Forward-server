@@ -17,15 +17,15 @@ class LoggingEquipmentTemplatesController < ApplicationController
 
 
   def create
-    logging_equipment_template.save
+    flash[:notice] = "Template Created" if logging_equipment_template.save
 
-    respond_with logging_equipment_template
+    respond_with logging_equipment_template, notice: 'Created!', location: logging_equipment_templates_path
   end
 
 
   def update
-    logging_equipment_template.update_attributes params[:logging_equipment_template]
+    flash[:notice] = "Template Updated" if logging_equipment_template.update_attributes params[:logging_equipment_template]
 
-    respond_with logging_equipment_template
+    respond_with logging_equipment_template, location: logging_equipment_templates_path
   end
 end
