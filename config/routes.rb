@@ -85,5 +85,7 @@ TrailsForwardWorld::Application.routes.draw do
     end
   end
 
+  resources :logging_equipment_templates
+
   root :to => "welcome#index"
 end

@@ -1,6 +1,5 @@
 class MessagesController < ApplicationController
   before_filter :authenticate_user!
-  #before_filter :find_world
   skip_authorization_check
 
   expose(:messages) { current_player.received_messages }

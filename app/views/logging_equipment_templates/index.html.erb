@@ -1,0 +1,9 @@
+<h1> logging equipment templates </h1>
+
+<ul>
+  <%- logging_equipment_templates.all.each do |template| %>
+    <li>
+      <%= template.name %>
+    </li>
+  <% end %>
+</ul>

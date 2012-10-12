@@ -1,0 +1,56 @@
+<div class="container">
+  <%= simple_form_for logging_equipment_template, :html => {:class => 'form-horizontal' } do |f| %>
+    <%= f.error_notification %>
+
+    <div class="form-actions">
+      <%= f.button :submit %>
+    </div>
+
+    <div class="form-inputs">
+      <%= f.input :name %>
+      <%= f.input :type %>
+
+      <%= f.input :market_description %>
+
+      <%= field_set_tag 'Cost' do %>
+        <%= f.input :initial_cost_min %>
+        <%= f.input :initial_cost_max %>
+
+        <%= f.input :operating_cost_min %>
+        <%= f.input :operating_cost_max %>
+
+        <%= f.input :maintenance_cost_min %>
+        <%= f.input :maintenance_cost_max %>
+      <% end %>
+
+
+      <%= field_set_tag 'Harvesting' do %>
+        <%= f.input :harvest_volume_min %>
+        <%= f.input :harvest_volume_max %>
+
+        <%= f.input :diameter_range_min %>
+        <%= f.input :diameter_range_max %>
+
+        <%= f.input :yarding_volume_min %>
+        <%= f.input :yarding_volume_max %>
+
+        <%= f.input :transport_volume_min %>
+        <%= f.input :transport_volume_max %>
+      <% end %>
+
+      <%= field_set_tag 'Condition' do %>
+        <%= f.input :condition_min %>
+        <%= f.input :condition_max %>
+
+        <%= f.input :reliability_min %>
+        <%= f.input :reliability_max %>
+
+        <%= f.input :decay_rate_min %>
+        <%= f.input :decay_rate_max %>
+
+        <%= f.input :scrap_value_min %>
+        <%= f.input :scrap_value_max %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

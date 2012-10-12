@@ -45,5 +45,8 @@ module TrailsForwardWorld
     config.filter_parameters += [:password, :auth_token]
 
     config.execute_sales_immediately = false
-      end
+
+    config.assets.enabled = true
+    config.assets.version = '1.0'
+  end
 end
