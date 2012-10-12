@@ -12,7 +12,6 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20121012023037) do
-
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
     t.string  "name",     :null => false
@@ -78,6 +77,36 @@ ActiveRecord::Schema.define(:version => 20121012023037) do
   end
 
   add_index "listings", ["owner_id"], :name => "index_listings_on_owner_id"
+
+  create_table "logging_equipment_templates", :force => true do |t|
+    t.string   "name"
+    t.string   "type"
+    t.text     "market_description"
+    t.integer  "initial_cost_min"
+    t.integer  "initial_cost_max"
+    t.integer  "operating_cost_min"
+    t.integer  "operating_cost_max"
+    t.integer  "maintenance_cost_min"
+    t.integer  "maintenance_cost_max"
+    t.integer  "harvest_volume_min"
+    t.integer  "harvest_volume_max"
+    t.integer  "diameter_range_min"
+    t.integer  "diameter_range_max"
+    t.integer  "yarding_volume_min"
+    t.integer  "yarding_volume_max"
+    t.integer  "transport_volume_min"
+    t.integer  "transport_volume_max"
+    t.integer  "condition_min"
+    t.integer  "condition_max"
+    t.integer  "reliability_min"
+    t.integer  "reliability_max"
+    t.integer  "decay_rate_min"
+    t.integer  "decay_rate_max"
+    t.integer  "scrap_value_min"
+    t.integer  "scrap_value_max"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "megatile_groupings", :force => true do |t|
   end

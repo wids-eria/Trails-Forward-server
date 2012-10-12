@@ -1,94 +1,54 @@
 class MessagesController < ApplicationController
   before_filter :authenticate_user!
-  before_filter :find_world
+  #before_filter :find_world
   skip_authorization_check
+
+  expose(:messages) { current_player.received_messages }
+  expose(:message)
+  expose(:world)
+  expose(:current_player) { world.player_for_user(current_user) }
 
   respond_to :json
 
-  def index
-    messages = current_player.received_messages.all
 
-    respond_to do |format|
-      format.json { render json: messages }
-    end
+  def index
+    respond_with messages
   end
 
 
   def show
-    message = Message.find params[:id]
-
-    respond_to do |format|
-      format.json { render json: message }
-    end
+    respond_with message
   end
 
 
   def create
-    message = Message.new params[:message]
     message.sender = current_player
+    message.save
 
-    respond_to do |format|
-      if message.save
-        format.json { render json: message, status: :created, location: [world, message] }
-      else
-        format.json { render json: message.errors, status: :unprocessable_entity }
-      end
-    end
+    respond_with message
   end
 
 
   def update
-    message = Message.find params[:id]
+    message.update_attributes params[:message]
 
-    respond_to do |format|
-      if message.update_attributes params[:message]
-        format.json { render json: message, status: :created, location: [world, message] }
-      else
-        format.json { render json: message.errors, status: :unprocessable_entity }
-      end
-    end
+    respond_with message
   end
 
 
   def read
-    message = Message.find params[:id]
     message.read
+    message.save
 
-    respond_to do |format|
-      if message.save
-        format.json { render json: message, status: :created, location: [world, message] }
-      else
-        format.json { render json: message.errors, status: :unprocessable_entity }
-      end
-    end
+    respond_with message
   end
 
 
   def archive
-    message = Message.find(params[:id])
     message.archive
+    message.save
 
-    respond_to do |format|
-      if message.save
-        format.json { render json: message, status: :created, location: [world, message] }
-      else
-        format.json { render json: message.errors, status: :unprocessable_entity }
-      end
-    end
+    respond_with message
   end
 
-
-  private
-
-  def find_world
-    @world = World.find(params[:world_id])
-  end
-
-  def world
-    @world
-  end
-
-  def current_player
-    @current_player ||= world.player_for_user(current_user)
-  end
 end
