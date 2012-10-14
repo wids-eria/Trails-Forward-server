@@ -241,7 +241,7 @@ class World < ActiveRecord::Base
   end
 
   def livable_tiles_count
-    resource_tiles.where('housing_capacity > 0').count
+    resource_tiles.where('housing_type <> NULL').count
   end
 
   def update_marten_suitability

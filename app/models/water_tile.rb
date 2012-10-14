@@ -16,8 +16,6 @@ class WaterTile < ResourceTile
   api_accessible :resource, :extend => :resource_base do |template|
     template.add :primary_use
     template.add :zoning_code
-    template.add :people_density
-    template.add :housing_density
     template.add :tree_density
     template.add :land_cover_type
     template.add :tree_size
@@ -36,6 +34,7 @@ class WaterTile < ResourceTile
     template.add :num_22_inch_diameter_trees
     template.add :num_24_inch_diameter_trees
     template.add :housing_capacity
+    template.add :housing_type
     template.add :housing_occupants
     template.add :harvest_area
     template.add :supported_saplings
@@ -51,8 +50,9 @@ class WaterTile < ResourceTile
   private
 
   def should_not_have_land_properties
-    errors.add(:people_density, "illegal for water tiles") unless [nil,0,0.0].include? people_density
-    errors.add(:housing_density, "illegal for water tiles") unless [nil,0,0.0].include? housing_density
+    # errors.add(:people_density, "illegal for water tiles") unless [nil,0,0.0].include? people_density
+    # errors.add(:housing_density, "illegal for water tiles") unless [nil,0,0.0].include? housing_density
+    errors.add(:housing_type, "illegal for water tiles") unless housing_type == nil
     errors.add(:development_intensity, "illegal for water tiles") unless [nil,0,0.0].include? development_intensity
     errors.add(:tree_density, "illegal for water tiles") unless [nil,0,0.0].include? tree_density
     errors.add(:tree_size, "illegal for water tiles") unless [nil,0,0.0].include? tree_size

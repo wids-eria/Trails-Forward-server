@@ -17,8 +17,6 @@ FactoryGirl.define do
       # gutted from world_generation.rb
       factory :deciduous_land_tile, aliases: [:forest_tile] do
         primary_use nil
-        people_density 0
-        housing_density 0
         tree_density { 0.5 + rand / 2.0 }
         tree_size 12.0
         num_2_inch_diameter_trees 2
@@ -40,8 +38,6 @@ FactoryGirl.define do
 
       factory :deciduous_land_tile_variant do
         primary_use nil
-        people_density 0
-        housing_density 0
         tree_density { 0.5 + rand / 2.0 }
         tree_size 12.0
         num_2_inch_diameter_trees 48
@@ -63,8 +59,7 @@ FactoryGirl.define do
       
       factory :coniferous_land_tile do
         primary_use nil
-        people_density 0
-        housing_density 0
+
         tree_density { 0.5 + rand / 2.0 }
         tree_size 12.0
         num_2_inch_diameter_trees 2
@@ -87,8 +82,7 @@ FactoryGirl.define do
       factory :residential_land_tile do
         primary_use "Residential"
         zoning_code 12
-        people_density { 0.5 + rand / 2.0 }
-        housing_density { people_density }
+        housing_type "vacation"
         tree_density { rand * 0.1 }
         num_2_inch_diameter_trees 48
         num_4_inch_diameter_trees 28

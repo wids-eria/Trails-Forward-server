@@ -103,6 +103,16 @@ class ResourceTile < ActiveRecord::Base
         :industry => "Industry" } }
   end
 
+  def housing_capacity
+    case housing_type
+    when nil
+      0
+    when "apartment"
+      40
+    when "single family", "vacation"
+      5
+    end
+  end
 
   def self.base_cover_type
     @base_cover_types ||= { 11 => :water,
