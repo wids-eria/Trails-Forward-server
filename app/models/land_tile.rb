@@ -145,8 +145,8 @@ class LandTile < ResourceTile
   api_accessible :resource, :extend => :resource_base do |template|
     template.add :primary_use
     template.add :zoning_code
-    template.add :people_density
-    template.add :housing_density
+#    template.add :people_density
+#    template.add :housing_density
     template.add :tree_density
     template.add :land_cover_type
     template.add :tree_size
@@ -166,6 +166,7 @@ class LandTile < ResourceTile
     template.add :num_24_inch_diameter_trees
     template.add :housing_capacity
     template.add :housing_occupants
+    template.add :housing_type
     template.add :harvest_area
     template.add :supported_saplings
     template.add :tree_type

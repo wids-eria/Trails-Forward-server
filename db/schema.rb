@@ -11,7 +11,8 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121012023037) do
+ActiveRecord::Schema.define(:version => 20121014165804) do
+
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
     t.string  "name",     :null => false
@@ -80,7 +81,7 @@ ActiveRecord::Schema.define(:version => 20121012023037) do
 
   create_table "logging_equipment_templates", :force => true do |t|
     t.string   "name"
-    t.string   "type"
+    t.string   "equipment_type"
     t.text     "market_description"
     t.integer  "initial_cost_min"
     t.integer  "initial_cost_max"
@@ -159,8 +160,6 @@ ActiveRecord::Schema.define(:version => 20121012023037) do
     t.string  "type"
     t.integer "world_id"
     t.string  "primary_use"
-    t.float   "people_density"
-    t.float   "housing_density"
     t.float   "tree_density"
     t.float   "development_intensity"
     t.float   "tree_size"
@@ -183,7 +182,6 @@ ActiveRecord::Schema.define(:version => 20121012023037) do
     t.float   "num_22_inch_diameter_trees", :default => 0.0,    :null => false
     t.float   "num_24_inch_diameter_trees", :default => 0.0,    :null => false
     t.string  "zone_type",                  :default => "none"
-    t.integer "housing_capacity",           :default => 0
     t.integer "housing_occupants",          :default => 0
     t.boolean "harvest_area",               :default => false
     t.integer "supported_saplings",         :default => 0
@@ -202,6 +200,7 @@ ActiveRecord::Schema.define(:version => 20121012023037) do
     t.float   "large_tree_basal_area"
     t.float   "marten_population",          :default => 0.0
     t.float   "vole_population",            :default => 0.0
+    t.string  "housing_type"
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
@@ -209,12 +208,13 @@ ActiveRecord::Schema.define(:version => 20121012023037) do
   add_index "resource_tiles", ["world_id", "x", "y"], :name => "index_resource_tiles_on_world_id_and_x_and_y", :unique => true
 
   create_table "resources", :force => true do |t|
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string  "type"
+    t.float   "value"
+    t.integer "world_id"
+    t.integer "resource_tile_id"
   end
 
   create_table "surveys", :force => true do |t|
-    t.date     "capture_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "num_2in_trees",  :default => 0.0

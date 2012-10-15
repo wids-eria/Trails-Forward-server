@@ -94,7 +94,14 @@ module TrailsForward
 
     def urban_color tile
       impervious_alpha = (tile.imperviousness || 0) * 0.8
-      housing_alpha = (tile.housing_density || 0)
+      housing_alpha = case tile.housing_type
+      when nil
+        0
+      when "vacation", "single family"
+        0.4
+      when "apartment"
+        0.8
+      end
       ground_color = blend color[:imperviousness], color[:ground], impervious_alpha
       blend color[:housing_density], ground_color, housing_alpha
     end

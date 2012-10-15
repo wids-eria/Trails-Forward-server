@@ -73,7 +73,7 @@ module TrailsForward
     end
 
     def self.developed_but_not_lived_in? tile_hash
-      (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_density] <= 0.75
+      (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_type] == nil
     end
 
     def self.determine_tree_size land_cover_type
@@ -104,7 +104,7 @@ module TrailsForward
     def self.primary_use tile_hash
       case tile_hash[:landcover_class_code]
       when 11, 95 # Open Water, Emergent Herbaceous Wetlands
-        'Housing' if tile_hash[:housing_density] > 0
+        'Housing' if tile_hash[:housing_type] != nil
       when 21..24 # Developed
         developed_but_not_lived_in?(tile_hash) ? "Industry" : "Housing"
       when 41,42,43,51,52,71,90 # Forest types
@@ -119,7 +119,7 @@ module TrailsForward
     def self.tile_type(tile_hash)
       case tile_hash[:landcover_class_code]
       when 11, 95 # Open Water, Emergent Herbaceous Wetlands
-        if tile_hash[:housing_density] <= 0
+        if tile_hash[:housing_type] == nil
           'WaterTile'
         else
           'LandTile'
@@ -142,8 +142,20 @@ module TrailsForward
       tile_hash = { world_id: world.id, megatile_id: megatile_id, x: tile_x, y: tile_y }
 
       tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
-      tile_hash[:housing_density] = housing_density_percent(row_hash[:housing_density].to_f)
-      tile_hash[:housing_capacity] = housing_density_percent(row_hash[:house_count].to_f) * 100
+      #tile_hash[:housing_density] = housing_density_percent(row_hash[:housing_density].to_f)
+      #tile_hash[:housing_capacity] = housing_density_percent(row_hash[:house_count].to_f) * 100
+      
+      #set the housing type
+      
+      tile_hash[:housing_type] = case (housing_density_percent(row_hash[:house_count].to_f) * 100).to_i
+        when nil, 0..24
+          "vacation"
+        when 25..74
+          "single family"
+        when 75..100
+          "apartment"
+      end
+      
       tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
       tile_hash[:frontage] = row_hash[:frontage].to_f
       tile_hash[:lakesize] = row_hash[:lakesize].to_f
@@ -166,8 +178,7 @@ module TrailsForward
 
       #work around noisy data
       if tile_hash[:type] == "WaterTile"
-        tile_hash[:people_density] = 0
-        tile_hash[:housing_density] = 0
+        tile_hash[:housing_type] = nil
         tile_hash[:development_intensity] = 0
         tile_hash[:tree_density] = 0
         tile_hash[:tree_size] = 0
@@ -262,7 +273,8 @@ module TrailsForward
       pb.finish
 
       import_columns = [ :megatile_id, :x, :y, :type, :zoning_code, :world_id,
-                         :primary_use, :people_density, :housing_density, :housing_capacity,
+                         :primary_use, #:people_density, :housing_density, :housing_capacity,
+                         :housing_type,
                          :tree_density, :development_intensity, :tree_size,
                          :imperviousness, :frontage, :lakesize, :soil,
                          :landcover_class_code, :num_2_inch_diameter_trees,

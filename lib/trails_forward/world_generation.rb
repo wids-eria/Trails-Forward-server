@@ -147,8 +147,6 @@ module TrailsForward
           resource_tile.type = 'WaterTile'
         when 1..6
           resource_tile.primary_use = nil
-          resource_tile.people_density = 0
-          resource_tile.housing_density = resource_tile.people_density
           resource_tile.tree_density = 0.5 + rand()/2.0
           resource_tile.landcover_class_code = ResourceTile.cover_type_number(:deciduous)
           resource_tile.development_intensity = 0.0
@@ -156,11 +154,9 @@ module TrailsForward
         when 7..8
           resource_tile.primary_use = "Residential"
           resource_tile.zoning_code = 12
-          resource_tile.people_density = 0.5 + rand()/2.0
-          resource_tile.housing_density = resource_tile.people_density
           resource_tile.tree_density = rand() * 0.1
           resource_tile.land_cover_type = nil
-          resource_tile.development_intensity = resource_tile.housing_density
+          resource_tile.development_intensity = rand() * 0.5
         end
         resource_tile.save
         resource_progress_bar.inc if Rails.env.development?
