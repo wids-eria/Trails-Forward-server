@@ -146,9 +146,10 @@ class ResourceTilesController < ApplicationController
 
   def clearcut_list
     @clearcut = true
-    resource_tiles.each do |tile|
-      authorize! :clearcut, tile
-    end
+    authorize! :do_things, resource_tiles.first.world
+    # resource_tiles.each do |tile|
+    #   authorize! :clearcut, tile
+    # end
 
     player = world.player_for_user(current_user)
     cost = ResourceTile.clearcut_cost * resource_tiles.count
