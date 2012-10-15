@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121014165804) do
+ActiveRecord::Schema.define(:version => 20121015162703) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -105,6 +105,25 @@ ActiveRecord::Schema.define(:version => 20121014165804) do
     t.integer  "decay_rate_max"
     t.integer  "scrap_value_min"
     t.integer  "scrap_value_max"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "logging_equipments", :force => true do |t|
+    t.string   "name"
+    t.string   "equipment_type"
+    t.float    "initial_cost"
+    t.float    "operating_cost"
+    t.float    "maintenance_cost"
+    t.float    "harvest_volume"
+    t.integer  "diameter_range_min"
+    t.integer  "diameter_range_max"
+    t.float    "yarding_volume"
+    t.float    "transport_volume"
+    t.float    "condition"
+    t.float    "reliability"
+    t.float    "decay_rate"
+    t.float    "scrap_value"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -208,13 +227,12 @@ ActiveRecord::Schema.define(:version => 20121014165804) do
   add_index "resource_tiles", ["world_id", "x", "y"], :name => "index_resource_tiles_on_world_id_and_x_and_y", :unique => true
 
   create_table "resources", :force => true do |t|
-    t.string  "type"
-    t.float   "value"
-    t.integer "world_id"
-    t.integer "resource_tile_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "surveys", :force => true do |t|
+    t.date     "capture_date"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "num_2in_trees",  :default => 0.0
