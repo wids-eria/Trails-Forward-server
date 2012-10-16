@@ -105,12 +105,14 @@ class ResourceTile < ActiveRecord::Base
 
   def housing_capacity
     case housing_type
-    when nil
-      0
-    when "apartment"
-      40
-    when "single family", "vacation"
-      5
+      when nil
+        0
+      when "apartment"
+        40
+      when "single family", "vacation"
+        5
+      else
+        raise 'unknown housing type'
     end
   end
 
