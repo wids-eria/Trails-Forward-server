@@ -253,6 +253,18 @@ ActiveRecord::Schema.define(:version => 20121019211533) do
     t.float    "num_24in_trees", :default => 0.0
     t.integer  "player_id"
     t.integer  "megatile_id"
+    t.float    "vol_2in_trees"
+    t.float    "vol_4in_trees"
+    t.float    "vol_6in_trees"
+    t.float    "vol_8in_trees"
+    t.float    "vol_10in_trees"
+    t.float    "vol_12in_trees"
+    t.float    "vol_14in_trees"
+    t.float    "vol_16in_trees"
+    t.float    "vol_18in_trees"
+    t.float    "vol_20in_trees"
+    t.float    "vol_22in_trees"
+    t.float    "vol_24in_trees"
   end
 
   add_index "surveys", ["megatile_id"], :name => "index_surveys_on_megatile_id"

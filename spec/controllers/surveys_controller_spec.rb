@@ -6,14 +6,15 @@ describe SurveysController do
 
   let(:single_megatile_world) { create :world_with_resources, width: 3, height: 3 }
   let(:the_world) { single_megatile_world }
-  let(:megatile ) { the_world.megatiles.first }
+  let!(:megatile ) { create :megatile, world: the_world } #, resource_tiles: [land_tile, water_tile] }
+  let!(:land_tile) { create :deciduous_land_tile, world: the_world, megatile: megatile }
+  let!(:water_tile) { create :water_tile, world: the_world, megatile: megatile }
   let(:player   ) { create :lumberjack, world: the_world }
   let(:player2  ) { create :lumberjack, world: the_world }
   let(:user     ) { player.user }
 
   before do
     sign_in user
-
   end
 
   describe 'buying a survey' do
@@ -23,9 +24,14 @@ describe SurveysController do
 
       post :create, world_id: the_world.to_param, megatile_id: megatile.to_param, format: :json
 
+      # FIXME later. test setup data sucks. survey got stupid, or was never passing properly?
       response.should be_success
       survey = assigns(:survey)
       survey.num_2in_trees.should == megatile.resource_tiles.collect{|rt| rt.num_2_inch_diameter_trees}.sum
+      survey.num_2in_trees.should > 0 
+
+      survey.vol_6in_trees.should ==  land_tile.estimated_tree_volume_for_size(6, land_tile.num_6_inch_diameter_trees)
+      survey.vol_6in_trees.should > 0 
 
       survey.player.should == player
 
@@ -61,4 +67,6 @@ describe SurveysController do
       assigns(:surveys).should == [my_survey1 , my_survey2]
     end
   end
+
+  describe 'returning enough info'
 end
