@@ -14,6 +14,7 @@
   <%- logging_equipment_templates.all.each do |template| %>
     <tr>
       <td><%= link_to template.name, edit_logging_equipment_template_path(template) %></td>
+      <td><%= link_to 'create item', new_logging_equipment_path(logging_equipment_template_id: template.id) %></td>
     </tr>
   <% end %>
   </tbody>
