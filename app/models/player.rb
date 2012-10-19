@@ -25,6 +25,12 @@ class Player < ActiveRecord::Base
   has_many :sent_messages, :class_name => 'Message', :inverse_of => :sender, :foreign_key => 'sender_id'
   has_many :received_messages, :class_name => 'Message', :inverse_of => :recipient, :foreign_key => 'recipient_id'
 
+  def selection_name
+    "#{self.name}, world:#{world.id} #{world.name.truncate(15)}"
+  end
+
+  delegate :name, to: :user, allow_nil: true
+
   api_accessible :id_and_name do |template|
     template.add :id
     template.add 'user.name', :as => :name

@@ -4,12 +4,12 @@ class LoggingEquipmentController < ApplicationController
   expose(:logging_equipment_list) { LoggingEquipment.scoped }
   expose(:logging_equipment) do
     if params[:id]
-      world.logging_equipment.find params[:id]
+      LoggingEquipment.find params[:id]
     else
       if logging_equipment_template.valid?
         LoggingEquipment.generate_from(logging_equipment_template)
       else
-        world.logging_equipment.build
+        LoggingEquipment.new params[:logging_equipment]
       end
     end
   end
@@ -35,7 +35,7 @@ class LoggingEquipmentController < ApplicationController
 
 
   def update
-    flash[:notice] = "Equipment Updated" if logging_equipment_template.update_attributes params[:logging_equipment]
+    flash[:notice] = "Equipment Updated" if logging_equipment.update_attributes params[:logging_equipment]
 
     respond_with logging_equipment, location: logging_equipment_index_path
   end

@@ -8,7 +8,8 @@ class LoggingEquipment < ActiveRecord::Base
   validates :harvest_volume, :diameter_range_min, :diameter_range_max, :yarding_volume, :transport_volume, :presence => true
   validates :condition, :reliability, :decay_rate, :scrap_value, :presence => true
   validates :world_id, :presence => true
-  # FIXME add association
+
+  validate :player_belongs_to_world
 
   def self.generate_from(template)
     equipment = self.new
@@ -37,7 +38,15 @@ class LoggingEquipment < ActiveRecord::Base
     equipment
   end
 
+  private
+
   def self.between(min, max)
     min + (rand * (max - min))
+  end
+
+  def player_belongs_to_world
+    if world.present? && player.present?
+      errors.add(:player, 'must belong to world') if player.world_id != world.id
+    end
   end
 end

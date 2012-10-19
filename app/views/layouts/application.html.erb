@@ -11,6 +11,11 @@
     <div class="navbar-inner">
       <div class="container">
         <a class="brand" href="#"><%= image_tag "header_bg.png"%></a>
+        <ul class="nav lead pull-left">
+          <li><%= link_to 'templates', logging_equipment_templates_path %></li>
+          <li class="divider-vertical"></li>
+          <li><%= link_to 'items', logging_equipment_index_path %></li>
+        </ul>
         <ul class="nav pull-right lead">
           <li class="divider-vertical"></li>
           <% if user_signed_in? %>
