@@ -283,6 +283,10 @@ class World < ActiveRecord::Base
     Pricing.new(self).pine_sawtimber_price
   end
 
+  def selection_name
+    "#{self.name} #{self.id}"
+  end
+
 private
 
   def world_dimensions_are_consistent

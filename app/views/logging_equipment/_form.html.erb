@@ -10,7 +10,7 @@
     <%= f.input :name %>
     <%= f.input :equipment_type %>
 
-    <%= f.association :world %>
+    <%= f.association :world, :label_method => :selection_name %>
     <%= f.association :player, :label_method => :selection_name %>
 
     <%= f.input :market_description %>
