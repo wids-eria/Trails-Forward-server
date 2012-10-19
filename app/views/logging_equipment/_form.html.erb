@@ -1,0 +1,46 @@
+<%= simple_form_for logging_equipment, :html => {:class => 'form-horizontal' } do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+
+  <div class="form-inputs">
+    <%= f.input :name %>
+    <%= f.input :equipment_type %>
+
+    <%= f.association :world %>
+
+    <%= f.input :market_description %>
+
+    <%= field_set_tag 'Cost' do %>
+      <%= f.input :initial_cost %>
+
+      <%= f.input :operating_cost %>
+
+      <%= f.input :maintenance_cost %>
+    <% end %>
+
+
+    <%= field_set_tag 'Harvesting' do %>
+      <%= f.input :harvest_volume %>
+
+      <%= f.input :diameter_range_min %>
+      <%= f.input :diameter_range_max %>
+
+      <%= f.input :yarding_volume %>
+
+      <%= f.input :transport_volume %>
+    <% end %>
+
+    <%= field_set_tag 'Condition' do %>
+      <%= f.input :condition %>
+
+      <%= f.input :reliability %>
+
+      <%= f.input :decay_rate %>
+
+      <%= f.input :scrap_value %>
+    <% end %>
+  </div>
+<% end %>

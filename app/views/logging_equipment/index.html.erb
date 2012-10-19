@@ -1,0 +1,20 @@
+<ul class="breadcrumb lead">
+  <li class="active">Logging Equipment</li>
+</ul>
+
+<div class="well">
+  <%= link_to "New", new_logging_equipment_path, class: 'btn btn-primary' %>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <th>name</th>
+  </thead>
+  <tbody>
+  <%- logging_equipment_list.all.each do |equipment| %>
+    <tr>
+      <td><%= link_to template.name, edit_logging_equipment_path(equipment) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

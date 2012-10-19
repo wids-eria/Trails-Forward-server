@@ -83,9 +83,11 @@ TrailsForwardWorld::Application.routes.draw do
         put :archive
       end
     end
+
   end
 
   resources :logging_equipment_templates
+  resources :logging_equipment
 
   root :to => "welcome#index"
 end

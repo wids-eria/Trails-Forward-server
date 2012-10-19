@@ -1,5 +1,14 @@
 class LoggingEquipment < ActiveRecord::Base
   belongs_to :logging_equipment_template
+  belongs_to :world
+  belongs_to :player
+
+  validates :name, :equipment_type, :market_description, :presence => true
+  validates :initial_cost, :operating_cost, :maintenance_cost, :presence => true
+  validates :harvest_volume, :diameter_range_min, :diameter_range_max, :yarding_volume, :transport_volume, :presence => true
+  validates :condition, :reliability, :decay_rate, :scrap_value, :presence => true
+  validates :world_id, :presence => true
+  # FIXME add association
 
   def self.generate_from(template)
     equipment = self.new

@@ -1,6 +1,6 @@
 class LoggingEquipmentTemplatesController < ApplicationController
   skip_authorization_check
-  expose(:logging_equipment_templates) { LoggingEquipmentTemplate }
+  expose(:logging_equipment_templates) { LoggingEquipmentTemplate.scoped }
   expose(:logging_equipment_template)
 
   respond_to :json, :html
