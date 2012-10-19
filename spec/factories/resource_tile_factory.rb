@@ -96,7 +96,6 @@ FactoryGirl.define do
         num_20_inch_diameter_trees 4
         num_22_inch_diameter_trees 2
         num_24_inch_diameter_trees 0
-        development_intensity { people_density }
       end
     end
 

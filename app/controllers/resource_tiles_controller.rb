@@ -173,8 +173,6 @@ class ResourceTilesController < ApplicationController
           sum = { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
                    sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume }
 
-          World.update_counters world.id, timber_count: sum[:sawtimber_volume]
-
           resource_tiles.collect(&:megatile).uniq.each(&:invalidate_cache)
 
           respond_to do |format|

@@ -148,12 +148,16 @@ module TrailsForward
       #set the housing type
       
       tile_hash[:housing_type] = case (housing_density_percent(row_hash[:house_count].to_f) * 100).to_i
-        when nil, 0..24
+        when nil, 0
+          nil
+        when 1..24
           "vacation"
         when 25..74
           "single family"
         when 75..100
           "apartment"
+        else
+          raise 'unknown housing density'
       end
       
       tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)

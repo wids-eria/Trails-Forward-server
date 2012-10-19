@@ -117,7 +117,7 @@ describe LandTile do
     end
 
     it "returns mid tolerant" do
-      tile.landcover_class_code = 42
+      tile.landcover_class_code = 43
       tile.species_group.should == :mid_tolerant
 
       tile.landcover_class_code = 90
@@ -125,7 +125,7 @@ describe LandTile do
     end
 
     it "returns shade intolerant" do
-      tile.landcover_class_code = 43
+      tile.landcover_class_code = 42
       tile.species_group.should == :shade_intolerant
     end
 
