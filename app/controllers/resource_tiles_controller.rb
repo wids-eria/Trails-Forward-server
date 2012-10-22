@@ -136,7 +136,7 @@ class ResourceTilesController < ApplicationController
             tile.clearcut!
           end
 
-          summary = results_hash(results)
+          summary = results_hash(results, resource_tiles)
 
           profit = summary[:sawtimber_value] + summary[:poletimber_value] - cost
           Player.update_counters player.id, balance: profit
@@ -209,14 +209,15 @@ class ResourceTilesController < ApplicationController
 
   private
 
-  def results_hash(results)
+  def results_hash(results, resource_tiles)
     poletimber_value  = results.collect{|result| result[:poletimber_value ]}.sum
     poletimber_volume = results.collect{|result| result[:poletimber_volume]}.sum
     sawtimber_value   = results.collect{|result| result[:sawtimber_value  ]}.sum
     sawtimber_volume  = results.collect{|result| result[:sawtimber_volume ]}.sum
 
     { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
-       sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume }
-    # shove in tiles here
+       sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume,
+       resource_tiles: resource_tiles.as_api_response(:resource)
+    }
   end
 end

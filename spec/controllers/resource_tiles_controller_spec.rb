@@ -8,6 +8,7 @@ describe ResourceTilesController do
   let(:player) { create :lumberjack, world: world, balance: 1000 }
   let(:player2) { create :lumberjack, world: world }
   let(:user) { player.user }
+  let(:json) { JSON.parse(response.body) }
 
   before { sign_in user }
 
@@ -20,7 +21,6 @@ describe ResourceTilesController do
   end
 
   describe '#permitted_actions' do
-    let(:json) { JSON.parse(response.body) }
     let(:tile_hashes) { json['resource_tiles'] }
     let(:locations) { tile_hashes.map {|tile| [tile['x'].to_i, tile['y'].to_i]} }
     let(:ids) { tile_hashes.map{|tile| tile['id'] } }
@@ -195,12 +195,7 @@ describe ResourceTilesController do
     end
   end
   
-  describe '#bulldoze' do
-    let(:action) { :bulldoze }
-    it_should_behave_like "resource tile changing action"
-  end
 
-  # TODO move clearcut into here too
   context 'harvesting' do
     let(:world) { create :world }
     let(:megatile) { create :megatile, owner: player, world: world }
@@ -265,17 +260,13 @@ describe ResourceTilesController do
         world.pine_sawtimber_cut_this_turn.should > old_timber_count
         player.reload.balance.should > old_balance
 
-        response.body.should have_content('poletimber_value')
-        response.body.should have_content(poletimber_value)
+        json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
-        response.body.should have_content('poletimber_volume')
-        response.body.should have_content(poletimber_volume)
+        json['poletimber_value'].should == poletimber_value
+        json['poletimber_volume'].should == poletimber_volume
 
-        response.body.should have_content('sawtimber_value')
-        response.body.should have_content(sawtimber_value)
-
-        response.body.should have_content('sawtimber_volume')
-        response.body.should have_content(sawtimber_volume)
+        json['sawtimber_value'].should == sawtimber_value
+        json['sawtimber_volume'].should == sawtimber_volume
       end
 
       it 'doesnt clearcut if not owned by you' do
