@@ -19,6 +19,8 @@ class ResourceTilesController < ApplicationController
     end
   end
 
+
+  # FIXME no longer used as an information layer on the client side 1/5/12
   def permitted_actions
     respond_to do |format|
       player = world.player_for_user(current_user)
@@ -31,37 +33,6 @@ class ResourceTilesController < ApplicationController
     end
   end
 
-  def clearcut
-    authorize! :clearcut, resource_tile
-
-    if resource_tile.can_clearcut?
-      resource_tile.clearcut!
-      respond_to do |format|
-        format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
-        format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
-      end
-    else
-      respond_to do |format|
-        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
-      end
-    end
-  end
-
-  def bulldoze
-    authorize! :bulldoze, resource_tile
-
-    if resource_tile.can_bulldoze?
-      resource_tile.bulldoze!
-      respond_to do |format|
-        format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
-        format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
-      end
-    else
-      respond_to do |format|
-        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
-      end
-    end
-  end
 
   # GET /world/:world_id/resource_tiles/1
   def show
@@ -71,11 +42,12 @@ class ResourceTilesController < ApplicationController
       format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
     end
   end
-  
+
+
   def build
     authorize! :build, resource_tile
     construction_type = params[:type]
-    
+
     if resource_tile.can_build?
       case construction_type
         when "single family"
@@ -96,6 +68,7 @@ class ResourceTilesController < ApplicationController
       end
     end
   end #build
+
 
   def build_outpost
     authorize! :build_outpost, resource_tile
@@ -144,6 +117,7 @@ class ResourceTilesController < ApplicationController
     end
   end
 
+
   def clearcut_list
     @clearcut = true
     resource_tiles.each do |tile|
@@ -162,22 +136,16 @@ class ResourceTilesController < ApplicationController
             tile.clearcut!
           end
 
-          poletimber_value  = results.collect{|results| results[:poletimber_value ]}.sum
-          poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-          sawtimber_value   = results.collect{|results| results[:sawtimber_value  ]}.sum
-          sawtimber_volume  = results.collect{|results| results[:sawtimber_volume ]}.sum
+          summary = results_hash(results, resource_tiles)
 
-          profit = sawtimber_value + poletimber_value - cost
+          profit = summary[:sawtimber_value] + summary[:poletimber_value] - cost
           Player.update_counters player.id, balance: profit
-
-          sum = { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
-                   sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume }
 
           resource_tiles.collect(&:megatile).uniq.each(&:invalidate_cache)
 
           respond_to do |format|
-            format.xml  { render  xml: sum }
-            format.json { render json: sum }
+            format.xml  { render  xml: summary }
+            format.json { render json: summary }
           end
         else
           raise ActiveRecord::RecordInvalid.new(player)
@@ -191,9 +159,11 @@ class ResourceTilesController < ApplicationController
     end
   end
 
+
   def build_list
-    # not yet implemented
+    raise 'not yet implemented'
   end
+
 
   def diameter_limit_cut_list
     authorize! :harvest, ResourceTile
@@ -202,18 +172,19 @@ class ResourceTilesController < ApplicationController
       tile.diameter_limit_cut!(above: params[:above], below: params[:below])
     end
 
-    poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
+    poletimber_value  = results.collect{|results| results[:poletimber_value ]}.sum
     poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-    sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
-    sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
+    sawtimber_value   = results.collect{|results| results[:sawtimber_value  ]}.sum
+    sawtimber_volume  = results.collect{|results| results[:sawtimber_volume ]}.sum
 
     sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
 
     respond_to do |format|
-      format.xml  { render xml: sum  }
+      format.xml  { render  xml: sum }
       format.json { render json: sum }
     end
   end
+
 
   def partial_selection_cut_list
     authorize! :harvest, ResourceTile
@@ -222,16 +193,31 @@ class ResourceTilesController < ApplicationController
       tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])
     end
 
-    poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
+    poletimber_value  = results.collect{|results| results[:poletimber_value ]}.sum
     poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-    sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
-    sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
+    sawtimber_value   = results.collect{|results| results[:sawtimber_value  ]}.sum
+    sawtimber_volume  = results.collect{|results| results[:sawtimber_volume ]}.sum
 
     sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
-    
+
     respond_to do |format|
-      format.xml  { render xml: sum  }
+      format.xml  { render  xml: sum }
       format.json { render json: sum }
     end
+  end
+
+
+  private
+
+  def results_hash(results, resource_tiles)
+    poletimber_value  = results.collect{|result| result[:poletimber_value ]}.sum
+    poletimber_volume = results.collect{|result| result[:poletimber_volume]}.sum
+    sawtimber_value   = results.collect{|result| result[:sawtimber_value  ]}.sum
+    sawtimber_volume  = results.collect{|result| result[:sawtimber_volume ]}.sum
+
+    { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
+       sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume,
+       resource_tiles: resource_tiles.as_api_response(:resource)
+    }
   end
 end
