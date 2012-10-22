@@ -97,9 +97,11 @@ class MegatilesController < ApplicationController
 
             megatile.invalidate_cache
 
+            # FIXME this is quick solution to make client side tile update
+            # vs manually editing the tile in unity - for Mark 1/5/12
             respond_to do |format|
-              format.xml  { head :ok }
-              format.json { head :ok }
+              format.xml  { render_for_api :megatile_with_resources, :xml  => megatile, :root => :megatiles  }
+              format.json { render_for_api :megatile_with_resources, :json => megatile, :root => :megatiles  }
             end
           else
             raise ActiveRecord::RecordInvalid.new(player)
