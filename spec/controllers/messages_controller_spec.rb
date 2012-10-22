@@ -31,7 +31,7 @@ describe MessagesController do
   end
 
 
-  let!(:message)  { create(:message, sender: player2, recipient: logged_in_player) }
+  let!(:message)  { create(:message, sender: player2, recipient: logged_in_player, body: 'ohai') }
   let!(:message_to_other_player)  { create(:message, sender: logged_in_player, recipient: player2) }
   let!(:logged_in_player) { create :player }
   let!(:player2) { create :player }
@@ -46,7 +46,7 @@ describe MessagesController do
     it "assigns all messages as @messages" do
       get :index, shared_params
       response.should be_successful
-      response.body.should have_content(message.body)
+      response.body.should have_content('ohai')
     end
   end
 
@@ -54,7 +54,7 @@ describe MessagesController do
     it "assigns the requested message as @message" do
       get :show, shared_params.merge(id: message.to_param)
       response.should be_successful
-      response.body.should have_content(message.body)
+      response.body.should have_content('ohai')
     end
   end
 
@@ -73,6 +73,7 @@ describe MessagesController do
   describe 'PUT #update' do
     it 'changes attributes' do
       put :update, shared_params.merge(id: message.to_param, message: { subject: 'New Subject' })
+      response.should be_successful
       Message.find(message).subject.should == "New Subject"
     end
   end
@@ -81,6 +82,7 @@ describe MessagesController do
     it 'marks message archived' do
       Message.find(message).archived?.should == false
       put :archive, shared_params.merge(id: message.to_param)
+      response.should be_successful
       Message.find(message).archived?.should == true
     end
   end
@@ -89,6 +91,7 @@ describe MessagesController do
     it 'marks message read' do
       Message.find(message).read?.should == false
       put :read, shared_params.merge(id: message.to_param)
+      response.should be_successful
       Message.find(message).read?.should == true
     end
   end
