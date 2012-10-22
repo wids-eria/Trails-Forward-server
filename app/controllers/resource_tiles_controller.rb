@@ -131,7 +131,7 @@ class ResourceTilesController < ApplicationController
       ActiveRecord::Base.transaction do
         if player.valid?
 
-          results = resource_tiles.collect do |tile|
+          results = resource_tiles.select(&:can_clearcut?).collect do |tile|
             tile.clearcut!
           end
 

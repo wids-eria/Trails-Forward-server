@@ -202,6 +202,7 @@ describe ResourceTilesController do
     let!(:land_tile1) { create :coniferous_land_tile, world: world, megatile: megatile }
     let!(:land_tile2) { create :coniferous_land_tile, world: world, megatile: megatile }
     let!(:unharvestable_tile) { create :residential_land_tile, world: world, megatile: megatile }
+    let!(:bad_land_tile) { create :coniferous_land_tile, world: world, megatile: megatile }
 
     let(:other_megatile) { create :megatile, owner: player2, world: world }
     let!(:other_tile) { create :deciduous_land_tile, world: world, megatile: other_megatile }
@@ -291,8 +292,9 @@ describe ResourceTilesController do
       end
 
       it 'strips out non clearcutable land' do
+        bad_land_tile.update_attributes landcover_class_code: 11
         assert_nothing_raised do
-          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [land_tile1, unharvestable_tile].map(&:to_param), format: 'json'
+          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [land_tile1, unharvestable_tile, bad_land_tile].map(&:to_param), format: 'json'
         end
         response.should be_successful
       end

@@ -41,6 +41,7 @@ describe SurveysController do
 
     # found a bug with land with water class code..
     it 'handles land that has no trees' do
+      # a data type that causes species_group to fail
       land_tile.update_attributes landcover_class_code: 11
       player.balance = 1000
       player.save!
