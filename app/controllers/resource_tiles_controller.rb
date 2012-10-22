@@ -119,7 +119,6 @@ class ResourceTilesController < ApplicationController
 
 
   def clearcut_list
-    @clearcut = true
     resource_tiles.each do |tile|
       authorize! :clearcut, tile
     end

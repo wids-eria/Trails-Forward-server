@@ -39,6 +39,18 @@ describe SurveysController do
       player.balance.should == 975
     end
 
+    # found a bug with land with water class code..
+    it 'handles land that has no trees' do
+      land_tile.update_attributes landcover_class_code: 11
+      player.balance = 1000
+      player.save!
+
+      post :create, world_id: the_world.to_param, megatile_id: megatile.to_param, format: :json
+
+      # FIXME later. test setup data sucks. survey got stupid, or was never passing properly?
+      response.should be_success
+    end
+
     it 'returns error if not enough funds' do
       player.balance = 10
       player.save!
