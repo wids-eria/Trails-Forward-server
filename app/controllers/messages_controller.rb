@@ -24,7 +24,7 @@ class MessagesController < ApplicationController
     message.sender = current_player
     message.save
 
-    respond_with message
+    respond_with [world, message]
   end
 
 
