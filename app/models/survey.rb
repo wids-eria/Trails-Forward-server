@@ -44,6 +44,7 @@ class Survey < ActiveRecord::Base
     survey
   end
 
+
   api_accessible :survey do |template|
     template.add :id
     template.add :player_id

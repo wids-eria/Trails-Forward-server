@@ -10,6 +10,10 @@ class SurveysController < ApplicationController
 
     @surveys = megatile.surveys.where(player_id: player.id)
 
+    if @surveys.empty?
+      @surveys = [DefaultSurvey.of(megatile: megatile)]
+    end
+
     respond_to do |format|
       format.xml  { render_for_api :survey,  xml: @surveys }
       format.json { render_for_api :survey, json: @surveys }

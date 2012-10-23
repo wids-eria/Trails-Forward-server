@@ -69,15 +69,29 @@ describe SurveysController do
     end
   end
 
-  describe 'listing Surveys' do
-    let!(:my_survey1) { create :survey, megatile: megatile, player: player}
-    let!(:my_survey2) { create :survey, megatile: megatile, player: player}
-    let!(:other_survey) { create :survey, megatile: megatile, player: player2}
+  describe '#index' do
+    context 'when surveys exist' do
+      let!(:my_survey1) { create :survey, megatile: megatile, player: player}
+      let!(:my_survey2) { create :survey, megatile: megatile, player: player}
+      let!(:other_survey) { create :survey, megatile: megatile, player: player2}
 
-    it 'returns my surveys for that megatile' do
-      get :index, world_id: the_world.to_param, megatile_id: megatile.to_param, format: :json
-      response.should be_success
-      assigns(:surveys).should == [my_survey1 , my_survey2]
+      it 'returns my surveys for that megatile' do
+        get :index, world_id: the_world.to_param, megatile_id: megatile.to_param, format: :json
+        response.should be_success
+        assigns(:surveys).should == [my_survey1 , my_survey2]
+      end
+    end
+
+    context 'when no surveys exist' do
+      let(:default_counts) { [272.437067809463, 99.994884114938, 45.5289670412543, 22.2937863557362, 11.0390612960499, 5.4378119957329, 2.75016842307342, 1.55739847629946, 1.07079856778977, 0.862134192795702, 0.722516967545298] }
+      it 'returns a default survey' do
+        get :index, world_id: the_world.to_param, megatile_id: megatile.to_param, format: :json
+        response.should be_success
+        harvestable_count = megatile.resource_tiles.select{|x| x.can_clearcut?}.count
+        harvestable_count.should > 0
+        assigns(:surveys).count.should == 1
+        assigns(:surveys).first.num_2in_trees.should == default_counts[0] * harvestable_count
+      end
     end
   end
 
