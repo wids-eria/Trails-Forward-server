@@ -1,0 +1,13 @@
+<% url = @player.new_record? ? user_players_path(@user) : user_player_path(@user, @player) %>
+<%= simple_form_for @player.becomes(Player), :url => url, :html => {:class => 'form-horizontal' } do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+
+  <div class="form-inputs">
+    <%= f.input :balance %>
+  </div>
+<% end %>
+
