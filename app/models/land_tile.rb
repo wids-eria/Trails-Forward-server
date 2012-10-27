@@ -7,6 +7,11 @@ class LandTile < ResourceTile
   before_save :memoize_basal_area
   before_save :calculate_marten_suitability  #kevin wants to move this to an observer later, and that's aok with me
 
+  Vacation = "vacation"
+  Apartment = "apartment"
+  SingleFamily = "single family"
+  HomeTypes = [Vacation, Apartment, SingleFamily]
+
   def can_clearcut?
     begin
       species_group

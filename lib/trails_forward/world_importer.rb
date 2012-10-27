@@ -151,11 +151,11 @@ module TrailsForward
         when nil, 0
           nil
         when 1..24
-          "vacation"
+          LandTile::Vacation
         when 25..74
-          "single family"
+          LandTile::SingleFamily
         when 75..100
-          "apartment"
+          LandTile::Apartment
         else
           raise 'unknown housing density'
       end

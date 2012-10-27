@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121019211533) do
+ActiveRecord::Schema.define(:version => 20121027211047) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -65,6 +65,53 @@ ActiveRecord::Schema.define(:version => 20121019211533) do
 
   add_index "change_requests", ["complete"], :name => "index_change_requests_on_complete"
   add_index "change_requests", ["world_id"], :name => "index_change_requests_on_world_id"
+
+  create_table "contract_attached_megatiles", :force => true do |t|
+    t.integer "contract_id"
+    t.integer "megatile_id"
+  end
+
+  create_table "contract_included_megatiles", :force => true do |t|
+    t.integer "contract_id"
+    t.integer "megatile_id"
+  end
+
+  create_table "contract_templates", :force => true do |t|
+    t.integer  "world_id"
+    t.string   "codename"
+    t.string   "role"
+    t.string   "difficulty"
+    t.integer  "points_required_to_unlock"
+    t.integer  "points"
+    t.integer  "dollars"
+    t.integer  "deadline"
+    t.text     "description"
+    t.text     "acceptance_message"
+    t.text     "complete_message"
+    t.text     "late_message"
+    t.boolean  "includes_land",             :default => false
+    t.integer  "volume_required"
+    t.string   "wood_type"
+    t.integer  "acres_added_required"
+    t.integer  "acres_developed_required"
+    t.string   "home_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "contracts", :force => true do |t|
+    t.integer  "contract_template_id"
+    t.integer  "world_id"
+    t.integer  "player_id"
+    t.integer  "month_started"
+    t.integer  "month_ended"
+    t.boolean  "ended"
+    t.boolean  "successful"
+    t.boolean  "on_time"
+    t.integer  "volume_harvested_of_required_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "listings", :force => true do |t|
     t.integer  "owner_id"
