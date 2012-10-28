@@ -1,9 +1,5 @@
 TrailsForwardWorld::Application.routes.draw do
 
-  resources :contracts
-
-  resources :contract_templates
-
   devise_for :users
 
   match "/users/authenticate_for_token" => "users#authenticate_for_token"
@@ -87,6 +83,9 @@ TrailsForwardWorld::Application.routes.draw do
         put :archive
       end
     end
+
+    resources :contract_templates
+    resources :contracts
 
   end
 

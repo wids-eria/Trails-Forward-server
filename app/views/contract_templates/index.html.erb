@@ -1,0 +1,21 @@
+<ul class="breadcrumb lead">
+  <li class="active">Contract Templates<span class="divider"></li>
+</ul>
+
+<div class="well">
+  <%= link_to "New", new_world_contract_template_path, class: 'btn btn-primary' %>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <th>name</th>
+  </thead>
+  <tbody>
+  <%- contract_templates.all.each do |template| %>
+    <tr>
+      <td><%= link_to "World #{template.world.id} - #{template.codename}", edit_world_contract_template_path(world_id: template.world_id, id: template.id) %></td>
+      <td><%= link_to 'create item', new_world_contract_path(world_id: template.world_id, contract_id: template.id) %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
