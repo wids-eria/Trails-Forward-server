@@ -36,4 +36,8 @@ class ContractTemplate < ActiveRecord::Base
       true
     end
   end
+
+  def to_s
+    "World #{world_id} - #{codename}"
+  end
 end

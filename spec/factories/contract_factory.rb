@@ -2,8 +2,8 @@
 
 FactoryGirl.define do
   factory :contract do
-    world { FactoryGirl.create :world_with_properties_and_users }
     contract_template { FactoryGirl.create :contract_template}
+    world { contract_template.world }
     month_started nil
     month_ended nil
     ended false

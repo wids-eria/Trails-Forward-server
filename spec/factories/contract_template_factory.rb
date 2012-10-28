@@ -1,7 +1,7 @@
 
 FactoryGirl.define do
   factory :contract_template do
-    world { FactoryGirl.create :world }
+    world { FactoryGirl.create :world_with_properties_and_users }
     difficulty "easy"
     acres_added_required 0
     acres_developed_required nil

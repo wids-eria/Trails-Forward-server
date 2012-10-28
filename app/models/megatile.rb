@@ -10,6 +10,10 @@ class Megatile < ActiveRecord::Base
   has_many :bids_on, :through => :megatile_groupings
   has_many :bids_offering, :through => :megatile_groupings
 
+  has_and_belongs_to_many :contracts_included_with, :join_table => 'contract_included_megatiles'
+  has_and_belongs_to_many :contracts_attached_to,   :join_table => 'contract_attached_megatiles'
+
+
   has_many :surveys
 
   validates_presence_of :world
