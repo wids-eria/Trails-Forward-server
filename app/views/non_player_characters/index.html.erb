@@ -1,0 +1,24 @@
+<ul class="breadcrumb lead">
+  <li class="active">Non Player Characters<span class="divider"></li>
+</ul>
+
+<div class="well">
+  <%= link_to "New", new_world_non_player_character_path, class: 'btn btn-primary' %>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <th>name</th>
+  </thead>
+  <tbody>
+  <%- non_player_characters.all.each do |non_player_character| %>
+    <tr>
+      <td>
+        <%= link_to "World #{non_player_character.world_id} - #{non_player_character.name} (#{non_player_character.type})",
+                    edit_world_non_player_character_path(world_id: non_player_character.world_id, id: non_player_character.id)
+        %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

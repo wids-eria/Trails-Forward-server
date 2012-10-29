@@ -6,7 +6,8 @@
   </div>
 
   <div class="form-inputs">
-    <%= f.input :world_id %>
+    <%= f.input :world_id, :collection => World.all %>
+    <%= f.input :company_id, :collection => (world.id == nil ? Company.all : world.companies), :label_method => :name_and_world %>
     <%= f.input :codename %>
     <%= f.input :role, :collection => ContractTemplate::Possible_Roles %>
     <%= f.input :difficulty, :collection => ContractTemplate::Possible_Difficulties %>
@@ -34,8 +35,5 @@
         <%= f.input :complete_message, :as => :text %>
         <%= f.input :late_message, :as => :text %>
     <% end %>
-
-
-
   </div>
 <% end %>

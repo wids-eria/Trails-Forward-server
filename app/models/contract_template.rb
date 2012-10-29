@@ -1,7 +1,9 @@
 class ContractTemplate < ActiveRecord::Base
   belongs_to :world
+  belongs_to :company
 
   validates :world_id, presence: true
+  validates :company_id, presence: true
   validates :codename, presence: true, uniqueness: {scope: :world_id}
 
   Possible_Roles = ["all", "Conserver", "Developer", "Lumberjack"]
@@ -22,9 +24,8 @@ class ContractTemplate < ActiveRecord::Base
       errors.add(:wood_type, "invalid wood type") unless [nil, "saw_timber", "pole_timber"].include? wood_type
     else
       errors.add(:volume_required, "non-logging contracts should not specify volume") unless [0, nil].include? volume_required
-      errors.add(:wood_type, "non-logging contracts should not specify wood type") if wood_type != nil
+      errors.add(:wood_type, "non-logging contracts should not specify wood type") unless [nil, ""].include? wood_type
     end
-
   end
 
   def valid_development_contract?

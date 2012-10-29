@@ -86,6 +86,9 @@ TrailsForwardWorld::Application.routes.draw do
 
     resources :contract_templates
     resources :contracts
+    resources :non_player_characters
+    resources :companies, :controller => 'non_player_characters'
+
 
   end
 

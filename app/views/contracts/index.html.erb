@@ -14,7 +14,6 @@
   <%- contracts.all.each do |contract| %>
     <tr>
       <td><%= link_to "World #{contract.world.id} - #{contract.contract_template.codename} - Instance #{contract.id}", edit_world_contract_path(world_id: contract.world_id, id: contract.id) %></td>
-      <td><%= link_to 'create item', new_world_contract_path(world_id: contract.world_id, contract_id: contract.id) %></td>
     </tr>
   <% end %>
   </tbody>

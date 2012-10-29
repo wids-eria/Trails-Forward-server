@@ -25,8 +25,17 @@ class Player < ActiveRecord::Base
   has_many :sent_messages, :class_name => 'Message', :inverse_of => :sender, :foreign_key => 'sender_id'
   has_many :received_messages, :class_name => 'Message', :inverse_of => :recipient, :foreign_key => 'recipient_id'
 
+  has_many :contracts
+  has_many :contract_templates, :through => :contracts
+
   def selection_name
     "#{self.name}, world:#{world.id} #{world.name.truncate(15)}"
+  end
+
+  def company_points company
+    contracts = Contract.find(:all, :conditions => ['player_id = ? AND contract_templates.company_id = ?', self.id, company.id],
+      :joins => [:contract_template])
+    contracts.map { |contract| contract.points_earned}.sum
   end
 
   delegate :name, to: :user, allow_nil: true
@@ -58,5 +67,7 @@ class Player < ActiveRecord::Base
   api_accessible :player_public_with_megatiles, :extend => :player_public do |template|
     template.add :megatiles, :template => :id_and_name
   end
+
+
 
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121027211047) do
+ActiveRecord::Schema.define(:version => 20121029183945) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -66,14 +66,14 @@ ActiveRecord::Schema.define(:version => 20121027211047) do
   add_index "change_requests", ["complete"], :name => "index_change_requests_on_complete"
   add_index "change_requests", ["world_id"], :name => "index_change_requests_on_world_id"
 
-  create_table "contract_attached_megatiles", :id => false, :force => true do |t|
-    t.integer "contract_id", :null => false
-    t.integer "megatile_id", :null => false
+  create_table "contract_attached_megatiles", :force => true do |t|
+    t.integer "contract_id"
+    t.integer "megatile_id"
   end
 
-  create_table "contract_included_megatiles", :id => false, :force => true do |t|
-    t.integer "contract_id", :null => false
-    t.integer "megatile_id", :null => false
+  create_table "contract_included_megatiles", :force => true do |t|
+    t.integer "contract_id"
+    t.integer "megatile_id"
   end
 
   create_table "contract_templates", :force => true do |t|
@@ -97,6 +97,7 @@ ActiveRecord::Schema.define(:version => 20121027211047) do
     t.string   "home_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "company_id"
   end
 
   create_table "contracts", :force => true do |t|
@@ -111,6 +112,7 @@ ActiveRecord::Schema.define(:version => 20121027211047) do
     t.integer  "volume_harvested_of_required_type"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "points_earned"
   end
 
   create_table "listings", :force => true do |t|
@@ -207,6 +209,14 @@ ActiveRecord::Schema.define(:version => 20121027211047) do
     t.integer  "recipient_id"
     t.datetime "read_at"
     t.datetime "archived_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "non_player_characters", :force => true do |t|
+    t.string   "type"
+    t.integer  "world_id"
+    t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

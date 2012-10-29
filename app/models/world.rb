@@ -18,6 +18,9 @@ class World < ActiveRecord::Base
   has_many :contract_templates
   has_many :contracts
 
+  has_many :non_player_characters
+  has_many :companies
+
   validates :height, :numericality => {:greater_than => 0}
   validates :width, :numericality => {:greater_than => 0}
   validates :megatile_width, :numericality => {:greater_than => 0}
