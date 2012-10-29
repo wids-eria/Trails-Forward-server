@@ -7,7 +7,7 @@ class ContractTemplate < ActiveRecord::Base
   Possible_Roles = ["all", "Conserver", "Developer", "Lumberjack"]
   validates :role, presence: true, inclusion: { in: Possible_Roles }
 
-  Possible_Difficulties = ["easy", "medium", "hard", "eXtreme!"]
+  Possible_Difficulties = ["easy", "medium", "hard", "professional"]
   validates :difficulty, presence: true, inclusion: { in: Possible_Difficulties }
   validates :points, presence: true, numericality: true
   validates :dollars, presence: true, numericality: true
