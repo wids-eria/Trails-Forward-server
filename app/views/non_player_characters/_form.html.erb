@@ -1,13 +1,13 @@
-<%= simple_form_for [non_player_character.world, non_player_character], :html => {:class => 'form-horizontal' } do |f| %>
-  <%= f.error_notification %>
+<%= simple_form_for [world, non_player_character], :html => {:class => 'form-horizontal' } do |f| %>
+    <%= f.error_notification %>
 
-  <div class="form-actions">
-    <%= f.button :submit %>
-  </div>
+    <div class="form-actions">
+      <%= f.button :submit %>
+    </div>
 
-  <div class="form-inputs">
-    <%= f.association :world, :collection => World.all %>
-    <%= f.input :type, :collection => NonPlayerCharacter.subclasses.map {|klass| klass.name} %>
-    <%= f.input :name %>
-  </div>
+    <div class="form-inputs">
+      <%= f.association :world, :collection => World.all %>
+      <%= f.input :type, :collection => ["Company"] %>
+      <%= f.input :name %>
+    </div>
 <% end %>

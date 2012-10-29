@@ -25,8 +25,8 @@ class NonPlayerCharactersController < ApplicationController
   end
 
   def update
-    flash[:notice] = "Character Updated" if non_player_character.update_attributes params[:contract]
+    flash[:notice] = "Character Updated" if non_player_character.update_attributes (params[:non_player_character]||params[:company])
 
-    respond_with non_player_character, location: world_non_player_characters_path
+    respond_with non_player_character, location: world_non_player_character_path
   end
 end
