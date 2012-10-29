@@ -40,7 +40,7 @@ class ContractTemplate < ActiveRecord::Base
   end
 
   def associated_company_is_in_this_world
-    errors.add(:company, "must be in this same world") unless company.world_id == world_id
+    errors.add(:company_id, "must be in this same world") unless company.world_id == world_id
   end
 
   def to_s
