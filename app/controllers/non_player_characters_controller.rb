@@ -18,7 +18,7 @@ class NonPlayerCharactersController < ApplicationController
   def create
     if non_player_character.save
       flash[:notice] = "Character Created"
-      respond_with non_player_character, notice: 'Created!', location: world_non_player_character_path
+      respond_with non_player_character, notice: 'Created!', location: world_non_player_characters_path(world.id)
     else
       render :new
     end
@@ -27,6 +27,6 @@ class NonPlayerCharactersController < ApplicationController
   def update
     flash[:notice] = "Character Updated" if non_player_character.update_attributes (params[:non_player_character]||params[:company])
 
-    respond_with non_player_character, location: world_non_player_character_path
+    respond_with non_player_character, location: world_non_player_characters_path(world.id)
   end
 end
