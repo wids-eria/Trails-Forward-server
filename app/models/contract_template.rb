@@ -17,6 +17,7 @@ class ContractTemplate < ActiveRecord::Base
   Possible_Wood_Types = ["pole_timber", "saw_timber"]
   validate :valid_logging_contract?
   validate :valid_development_contract?
+  validate :associated_company_is_in_this_world
 
   def valid_logging_contract?
     if ["any", "Lumberjack"].include? role
@@ -36,6 +37,10 @@ class ContractTemplate < ActiveRecord::Base
     else
       true
     end
+  end
+
+  def associated_company_is_in_this_world
+    errors.add(:company, "must be in this same world") unless company.world_id = world_id
   end
 
   def to_s
