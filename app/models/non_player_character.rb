@@ -9,3 +9,10 @@ class NonPlayerCharacter < ActiveRecord::Base
     "#{name} (World #{world_id})"
   end
 end
+
+
+class Company < NonPlayerCharacter
+end
+
+class Person < NonPlayerCharacter
+end

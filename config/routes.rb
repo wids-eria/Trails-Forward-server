@@ -88,6 +88,8 @@ TrailsForwardWorld::Application.routes.draw do
     resources :contracts
     resources :non_player_characters
     resources :companies, :controller => 'non_player_characters'
+    resources :people, :controller => 'non_player_characters'
+
 
 
   end

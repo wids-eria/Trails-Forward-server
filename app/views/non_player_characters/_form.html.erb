@@ -7,7 +7,7 @@
 
     <div class="form-inputs">
       <%= f.association :world, :collection => World.all %>
-      <%= f.input :type, :collection => ["Company"] %>
+      <%= f.input :type, :collection => ["Company", "Person"] %>
       <%= f.input :name %>
     </div>
 <% end %>
