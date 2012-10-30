@@ -23,20 +23,9 @@ class Contract < ActiveRecord::Base
     template.add :points_earned
     template.add :created_at
     template.add :updated_at
+    template.add :contract_template, :template => :contract_template
   end
 
 end
 
 
-t.integer  "contract_template_id"
-t.integer  "world_id"
-t.integer  "player_id"
-t.integer  "month_started"
-t.integer  "month_ended"
-t.boolean  "ended"
-t.boolean  "successful"
-t.boolean  "on_time"
-t.integer  "volume_harvested_of_required_type"
-t.datetime "created_at"
-t.datetime "updated_at"
-t.integer  "points_earned"

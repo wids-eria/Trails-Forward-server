@@ -1,4 +1,6 @@
 class ContractTemplate < ActiveRecord::Base
+  acts_as_api
+
   belongs_to :world
   belongs_to :company
 
@@ -46,4 +48,28 @@ class ContractTemplate < ActiveRecord::Base
   def to_s
     "World #{world_id} - #{codename}"
   end
+
+
+  api_accessible :contract_template do |template|
+    template.add :id
+    template.add :world_id
+    template.add :role
+    template.add :difficulty
+    template.add :points_required_to_unlock
+    template.add :points
+    template.add :dollars
+    template.add :deadline
+    template.add :description
+    template.add :includes_land
+    template.add :volume_required
+    template.add :wood_type
+    template.add :acres_added_required
+    template.add :acres_developed_required
+    template.add :home_type
+    template.add :company_id
+    template.add :created_at
+    template.add :updated_at
+  end
+
 end
+
