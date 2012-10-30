@@ -6,7 +6,7 @@ class WorldLoggingEquipmentController < ApplicationController
   expose(:world)
   expose(:player) { world.player_for_user(current_user) }
   expose(:logging_equipment_list) { world.logging_equipment.unowned }
-  expose(:logging_equipment)
+  expose(:logging_equipment) { world.logging_equipment.find(params[:id]) }
 
   respond_to :json, :xml
 
@@ -15,12 +15,19 @@ class WorldLoggingEquipmentController < ApplicationController
   end
 
   def buy
-    logging_equipment.player = player
-    player.balance -= logging_equipment.initial_cost.to_i
+    if logging_equipment.player
+      respond_to do |format|
+        format.xml  { render  xml: { errors: ["Already owned"] }, status: :unprocessable_entity }
+        format.json { render json: { errors: ["Already owned"] }, status: :unprocessable_entity }
+      end
+    else
+      logging_equipment.player = player
+      player.balance -= logging_equipment.initial_cost.to_i
 
-    player.save!
-    logging_equipment.save!
+      player.save!
+      logging_equipment.save!
 
-    respond_with logging_equipment
+      respond_with logging_equipment
+    end
   end
 end

@@ -55,8 +55,40 @@ describe WorldLoggingEquipmentController do
       unowned_equipment.reload.player.should == logged_in_player
     end
 
-    it 'can go into debt purchasing'
-    it 'cant buy equipment from other worlds'
-    it 'cant buy owned equipment'
+
+    it 'can go into debt purchasing' do
+      logged_in_player.update_attributes balance: 0
+
+      put :buy, shared_params.merge(id: unowned_equipment.to_param)
+      response.should be_successful
+
+      unowned_equipment.reload.player.should == logged_in_player
+      logged_in_player.reload.balance.should == -unowned_equipment.initial_cost.to_i
+    end
+
+
+    it 'cant buy equipment from other worlds' do
+      starting_balance = logged_in_player.balance
+
+      lambda do
+        put :buy, shared_params.merge(id: other_world_equipment.to_param)
+      end.should raise_error(ActiveRecord::RecordNotFound)
+
+      logged_in_player.reload.balance.should == starting_balance
+      other_owned_equipment.reload.player.should_not == logged_in_player
+    end
+
+
+    it 'cant buy owned equipment' do
+      starting_balance = logged_in_player.balance
+
+      put :buy, shared_params.merge(id: other_owned_equipment.to_param)
+      response.status.should == 422
+
+      logged_in_player.reload.balance.should == starting_balance
+      other_owned_equipment.reload.player.should_not == logged_in_player
+    end
+
+    it 'transcts player and equipment saving'
   end
 end

@@ -17,7 +17,7 @@ class Player < ActiveRecord::Base
   belongs_to :user
   validates_presence_of :user
   validates_presence_of :world
-  validates :balance, presence: true, numericality: {only_integer: true, greater_than_or_equal_to: 0}
+  validates :balance, presence: true, numericality: {only_integer: true}
 
   has_many :bids_placed, :class_name => 'Bid', :inverse_of => :bidder, :foreign_key => 'bidder_id'
   has_many :bids_received, :class_name => 'Bid', :inverse_of => :current_owner, :foreign_key => 'current_owner_id'

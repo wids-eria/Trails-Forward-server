@@ -26,7 +26,7 @@ describe MegatilesController do
     end
   end
 
-  describe '#show' do 
+  describe '#show' do
     let(:megatile) { the_world.megatiles.first }
 
     before do
