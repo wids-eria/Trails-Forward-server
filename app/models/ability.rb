@@ -70,6 +70,10 @@ class Ability
 
     can :see_bids, Player, :user_id => user.id
 
+    can :see_contracts, Player do |player|
+      player.user == user
+    end
+
     can :accept_bid, Bid do |bid|
       # assumes that all requested land in the bid has the same owner
       megatiles = bid.requested_land.megatiles

@@ -25,6 +25,7 @@ TrailsForwardWorld::Application.routes.draw do
       end
       get :bids_placed
       get :bids_received
+      get :contracts
     end
 
     resources :listings, :only => [:index, :create, :show] do

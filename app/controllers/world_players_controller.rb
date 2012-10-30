@@ -48,6 +48,17 @@ class WorldPlayersController < ApplicationController
     end
   end
 
+  def contracts
+    @player = Player.find(params[:player_id])
+    authorize! :see_contracts, @player
+
+    @contracts = @player.contracts
+
+    respond_to do |format|
+      format.json { render_for_api :contract, :json => @contracts, :root => :contracts }
+    end
+  end
+
 
   # POST /players
 
