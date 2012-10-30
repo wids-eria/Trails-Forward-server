@@ -24,10 +24,19 @@ class WorldLoggingEquipmentController < ApplicationController
       logging_equipment.player = player
       player.balance -= logging_equipment.initial_cost.to_i
 
-      player.save!
-      logging_equipment.save!
+      begin
+        ActiveRecord::Base.transaction do
+          player.save!
+          logging_equipment.save!
+        end
+        respond_with logging_equipment
 
-      respond_with logging_equipment
+      rescue ActiveRecord::RecordInvalid
+        respond_to do |format|
+          format.xml  { render  xml: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
+          format.json { render json: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
+        end
+      end
     end
   end
 end

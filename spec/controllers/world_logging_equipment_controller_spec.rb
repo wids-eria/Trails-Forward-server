@@ -89,6 +89,15 @@ describe WorldLoggingEquipmentController do
       other_owned_equipment.reload.player.should_not == logged_in_player
     end
 
-    it 'transcts player and equipment saving'
+    it 'transcts player and equipment saving' do
+      Player.any_instance.stubs(:valid? => false)
+      starting_balance = logged_in_player.balance
+
+      put :buy, shared_params.merge(id: unowned_equipment.to_param)
+      response.status.should == 422
+
+      unowned_equipment.reload.player.should == nil
+      logged_in_player.reload.balance.should == starting_balance
+    end
   end
 end
