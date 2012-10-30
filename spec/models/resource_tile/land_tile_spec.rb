@@ -103,11 +103,6 @@ describe LandTile do
     tile.bulldoze!
   end
 
-  it "has estimated value" do
-    tile = LandTile.new
-    tile.estimated_value.should > 0
-  end
-
   context "#species_group" do
     let(:tile) { LandTile.new }
 
