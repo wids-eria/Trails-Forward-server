@@ -52,11 +52,10 @@ class WorldPlayersController < ApplicationController
     @player = Player.find(params[:player_id])
     authorize! :see_contracts, @player
 
-    contracts = Contract.find(:all,
-                              :conditions => ['player_id = NULL AND contract_templates.world_id = ? AND contract_templates.points_required_to_unlock >= ? AND contract_templates.role in ("any", ?)', @player.world_id, @player.contract_points, @player.type],
-                              :joins => [:contract_template])
+    @contracts = @player.available_contracts
+
     respond_to do |format|
-      format.json { render_for_api :contract, :json => contracts, :root => :contracts }
+      format.json { render_for_api :contract, :json => @contracts, :root => :contracts }
     end
   end
 
