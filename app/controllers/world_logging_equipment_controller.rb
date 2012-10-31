@@ -14,6 +14,10 @@ class WorldLoggingEquipmentController < ApplicationController
     respond_with logging_equipment_list, :api_template => :logging_equipment_base, :root => :logging_equipment_list
   end
 
+  def owned
+    respond_with world.logging_equipment.owned_by(player), :api_template => :logging_equipment_base, :root => :logging_equipment_list
+  end
+
   def buy
     if logging_equipment.player.present?
       respond_to do |format|

@@ -97,9 +97,10 @@ TrailsForwardWorld::Application.routes.draw do
       member do
         put :buy
       end
-      # mine (or include it in a player request..)
-      # player urls kinda suck cause of infering user/player id
-      # purchase
+
+      collection do
+        get :owned
+      end
     end
   end
 

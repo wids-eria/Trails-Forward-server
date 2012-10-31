@@ -2,6 +2,7 @@ class LoggingEquipment < ActiveRecord::Base
   acts_as_api
 
   scope :unowned, where(player_id: nil)
+  scope :owned_by, lambda{|player| where(player_id: player.id)}
 
   belongs_to :logging_equipment_template
   belongs_to :world
@@ -45,6 +46,24 @@ class LoggingEquipment < ActiveRecord::Base
   api_accessible :logging_equipment_base do |template|
     template.add :id
     template.add :name
+    template.add :equipment_type
+    template.add :market_description
+
+    template.add :diameter_range_min
+    template.add :diameter_range_max
+
+    template.add :initial_cost
+    template.add :operating_cost
+    template.add :maintenance_cost
+
+    template.add :harvest_volume
+    template.add :yarding_volume
+    template.add :transport_volume
+
+    template.add :condition
+    template.add :reliability
+    template.add :decay_rate
+    template.add :scrap_value
   end
 
   private

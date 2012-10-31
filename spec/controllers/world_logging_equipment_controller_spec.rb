@@ -89,6 +89,9 @@ describe WorldLoggingEquipmentController do
       other_owned_equipment.reload.player.should_not == logged_in_player
     end
 
+    # If any save goes wrong, do we handle it. FIXME move this into a testable
+    # item that is used wherever purchases are being made. or encapsulate
+    # everything inside one models save, since it has a transaction
     it 'transcts player and equipment saving' do
       Player.any_instance.stubs(:valid? => false)
       starting_balance = logged_in_player.balance
@@ -98,6 +101,15 @@ describe WorldLoggingEquipmentController do
 
       unowned_equipment.reload.player.should == nil
       logged_in_player.reload.balance.should == starting_balance
+    end
+  end
+
+  describe '#owned' do
+    it 'returns the equipment I own' do
+      get :owned, shared_params
+
+      json[:logging_equipment_list].count.should == 1
+      json[:logging_equipment_list].first[:id].should == my_owned_equipment.id
     end
   end
 end
