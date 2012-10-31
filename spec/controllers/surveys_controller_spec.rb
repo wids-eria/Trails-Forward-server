@@ -52,20 +52,19 @@ describe SurveysController do
       response.should be_success
     end
 
-    it 'returns error if not enough funds' do
+    it 'goes into debt if not enough funds' do
       player.balance = 10
       player.save!
 
       post :create, world_id: the_world.to_param, megatile_id: megatile.to_param, format: :json
 
-      response.status.should == 422
+      response.status.should == 201
 
       survey = assigns(:survey)
-      survey.new_record?.should be_true
+      survey.new_record?.should == false
 
       player.reload
-      player.balance.should == 10
-
+      player.balance.should < 0
     end
   end
 
