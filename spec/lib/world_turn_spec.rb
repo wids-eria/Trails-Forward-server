@@ -85,10 +85,5 @@ describe WorldTurn do
     it "turns" do
       world_turn.turn
     end
-
-    it 'transfers money to players'
-    it 'grows trees'
-    it 'calculates marten suitability'
-    it 'calculates housing suitability'
   end
 end
