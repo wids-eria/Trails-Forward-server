@@ -13,7 +13,7 @@
   <tbody>
   <%- contract_templates.all.each do |template| %>
     <tr>
-      <td><%= link_to "World #{template.world.id} - #{template.codename}", edit_world_contract_template_path(world_id: template.world_id, id: template.id) %></td>
+      <td><%= template.world.name %> (world id=<%= template.world.id %>) - <%= link_to template.codename, edit_world_contract_template_path(world_id: template.world_id, id: template.id) %> (<%= template.points %> points)</td>
       <td><%= link_to 'create item', new_world_contract_path(world_id: template.world_id, contract_id: template.id) %></td>
     </tr>
   <% end %>
