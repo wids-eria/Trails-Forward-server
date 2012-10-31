@@ -1,4 +1,8 @@
 class LoggingEquipment < ActiveRecord::Base
+  acts_as_api
+
+  scope :unowned, where(player_id: nil)
+
   belongs_to :logging_equipment_template
   belongs_to :world
   belongs_to :player
@@ -36,6 +40,11 @@ class LoggingEquipment < ActiveRecord::Base
     equipment.scrap_value      = between(template.scrap_value_min,      template.scrap_value_max     )
 
     equipment
+  end
+
+  api_accessible :logging_equipment_base do |template|
+    template.add :id
+    template.add :name
   end
 
   private

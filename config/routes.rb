@@ -93,7 +93,14 @@ TrailsForwardWorld::Application.routes.draw do
     resources :people, :controller => 'non_player_characters'
 
 
-
+    resources :logging_equipment, :only => [:index], :controller => :world_logging_equipment do
+      member do
+        put :buy
+      end
+      # mine (or include it in a player request..)
+      # player urls kinda suck cause of infering user/player id
+      # purchase
+    end
   end
 
   resources :logging_equipment_templates

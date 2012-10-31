@@ -12,4 +12,5 @@
 
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'cache', 'caches'
+  inflect.uncountable ['logging_equipment_list']
 end

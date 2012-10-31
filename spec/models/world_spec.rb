@@ -37,20 +37,6 @@ describe World do
     end
   end
 
-  describe "#migrate_population_to_most_desirable_tiles!" do
-    let(:world) { create :world_with_resources, :width => 42, :height => 42 }
-    it "migrates people to the best spots" do
-      rt = world.resource_tile_at 2, 2
-      rt.total_desirability_score = 10
-      rt.housing_capacity = 42
-      rt.housing_occupants = 0
-      rt.save!
-      world.migrate_population_to_most_desirable_tiles! 1
-      rt.reload
-      rt.housing_occupants.should == 1
-    end
-  end
-
   context "world api" do
     let(:world) { build :world, start_date: Date.today - 10.days, current_date: Date.today }
 
@@ -64,25 +50,6 @@ describe World do
     describe "#year_start" do
       it "returns the year from the start date" do
         world.year_start.should == (Date.today-10.days).year
-      end
-    end
-  end
-
-  context "when there are houses and people" do
-    let!(:world) { create :world  }
-    let!(:tile1) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 0 }
-    let!(:tile2) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 5 }
-    let!(:tile3) { create :resource_tile, world: world, housing_capacity: 5, housing_occupants: 5 }
-    let!(:tile4) { create :resource_tile, world: world, housing_capacity: 0 }
-    describe "#human_population" do
-      it "returns sum of people on all tiles" do
-        world.human_population.should == 10
-      end
-    end
-
-    describe "#livable_tiles_count" do
-      it "returns count of tiles that have housing capacity" do
-        world.livable_tiles_count.should == 3
       end
     end
   end
