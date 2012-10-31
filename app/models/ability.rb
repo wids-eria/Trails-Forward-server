@@ -19,10 +19,6 @@ class Ability
       false
     end
     
-    can :god_mode, Player do |player, god_mode|
-      false
-    end
-
     can :access_private_data, Player, :user_id => user.id
     can :access_private_data, User, :id => user.id
 
