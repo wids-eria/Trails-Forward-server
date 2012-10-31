@@ -8,12 +8,17 @@
 
 <table class="table table-striped">
   <thead>
+    <th>world</th>
     <th>name</th>
+    <th>points</th>
+    <th>actions</th>
   </thead>
   <tbody>
   <%- contract_templates.all.each do |template| %>
     <tr>
-      <td><%= template.world.name %> (world id=<%= template.world.id %>) - <%= link_to template.codename, edit_world_contract_template_path(world_id: template.world_id, id: template.id) %> (<%= template.points %> points)</td>
+      <td><%= template.world.name %> (world id=<%= template.world.id %>) </td>
+      <td><%= link_to template.codename, edit_world_contract_template_path(world_id: template.world_id, id: template.id) %> </td>
+      <td><%= template.points %> points</td>
       <td><%= link_to 'create item', new_world_contract_path(world_id: template.world_id, contract_id: template.id) %></td>
     </tr>
   <% end %>
