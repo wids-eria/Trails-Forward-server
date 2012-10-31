@@ -15,7 +15,7 @@ class WorldLoggingEquipmentController < ApplicationController
   end
 
   def buy
-    if logging_equipment.player
+    if logging_equipment.player.present?
       respond_to do |format|
         format.xml  { render  xml: { errors: ["Already owned"] }, status: :unprocessable_entity }
         format.json { render json: { errors: ["Already owned"] }, status: :unprocessable_entity }

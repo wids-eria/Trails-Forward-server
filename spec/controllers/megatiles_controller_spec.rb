@@ -95,18 +95,18 @@ describe MegatilesController do
       player.balance.should == 1000
     end
 
-    it 'doesnt become yours if you dont have enough' do
+    it 'can be bought and you go into debt if you dont have enough' do
       player.balance = 10
       player.save!
 
       put :buy, world_id: the_world.to_param, id: megatile.to_param, format: :json
-      response.status.should == 422
+      response.status.should == 200
 
       megatile.reload
-      megatile.owner.should be_nil
+      megatile.owner.should == player
 
       player.reload
-      player.balance.should == 10
+      player.balance.should < 0
 
     end
   end

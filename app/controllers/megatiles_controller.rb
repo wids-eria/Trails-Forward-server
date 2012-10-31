@@ -93,24 +93,22 @@ class MegatilesController < ApplicationController
 
       begin
         ActiveRecord::Base.transaction do
-          if megatile.save && player.save
+          megatile.save!
+          player.save!
+        end
 
-            megatile.invalidate_cache
+        megatile.invalidate_cache
 
-            # FIXME this is quick solution to make client side tile update
-            # vs manually editing the tile in unity - for Mark 1/5/12
-            respond_to do |format|
-              format.xml  { render_for_api :megatile_with_resources, :xml  => megatile, :root => :megatile  }
-              format.json { render_for_api :megatile_with_resources, :json => megatile, :root => :megatile  }
-            end
-          else
-            raise ActiveRecord::RecordInvalid.new(player)
-          end
+        # FIXME this is quick solution to make client side tile update
+        # vs manually editing the tile in unity - for Mark 1/5/12
+        respond_to do |format|
+          format.xml  { render_for_api :megatile_with_resources, :xml  => megatile, :root => :megatile  }
+          format.json { render_for_api :megatile_with_resources, :json => megatile, :root => :megatile  }
         end
       rescue ActiveRecord::RecordInvalid
         respond_to do |format|
-          format.xml  { render  xml: { errors: ["Not enough money"] }, status: :unprocessable_entity }
-          format.json { render json: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+          format.xml  { render  xml: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
+          format.json { render json: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
         end
       end
     end
