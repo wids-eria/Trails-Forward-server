@@ -32,6 +32,10 @@ class Player < ActiveRecord::Base
     "#{self.name}, world:#{world.id} #{world.name.truncate(15)}"
   end
 
+  def contract_points
+    contracts.map { |contract| contract.points_earned}.sum
+  end
+
   def company_points company
     contracts = Contract.find(:all, :conditions => ['player_id = ? AND contract_templates.company_id = ?', self.id, company.id],
       :joins => [:contract_template])
