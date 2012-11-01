@@ -8,12 +8,13 @@ class ContractTemplate < ActiveRecord::Base
   validates :company_id, presence: true
   validates :codename, presence: true, uniqueness: {scope: :world_id}
 
-  Possible_Roles = ["all", "Conserver", "Developer", "Lumberjack"]
+  Possible_Roles = ["Conserver", "Developer", "Lumberjack"]
   validates :role, presence: true, inclusion: { in: Possible_Roles }
 
   Possible_Difficulties = ["easy", "medium", "hard", "professional"]
   validates :difficulty, presence: true, inclusion: { in: Possible_Difficulties }
   validates :points, presence: true, numericality: true
+  validates :points_required_to_unlock, presence: true, numericality: true
   validates :dollars, presence: true, numericality: true
 
   Possible_Wood_Types = ["pole_timber", "saw_timber"]

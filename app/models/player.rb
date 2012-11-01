@@ -38,12 +38,12 @@ class Player < ActiveRecord::Base
 
   def available_contracts
     Contract.find(:all,
-                  :conditions => ['player_id = NULL AND contract_templates.world_id = ? AND contract_templates.points_required_to_unlock >= ? AND contract_templates.role in ("any", ?)', self.world_id, self.contract_points, self.type],
+                  :conditions => ['player_id is NULL AND contract_templates.world_id = ? AND contract_templates.points_required_to_unlock >= ? AND contract_templates.role = ? ', self.world_id, self.contract_points, self.type],
                   :joins => [:contract_template])
   end
 
   def company_points company
-    contracts = Contract.find(:all, :conditions => ['player_id = ? AND contract_templates.company_id = ?', self.id, company.id],
+    contracts = Contract.find(:all, :conditions => ['contracts.player_id = ? AND contract_templates.company_id = ?', self.id, company.id],
       :joins => [:contract_template])
     contracts.map { |contract| contract.points_earned}.sum
   end
