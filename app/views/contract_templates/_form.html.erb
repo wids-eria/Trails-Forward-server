@@ -1,4 +1,4 @@
-<%= simple_form_for [contract_template.world, contract_template], :html => {:class => 'form-horizontal' } do |f| %>
+<%= simple_form_for contract_template, :html => {:class => 'form-horizontal' } do |f| %>
   <%= f.error_notification %>
 
   <div class="form-actions">
@@ -6,8 +6,7 @@
   </div>
 
   <div class="form-inputs">
-    <%= f.input :world_id, :collection => World.all %>
-    <%= f.input :company_id, :collection => (world.id == nil ? Company.all : world.companies), :label_method => :name_and_world %>
+    <%= f.input :company_id, :collection => Company.all, :label_method => :codename %>
     <%= f.input :codename %>
     <%= f.input :role, :collection => ContractTemplate::Possible_Roles %>
     <%= f.input :difficulty, :collection => ContractTemplate::Possible_Difficulties %>

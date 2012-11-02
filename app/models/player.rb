@@ -38,7 +38,7 @@ class Player < ActiveRecord::Base
 
   def available_contracts
     Contract.find(:all,
-                  :conditions => ['player_id is NULL AND contract_templates.world_id = ? AND contract_templates.points_required_to_unlock >= ? AND contract_templates.role = ? ', self.world_id, self.contract_points, self.type],
+                  :conditions => ['player_id is NULL AND contract_templates.points_required_to_unlock >= ? AND contract_templates.role = ? ',  self.contract_points, self.type],
                   :joins => [:contract_template])
   end
 

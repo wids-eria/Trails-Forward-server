@@ -86,11 +86,8 @@ TrailsForwardWorld::Application.routes.draw do
       end
     end
 
-    resources :contract_templates
     resources :contracts
-    resources :non_player_characters
-    resources :companies, :controller => 'non_player_characters'
-    resources :people, :controller => 'non_player_characters'
+
 
 
     resources :logging_equipment, :only => [:index], :controller => :world_logging_equipment do
@@ -103,6 +100,11 @@ TrailsForwardWorld::Application.routes.draw do
       end
     end
   end
+
+  resources :contract_templates
+  resources :non_player_characters
+  resources :companies, :controller => 'non_player_characters'
+  resources :people, :controller => 'non_player_characters'
 
   resources :logging_equipment_templates
   resources :logging_equipment

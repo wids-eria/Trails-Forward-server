@@ -3,7 +3,7 @@
 </ul>
 
 <div class="well">
-  <%= link_to "New", new_world_non_player_character_path, class: 'btn btn-primary' %>
+  <%= link_to "New", new_non_player_character_path, class: 'btn btn-primary' %>
 </div>
 
 <table class="table table-striped">
@@ -14,8 +14,8 @@
   <%- non_player_characters.each do |non_player_character| %>
     <tr>
       <td>
-        <%= link_to "World #{non_player_character.world_id} - #{non_player_character.name} (#{non_player_character.type})",
-                    edit_world_non_player_character_path(world_id: non_player_character.world.id, id: non_player_character.id)
+        <%= link_to "#{non_player_character.name} (#{non_player_character.type})",
+                    edit_non_player_character_path(id: non_player_character.id)
         %>
       </td>
     </tr>

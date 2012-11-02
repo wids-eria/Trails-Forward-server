@@ -1,12 +1,12 @@
 class ContractTemplate < ActiveRecord::Base
   acts_as_api
 
-  belongs_to :world
   belongs_to :company
 
-  validates :world_id, presence: true
+  has_many :contracts
+
   validates :company_id, presence: true
-  validates :codename, presence: true, uniqueness: {scope: :world_id}
+  validates :codename, presence: true, uniqueness: true
 
   Possible_Roles = ["Conserver", "Developer", "Lumberjack"]
   validates :role, presence: true, inclusion: { in: Possible_Roles }
@@ -20,7 +20,6 @@ class ContractTemplate < ActiveRecord::Base
   Possible_Wood_Types = ["pole_timber", "saw_timber"]
   validate :valid_logging_contract?
   validate :valid_development_contract?
-  validate :associated_company_is_in_this_world
 
   def valid_logging_contract?
     if ["any", "Lumberjack"].include? role
@@ -42,18 +41,13 @@ class ContractTemplate < ActiveRecord::Base
     end
   end
 
-  def associated_company_is_in_this_world
-    errors.add(:company_id, "must be in this same world") unless company.world_id == world_id
-  end
-
   def to_s
-    "World #{world_id} - #{codename}"
+    codename
   end
 
 
   api_accessible :contract_template do |template|
     template.add :id
-    template.add :world_id
     template.add :role
     template.add :difficulty
     template.add :points_required_to_unlock
