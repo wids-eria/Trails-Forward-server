@@ -201,12 +201,14 @@ describe ResourceTilesController do
 
     let!(:tiles) { [land_tile1, land_tile2] }
 
+    before do
+      land_tile1.species_group.should == :shade_intolerant
+      land_tile2.species_group.should == :shade_intolerant
+    end
+
     describe '#diameter_limit_cut' do
       it 'returns values and volumes of all the tiles cut' do
         old_timber_count = world.pine_sawtimber_cut_this_turn
-
-        land_tile1.species_group.should == :shade_intolerant
-        land_tile2.species_group.should == :shade_intolerant
 
         sawyer_results1 = land_tile1.diameter_limit_cut above: 12
         sawyer_results2 = land_tile2.diameter_limit_cut above: 12
@@ -230,58 +232,59 @@ describe ResourceTilesController do
       end
     end
 
+
+
     describe '#clearcut' do
+      it 'transacts market, player, and tile if things go wrong'
+
+
       it 'returns values and volumes of all the tiles cut' do
         old_timber_count = world.pine_sawtimber_cut_this_turn
-
-        land_tile1.species_group.should == :shade_intolerant
-        land_tile2.species_group.should == :shade_intolerant
+        old_balance = player.balance
 
         sawyer_results1 = land_tile1.clearcut
         sawyer_results2 = land_tile2.clearcut
 
-        old_balance = player.balance
-        poletimber_value  = sawyer_results1[:poletimber_value]  + sawyer_results2[:poletimber_value]
-        poletimber_volume = sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
-        sawtimber_value   = sawyer_results1[:sawtimber_value]   + sawyer_results2[:sawtimber_value]
-        sawtimber_volume  = sawyer_results1[:sawtimber_volume]  + sawyer_results2[:sawtimber_volume]
-
         post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
-
-        world.reload
-        # FIXME both of these were an equality check. put it back
-        world.pine_sawtimber_cut_this_turn.should > old_timber_count
-        player.reload.balance.should > old_balance
+        response.status.should == 200
 
         json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
-        json['poletimber_value'].should == poletimber_value
-        json['poletimber_volume'].should == poletimber_volume
+        json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
+        json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
 
-        json['sawtimber_value'].should == sawtimber_value
-        json['sawtimber_volume'].should == sawtimber_volume
+        json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
+        json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
+
+        world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
+        player.reload.balance.should < old_balance
       end
 
+
       it 'doesnt clearcut if not owned by you' do
-        old_timber_count = world.timber_count
+        old_timber_count = world.pine_sawtimber_cut_this_turn
+
         assert_raises CanCan::AccessDenied do
           post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [other_tile].map(&:to_param), format: 'json'
         end
-        world.reload.timber_count.should == old_timber_count
+
+        world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count)
         player.reload.balance.should == 1000
       end
 
-      it 'doesnt clearcut if not enough money' do
-        old_timber_count = world.timber_count
 
-        player.balance = 2
-        player.save!
+      it 'can clearcut if not enough money' do
+        old_timber_count = world.pine_sawtimber_cut_this_turn
+
+        player.update_attributes! balance: 2
 
         post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
-        response.status.should == 422
-        world.reload.timber_count.should == old_timber_count
-        player.reload.balance.should == 2
+        response.status.should == 200
+
+        world.reload.pine_sawtimber_cut_this_turn.should > old_timber_count
+        player.reload.balance.should < 0
       end
+
 
       it 'strips out non clearcutable land' do
         bad_land_tile.update_attributes landcover_class_code: 11
@@ -290,11 +293,16 @@ describe ResourceTilesController do
         end
         response.should be_successful
       end
+
+
+      it 'updates market price from volumes harvested on applicable tiles'
     end
+
+
 
     describe '#partial_selection_cut' do
       it 'returns values and volumes of all the tiles cut' do
-        old_timber_count = world.timber_count
+        old_timber_count = world.pine_sawtimber_cut_this_turn
         
         sawyer_results1 = land_tile1.partial_selection_cut target_basal_area: 100, qratio: 1.5
         sawyer_results2 = land_tile2.partial_selection_cut target_basal_area: 100, qratio: 1.5
@@ -314,7 +322,7 @@ describe ResourceTilesController do
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
         
         world.reload
-        world.timber_count.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
+        world.reload.pine_sawtimber_cut_this_turn.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
       end
     end
   end

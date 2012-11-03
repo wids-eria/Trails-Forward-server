@@ -19,12 +19,12 @@ class ResourceTilesController < ApplicationController
     end
   end
 
+  expose(:player) { world.player_for_user(current_user) }
+
 
   # FIXME no longer used as an information layer on the client side 1/5/12
   def permitted_actions
     respond_to do |format|
-      player = world.player_for_user(current_user)
-
       resource_tiles.each do |tile|
         tile.set_permitted_actions_method(player)
       end
@@ -123,37 +123,32 @@ class ResourceTilesController < ApplicationController
       authorize! :clearcut, tile
     end
 
-    player = world.player_for_user(current_user)
-    cost = ResourceTile.clearcut_cost * resource_tiles.count
-    player.balance -= cost
+    usable_tiles = resource_tiles.select(&:can_clearcut?)
+    player.balance -= Pricing.clearcut_cost(usable_tiles)
 
     begin
       ActiveRecord::Base.transaction do
-        if player.valid?
+        player.save!
 
-          results = resource_tiles.select(&:can_clearcut?).collect do |tile|
-            tile.clearcut!
-          end
+        # Do the cuts
+        results = usable_tiles.collect do |tile|
+          tile.clearcut!
+        end
 
-          summary = results_hash(results, resource_tiles)
+        # Update the market for viable tiles
+        usable_tiles.each_with_index do |tile, index|
+          tile.update_market! results[index]
+        end
 
-          profit = summary[:sawtimber_value] + summary[:poletimber_value] - cost
-          Player.update_counters player.id, balance: profit
-
-          resource_tiles.collect(&:megatile).uniq.each(&:invalidate_cache)
-
-          respond_to do |format|
-            format.xml  { render  xml: summary }
-            format.json { render json: summary }
-          end
-        else
-          raise ActiveRecord::RecordInvalid.new(player)
+        respond_to do |format|
+          format.xml  { render  xml: results_hash(results, usable_tiles) }
+          format.json { render json: results_hash(results, usable_tiles) }
         end
       end
     rescue ActiveRecord::RecordInvalid
       respond_to do |format|
-        format.xml  { render  xml: { errors: ["Not enough money"] }, status: :unprocessable_entity }
-        format.json { render json: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+        format.xml  { render  xml: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
+        format.json { render json: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
       end
     end
   end
@@ -171,16 +166,11 @@ class ResourceTilesController < ApplicationController
       tile.diameter_limit_cut!(above: params[:above], below: params[:below])
     end
 
-    poletimber_value  = results.collect{|results| results[:poletimber_value ]}.sum
-    poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-    sawtimber_value   = results.collect{|results| results[:sawtimber_value  ]}.sum
-    sawtimber_volume  = results.collect{|results| results[:sawtimber_volume ]}.sum
-
-    sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
+    summary = results_hash(results, resource_tiles)
 
     respond_to do |format|
-      format.xml  { render  xml: sum }
-      format.json { render json: sum }
+      format.xml  { render  xml: summary }
+      format.json { render json: summary }
     end
   end
 
@@ -192,16 +182,11 @@ class ResourceTilesController < ApplicationController
       tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])
     end
 
-    poletimber_value  = results.collect{|results| results[:poletimber_value ]}.sum
-    poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-    sawtimber_value   = results.collect{|results| results[:sawtimber_value  ]}.sum
-    sawtimber_volume  = results.collect{|results| results[:sawtimber_volume ]}.sum
-
-    sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
+    summary = results_hash(results, resource_tiles)
 
     respond_to do |format|
-      format.xml  { render  xml: sum }
-      format.json { render json: sum }
+      format.xml  { render  xml: summary }
+      format.json { render json: summary }
     end
   end
 
@@ -216,7 +201,7 @@ class ResourceTilesController < ApplicationController
 
     { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
        sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume,
-       resource_tiles: resource_tiles.as_api_response(:resource)
+        resource_tiles: resource_tiles.as_api_response(:resource)
     }
   end
 end
