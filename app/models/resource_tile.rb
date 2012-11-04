@@ -59,9 +59,6 @@ class ResourceTile < ActiveRecord::Base
     end
   }
 
-  def self.clearcut_cost
-    5
-  end
 
   def self.landcover_description landcover_code
     cover_type_sym = ResourceTile.cover_type_symbol(landcover_code)
@@ -272,11 +269,11 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def clearcut!
-
+    raise 'not implemented'
   end
 
   def bulldoze!
-
+    raise 'not implemented'
   end
   
   def can_build?
@@ -284,7 +281,7 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def estimated_value
-    nil
+    raise 'not implemented'
   end
 
   def all_actions
