@@ -48,49 +48,6 @@ class WorldPlayersController < ApplicationController
     end
   end
 
-  def contracts_template_key_helper(player)
-    case player.type
-      when 'Developer'
-        :developer_contract
-      when 'Conserver'
-        :conserver_contract
-      when 'Lumberjack'
-        :lumberjack_contract
-    end
-  end
-
-  def contracts_root_key_helper(player)
-    (contracts_template_key_helper(player).to_s + "s").to_sym
-  end
-
-  def available_contracts
-    @player = Player.find(params[:player_id])
-    authorize! :see_contracts, @player
-
-    @contracts = @player.available_contracts
-
-    root_key = contracts_root_key_helper @player
-    template_key = contracts_template_key_helper @player
-
-    respond_to do |format|
-      format.json { render_for_api template_key, :json => @contracts, :root => root_key }
-    end
-  end
-
-  def contracts
-    @player = Player.find(params[:player_id])
-    authorize! :see_contracts, @player
-
-    @contracts = @player.contracts
-
-    root_key = contracts_root_key_helper @player
-    template_key = contracts_template_key_helper @player
-
-    respond_to do |format|
-      format.json { render_for_api template_key, :json => @contracts, :root => root_key }
-    end
-  end
-
   # POST /players
 
   def create

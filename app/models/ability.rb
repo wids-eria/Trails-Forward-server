@@ -70,6 +70,21 @@ class Ability
       player.user == user
     end
 
+    can :accept_contract, Contract do |contract|
+      player = contract.world.player_for_user(user)
+      player.available_contracts.include?(contract)
+    end
+
+    can :attach_megatiles, Contract do |contract|
+      player_for_user = contract.world.player_for_user(user)
+      player_for_user == contract.player
+    end
+
+    can :attach_to_contract, Megatile, do |megatile|
+      player = megatile.world.player_for_user(user)
+      megatile.owner == player # TODO: have more sophistication here around rights
+    end
+
     can :accept_bid, Bid do |bid|
       # assumes that all requested land in the bid has the same owner
       megatiles = bid.requested_land.megatiles

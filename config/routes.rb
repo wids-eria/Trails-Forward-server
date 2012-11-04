@@ -25,8 +25,12 @@ TrailsForwardWorld::Application.routes.draw do
       end
       get :bids_placed
       get :bids_received
-      get :contracts
-      get :available_contracts
+      resources :contracts, :only => [:index], :controller => :world_player_contracts do
+        post :attach_megatiles
+      end
+      resources :available_contracts, :only => [:index], :controller => :world_player_available_contracts do
+        post :accept
+      end
     end
 
     resources :listings, :only => [:index, :create, :show] do
