@@ -10,6 +10,18 @@ class Contract < ActiveRecord::Base
   validates :world, presence: true
   validates :contract_template_id, presence: true
 
+  def is_satisfied?
+    raise "not implemented"
+  end
+
+  def deliver
+    raise "not implemented"
+  end
+
+  def deliver!
+    deliver and save!
+  end
+
   api_accessible :base_contract do |template|
     template.add :id
     template.add :world_id

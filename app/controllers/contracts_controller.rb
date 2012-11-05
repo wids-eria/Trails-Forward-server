@@ -20,7 +20,7 @@ class ContractsController < ApplicationController
   def create
     if contract.save
       flash[:notice] = "Contract Created"
-      respond_with contract, notice: 'Created!', location: world_contract_path
+      respond_with contract, notice: 'Created!', location: world_contracts_path
     else
       render :new
     end

@@ -46,6 +46,34 @@ class WorldPlayerContractsController < ApplicationController
     end
   end
 
+  def deliver
+    @player = Player.find(params[:player_id])
+
+    @contract = @player.contracts.where(:id => params[:id] || params[:contract_id]).first
+    @megatiles = @player.world.megatiles.where(:id => params[:megatile_ids])
+
+    authorize! :deliver, @contract
+
+    if @contract.is_satisfied?
+      if @contract.deliver!
+        root_key = WorldPlayerContractsController::contracts_root_key_helper(@player)[0..-2]
+        template_key = WorldPlayerContractsController::contracts_template_key_helper @player
+
+        respond_to do |format|
+          format.json { render_for_api template_key, :json => @contract, :root => root_key }
+        end
+      else
+        respond_to do |format|
+          format.json {  render :json => "delivery failed", :status => :expectation_failed }
+        end
+      end
+    else
+      respond_to do |format|
+        format.json {  render :json => "contract is not satisfied", :status => :failed_dependency }
+      end
+    end
+  end
+
   #helpers for this and WorldPlayerAvailableContractsController
   def self.contracts_template_key_helper(player)
     case player.type

@@ -17,6 +17,8 @@ module TrailsForwardWorld
     config.autoload_paths += %W(#{config.root}/lib/)
     config.autoload_paths += %W(#{config.root}/lib/acts_as_api_templates)
     config.autoload_paths += %W(#{config.root}/app/presenters/)
+    config.autoload_paths += %W(#{config.root}/lib/tile_matchers/)
+
 
     config.autoload_paths += Dir["#{config.root}/app/models/*"]
 

@@ -27,6 +27,7 @@ TrailsForwardWorld::Application.routes.draw do
       get :bids_received
       resources :contracts, :only => [:index], :controller => :world_player_contracts do
         post :attach_megatiles
+        post :deliver
       end
       resources :available_contracts, :only => [:index], :controller => :world_player_available_contracts do
         post :accept
@@ -83,16 +84,13 @@ TrailsForwardWorld::Application.routes.draw do
       end
     end
 
+    resources :contracts
     resources :messages do
       member do
         put :read
         put :archive
       end
     end
-
-    resources :contracts
-
-
 
     resources :logging_equipment, :only => [:index], :controller => :world_logging_equipment do
       member do
