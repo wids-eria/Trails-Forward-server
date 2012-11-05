@@ -41,6 +41,9 @@ module TreeHarvesting
     end
 
 
+
+    # MAIN CUT METHODS ##############
+    #
     def sawyer target_diameter_distribution
       values_and_volumes = calculate_product_values_and_volumes_for target_diameter_distribution
 
@@ -49,6 +52,7 @@ module TreeHarvesting
           set_trees_in_size(tree_size, target_diameter_distribution[index])
         end
       end
+
       values_and_volumes
     end
 
@@ -90,8 +94,39 @@ module TreeHarvesting
       sawyer vector
     end
 
+
     def clearcut
       sawyer collect_tree_size_counts.map{ 0 }
     end
 
+
+
+    # SAVES ######################
+    #
+    def update_market! values_and_volumes
+      if species_group == :shade_intolerant #i.e., Pine
+        World.update_counters world.id, :pine_sawtimber_cut_this_turn => values_and_volumes[:sawtimber_volume]
+      end
+    end
+
+
+    def clearcut!
+      results = clearcut
+      save!
+      return results
+    end
+
+
+    def diameter_limit_cut! options
+      results = diameter_limit_cut options
+      save!
+      return results
+    end
+
+
+    def partial_selection_cut! options
+      results = partial_selection_cut options
+      save!
+      return results
+    end
 end

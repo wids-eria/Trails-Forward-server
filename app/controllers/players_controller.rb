@@ -13,8 +13,8 @@ class PlayersController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render_for_api template_to_use, :xml  => @players  }
-      format.json  { render_for_api template_to_use, :json  => @players  }
+      format.xml  { render_for_api template_to_use, :xml  => @players, :root => :players  }
+      format.json  { render_for_api template_to_use, :json  => @players, :root => :players  }
     end
   end
 
@@ -37,6 +37,7 @@ class PlayersController < ApplicationController
 
   # GET /players/1/edit
   def edit
+    @user = User.find params[:user_id]
     @player = Player.find(params[:id])
     authorize! :update_player, @player
   end
@@ -58,12 +59,13 @@ class PlayersController < ApplicationController
 
 
   def update
+    @user = User.find params[:user_id]
     @player = Player.find(params[:id])
     authorize! :update_player, @player
 
     respond_to do |format|
       if @player.update_attributes(params[:player])
-        format.html { redirect_to(@player, :notice => 'Player was successfully updated.') }
+        format.html { redirect_to(edit_user_player_url(@user, @player), :notice => 'Player was successfully updated.') }
         format.xml  { render_for_api :player_private, :xml  => @player }
         format.json { render_for_api :player_private, :json => @player }
       else

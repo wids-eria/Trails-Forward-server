@@ -9,6 +9,7 @@ class ResourceTile < ActiveRecord::Base
   has_many :resources
 
   after_save :invalidate_megatile_cache
+  after_save :touch_megatile
   before_save :update_local_desirability_score
 
   def self.dist
@@ -58,9 +59,6 @@ class ResourceTile < ActiveRecord::Base
     end
   }
 
-  def self.clearcut_cost
-    5
-  end
 
   def self.landcover_description landcover_code
     cover_type_sym = ResourceTile.cover_type_symbol(landcover_code)
@@ -102,6 +100,18 @@ class ResourceTile < ActiveRecord::Base
         :industry => "Industry" } }
   end
 
+  def housing_capacity
+    case housing_type
+      when nil
+        0
+      when "apartment"
+        40
+      when "single family", "vacation"
+        5
+      else
+        raise 'unknown housing type'
+    end
+  end
 
   def self.base_cover_type
     @base_cover_types ||= { 11 => :water,
@@ -259,21 +269,25 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def clearcut!
-
+    raise 'not implemented'
   end
 
   def bulldoze!
-
+    raise 'not implemented'
+  end
+  
+  def can_build?
+    false
   end
 
   def estimated_value
-    nil
+    raise 'not implemented'
   end
 
   def all_actions
     %w(bulldoze clearcut)
   end
-
+  
   def permitted_actions player = nil
     return non_owner_permitted_actions unless player
     if megatile.owner == player
@@ -297,6 +311,10 @@ class ResourceTile < ActiveRecord::Base
 
   def invalidate_megatile_cache
     megatile.invalidate_cache
+  end
+  
+  def touch_megatile
+    megatile.touch
   end
   
   def is_marten_suitable?

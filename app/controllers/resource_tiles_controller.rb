@@ -19,10 +19,12 @@ class ResourceTilesController < ApplicationController
     end
   end
 
+  expose(:player) { world.player_for_user(current_user) }
+
+
+  # FIXME no longer used as an information layer on the client side 1/5/12
   def permitted_actions
     respond_to do |format|
-      player = world.player_for_user(current_user)
-
       resource_tiles.each do |tile|
         tile.set_permitted_actions_method(player)
       end
@@ -31,65 +33,42 @@ class ResourceTilesController < ApplicationController
     end
   end
 
-  def clearcut
-    authorize! :clearcut, resource_tile
-
-    if resource_tile.can_clearcut?
-      resource_tile.clearcut!
-      respond_to do |format|
-        format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
-        format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
-      end
-    else
-      respond_to do |format|
-        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
-      end
-    end
-  end
-
-  def bulldoze
-    authorize! :bulldoze, resource_tile
-
-    if resource_tile.can_bulldoze?
-      resource_tile.bulldoze!
-      respond_to do |format|
-        format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
-        format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
-      end
-    else
-      respond_to do |format|
-        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
-      end
-    end
-  end
-
-  def build
-    # not yet implemented
-  end
 
   # GET /world/:world_id/resource_tiles/1
   def show
     authorize! :do_things, resource_tile.world
 
     respond_to do |format|
-      format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
       format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
     end
   end
 
-  def update
-    authorize! :god_mode, resource_tile, params[:god_mode]
 
-    respond_to do |format|
-      if resource_tile.update_attributes(params[:resource_tile])
-        format.xml  { render_for_api :resource, :xml  => resource_tile, :root => :resource_tile  }
+  def build
+    authorize! :build, resource_tile
+    construction_type = params[:type]
+
+    if resource_tile.can_build?
+      case construction_type
+        when "single family"
+          Craftsman.new.build_single_family_home! resource_tile
+        when "vacation"
+          Craftsman.new.build_vacation_home! resource_tile
+        when "apartment"
+          Craftsman.new.build_apartment! resource_tile
+        else
+          raise "Unknown build type requested!"
+      end
+      respond_to do |format|
         format.json { render_for_api :resource, :json => resource_tile, :root => :resource_tile  }
-      else
-        format.xml  { render :xml =>  resource_tile.errors, :status => :unprocessable_entity }
-        format.json { render :json => resource_tile.errors, :status => :unprocessable_entity }
+      end
+    else
+      respond_to do |format|
+        format.json { render :status => :forbidden, :text => "Action illegal for this land" }
       end
     end
-  end
+  end #build
+
 
   def build_outpost
     authorize! :build_outpost, resource_tile
@@ -138,58 +117,47 @@ class ResourceTilesController < ApplicationController
     end
   end
 
+
   def clearcut_list
-    @clearcut = true
     resource_tiles.each do |tile|
       authorize! :clearcut, tile
     end
 
-    player = world.player_for_user(current_user)
-    cost = ResourceTile.clearcut_cost * resource_tiles.count
-    player.balance -= cost
+    usable_tiles = resource_tiles.select(&:can_clearcut?)
+    player.balance -= Pricing.clearcut_cost(usable_tiles)
 
     begin
       ActiveRecord::Base.transaction do
-        if player.valid?
+        player.save!
 
-          results = resource_tiles.collect do |tile|
-            tile.clearcut!
-          end
+        # Do the cuts
+        results = usable_tiles.collect do |tile|
+          tile.clearcut!
+        end
 
-          poletimber_value  = results.collect{|results| results[:poletimber_value ]}.sum
-          poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-          sawtimber_value   = results.collect{|results| results[:sawtimber_value  ]}.sum
-          sawtimber_volume  = results.collect{|results| results[:sawtimber_volume ]}.sum
+        # Update the market for viable tiles
+        usable_tiles.each_with_index do |tile, index|
+          tile.update_market! results[index]
+        end
 
-          profit = sawtimber_value + poletimber_value - cost
-          Player.update_counters player.id, balance: profit
-
-          sum = { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
-                   sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume }
-
-          World.update_counters world.id, timber_count: sum[:sawtimber_volume]
-
-          resource_tiles.collect(&:megatile).uniq.each(&:invalidate_cache)
-
-          respond_to do |format|
-            format.xml  { render  xml: sum }
-            format.json { render json: sum }
-          end
-        else
-          raise ActiveRecord::RecordInvalid.new(player)
+        respond_to do |format|
+          format.xml  { render  xml: results_hash(results, usable_tiles) }
+          format.json { render json: results_hash(results, usable_tiles) }
         end
       end
     rescue ActiveRecord::RecordInvalid
       respond_to do |format|
-        format.xml  { render  xml: { errors: ["Not enough money"] }, status: :unprocessable_entity }
-        format.json { render json: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+        format.xml  { render  xml: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
+        format.json { render json: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
       end
     end
   end
 
+
   def build_list
-    # not yet implemented
+    raise 'not yet implemented'
   end
+
 
   def diameter_limit_cut_list
     authorize! :harvest, ResourceTile
@@ -198,20 +166,14 @@ class ResourceTilesController < ApplicationController
       tile.diameter_limit_cut!(above: params[:above], below: params[:below])
     end
 
-    poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
-    poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-    sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
-    sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
-
-    sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
-
-    World.connection.update("UPDATE worlds SET timber_count = timber_count + #{sum[:sawtimber_volume]} WHERE id = #{world.id}")
+    summary = results_hash(results, resource_tiles)
 
     respond_to do |format|
-      format.xml  { render xml: sum  }
-      format.json { render json: sum }
+      format.xml  { render  xml: summary }
+      format.json { render json: summary }
     end
   end
+
 
   def partial_selection_cut_list
     authorize! :harvest, ResourceTile
@@ -220,18 +182,26 @@ class ResourceTilesController < ApplicationController
       tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])
     end
 
-    poletimber_value  = results.collect{|results| results[:poletimber_value]}.sum
-    poletimber_volume = results.collect{|results| results[:poletimber_volume]}.sum
-    sawtimber_value  = results.collect{|results| results[:sawtimber_value]}.sum
-    sawtimber_volume = results.collect{|results| results[:sawtimber_volume]}.sum
-
-    sum = {poletimber_value: poletimber_value, poletimber_volume: poletimber_volume, sawtimber_value: sawtimber_value, sawtimber_volume: sawtimber_volume}
-    
-    World.connection.update("UPDATE worlds SET timber_count = timber_count + #{sum[:sawtimber_volume]} WHERE id = #{world.id}")
+    summary = results_hash(results, resource_tiles)
 
     respond_to do |format|
-      format.xml  { render xml: sum  }
-      format.json { render json: sum }
+      format.xml  { render  xml: summary }
+      format.json { render json: summary }
     end
+  end
+
+
+  private
+
+  def results_hash(results, resource_tiles)
+    poletimber_value  = results.collect{|result| result[:poletimber_value ]}.sum
+    poletimber_volume = results.collect{|result| result[:poletimber_volume]}.sum
+    sawtimber_value   = results.collect{|result| result[:sawtimber_value  ]}.sum
+    sawtimber_volume  = results.collect{|result| result[:sawtimber_volume ]}.sum
+
+    { poletimber_value: poletimber_value, poletimber_volume: poletimber_volume,
+       sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume,
+        resource_tiles: resource_tiles.as_api_response(:resource)
+    }
   end
 end

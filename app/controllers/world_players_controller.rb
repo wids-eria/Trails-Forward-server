@@ -12,8 +12,8 @@ class WorldPlayersController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render_for_api template_to_use, :xml  => @players  }
-      format.json  { render_for_api template_to_use, :json  => @players  }
+      format.xml  { render_for_api template_to_use, :xml  => @players,  :root => :players }
+      format.json { render_for_api template_to_use, :json  => @players, :root => :players }
     end
   end
 
@@ -47,7 +47,6 @@ class WorldPlayersController < ApplicationController
       format.xml  { render_for_api :bid_private, :xml  => @bids, :root => :bids }
     end
   end
-
 
   # POST /players
 
@@ -94,22 +93,5 @@ class WorldPlayersController < ApplicationController
       end
     end
 
-  end
-  
-  def destroy
-    @player = Player.find(params[:id])
-    @world_id = @player.id
-    authorize! :god_mode, @player, params[:god_mode]
-
-    if @player.destroy
-      respond_to do |format|
-        format.html { redirect_to(world_url @world_id) }
-        format.json { head :ok }
-        format.xml  { head :ok }
-      end
-    else
-      format.xml  { render :xml  => player.errors, :status => :unprocessable_entity }
-      format.json { render :json => player.errors, :status => :unprocessable_entity }
-    end
   end
 end

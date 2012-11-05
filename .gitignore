@@ -8,3 +8,5 @@ log/*
 public/worlds/
 tmp/
 **/.DS_Store
+.sass-cache/*
+coverage/*

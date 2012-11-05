@@ -71,7 +71,7 @@ module TreeValue
   def board_feet_value
     case species_group
     when :shade_intolerant
-      0.147
+      world.pine_sawtimber_price
     when :shade_tolerant
       0.151
     when :mid_tolerant

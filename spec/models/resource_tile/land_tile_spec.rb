@@ -103,11 +103,6 @@ describe LandTile do
     tile.bulldoze!
   end
 
-  it "has estimated value" do
-    tile = LandTile.new
-    tile.estimated_value.should > 0
-  end
-
   context "#species_group" do
     let(:tile) { LandTile.new }
 
@@ -117,7 +112,7 @@ describe LandTile do
     end
 
     it "returns mid tolerant" do
-      tile.landcover_class_code = 42
+      tile.landcover_class_code = 43
       tile.species_group.should == :mid_tolerant
 
       tile.landcover_class_code = 90
@@ -125,7 +120,7 @@ describe LandTile do
     end
 
     it "returns shade intolerant" do
-      tile.landcover_class_code = 43
+      tile.landcover_class_code = 42
       tile.species_group.should == :shade_intolerant
     end
 
@@ -139,7 +134,13 @@ describe LandTile do
   end
 
   context "timber value" do
-    let(:tile) { LandTile.new }
+    let(:world) { World.new }
+    let(:tile) { LandTile.new world: world }
+
+    before do
+      # assuming a particular market price
+      world.stubs(:pine_sawtimber_price => 0.147)
+    end
 
     # size class hardwood
     # 0 - 4 worthless
@@ -325,23 +326,6 @@ describe LandTile do
       # new_num_trees.should < old_num_trees
     # end
 
-    example 'applies the upgrowth rate' do
-      old_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
-      old_num_trees.should == 72
-      tile.grow_trees
-      new_num_trees = (2..24).step(2).map{|n| tile.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
-
-      new_num_trees.should > old_num_trees
-    end
-
-    example 'applies the upgrowth rate to the variant' do
-      old_num_trees = (2..24).step(2).map{|n| tile_variant.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
-      tile_variant.grow_trees
-      new_num_trees = (2..24).step(2).map{|n| tile_variant.send("num_#{n}_inch_diameter_trees".to_sym)}.sum
-
-      new_num_trees.should < old_num_trees
-    end
-
     context "tree calculations" do
       let(:basal_area) { 42.5424005174 }
       before do
@@ -418,19 +402,19 @@ describe LandTile do
         end
 
         it "the 2s" do
-          tile.trees_in_size(2).should be_within(0.0001).of(260.61338)
+          tile.trees_in_size(2).should be_within(0.0001).of(264.4242)
         end
         it "the 4s" do
-          tile.trees_in_size(4).should be_within(0.0001).of(97.89054)
+          tile.trees_in_size(4).should be_within(0.0001).of(99.31989)
         end
         it "the 6s" do
-          tile.trees_in_size(6).should be_within(0.0001).of(49.35273)
+          tile.trees_in_size(6).should be_within(0.0001).of(49.36111)
         end
         it "the 8s" do
-          tile.trees_in_size(8).should be_within(0.0001).of(28.05495)
+          tile.trees_in_size(8).should be_within(0.0001).of(27.52701)
         end
         it "the 24s" do
-          tile.trees_in_size(24).should be_within(0.0001).of(1.42479)
+          tile.trees_in_size(24).should be_within(0.0001).of(0.86072)
         end
       end
     end
@@ -506,16 +490,16 @@ describe LandTile do
         end
 
         it "gives sawtimber value" do
-          values[:sawtimber_value].should be_within(0.1).of(7502.6357)
+          values[:sawtimber_value].should be_within(0.1).of(7544.2511)
         end
         
 
         it "gives poletimber volume" do
-          values[:poletimber_volume].should be_within(0.1).of(172.1770)
+          values[:poletimber_volume].should be_within(0.1).of(172.803)
         end
 
         it "gives sawtimber volume" do
-          values[:sawtimber_volume].should be_within(0.1).of(4526.7747)
+          values[:sawtimber_volume].should be_within(0.1).of(4551.8384)
         end
       end
     end
@@ -559,7 +543,7 @@ describe LandTile do
     describe "#partial_selection_cut" do
       it "returns a curve" do
         vector = tile.partial_selection_curve target_basal_area: 100.0, qratio: 1.5
-        expected_values = [51.82471065214322, 34.54980710142881, 23.033204734285874, 15.35546982285725, 10.236979881904833, 6.824653254603222, 4.549768836402148, 3.033179224268099, 2.022119482845399, 1.348079655230266, 0.8987197701535108, 0.5991465134356738]
+        expected_values = [64.7343441203, 43.1562294136, 28.770819609, 19.180546406, 12.7870309374, 8.5246872916, 5.683124861, 3.7887499074, 2.5258332716, 1.6838888477, 1.1225925651, 0.7483950434]
         vector.map{|x| x.round(3)}.should == expected_values.map{|x| x.round(3)}
       end
 
@@ -579,18 +563,18 @@ describe LandTile do
 
         tile.partial_selection_cut target_basal_area: 100, qratio: 1.5
 
-        tile.num_2_inch_diameter_trees.should  be_within(0.1).of(51.82)
+        tile.num_2_inch_diameter_trees.should  be_within(0.1).of(64.73)
         tile.num_4_inch_diameter_trees.should  be_within(0.1).of(1.000)
-        tile.num_6_inch_diameter_trees.should  be_within(0.1).of(23.03)
+        tile.num_6_inch_diameter_trees.should  be_within(0.1).of(28.77)
         tile.num_8_inch_diameter_trees.should  be_within(0.1).of(1.000)
-        tile.num_10_inch_diameter_trees.should be_within(0.1).of(10.24)
+        tile.num_10_inch_diameter_trees.should be_within(0.1).of(12.78)
         tile.num_12_inch_diameter_trees.should be_within(0.1).of(1.000)
-        tile.num_14_inch_diameter_trees.should be_within(0.1).of(4.550)
+        tile.num_14_inch_diameter_trees.should be_within(0.1).of(5.683)
         tile.num_16_inch_diameter_trees.should be_within(0.1).of(1.000)
-        tile.num_18_inch_diameter_trees.should be_within(0.1).of(2.022)
+        tile.num_18_inch_diameter_trees.should be_within(0.1).of(2.525)
         tile.num_20_inch_diameter_trees.should be_within(0.1).of(1.000)
-        tile.num_22_inch_diameter_trees.should be_within(0.1).of(0.899)
-        tile.num_24_inch_diameter_trees.should be_within(0.1).of(0.599)
+        tile.num_22_inch_diameter_trees.should be_within(0.1).of(1.122)
+        tile.num_24_inch_diameter_trees.should be_within(0.1).of(0.748)
       end
     end
 

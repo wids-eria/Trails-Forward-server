@@ -50,7 +50,6 @@ describe Megatile do
   
   describe 'cache invalidation' do
     let(:megatile) { create :megatile }
-    #let(:megatile_cache) { create :megatile_region_cache } #FIXME need to pass the megatile in here
     before { megatile.spawn_resources }
     it 'invalidates its cache when a contained resource is saved' do
       megatile.json

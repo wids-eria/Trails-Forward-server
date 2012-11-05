@@ -32,7 +32,6 @@ class WorldTurn
     grow_trees
     marten_simulation
     land_desirability
-    migrate_people
     advance_turn
   end
 
@@ -50,10 +49,6 @@ class WorldTurn
 
   def land_desirability
     world.update_total_desirability_scores!
-  end
-
-  def migrate_people
-     world.migrate_population_to_most_desirable_tiles! 2000
   end
 
   def marten_simulation

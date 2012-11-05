@@ -1,4 +1,5 @@
 TrailsForwardWorld::Application.routes.draw do
+
   devise_for :users
 
   match "/users/authenticate_for_token" => "users#authenticate_for_token"
@@ -12,6 +13,11 @@ TrailsForwardWorld::Application.routes.draw do
       get :time_left_for_turn
       get :turn_state
     end
+    
+    resource :pricing, :controller => :world_pricing, :only => [] do
+      get :pine_sawtimber
+    end
+    
 
     resources :players, :only => [:index, :create, :destroy], :controller => :world_players do
       collection do
@@ -19,6 +25,12 @@ TrailsForwardWorld::Application.routes.draw do
       end
       get :bids_placed
       get :bids_received
+      resources :contracts, :only => [:index], :controller => :world_player_contracts do
+        post :attach_megatiles
+      end
+      resources :available_contracts, :only => [:index], :controller => :world_player_available_contracts do
+        post :accept
+      end
     end
 
     resources :listings, :only => [:index, :create, :show] do
@@ -70,7 +82,36 @@ TrailsForwardWorld::Application.routes.draw do
         get 'permitted_actions', :controller => :resource_tiles, :action => :permitted_actions
       end
     end
+
+    resources :messages do
+      member do
+        put :read
+        put :archive
+      end
+    end
+
+    resources :contracts
+
+
+
+    resources :logging_equipment, :only => [:index], :controller => :world_logging_equipment do
+      member do
+        put :buy
+      end
+
+      collection do
+        get :owned
+      end
+    end
   end
+
+  resources :contract_templates
+  resources :non_player_characters
+  resources :companies, :controller => 'non_player_characters'
+  resources :people, :controller => 'non_player_characters'
+
+  resources :logging_equipment_templates
+  resources :logging_equipment
 
   root :to => "welcome#index"
 end

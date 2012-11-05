@@ -1,0 +1,22 @@
+<%= simple_form_for [contract.world, contract], :html => {:class => 'form-horizontal' } do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+
+  <div class="form-inputs">
+    <%= f.association :world %>
+    <%= f.association :contract_template %>
+    <%= f.association :player, :collection => contract.world.players %>
+    <%= f.input :month_started %>
+    <%= f.input :month_ended %>
+    <%= f.input :ended %>
+    <%= f.input :successful %>
+    <%= f.input :on_time %>
+    <%= f.input :volume_harvested_of_required_type %>
+    <%= f.input :points_earned %>
+    Number of provided megatiles: <%= contract.included_megatiles.count %>
+    Number of attached megatiles: <%= contract.attached_megatiles.count %>
+  </div>
+<% end %>

@@ -6,7 +6,9 @@ gem 'stalker'
 gem 'memcache-client'
 
 gem 'activerecord-import'
-gem 'acts_as_api', git: 'git://github.com/fabrik42/acts_as_api.git'
+#gem 'acts_as_api', git: 'git://github.com/fabrik42/acts_as_api.git'
+gem 'acts_as_api', git: 'git://github.com/bennytheshap/acts_as_api.git'
+
 gem 'bamfcsv'
 gem 'cancan'
 gem 'chunky_png'
@@ -29,6 +31,15 @@ gem 'rvm-capistrano'
 gem 'factory_girl_rails'
 gem 'will_paginate'
 gem 'whenever', require: false
+gem 'simple_form'
+
+gem 'jquery-rails'
+
+group :assets do
+  gem 'sass-rails',   '~> 3.1.5'
+  gem 'coffee-rails', '~> 3.1.1'
+  gem 'uglifier', '>= 1.0.3'
+end
 
 group :development, :test do
   gem 'sqlite3'
@@ -54,6 +65,7 @@ group :development, :test do
   gem 'shoulda-matchers'
   gem 'spork', '0.9.0.rc9'
   gem 'tattletail'
+  gem 'thin'
 end
 
 group :test do

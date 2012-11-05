@@ -73,7 +73,7 @@ module TrailsForward
     end
 
     def self.developed_but_not_lived_in? tile_hash
-      (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_density] <= 0.75
+      (tile_hash[:development_intensity] >= 0.5 || tile_hash[:imperviousness] >= 0.5) && tile_hash[:housing_type] == nil
     end
 
     def self.determine_tree_size land_cover_type
@@ -104,7 +104,7 @@ module TrailsForward
     def self.primary_use tile_hash
       case tile_hash[:landcover_class_code]
       when 11, 95 # Open Water, Emergent Herbaceous Wetlands
-        'Housing' if tile_hash[:housing_density] > 0
+        'Housing' if tile_hash[:housing_type] != nil
       when 21..24 # Developed
         developed_but_not_lived_in?(tile_hash) ? "Industry" : "Housing"
       when 41,42,43,51,52,71,90 # Forest types
@@ -119,7 +119,7 @@ module TrailsForward
     def self.tile_type(tile_hash)
       case tile_hash[:landcover_class_code]
       when 11, 95 # Open Water, Emergent Herbaceous Wetlands
-        if tile_hash[:housing_density] <= 0
+        if tile_hash[:housing_type] == nil
           'WaterTile'
         else
           'LandTile'
@@ -142,8 +142,24 @@ module TrailsForward
       tile_hash = { world_id: world.id, megatile_id: megatile_id, x: tile_x, y: tile_y }
 
       tile_hash[:tree_density] = tree_density_percent(row_hash[:forest_density].to_f)
-      tile_hash[:housing_density] = housing_density_percent(row_hash[:housing_density].to_f)
-      tile_hash[:housing_capacity] = housing_density_percent(row_hash[:house_count].to_f) * 100
+      #tile_hash[:housing_density] = housing_density_percent(row_hash[:housing_density].to_f)
+      #tile_hash[:housing_capacity] = housing_density_percent(row_hash[:house_count].to_f) * 100
+      
+      #set the housing type
+      
+      tile_hash[:housing_type] = case (housing_density_percent(row_hash[:house_count].to_f) * 100).to_i
+        when nil, 0
+          nil
+        when 1..24
+          LandTile::Vacation
+        when 25..74
+          LandTile::SingleFamily
+        when 75..100
+          LandTile::Apartment
+        else
+          raise 'unknown housing density'
+      end
+      
       tile_hash[:imperviousness] = imperviousness_percent(row_hash[:imperviousness].to_f)
       tile_hash[:frontage] = row_hash[:frontage].to_f
       tile_hash[:lakesize] = row_hash[:lakesize].to_f
@@ -166,8 +182,7 @@ module TrailsForward
 
       #work around noisy data
       if tile_hash[:type] == "WaterTile"
-        tile_hash[:people_density] = 0
-        tile_hash[:housing_density] = 0
+        tile_hash[:housing_type] = nil
         tile_hash[:development_intensity] = 0
         tile_hash[:tree_density] = 0
         tile_hash[:tree_size] = 0
@@ -227,6 +242,13 @@ module TrailsForward
       pb = progress_bar_class.new 'World', 1
       world = Factory :world, width: world_width, height: world_height, name: name
       world_id = world.id
+      
+      world.pine_sawtimber_base_price = 0.147
+      world.pine_sawtimber_supply_coefficient = 0.001
+      world.pine_sawtimber_demand_coefficient = 0.001
+      world.pine_sawtimber_min_price = 0.01
+      world.pine_sawtimber_max_price = 1.0
+      
       pb.finish
 
       world.spawn_megatiles
@@ -255,7 +277,8 @@ module TrailsForward
       pb.finish
 
       import_columns = [ :megatile_id, :x, :y, :type, :zoning_code, :world_id,
-                         :primary_use, :people_density, :housing_density, :housing_capacity,
+                         :primary_use, #:people_density, :housing_density, :housing_capacity,
+                         :housing_type,
                          :tree_density, :development_intensity, :tree_size,
                          :imperviousness, :frontage, :lakesize, :soil,
                          :landcover_class_code, :num_2_inch_diameter_trees,
@@ -313,35 +336,6 @@ module TrailsForward
 
       puts("##{world_id} - #{name} generated".green) if show_progress
       
-      puts("Generating cache regions") if show_progress
-      regions_wide = (world.width/world.megatile_width)/CACHE_REGION_WIDTH 
-      regions_tall = (world.height/world.megatile_height)/CACHE_REGION_WIDTH
-      regions_wide += 1 if ((world.width/world.megatile_width) % CACHE_REGION_WIDTH > 0)
-      regions_tall += 1 if ((world.height/world.megatile_height) % CACHE_REGION_WIDTH > 0)
-      
-      pb = progress_bar_class.new 'Cache Regions', regions_tall * regions_wide
-      0.step(world.width, CACHE_REGION_WIDTH * world.megatile_width) do |x_min|
-        x_max = x_min + CACHE_REGION_WIDTH*world.megatile_width - 1
-        0.step(world.height, CACHE_REGION_WIDTH * world.megatile_height) do |y_min|
-          y_max = y_min + CACHE_REGION_WIDTH*world.megatile_height - 1
-          mrc = MegatileRegionCache.new
-          mrc.world = world
-          mrc.x_min = x_min
-          mrc.x_max = x_max
-          mrc.y_min = y_min
-          mrc.y_max = y_max
-          mrc.save!
-          
-          megatiles = Megatile.where(:world_id => world.id).where("x >= :x_min AND x<= :x_max AND y >= :y_min AND y <= :y_max",
-                                                                          {:x_min => x_min, :x_max => x_max, :y_min => y_min, :y_max => y_max})
-          megatiles.each do |mt|
-            mrc.megatiles << mt
-          end
-          pb.inc
-        end
-      end
-
-
       puts("Calculating desirability")
       #this shouldn't be necessary, but the importer doesn't do before_save callbacks
       pb = progress_bar_class.new 'Local desirability scores', world.width * world.height

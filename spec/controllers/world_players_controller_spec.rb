@@ -30,24 +30,4 @@ describe WorldPlayersController do
       world.reload.turn_state.should == "ready_for_processing"
     end
   end
-    
-  describe '#destroy' do
-    let(:user) { player.user }
-    let(:player) { create :lumberjack }
-    let(:other_player) { create :developer }
-    let(:other_user) { other_player.user }
-    let(:user_to_sign_in) { other_user }
-    
-    before do
-      sign_in user_to_sign_in
-    end
-    
-    context 'destroying a player as god' do
-      it 'should destroy a player object' do
-        player_id = player.id
-        delete :destroy, world_id: player.world.id, id: player.id, god_mode: 'iddqd'
-        Player.where(:id => player_id).length.should == 0
-      end
-    end
-  end  #destroy
 end

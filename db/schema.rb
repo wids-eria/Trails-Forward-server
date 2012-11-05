@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120816000452) do
+ActiveRecord::Schema.define(:version => 20121102201733) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -66,6 +66,54 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
   add_index "change_requests", ["complete"], :name => "index_change_requests_on_complete"
   add_index "change_requests", ["world_id"], :name => "index_change_requests_on_world_id"
 
+  create_table "contract_attached_megatiles", :force => true do |t|
+    t.integer "contract_id"
+    t.integer "megatile_id"
+  end
+
+  create_table "contract_included_megatiles", :force => true do |t|
+    t.integer "contract_id"
+    t.integer "megatile_id"
+  end
+
+  create_table "contract_templates", :force => true do |t|
+    t.string   "codename"
+    t.string   "role"
+    t.string   "difficulty"
+    t.integer  "points_required_to_unlock"
+    t.integer  "points"
+    t.integer  "dollars"
+    t.integer  "deadline"
+    t.text     "description"
+    t.text     "acceptance_message"
+    t.text     "complete_message"
+    t.text     "late_message"
+    t.boolean  "includes_land",             :default => false
+    t.integer  "volume_required"
+    t.string   "wood_type"
+    t.integer  "acres_added_required"
+    t.integer  "acres_developed_required"
+    t.string   "home_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "company_id"
+  end
+
+  create_table "contracts", :force => true do |t|
+    t.integer  "contract_template_id"
+    t.integer  "world_id"
+    t.integer  "player_id"
+    t.integer  "month_started"
+    t.integer  "month_ended"
+    t.boolean  "ended"
+    t.boolean  "successful"
+    t.boolean  "on_time"
+    t.integer  "volume_harvested_of_required_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "points_earned"
+  end
+
   create_table "listings", :force => true do |t|
     t.integer  "owner_id"
     t.integer  "megatile_grouping_id"
@@ -79,22 +127,65 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
 
   add_index "listings", ["owner_id"], :name => "index_listings_on_owner_id"
 
+  create_table "logging_equipment_templates", :force => true do |t|
+    t.string   "name"
+    t.string   "equipment_type"
+    t.text     "market_description"
+    t.integer  "initial_cost_min"
+    t.integer  "initial_cost_max"
+    t.integer  "operating_cost_min"
+    t.integer  "operating_cost_max"
+    t.integer  "maintenance_cost_min"
+    t.integer  "maintenance_cost_max"
+    t.integer  "harvest_volume_min"
+    t.integer  "harvest_volume_max"
+    t.integer  "diameter_range_min"
+    t.integer  "diameter_range_max"
+    t.integer  "yarding_volume_min"
+    t.integer  "yarding_volume_max"
+    t.integer  "transport_volume_min"
+    t.integer  "transport_volume_max"
+    t.integer  "condition_min"
+    t.integer  "condition_max"
+    t.integer  "reliability_min"
+    t.integer  "reliability_max"
+    t.integer  "decay_rate_min"
+    t.integer  "decay_rate_max"
+    t.integer  "scrap_value_min"
+    t.integer  "scrap_value_max"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "logging_equipments", :force => true do |t|
+    t.string   "name"
+    t.string   "equipment_type"
+    t.float    "initial_cost"
+    t.float    "operating_cost"
+    t.float    "maintenance_cost"
+    t.float    "harvest_volume"
+    t.integer  "diameter_range_min"
+    t.integer  "diameter_range_max"
+    t.float    "yarding_volume"
+    t.float    "transport_volume"
+    t.float    "condition"
+    t.float    "reliability"
+    t.float    "decay_rate"
+    t.float    "scrap_value"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.text     "market_description"
+    t.integer  "logging_equipment_id"
+    t.integer  "world_id"
+    t.integer  "player_id"
+  end
+
   create_table "megatile_groupings", :force => true do |t|
   end
 
   create_table "megatile_groupings_megatiles", :force => true do |t|
     t.integer "megatile_id"
     t.integer "megatile_grouping_id"
-  end
-
-  create_table "megatile_region_caches", :force => true do |t|
-    t.integer  "world_id"
-    t.integer  "x_min"
-    t.integer  "x_max"
-    t.integer  "y_min"
-    t.integer  "y_max"
-    t.datetime "created_at"
-    t.datetime "updated_at"
   end
 
   create_table "megatiles", :force => true do |t|
@@ -109,6 +200,25 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
 
   add_index "megatiles", ["megatile_region_cache_id", "updated_at"], :name => "index_megatiles_on_megatile_region_cache_id_and_updated_at"
   add_index "megatiles", ["world_id", "updated_at"], :name => "index_megatiles_on_world_id_and_updated_at"
+
+  create_table "messages", :force => true do |t|
+    t.text     "subject"
+    t.text     "body"
+    t.integer  "sender_id"
+    t.integer  "recipient_id"
+    t.datetime "read_at"
+    t.datetime "archived_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "non_player_characters", :force => true do |t|
+    t.string   "type"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "codename"
+  end
 
   create_table "players", :force => true do |t|
     t.integer  "user_id"
@@ -129,8 +239,6 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
     t.string  "type"
     t.integer "world_id"
     t.string  "primary_use"
-    t.float   "people_density"
-    t.float   "housing_density"
     t.float   "tree_density"
     t.float   "development_intensity"
     t.float   "tree_size"
@@ -153,7 +261,6 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
     t.float   "num_22_inch_diameter_trees", :default => 0.0,    :null => false
     t.float   "num_24_inch_diameter_trees", :default => 0.0,    :null => false
     t.string  "zone_type",                  :default => "none"
-    t.integer "housing_capacity",           :default => 0
     t.integer "housing_occupants",          :default => 0
     t.boolean "harvest_area",               :default => false
     t.integer "supported_saplings",         :default => 0
@@ -172,6 +279,7 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
     t.float   "large_tree_basal_area"
     t.float   "marten_population",          :default => 0.0
     t.float   "vole_population",            :default => 0.0
+    t.string  "housing_type"
   end
 
   add_index "resource_tiles", ["megatile_id"], :name => "index_resource_tiles_on_megatile_id"
@@ -201,6 +309,18 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
     t.float    "num_24in_trees", :default => 0.0
     t.integer  "player_id"
     t.integer  "megatile_id"
+    t.float    "vol_2in_trees"
+    t.float    "vol_4in_trees"
+    t.float    "vol_6in_trees"
+    t.float    "vol_8in_trees"
+    t.float    "vol_10in_trees"
+    t.float    "vol_12in_trees"
+    t.float    "vol_14in_trees"
+    t.float    "vol_16in_trees"
+    t.float    "vol_18in_trees"
+    t.float    "vol_20in_trees"
+    t.float    "vol_22in_trees"
+    t.float    "vol_24in_trees"
   end
 
   add_index "surveys", ["megatile_id"], :name => "index_surveys_on_megatile_id"
@@ -236,12 +356,18 @@ ActiveRecord::Schema.define(:version => 20120816000452) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.date     "start_date"
-    t.integer  "current_turn",    :default => 1
+    t.integer  "current_turn",                      :default => 1
     t.datetime "turn_started_at"
-    t.integer  "timber_count",    :default => 0
-    t.string   "turn_state",      :default => "play"
-    t.integer  "turn_duration",   :default => 15
-    t.integer  "year_current",    :default => 0
+    t.string   "turn_state",                        :default => "play"
+    t.integer  "turn_duration",                     :default => 15
+    t.integer  "year_current",                      :default => 0
+    t.float    "pine_sawtimber_base_price"
+    t.float    "pine_sawtimber_supply_coefficient"
+    t.float    "pine_sawtimber_demand_coefficient"
+    t.integer  "pine_sawtimber_min_price"
+    t.integer  "pine_sawtimber_max_price"
+    t.float    "pine_sawtimber_cut_this_turn",      :default => 0.0
+    t.float    "pine_sawtimber_used_this_turn",     :default => 0.0
   end
 
 end

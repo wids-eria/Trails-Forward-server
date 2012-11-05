@@ -1,0 +1,23 @@
+<ul class="breadcrumb lead">
+  <li class="active">Contract Templates<span class="divider"></li>
+</ul>
+
+<div class="well">
+  <%= link_to "New", new_contract_template_path, class: 'btn btn-primary' %>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <th>name</th>
+    <th>points</th>
+  </thead>
+  <tbody>
+  <%- @contract_templates.each do |template| %>
+    <tr>
+      <td><%= link_to template.codename, edit_contract_template_path(id: template.id) %> </td>
+      <td><%= template.points %> points</td>
+      <td><%= template.company.codename %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

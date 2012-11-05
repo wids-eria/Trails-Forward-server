@@ -10,6 +10,10 @@ class SurveysController < ApplicationController
 
     @surveys = megatile.surveys.where(player_id: player.id)
 
+    if @surveys.empty?
+      @surveys = [DefaultSurvey.of(megatile: megatile)]
+    end
+
     respond_to do |format|
       format.xml  { render_for_api :survey,  xml: @surveys }
       format.json { render_for_api :survey, json: @surveys }
@@ -29,19 +33,17 @@ class SurveysController < ApplicationController
 
     begin
       ActiveRecord::Base.transaction do
-        if @survey.save && player.save
-          respond_to do |format|
-            format.xml  { render_for_api :survey,  xml: @survey, status: :created }
-            format.json { render_for_api :survey, json: @survey, status: :created }
-          end
-        else
-          raise ActiveRecord::RecordInvalid.new(player)
-        end
+        @survey.save!
+        player.save!
+      end
+      respond_to do |format|
+        format.xml  { render_for_api :survey,  xml: @survey, status: :created }
+        format.json { render_for_api :survey, json: @survey, status: :created }
       end
     rescue ActiveRecord::RecordInvalid
       respond_to do |format|
-        format.xml  { render  xml: { errors: ["Not enough money"] }, status: :unprocessable_entity }
-        format.json { render json: { errors: ["Not enough money"] }, status: :unprocessable_entity }
+        format.xml  { render  xml: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
+        format.json { render json: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
       end
     end
   end

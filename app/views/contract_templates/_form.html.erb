@@ -1,0 +1,38 @@
+<%= simple_form_for contract_template, :html => {:class => 'form-horizontal' } do |f| %>
+  <%= f.error_notification %>
+
+  <div class="form-actions">
+    <%= f.button :submit %>
+  </div>
+
+  <div class="form-inputs">
+    <%= f.input :company_id, :collection => Company.all, :label_method => :codename %>
+    <%= f.input :codename %>
+    <%= f.input :role, :collection => ContractTemplate::Possible_Roles %>
+    <%= f.input :difficulty, :collection => ContractTemplate::Possible_Difficulties %>
+    <%= f.input :points_required_to_unlock, :default => 0, :min => 0 %>
+    <%= f.input :points %>
+    <%= f.input :dollars %>
+    <%= f.input :deadline, :hint => "months" %>
+    <%= f.input :includes_land  %>
+
+
+    <%= field_set_tag 'Logging' do %>
+        <%= f.input :volume_required %>
+        <%= f.input :wood_type, :collection => ContractTemplate::Possible_Wood_Types %>
+    <%	end  %>
+
+    <%= field_set_tag 'Development' do %>
+        <%= f.input :acres_added_required %>
+        <%= f.input :acres_developed_required %>
+        <%= f.input :home_type, :collection => LandTile::HomeTypes %>
+    <% end %>
+
+    <%= field_set_tag 'Messages' do %>
+        <%= f.input :description, :as => :text %>
+        <%= f.input :acceptance_message, :as => :text %>
+        <%= f.input :complete_message, :as => :text %>
+        <%= f.input :late_message, :as => :text %>
+    <% end %>
+  </div>
+<% end %>

@@ -16,13 +16,9 @@ class Ability
     end
 
     can :god_mode, ResourceTile do |tile, god_mode|
-      god_mode == "iddqd"
+      false
     end
     
-    can :god_mode, Player do |player, god_mode|
-      god_mode == "iddqd"
-    end
-
     can :access_private_data, Player, :user_id => user.id
     can :access_private_data, User, :id => user.id
 
@@ -70,6 +66,25 @@ class Ability
 
     can :see_bids, Player, :user_id => user.id
 
+    can :see_contracts, Player do |player|
+      player.user == user
+    end
+
+    can :accept_contract, Contract do |contract|
+      player = contract.world.player_for_user(user)
+      player.available_contracts.include?(contract)
+    end
+
+    can :attach_megatiles, Contract do |contract|
+      player_for_user = contract.world.player_for_user(user)
+      player_for_user == contract.player
+    end
+
+    can :attach_to_contract, Megatile, do |megatile|
+      player = megatile.world.player_for_user(user)
+      megatile.owner == player # TODO: have more sophistication here around rights
+    end
+
     can :accept_bid, Bid do |bid|
       # assumes that all requested land in the bid has the same owner
       megatiles = bid.requested_land.megatiles
@@ -91,6 +106,11 @@ class Ability
       rt.megatile.world.player_for_user(user) == rt.megatile.owner
     end
     
+    can :build, ResourceTile do |rt|
+      player = rt.megatile.world.player_for_user(user)
+      player == rt.megatile.owner && player.class == Developer
+    end
+      
     can :build_outpost, ResourceTile do |rt|
       #TODO: put this back
       #rt.world.player_for_user(user).class == Developer &&

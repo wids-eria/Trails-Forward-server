@@ -10,15 +10,22 @@ class Megatile < ActiveRecord::Base
   has_many :bids_on, :through => :megatile_groupings
   has_many :bids_offering, :through => :megatile_groupings
 
+  has_and_belongs_to_many :contracts_included_with, :join_table => 'contract_included_megatiles'
+  has_and_belongs_to_many :contracts_attached_to,   :join_table => 'contract_attached_megatiles'
+
+
   has_many :surveys
 
   validates_presence_of :world
 
   validates_uniqueness_of :x, :scope => [:y, :world_id]
   validates_uniqueness_of :y, :scope => [:x, :world_id]
-
-  after_save :invalidate_cache
-  belongs_to :megatile_region_cache
+  
+  scope :in_region, lambda { |world_id, coordinates|
+    exclusion_box = "NOT (x < :x_min OR x> :x_max OR y < :y_min OR y > :y_max)"
+    where(world_id: world_id).where(exclusion_box, coordinates)
+  }
+  
 
   def self.cost
     100
@@ -92,7 +99,6 @@ class Megatile < ActiveRecord::Base
   
   def invalidate_cache
     Rails.cache.delete cache_key
-    self.megatile_region_cache.invalidate if self.megatile_region_cache
   end
   
   def cache_key
