@@ -201,6 +201,9 @@ describe ResourceTilesController do
 
     let!(:tiles) { [land_tile1, land_tile2] }
 
+    let!(:old_timber_count) { world.pine_sawtimber_cut_this_turn }
+    let!(:old_balance) { player.balance }
+
     before do
       land_tile1.species_group.should == :shade_intolerant
       land_tile2.species_group.should == :shade_intolerant
@@ -208,27 +211,23 @@ describe ResourceTilesController do
 
     describe '#diameter_limit_cut' do
       it 'returns values and volumes of all the tiles cut' do
-        old_timber_count = world.pine_sawtimber_cut_this_turn
-
         sawyer_results1 = land_tile1.diameter_limit_cut above: 12
         sawyer_results2 = land_tile2.diameter_limit_cut above: 12
 
         post 'diameter_limit_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), above: 12.to_s, format: 'json'
 
-        world.reload
-        world.pine_sawtimber_cut_this_turn.should > old_timber_count
+        world.reload.pine_sawtimber_cut_this_turn.should > old_timber_count
 
-        response.body.should have_content('poletimber_value')
-        response.body.should have_content(sawyer_results1[:poletimber_value] + sawyer_results2[:poletimber_value])
+        json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
-        response.body.should have_content('poletimber_volume')
-        response.body.should have_content(sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume])
+        json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
+        json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
 
-        response.body.should have_content('sawtimber_value')
-        response.body.should have_content(sawyer_results1[:sawtimber_value] + sawyer_results2[:sawtimber_value])
+        json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
+        json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
 
-        response.body.should have_content('sawtimber_volume')
-        response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
+        world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
+        player.reload.balance.should < old_balance
       end
     end
 
@@ -239,9 +238,6 @@ describe ResourceTilesController do
 
 
       it 'returns values and volumes of all the tiles cut' do
-        old_timber_count = world.pine_sawtimber_cut_this_turn
-        old_balance = player.balance
-
         sawyer_results1 = land_tile1.clearcut
         sawyer_results2 = land_tile2.clearcut
 
@@ -262,8 +258,6 @@ describe ResourceTilesController do
 
 
       it 'doesnt clearcut if not owned by you' do
-        old_timber_count = world.pine_sawtimber_cut_this_turn
-
         assert_raises CanCan::AccessDenied do
           post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [other_tile].map(&:to_param), format: 'json'
         end
@@ -274,8 +268,6 @@ describe ResourceTilesController do
 
 
       it 'can clearcut if not enough money' do
-        old_timber_count = world.pine_sawtimber_cut_this_turn
-
         player.update_attributes! balance: 2
 
         post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
@@ -302,8 +294,6 @@ describe ResourceTilesController do
 
     describe '#partial_selection_cut' do
       it 'returns values and volumes of all the tiles cut' do
-        old_timber_count = world.pine_sawtimber_cut_this_turn
-        
         sawyer_results1 = land_tile1.partial_selection_cut target_basal_area: 100, qratio: 1.5
         sawyer_results2 = land_tile2.partial_selection_cut target_basal_area: 100, qratio: 1.5
 
@@ -321,7 +311,6 @@ describe ResourceTilesController do
         response.body.should have_content('sawtimber_volume')
         response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
         
-        world.reload
         world.reload.pine_sawtimber_cut_this_turn.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
       end
     end
