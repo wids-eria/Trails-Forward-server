@@ -3,6 +3,7 @@ class YoungdaeTileMatcher < LoggerTileMatcher
     world = contract.world
     acceptable_tiles = []
     lots_of_megatiles = world.megatiles.where(:owner_id => nil).shuffle[0..50]
+
     lots_of_megatiles.each do |megatile|
       megatile.resource_tiles.where(:type => "LandTile").each do |resource_tile|
         begin
@@ -18,7 +19,13 @@ class YoungdaeTileMatcher < LoggerTileMatcher
   end
 
   def find_and_attach_to_contract_with_player(contract)
-    resource_tile_to_use = find_tiles(contract).shuffle.first
+
+    resource_tiles = find_tiles(contract).shuffle
+    if resource_tiles.count == 0
+      raise "no tiles found"
+    end
+
+    resource_tile_to_use =  resource_tiles.first
     megatile = resource_tile_to_use.megatile
     megatile.owner = contract.player
     if megatile.save
