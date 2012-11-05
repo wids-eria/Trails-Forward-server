@@ -216,8 +216,6 @@ describe ResourceTilesController do
 
         post 'diameter_limit_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), above: 12.to_s, format: 'json'
 
-        world.reload.pine_sawtimber_cut_this_turn.should > old_timber_count
-
         json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
         json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
@@ -299,19 +297,16 @@ describe ResourceTilesController do
 
         post 'partial_selection_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), target_basal_area: 100, qratio: 1.5, format: 'json'
 
-        response.body.should have_content('poletimber_value')
-        response.body.should have_content(sawyer_results1[:poletimber_value] + sawyer_results2[:poletimber_value])
+        json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
-        response.body.should have_content('poletimber_volume')
-        response.body.should have_content(sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume])
+        json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
+        json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
 
-        response.body.should have_content('sawtimber_value')
-        response.body.should have_content(sawyer_results1[:sawtimber_value] + sawyer_results2[:sawtimber_value])
+        json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
+        json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
 
-        response.body.should have_content('sawtimber_volume')
-        response.body.should have_content(sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume])
-        
-        world.reload.pine_sawtimber_cut_this_turn.should == (old_timber_count + sawyer_results1[:sawtimber_volume] + sawyer_results2[:sawtimber_volume]).round
+        world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
+        player.reload.balance.should < old_balance
       end
     end
   end
