@@ -9,12 +9,14 @@
 <table class="table table-striped">
   <thead>
     <th>name</th>
+    <th>company</th>
     <th>points</th>
   </thead>
   <tbody>
   <%- @contract_templates.each do |template| %>
     <tr>
       <td><%= link_to template.codename, edit_contract_template_path(id: template.id) %> </td>
+      <td><%= template.company.name %> (<%= template.company.codename %>) </td>
       <td><%= template.points %> points</td>
     </tr>
   <% end %>
