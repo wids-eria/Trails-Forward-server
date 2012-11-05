@@ -9,14 +9,12 @@ class Player < ActiveRecord::Base
 
   attr_accessible :name, :user, :world, :balance, :pending_balance, :quest_points, :quests
 
-  validates_uniqueness_of :user_id, :scope => :world_id
-
   has_many :megatiles, :inverse_of => :owner, :foreign_key => 'owner_id'
   has_many :resource_tiles, :through => :megatiles
   belongs_to :world
   belongs_to :user
   validates_presence_of :user
-  validates_presence_of :world
+  validates :world_id, :presence => true, :uniqueness => {:scope => :world_id}
   validates :balance, presence: true, numericality: {only_integer: true}
 
   has_many :bids_placed, :class_name => 'Bid', :inverse_of => :bidder, :foreign_key => 'bidder_id'
