@@ -16,6 +16,7 @@
     <tr>
       <td><%= link_to template.codename, edit_contract_template_path(id: template.id) %> </td>
       <td><%= template.points %> points</td>
+      <td><%= template.company.codename %></td>
     </tr>
   <% end %>
   </tbody>
