@@ -10,6 +10,10 @@ module TreeHarvesting
     end
 
 
+    def total_wood_values_and_volumes
+      calculate_product_values_and_volumes_for collect_tree_size_counts.map{ 0 }
+    end
+
     def calculate_product_values_and_volumes_for target_diameter_distribution
       excess_tree_counts = excess_tree_counts target_diameter_distribution
 
