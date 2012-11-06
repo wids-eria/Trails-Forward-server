@@ -5,10 +5,10 @@ describe WorldPlayersController do
   render_views
 
   let!(:user)     { player.user }
-  let!(:player)   { create :lumberjack, last_turn_played: 4 }
-  let!(:player_2) { create :developer,  last_turn_played: 5 }
-  let!(:player_3) { create :conserver,  last_turn_played: 4 }
-  let!(:world)    { create :world, turn_started_at: DateTime.now, players: [player, player_2, player_3], turn_state: 'playing', turn_started_at: DateTime.now - 4.minutes, current_turn: 5 }
+  let!(:player)   { create :lumberjack, last_turn_played: 4, world: world }
+  let!(:player_2) { create :developer,  last_turn_played: 5, world: world }
+  let!(:player_3) { create :conserver,  last_turn_played: 4, world: world }
+  let!(:world)    { create :world, turn_started_at: DateTime.now, turn_state: 'playing', turn_started_at: DateTime.now - 4.minutes, current_turn: 5 }
 
   let(:json)     { JSON.parse(response.body) }
 

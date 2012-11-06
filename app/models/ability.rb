@@ -23,8 +23,9 @@ class Ability
     can :access_private_data, User, :id => user.id
 
     can :create_player, User
-    can :update_player, Player do
-      true
+    can :update_player, Player do |player|
+      user.players.include? player
+      # FIXME This is already kind of covered by finding them with player for user?
     end
 
     can :index_user_players, :all
