@@ -34,13 +34,15 @@ class Contract < ActiveRecord::Base
     template.add :points_earned
     template.add :created_at
     template.add :updated_at
+    template.add :attached_megatiles
+    template.add :included_megatiles
     template.add 'contract_template.codename', :as => :codename
     template.add 'contract_template.company_id', :as => :company_id
     template.add 'contract_template.company.codename', :as => :company_codename
     template.add 'contract_template.includes_land', :as => :includes_land
     template.add 'contract_template.description', :as => :description
-    template.add 'contract_template.deadline', :as => :deadline
-    template.add 'contract_template.dollars', :as => :dollars_offered
+    template.add 'contract_template.deadline', :as => :delivery_window
+    template.add 'contract_template.dollars', :as => :earnings
     template.add 'contract_template.role', :as => :role
     template.add 'contract_template.difficulty', :as => :difficulty
     template.add 'contract_template.points', :as => :points_offered
@@ -49,15 +51,15 @@ class Contract < ActiveRecord::Base
 
 
   api_accessible :lumberjack_contract, :extend => :base_contract do |template|
-    template.add :volume_harvested_of_required_type
-    template.add 'contract_template.wood_type', :as => :wood_type
-    template.add 'contract_template.volume_required', :as => :volume_required
+    template.add :volume_harvested_of_required_type, :as => :volume_harvested
+    template.add 'contract_template.wood_type', :as => :kind
+    template.add 'contract_template.volume_required', :as => :volume_needed
 
   end
 
   api_accessible :developer_contract, :extend => :base_contract do |template|
     template.add 'contract_template.acres_added_required', :as => :acres_added_required
-    template.add 'contract_template.acres_developed_required', :as => :acres_developed_required
-    template.add 'contract_template.home_type', :as => :home_type
+    template.add 'contract_template.acres_developed_required', :as => :properties_needed
+    template.add 'contract_template.home_type', :as => :housing_type
   end
 end
