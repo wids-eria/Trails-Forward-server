@@ -4,7 +4,7 @@ class DefaultSurvey < Survey
   def self.of(options = {})
     survey = Survey.new options
     harvestable_count = survey.megatile.resource_tiles.select do |rt|
-      rt.can_clearcut?
+      rt.can_harvest?
     end.count
 
     default_counts = [272.437067809463, 99.994884114938, 45.5289670412543, 22.2937863557362, 11.0390612960499, 5.4378119957329, 2.75016842307342, 1.55739847629946, 1.07079856778977, 0.862134192795702, 0.722516967545298, 1.25089221979453]

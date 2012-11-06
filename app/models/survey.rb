@@ -12,7 +12,7 @@ class Survey < ActiveRecord::Base
     survey = Survey.new options
     tiles_with_trees = []
     tiles_with_trees = survey.megatile.resource_tiles.select do |rt|
-      rt.can_clearcut? && rt.respond_to?(:estimated_tree_volume_for_size)
+      rt.can_harvest? && rt.respond_to?(:estimated_tree_volume_for_size)
     end
 
     survey.num_2in_trees  = tiles_with_trees.collect(&:num_2_inch_diameter_trees ).sum

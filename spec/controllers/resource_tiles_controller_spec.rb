@@ -28,18 +28,13 @@ describe ResourceTilesController do
       end
 
       context 'passed a world, x, y, width and height' do
-        before do
-          ResourceTile.any_instance.stubs(can_bulldoze?: true)
-          ResourceTile.any_instance.stubs(can_clearcut?: false)
-        end
-
         it 'returns JSON representing the set of resource_tiles' do
           get :permitted_actions, world_id: world.id, x_min: 2, y_min: 1, x_max: 3, y_max: 2, format: 'json'
           locations.should == [[2,1], [2,2], [3,1], [3,2]]
         end
 
         context 'when other worlds present' do
-          let!(:other_tile) { create :resource_tile, x: 2, y: 2 }
+          let!(:other_tile) { create :land_tile, x: 2, y: 2 }
           it 'doesnt return tiles from them' do
             get :permitted_actions, world_id: world.id, x_min: 1, y_min: 1, x_max: 3, y_max: 3, format: 'json'
             ids.should_not include(other_tile.id)

@@ -86,7 +86,7 @@ describe SurveysController do
       it 'returns a default survey' do
         get :index, world_id: the_world.to_param, megatile_id: megatile.to_param, format: :json
         response.should be_success
-        harvestable_count = megatile.resource_tiles.select{|x| x.can_clearcut?}.count
+        harvestable_count = megatile.resource_tiles.select{|x| x.can_harvest?}.count
         harvestable_count.should > 0
         assigns(:surveys).count.should == 1
         assigns(:surveys).first.num_2in_trees.should == default_counts[0] * harvestable_count

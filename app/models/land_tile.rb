@@ -12,7 +12,7 @@ class LandTile < ResourceTile
   SingleFamily = "single family"
   HomeTypes = [Vacation, Apartment, SingleFamily]
 
-  def can_clearcut?
+  def can_harvest?
     begin
       species_group
     rescue

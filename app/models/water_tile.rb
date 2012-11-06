@@ -2,6 +2,31 @@ class WaterTile < ResourceTile
   validate :should_not_have_land_properties
   validate :appropriate_zoning
 
+  def can_bulldoze?
+    false
+  end
+
+  def can_harvest?
+    false
+  end
+
+  def clearcut!
+    raise 'nope! clearcut'
+  end
+
+  def bulldoze!
+    raise 'nope! bulldoze'
+  end
+  
+  def can_build?
+    false
+  end
+
+  def estimated_value
+    nil # FIXME why?
+  end
+
+
   # there doesn't seem to be a way to have extension follow inheritance
   #api_accessible :resource do |template|
   #  template.add :id

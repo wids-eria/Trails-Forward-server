@@ -39,22 +39,14 @@ describe Megatile do
     end
   end
 
-  describe '#spawn_resources' do
-    let(:megatile) { create :megatile }
-    before { megatile.spawn_resources }
-    it "produces the correct number of resource tiles" do
-      megatile.reload.resource_tiles.count.should == 9
-    end
-  end
-  
   
   describe 'cache invalidation' do
-    let(:megatile) { create :megatile }
-    before { megatile.spawn_resources }
+    let!(:megatile) { create :megatile }
+    let!(:resource_tile) { create :land_tile, megatile: megatile }
     it 'invalidates its cache when a contained resource is saved' do
       megatile.json
       Rails.cache.read(megatile.cache_key).should_not be_nil
-      megatile.resource_tiles.first.save!
+      resource_tile.save!
       Rails.cache.read(megatile.cache_key).should be_nil
     end
   end

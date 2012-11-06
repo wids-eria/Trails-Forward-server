@@ -39,14 +39,14 @@ module TrailsForward
           if opts[:populate]
             resource_gen [x, y], megatile_ids["#{x - (x % megatile_width)}:#{y - (y % megatile_height)}"].id
           else
-            [x, y, megatile_ids["#{x - (x % megatile_width)}:#{y - (y % megatile_height)}"].id, id, 'none', 255]
+            [x, y, megatile_ids["#{x - (x % megatile_width)}:#{y - (y % megatile_height)}"].id, id, 'none', 255, 'LandTile']
           end
         end
 
         if opts[:populate]
           ResourceTile.import batch_tiles, validate: false, timestamps: false
         else
-          ResourceTile.import %w(x y megatile_id world_id zone_type landcover_class_code), batch_tiles, validate: false, timestamps: false
+          ResourceTile.import %w(x y megatile_id world_id zone_type landcover_class_code type), batch_tiles, validate: false, timestamps: false
         end
 
         rt_progress_bar.inc(height) if Rails.env.development?

@@ -261,11 +261,11 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def can_bulldoze?
-    false
+    raise 'not implemented'
   end
 
-  def can_clearcut?
-    false
+  def can_harvest?
+    raise 'not implemented'
   end
 
   def clearcut!
@@ -275,9 +275,9 @@ class ResourceTile < ActiveRecord::Base
   def bulldoze!
     raise 'not implemented'
   end
-  
+
   def can_build?
-    false
+    raise 'not implemented'
   end
 
   def estimated_value
@@ -285,9 +285,9 @@ class ResourceTile < ActiveRecord::Base
   end
 
   def all_actions
-    %w(bulldoze clearcut)
+    %w(bulldoze harvest)
   end
-  
+
   def permitted_actions player = nil
     return non_owner_permitted_actions unless player
     if megatile.owner == player

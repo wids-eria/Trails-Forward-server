@@ -137,7 +137,7 @@ class ResourceTilesController < ApplicationController
       authorize! :harvest, tile
     end
 
-    usable_tiles = resource_tiles.select(&:can_clearcut?)
+    usable_tiles = resource_tiles.select(&:can_harvest?)
     player.balance -= Pricing.clearcut_cost(usable_tiles)
 
     begin

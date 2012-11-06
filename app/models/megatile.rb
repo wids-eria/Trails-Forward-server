@@ -39,14 +39,6 @@ class Megatile < ActiveRecord::Base
     world.try(:megatile_height)
   end
 
-  def spawn_resources
-    (x...(x + width)).each do |x|
-      (y...(y + height)).each do |y|
-        FactoryGirl.create :resource_tile, :x => x, :y => y, :world => world, :megatile => self
-      end
-    end
-  end
-
   def active_listings
     listings.where(status: 'Active')
   end

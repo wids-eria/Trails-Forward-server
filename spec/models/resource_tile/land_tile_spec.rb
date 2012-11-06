@@ -19,12 +19,12 @@ describe LandTile do
     context 'when all actions are permitted' do
       before do
         land_tile.stubs(can_bulldoze?: true)
-        land_tile.stubs(can_clearcut?: true)
+        land_tile.stubs(can_harvest?: true)
       end
 
       context 'on an owned tile' do
         let(:target_player) { owner }
-        it { should == ['bulldoze', 'clearcut'] }
+        it { should == ['bulldoze', 'harvest'] }
       end
 
       context 'on an unowned tile' do
@@ -36,7 +36,7 @@ describe LandTile do
     context 'some actions are permitted' do
       before do
         land_tile.stubs(can_bulldoze?: true)
-        land_tile.stubs(can_clearcut?: false)
+        land_tile.stubs(can_harvest?: false)
       end
 
       context 'on an owned tile' do
@@ -53,7 +53,7 @@ describe LandTile do
     context 'when no actions are permitted' do
       before do
         land_tile.stubs(can_bulldoze?: false)
-        land_tile.stubs(can_clearcut?: false)
+        land_tile.stubs(can_harvest?: false)
       end
 
       context 'on an owned tile' do

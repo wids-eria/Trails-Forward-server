@@ -21,7 +21,7 @@ module LandScoring
     else
       score = 0
       score += Martin_presence_score if is_marten_suitable?
-      if can_clearcut?
+      if can_harvest?
         basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
         score += Tree_presence_score_scalar * basal_area / Maximum_basal_area
       end
