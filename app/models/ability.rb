@@ -99,9 +99,6 @@ class Ability
       player == listing.owner && listing == bid.listing
     end
 
-    # empty since client side handles rules for now
-    can :harvest, ResourceTile
-
     can :bulldoze, ResourceTile do |rt|
       rt.megatile.world.player_for_user(user) == rt.megatile.owner
     end
@@ -118,7 +115,7 @@ class Ability
       rt.zoning_code >= 3 && ![6,10,16, 255].include?(rt.zoning_code)
     end
 
-    can :clearcut, ResourceTile do |rt|
+    can :harvest, ResourceTile do |rt|
       player = rt.megatile.world.player_for_user(user)
       player && player == rt.megatile.owner
     end

@@ -232,7 +232,18 @@ describe ResourceTilesController do
 
 
     describe '#clearcut' do
-      it 'transacts market, player, and tile if things go wrong'
+      it 'transacts market, player, and tile if things go wrong' do
+        player.class.any_instance.stubs(:valid? => false)
+
+        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+        response.status.should == 422
+
+        json['errors'].count.should == 1
+        json['errors'].first.should =~ /Transaction Failed/
+
+        world.reload.pine_sawtimber_cut_this_turn.should == old_timber_count
+        player.reload.balance.should == old_balance
+      end
 
 
       it 'returns values and volumes of all the tiles cut' do

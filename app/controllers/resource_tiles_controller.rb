@@ -1,5 +1,19 @@
+class HarvestResponder < ActionController::Responder # This can become a generic responder to replace respond_to
+  def initialize(controller, resources, options={})
+    super(controller, resources, options)
+  end
+
+  def display(resource, given_options={})
+    controller.respond_to do |format|
+      format.xml  { render  xml: resource } # status seems to work automagically without merging
+      format.json { render json: resource }
+    end
+  end
+end
+
 class ResourceTilesController < ApplicationController
-  respond_to :json
+  respond_to :xml, :json
+  self.responder = HarvestResponder
 
   before_filter :authenticate_user!
   skip_authorization_check :only => :permitted_actions
@@ -120,7 +134,7 @@ class ResourceTilesController < ApplicationController
 
   def clearcut_list
     resource_tiles.each do |tile|
-      authorize! :clearcut, tile
+      authorize! :harvest, tile
     end
 
     usable_tiles = resource_tiles.select(&:can_clearcut?)
@@ -131,25 +145,17 @@ class ResourceTilesController < ApplicationController
         player.save!
 
         # Do the cuts
-        results = usable_tiles.collect do |tile|
-          tile.clearcut!
-        end
+        results = usable_tiles.collect(&:clearcut!)
 
         # Update the market for viable tiles
         usable_tiles.each_with_index do |tile, index|
           tile.update_market! results[index]
         end
 
-        respond_to do |format|
-          format.xml  { render  xml: results_hash(results, usable_tiles) }
-          format.json { render json: results_hash(results, usable_tiles) }
-        end
+        respond_with results_hash(results, usable_tiles)
       end
-    rescue ActiveRecord::RecordInvalid
-      respond_to do |format|
-        format.xml  { render  xml: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
-        format.json { render json: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
-      end
+    rescue ActiveRecord::RecordInvalid => e
+      respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
     end
   end
 
