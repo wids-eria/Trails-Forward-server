@@ -18,6 +18,8 @@ class ResourceTilesController < ApplicationController
   before_filter :authenticate_user!
   skip_authorization_check :only => :permitted_actions
 
+  before_filter :check_harvest_rights, only: [:clearcut_list, :diameter_limit_cut_list, :partial_selection_cut_list]
+
   expose(:world) { World.find params[:world_id] }
   expose(:resource_tile) { ResourceTile.find params[:id] }
 
@@ -34,6 +36,8 @@ class ResourceTilesController < ApplicationController
   end
 
   expose(:player) { world.player_for_user(current_user) }
+
+  expose(:harvestable_tiles) { resource_tiles.select(&:can_harvest?) }
 
 
   # FIXME no longer used as an information layer on the client side 1/5/12
@@ -133,26 +137,21 @@ class ResourceTilesController < ApplicationController
 
 
   def clearcut_list
-    resource_tiles.each do |tile|
-      authorize! :harvest, tile
-    end
-
-    usable_tiles = resource_tiles.select(&:can_harvest?)
-    player.balance -= Pricing.clearcut_cost(usable_tiles)
+    player.balance -= Pricing.clearcut_cost(harvestable_tiles)
 
     begin
       ActiveRecord::Base.transaction do
         player.save!
 
         # Do the cuts
-        results = usable_tiles.collect(&:clearcut!)
+        results = harvestable_tiles.collect(&:clearcut!)
 
         # Update the market for viable tiles
-        usable_tiles.each_with_index do |tile, index|
+        harvestable_tiles.each_with_index do |tile, index|
           tile.update_market! results[index]
         end
 
-        respond_with results_hash(results, usable_tiles)
+        respond_with results_hash(results, harvestable_tiles)
       end
     rescue ActiveRecord::RecordInvalid => e
       respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
@@ -166,33 +165,51 @@ class ResourceTilesController < ApplicationController
 
 
   def diameter_limit_cut_list
-    authorize! :harvest, ResourceTile
+    player.balance -= Pricing.diameter_limit_cost(harvestable_tiles)
 
-    results = resource_tiles.collect do |tile|
-      tile.diameter_limit_cut!(above: params[:above], below: params[:below])
-    end
+    begin
+      ActiveRecord::Base.transaction do
+        player.save!
 
-    summary = results_hash(results, resource_tiles)
+        # Do the cuts
+        results = harvestable_tiles.collect do |tile|
+          tile.diameter_limit_cut!(above: params[:above], below: params[:below])
+        end
 
-    respond_to do |format|
-      format.xml  { render  xml: summary }
-      format.json { render json: summary }
+        # Update the market for viable tiles
+        harvestable_tiles.each_with_index do |tile, index|
+          tile.update_market! results[index]
+        end
+
+        respond_with results_hash(results, harvestable_tiles)
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
     end
   end
 
 
   def partial_selection_cut_list
-    authorize! :harvest, ResourceTile
+    player.balance -= Pricing.partial_selection_cost(harvestable_tiles)
 
-    results = resource_tiles.collect do |tile|
-      tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])
-    end
+    begin
+      ActiveRecord::Base.transaction do
+        player.save!
 
-    summary = results_hash(results, resource_tiles)
+        # Do the cuts
+        results = resource_tiles.collect do |tile|
+          tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])
+        end
 
-    respond_to do |format|
-      format.xml  { render  xml: summary }
-      format.json { render json: summary }
+        # Update the market for viable tiles
+        harvestable_tiles.each_with_index do |tile, index|
+          tile.update_market! results[index]
+        end
+
+        respond_with results_hash(results, harvestable_tiles)
+      end
+    rescue ActiveRecord::RecordInvalid => e
+      respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
     end
   end
 
@@ -209,5 +226,12 @@ class ResourceTilesController < ApplicationController
        sawtimber_value: sawtimber_value,   sawtimber_volume: sawtimber_volume,
         resource_tiles: resource_tiles.as_api_response(:resource)
     }
+  end
+
+
+  def check_harvest_rights
+    resource_tiles.each do |tile|
+      authorize! :harvest, tile
+    end
   end
 end

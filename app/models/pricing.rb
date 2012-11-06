@@ -10,7 +10,21 @@ class Pricing
   end
 
 
+
+  # HARVESTING
+  #
+  # TODO expose as db level configuration with defaults.
   def self.clearcut_cost resource_tiles
+    5 * resource_tiles.count
+  end
+
+
+  def self.partial_selection_cost resource_tiles
+    5 * resource_tiles.count
+  end
+
+
+  def self.diameter_limit_cost resource_tiles
     5 * resource_tiles.count
   end
 end
