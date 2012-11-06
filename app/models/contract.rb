@@ -56,6 +56,7 @@ class Contract < ActiveRecord::Base
   end
 
   api_accessible :developer_contract, :extend => :base_contract do |template|
+    template.add :volume_harvested_of_required_type, :as => :properties_built
     template.add 'contract_template.acres_added_required', :as => :acres_added_required
     template.add 'contract_template.acres_developed_required', :as => :acres_developed_required
     template.add 'contract_template.home_type', :as => :home_type
