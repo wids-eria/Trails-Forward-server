@@ -34,8 +34,8 @@ class Contract < ActiveRecord::Base
     template.add :points_earned
     template.add :created_at
     template.add :updated_at
-    template.add :attached_megatiles
-    template.add :included_megatiles
+    template.add :attached_megatiles, template: :megatile_with_owner
+    template.add :included_megatiles, template: :megatile_with_owner
     template.add 'contract_template.codename', :as => :codename
     template.add 'contract_template.company_id', :as => :company_id
     template.add 'contract_template.company.codename', :as => :company_codename
