@@ -1,6 +1,8 @@
 class WorldTurn
   attr_accessor :world, :turn_duration
 
+  # add player default time here (or read it from world..
+
   def initialize options = {}
     self.world = options[:world]
     self.turn_duration = world.turn_duration.minutes

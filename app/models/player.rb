@@ -48,6 +48,10 @@ class Player < ActiveRecord::Base
 
   delegate :name, to: :user, allow_nil: true
 
+  def used_too_much_time?
+    time_remaining_this_turn < 0
+  end
+
   api_accessible :id_and_name do |template|
     template.add :id
     template.add 'user.name', :as => :name
