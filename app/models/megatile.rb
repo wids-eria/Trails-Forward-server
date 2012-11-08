@@ -70,7 +70,7 @@ class Megatile < ActiveRecord::Base
     template.add :updated_at
   end
 
-  api_accessible :megatile_with_owner do |template|
+  api_accessible :megatile_with_owner, :extend => :id_and_name do |template|
     template.add :owner, :template => :id_and_name
   end
 
