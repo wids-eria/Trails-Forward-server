@@ -4,7 +4,7 @@ class TimeManager
     10
   end
 
-  def can_perform_action? player
+  def self.can_perform_action? player
     player.time_remaining_this_turn >= 0
   end
 end

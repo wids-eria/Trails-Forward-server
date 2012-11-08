@@ -3,6 +3,7 @@ FactoryGirl.define do
     user
     world { Factory :world_with_properties }
     balance { Player.default_balance }
+    time_remaining_this_turn { Player.default_time_remaining }
 
     last_turn_played_at { DateTime.now }
   end

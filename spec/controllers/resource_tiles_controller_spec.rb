@@ -307,7 +307,7 @@ describe ResourceTilesController do
 
         world.reload.pine_sawtimber_cut_this_turn.should == old_timber_count
         player.reload.balance.should == old_balance
-        player.reload.time_remaining_this_turn.should == old_time_remaining
+        player.reload.time_remaining_this_turn.should == 0
       end
     end
 

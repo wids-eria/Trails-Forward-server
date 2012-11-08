@@ -7,7 +7,11 @@ class Player < ActiveRecord::Base
     1000
   end
 
-  attr_accessible :name, :user, :world, :balance, :pending_balance, :quest_points, :quests
+  def self.default_time_remaining
+    48 # In months.
+  end
+
+  attr_accessible :name, :user, :world, :balance, :pending_balance, :time_remaining_this_turn, :quest_points, :quests
 
   has_many :megatiles, :inverse_of => :owner, :foreign_key => 'owner_id'
   has_many :resource_tiles, :through => :megatiles
