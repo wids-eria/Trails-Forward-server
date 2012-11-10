@@ -5,6 +5,10 @@ module TreeValue
   module ClassMethods
   end
 
+
+  # TREE VALUE SUMS ######################
+  #
+
   def estimated_timber_value
     if shade_tolerant? || shade_intolerant? || mid_tolerant?
       estimated_poletimber_value + estimated_sawtimber_value
@@ -18,17 +22,35 @@ module TreeValue
     poletimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_value"}.sum
   end
 
-  def estimated_poletimber_volume
-    poletimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_volume"}.sum
-  end
 
   def estimated_sawtimber_value
     sawtimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_value"}.sum
   end
 
+
+
+  # TREE VOLUME SUMS #####################
+  #
+
+  def estimated_poletimber_volume
+    poletimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_volume"}.sum
+  end
+
   def estimated_sawtimber_volume
     sawtimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_volume"}.sum
   end
+
+
+  [2,4,6,8,10,12,14,16,18,20,22,24].each do |tree_size|
+    define_method "estimated_#{tree_size}_inch_tree_value" do
+      estimated_tree_value_for_size tree_size, self.send("num_#{tree_size}_inch_diameter_trees")
+    end
+  end
+
+
+
+  # TREE VOLUME ESTIMATION ###############
+  #
 
   def estimated_tree_volume_for_size(size, tree_count)
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
@@ -36,6 +58,11 @@ module TreeValue
     single_tree_volume  = single_tree_volume(size, merchantable_height)
     single_tree_volume * tree_count
   end
+
+
+
+  # TREE VALUE ESTIMATION ################
+  #
 
   def estimated_tree_value_for_size(size, tree_count)
     if (2..4).include? size
@@ -51,11 +78,10 @@ module TreeValue
     end
   end
 
-  [2,4,6,8,10,12,14,16,18,20,22,24].each do |tree_size|
-    define_method "estimated_#{tree_size}_inch_tree_value" do
-      estimated_tree_value_for_size tree_size, self.send("num_#{tree_size}_inch_diameter_trees")
-    end
-  end
+
+
+  # BASE UNITS ###########################
+  #
 
   def cord_value
     case species_group
@@ -68,6 +94,7 @@ module TreeValue
     end
   end
 
+
   def board_feet_value
     case species_group
     when :shade_intolerant
@@ -78,6 +105,7 @@ module TreeValue
       0.127
     end
   end
+
 
   def single_tree_volume(size_class, merchantable_height)
     case species_group
@@ -90,6 +118,7 @@ module TreeValue
     end
   end
 
+
   def merchantable_height(size_class, basal_area, site_index)
     breast_height = 4.5
     case species_group
@@ -101,6 +130,7 @@ module TreeValue
       breast_height + 6.43 * (1 - Math.exp(-0.24 * (size_class-1)))**1.34 * site_index**0.47 * (1.00001 - (top_diameter(size_class)/(size_class-1)))**0.73 * basal_area**0.08
     end
   end
+
 
   def top_diameter(size_class)
     case species_group
@@ -125,18 +155,24 @@ module TreeValue
     end
   end
 
-  def cubic_feet_to_cords(volume)
-    volume / 128.0
-  end
 
 
+  # UNIT CONVERSION ########################
+  #
   SCRIBNER_FACTOR = {
-    :shade_tolerant =>                { 12 => 0.832, 14 => 0.861, 16 => 0.883, 18 => 0.900, 20 => 0.913, 22 => 0.924, 24 => 0.933 },
-    :mid_tolerant =>                  { 12 => 0.832, 14 => 0.861, 16 => 0.883, 18 => 0.900, 20 => 0.913, 22 => 0.924, 24 => 0.933 },
+    :shade_tolerant   =>              { 12 => 0.832, 14 => 0.861, 16 => 0.883, 18 => 0.900, 20 => 0.913, 22 => 0.924, 24 => 0.933 },
+    :mid_tolerant     =>              { 12 => 0.832, 14 => 0.861, 16 => 0.883, 18 => 0.900, 20 => 0.913, 22 => 0.924, 24 => 0.933 },
     :shade_intolerant => { 10 => 0.783, 12 => 0.829, 14 => 0.858, 16 => 0.878, 18 => 0.895, 20 => 0.908, 22 => 0.917, 24 => 0.924 }
 
   }
+
+
   def cubic_feet_to_board_feet(volume, size_class)
     volume * 12 * SCRIBNER_FACTOR[species_group][size_class]
+  end
+
+
+  def cubic_feet_to_cords(volume)
+    volume / 128.0
   end
 end
