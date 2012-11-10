@@ -15,7 +15,11 @@ class Pricing
   #
   # TODO expose as db level configuration with defaults.
   def self.clearcut_cost resource_tiles
-    5 * resource_tiles.count
+    resource_tiles.collect{|tile| self.individual_clearcut_cost tile}.sum
+  end
+
+  def self.individual_clearcut_cost resource_tile
+    5
   end
 
 

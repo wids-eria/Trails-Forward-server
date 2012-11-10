@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe World do
+describe Pricing do
   let(:world) { build :world }
   let(:pricing) { Pricing.new world}
   
@@ -25,6 +25,19 @@ describe World do
       pricing.pine_sawtimber_price.should be_within(0.0001).of(world.pine_sawtimber_base_price)
     end
     
+  end
+
+  describe '#clearcut_cost' do
+    let(:player) { create :player }
+    let(:tile) { create :deciduous_land_tile }
+
+    let(:template) { build :logging_equipment_template }
+    let(:equipment) { LoggingEquipment.generate_from(template) }
+
+    it 'is based on equipment for player' do
+      cost = Pricing.clearcut_cost tiles: [tile], player: player
+      cost.should == 500
+    end
   end
   
 end

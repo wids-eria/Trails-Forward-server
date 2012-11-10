@@ -9,15 +9,6 @@ module TreeValue
   # TREE VALUE SUMS ######################
   #
 
-  def estimated_timber_value
-    if shade_tolerant? || shade_intolerant? || mid_tolerant?
-      estimated_poletimber_value + estimated_sawtimber_value
-    else
-      0
-    end
-  end
-
-
   def estimated_poletimber_value
     poletimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_value"}.sum
   end
@@ -25,6 +16,13 @@ module TreeValue
 
   def estimated_sawtimber_value
     sawtimber_sizes.collect{|size| self.send "estimated_#{size}_inch_tree_value"}.sum
+  end
+
+
+  [2,4,6,8,10,12,14,16,18,20,22,24].each do |tree_size|
+    define_method "estimated_#{tree_size}_inch_tree_value" do
+      estimated_tree_value_for_size tree_size, self.send("num_#{tree_size}_inch_diameter_trees")
+    end
   end
 
 
@@ -42,8 +40,8 @@ module TreeValue
 
 
   [2,4,6,8,10,12,14,16,18,20,22,24].each do |tree_size|
-    define_method "estimated_#{tree_size}_inch_tree_value" do
-      estimated_tree_value_for_size tree_size, self.send("num_#{tree_size}_inch_diameter_trees")
+    define_method "estimated_#{tree_size}_inch_tree_volume" do
+      estimated_tree_volume_for_size tree_size, self.send("num_#{tree_size}_inch_diameter_trees")
     end
   end
 

@@ -293,8 +293,6 @@ describe ResourceTilesController do
       end
 
 
-      it 'is affected by equipment'
-
       # FIXME it should do partial actions maybe at a penalty
       it 'cant be done if player is out of time' do
         player.update_attributes! time_remaining_this_turn: 0
