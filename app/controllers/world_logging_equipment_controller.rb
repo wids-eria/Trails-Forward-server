@@ -33,8 +33,10 @@ class WorldLoggingEquipmentController < ApplicationController
           player.save!
           logging_equipment.save!
         end
-        respond_with logging_equipment
-
+        respond_to do |format|
+          format.xml  { render_for_api :logging_equipment_base, :xml  => logging_equipment }
+          format.json { render_for_api :logging_equipment_base, :json => logging_equipment }
+        end
       rescue ActiveRecord::RecordInvalid
         respond_to do |format|
           format.xml  { render  xml: { errors: ["Transaction Failed"] }, status: :unprocessable_entity }
