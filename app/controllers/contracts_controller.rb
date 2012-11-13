@@ -18,18 +18,15 @@ class ContractsController < ApplicationController
 
 
   def create
-    if contract.save
-      flash[:notice] = "Contract Created"
-      respond_with contract, notice: 'Created!', location: world_contracts_path
-    else
-      render :new
-    end
+    contract.save
+
+    respond_with contract, notice: 'Contract Created', location: world_contracts_path
   end
 
 
   def update
-    flash[:notice] = "Contract Updated" if contract.update_attributes params[:contract]
+    contract.update_attributes params[:contract]
 
-    respond_with contract, location: world_contracts_path
+    respond_with contract, notice: 'Contract Updated', location: world_contracts_path
   end
 end
