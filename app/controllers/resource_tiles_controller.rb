@@ -197,7 +197,7 @@ class ResourceTilesController < ApplicationController
         player.save!
 
         # Do the cuts
-        results = resource_tiles.collect do |tile|
+        results = harvestable_tiles.collect do |tile|
           tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])
         end
 
