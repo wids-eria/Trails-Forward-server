@@ -23,8 +23,9 @@ class WorldPlayerAvailableContractsController < ApplicationController
 
     @contract.player = @player
 
+    great_success = true   # yakshemash
+
     ActiveRecord::Base.transaction do
-      great_success = true   # yakshemash
       @contract.included_megatiles.each do |mt|
         if mt.owner == nil
           mt.owner = @player
