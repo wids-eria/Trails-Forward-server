@@ -30,6 +30,8 @@ class Player < ActiveRecord::Base
   has_many :contracts
   has_many :contract_templates, :through => :contracts
 
+  has_many :logging_equipment
+
   def selection_name
     "#{self.name}, world:#{world.id} #{world.name.truncate(15)}"
   end
