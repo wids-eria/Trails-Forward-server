@@ -35,11 +35,11 @@ describe LoggingEquipment do
     before do
       equipment.harvest_volume = 1000
       equipment.diameter_range_min = 2
-      equipment.diameter_range_min = 12
+      equipment.diameter_range_max = 12
 
       equipment2.harvest_volume = 500
-      equipment.diameter_range_min = 2
-      equipment.diameter_range_min = 22
+      equipment2.diameter_range_min = 2
+      equipment2.diameter_range_max = 22
     end
 
     it 'returns harvest volume' do

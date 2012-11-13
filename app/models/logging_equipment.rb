@@ -65,16 +65,26 @@ class LoggingEquipment < ActiveRecord::Base
   # HARVEST CALCULATIONS #################
   #
 
+  def diameter_range
+    (diameter_range_min..diameter_range_max)
+  end
+
+
   def self.harvest_volume_for options
-    required_keys = [:diameter, :equipment]
-    options.assert_valid_keys(*required_keys)
-    raise ArgumentError.new("Missing options #{required_keys - options.keys}") if options.keys != required_keys
-    1
+    required_keys(options, [:diameter, :equipment])
+
+    options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }.collect(&:harvest_volume).sum
   end
 
 
 
   private
+
+  def self.required_keys(hash, keys)
+    hash.assert_valid_keys(*keys)
+    raise ArgumentError.new("Missing options #{required_keys - options.keys}") if hash.keys != keys
+  end
+
 
   def self.between(min, max)
     min + (rand * (max - min))
