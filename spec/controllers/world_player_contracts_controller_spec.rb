@@ -3,7 +3,7 @@ require 'spec_helper'
 describe WorldPlayerContractsController do
   include Devise::TestHelpers
 
-  describe 'working with available contracts' do
+  describe 'working with a players contracts' do
     let(:lumberjack_contract) { build :contract_lumberjack }
     let(:player) { create :lumberjack, :world_id => lumberjack_contract.world.id }
     let(:user) { player.user }
@@ -39,6 +39,17 @@ describe WorldPlayerContractsController do
       response.should be_success
       lumberjack_contract.reload
       lumberjack_contract.attached_megatiles.include?(megatile).should be_true
+    end
+
+    it '#deliver_contract' do
+      original_balance = player.balance
+      lumberjack_contract.volume_harvested_of_required_type = lumberjack_contract.contract_template.volume_required * 2
+      lumberjack_contract.save!
+      lumberjack_contract.is_satisfied?().should == true
+      post :deliver, world_id: player.world.to_param, player_id: player.to_param, contract_id: lumberjack_contract.to_param, format: :json
+      response.should be_success
+      player.reload
+      player.balance.should  > original_balance
     end
   end #describe index
 end

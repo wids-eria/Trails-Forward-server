@@ -22,8 +22,25 @@ class WorldPlayerAvailableContractsController < ApplicationController
     authorize! :accept_contract, @contract
 
     @contract.player = @player
-    if @contract.save
 
+    ActiveRecord::Base.transaction do
+      great_success = true   # yakshemash
+      @contract.included_megatiles.each do |mt|
+        if mt.owner == nil
+          mt.owner = @player
+          great_success &= mt.save
+        else
+          great_success = false
+        end
+      end
+      great_success &= @contract.save
+
+      unless great_success
+        raise ActiveRecord::Rollback
+      end
+    end
+
+    if great_success
       root_key = WorldPlayerContractsController::contracts_root_key_helper(@player)[0..-2]
       template_key = WorldPlayerContractsController::contracts_template_key_helper @player
 

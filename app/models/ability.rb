@@ -81,6 +81,11 @@ class Ability
       player_for_user == contract.player
     end
 
+    can :deliver, Contract do |contract|
+      player_for_user = contract.world.player_for_user(user)
+      player_for_user == contract.player
+    end
+
     can :attach_to_contract, Megatile, do |megatile|
       player = megatile.world.player_for_user(user)
       megatile.owner == player # TODO: have more sophistication here around rights

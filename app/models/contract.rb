@@ -11,11 +11,41 @@ class Contract < ActiveRecord::Base
   validates :contract_template_id, presence: true
 
   def is_satisfied?
-    raise "not implemented"
+    case contract_template.role
+      when "Lumberjack"
+        volume_harvested = volume_harvested_of_required_type || 0
+        volume_harvested >= contract_template.volume_required
+      when "Developer"
+        houses_built = houses_built_of_required_type || 0
+        houses_built >= contract_template.acres_developed_required
+      when "Conserver"
+        raise "Conserver contracts not yet implemented"
+    end
   end
 
   def deliver
-    raise "not implemented"
+    if is_satisfied?
+      great_success = false
+      ActiveRecord::Base.transaction do
+        successful = true
+        great_success = save
+        included_megatiles.each do |mt|
+          mt.owner = nil
+          great_success &= mt.save
+        end
+
+        how_much_money_to_give_player = contract_template.dollars   #todo: scale this down if the player is late.
+        player.balance += how_much_money_to_give_player
+        great_success &= player.save
+
+        unless great_success
+          raise ActiveRecord::Rollback
+        end
+      end
+      great_success
+    else
+      false
+    end
   end
 
   def deliver!
@@ -58,7 +88,7 @@ class Contract < ActiveRecord::Base
   end
 
   api_accessible :developer_contract, :extend => :base_contract do |template|
-    template.add :volume_harvested_of_required_type, :as => :properties_built
+    template.add :houses_built_of_required_type, :as => :properties_built
     template.add 'contract_template.acres_added_required', :as => :acres_added_required
     template.add 'contract_template.acres_developed_required', :as => :properties_needed
     template.add 'contract_template.home_type', :as => :housing_type

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121102201733) do
+ActiveRecord::Schema.define(:version => 20121113170701) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -66,14 +66,14 @@ ActiveRecord::Schema.define(:version => 20121102201733) do
   add_index "change_requests", ["complete"], :name => "index_change_requests_on_complete"
   add_index "change_requests", ["world_id"], :name => "index_change_requests_on_world_id"
 
-  create_table "contract_attached_megatiles", :id => false, :force => true do |t|
+  create_table "contract_attached_megatiles", :force => true do |t|
     t.integer "contract_id"
     t.integer "megatile_id"
   end
 
-  create_table "contract_included_megatiles", :id => false, :force => true do |t|
-    t.integer "contract_id", :null => false
-    t.integer "megatile_id", :null => false
+  create_table "contract_included_megatiles", :force => true do |t|
+    t.integer "contract_id"
+    t.integer "megatile_id"
   end
 
   create_table "contract_templates", :force => true do |t|
@@ -112,6 +112,7 @@ ActiveRecord::Schema.define(:version => 20121102201733) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "points_earned"
+    t.integer  "houses_built_of_required_type",     :default => 0
   end
 
   create_table "listings", :force => true do |t|

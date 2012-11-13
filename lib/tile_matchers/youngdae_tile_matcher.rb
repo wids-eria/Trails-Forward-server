@@ -19,7 +19,6 @@ class YoungdaeTileMatcher < LoggerTileMatcher
   end
 
   def find_and_attach_to_contract_with_player(contract)
-
     resource_tiles = find_tiles(contract).shuffle
     if resource_tiles.count == 0
       raise "no tiles found"
