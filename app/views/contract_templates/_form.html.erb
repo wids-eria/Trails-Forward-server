@@ -8,6 +8,7 @@
   <div class="form-inputs">
     <%= f.input :company_id, :collection => Company.all, :label_method => :codename %>
     <%= f.input :codename %>
+    <%= f.input :name %>
     <%= f.input :role, :collection => ContractTemplate::Possible_Roles %>
     <%= f.input :difficulty, :collection => ContractTemplate::Possible_Difficulties %>
     <%= f.input :points_required_to_unlock, :default => 0, :min => 0 %>

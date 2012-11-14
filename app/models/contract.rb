@@ -54,6 +54,7 @@ class Contract < ActiveRecord::Base
 
   api_accessible :base_contract do |template|
     template.add :id
+    template.add 'contract_template.name', :as => :name
     template.add :world_id
     template.add :player_id
     template.add :month_started

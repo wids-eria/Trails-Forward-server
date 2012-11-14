@@ -7,6 +7,7 @@ class ContractTemplate < ActiveRecord::Base
 
   validates :company_id, presence: true
   validates :codename, presence: true, uniqueness: true
+  validates :name, presence: true, :length => { :minimum => 2 }, uniqueness: true
 
   Possible_Roles = ["Conserver", "Developer", "Lumberjack"]
   validates :role, presence: true, inclusion: { in: Possible_Roles }
@@ -48,6 +49,7 @@ class ContractTemplate < ActiveRecord::Base
 
   api_accessible :contract_template do |template|
     template.add :id
+    template.add :name
     template.add :role
     template.add :difficulty
     template.add :points_required_to_unlock
