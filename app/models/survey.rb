@@ -28,19 +28,19 @@ class Survey < ActiveRecord::Base
     survey.num_22in_trees = tiles_with_trees.collect(&:num_22_inch_diameter_trees).sum
     survey.num_24in_trees = tiles_with_trees.collect(&:num_24_inch_diameter_trees).sum
 
-    survey.vol_2in_trees  = 0 #tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(2, rt.num_2_inch_diameter_trees)} 
-    survey.vol_4in_trees  = 0 #tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(4, rt.num_4_inch_diameter_trees)} 
-    survey.vol_6in_trees  = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(6, rt.num_6_inch_diameter_trees)}.sum 
-    survey.vol_8in_trees  = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(8, rt.num_8_inch_diameter_trees)}.sum 
-    survey.vol_10in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(10, rt.num_10_inch_diameter_trees)}.sum 
-    survey.vol_12in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(12, rt.num_12_inch_diameter_trees)}.sum 
-    survey.vol_14in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(14, rt.num_14_inch_diameter_trees)}.sum 
-    survey.vol_16in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(16, rt.num_16_inch_diameter_trees)}.sum 
-    survey.vol_18in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(18, rt.num_18_inch_diameter_trees)}.sum 
-    survey.vol_20in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(20, rt.num_20_inch_diameter_trees)}.sum 
-    survey.vol_22in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(22, rt.num_22_inch_diameter_trees)}.sum 
-    survey.vol_24in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(24, rt.num_24_inch_diameter_trees)}.sum 
-    
+    survey.vol_2in_trees  = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size( 2, rt.num_2_inch_diameter_trees) }.sum
+    survey.vol_4in_trees  = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size( 4, rt.num_4_inch_diameter_trees) }.sum
+    survey.vol_6in_trees  = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size( 6, rt.num_6_inch_diameter_trees) }.sum
+    survey.vol_8in_trees  = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size( 8, rt.num_8_inch_diameter_trees) }.sum
+    survey.vol_10in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(10, rt.num_10_inch_diameter_trees)}.sum
+    survey.vol_12in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(12, rt.num_12_inch_diameter_trees)}.sum
+    survey.vol_14in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(14, rt.num_14_inch_diameter_trees)}.sum
+    survey.vol_16in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(16, rt.num_16_inch_diameter_trees)}.sum
+    survey.vol_18in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(18, rt.num_18_inch_diameter_trees)}.sum
+    survey.vol_20in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(20, rt.num_20_inch_diameter_trees)}.sum
+    survey.vol_22in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(22, rt.num_22_inch_diameter_trees)}.sum
+    survey.vol_24in_trees = tiles_with_trees.collect{|rt| rt.estimated_tree_volume_for_size(24, rt.num_24_inch_diameter_trees)}.sum
+
     survey
   end
 

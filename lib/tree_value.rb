@@ -51,6 +51,12 @@ module TreeValue
   #
 
   def estimated_tree_volume_for_size(size, tree_count)
+    # TODO refactor this out, its here to prevent top diameter from
+    # raising.
+    if (2..4).include? size
+      return 0
+    end
+
     basal_area = calculate_basal_area tree_sizes, collect_tree_size_counts
     merchantable_height = merchantable_height(size, basal_area, site_index)
     single_tree_volume  = single_tree_volume(size, merchantable_height)
@@ -135,7 +141,7 @@ module TreeValue
     when :shade_intolerant
       case size_class
         when 0..4
-          raise 'no'
+          raise "no top diameter for #{size_class} on #{species_group}"
         when 6..8
           4
         else
@@ -144,7 +150,7 @@ module TreeValue
     when :shade_tolerant, :mid_tolerant
       case size_class
         when 0..4
-          raise 'no'
+          raise "no top diameter for #{size_class} on #{species_group}"
         when 6..10
           4
         else

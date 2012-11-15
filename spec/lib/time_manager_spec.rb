@@ -72,7 +72,7 @@ describe TimeManager do
   context "with a real tile information" do
     describe "#clearcut_cost" do
       it 'is based on total cost of all diameters on all tiles' do
-        TimeManager.clearcut_cost(tiles: tiles, player: player).should == 1.0 # not gonna be 1
+        TimeManager.clearcut_cost(tiles: tiles, player: player).should be_within(0.00001).of(1.264157)
       end
     end
   end
