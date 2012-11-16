@@ -77,6 +77,13 @@ class LoggingEquipment < ActiveRecord::Base
   end
 
 
+  def self.operating_cost_for options
+    required_keys(options, [:diameter, :equipment])
+
+    options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }.collect(&:operating_cost).sum
+  end
+
+
 
   private
 

@@ -28,26 +28,40 @@ describe LoggingEquipment do
   end
 
 
-  context 'total harvest volumes per diameter' do
+  context 'equipment sums' do
     let(:equipment2) { LoggingEquipment.generate_from(template) }
     let(:player) { build :player, logging_equipment: [equipment, equipment2] }
 
     before do
       equipment.harvest_volume = 1000
+      equipment.operating_cost = 400
       equipment.diameter_range_min = 2
       equipment.diameter_range_max = 12
 
       equipment2.harvest_volume = 500
+      equipment2.operating_cost = 250
       equipment2.diameter_range_min = 2
       equipment2.diameter_range_max = 22
     end
 
-    it 'returns harvest volume' do
-      LoggingEquipment.harvest_volume_for(diameter: 12, equipment: player.logging_equipment).should == 1500
+    describe '#harvest_volume_for' do
+      it 'returns harvest volume' do
+        LoggingEquipment.harvest_volume_for(diameter: 12, equipment: player.logging_equipment).should == 1500
+      end
+
+      it 'excludes equipment if it is outside diameter range' do
+        LoggingEquipment.harvest_volume_for(diameter: 14, equipment: player.logging_equipment).should == 500
+      end
     end
 
-    it 'excludes equipment if it is outside diameter range' do
-      LoggingEquipment.harvest_volume_for(diameter: 14, equipment: player.logging_equipment).should == 500
+    describe '#operational_cost_for' do
+      it 'returns harvest volume' do
+        LoggingEquipment.operating_cost_for(diameter: 12, equipment: player.logging_equipment).should == 650
+      end
+
+      it 'excludes equipment if it is outside diameter range' do
+        LoggingEquipment.operating_cost_for(diameter: 14, equipment: player.logging_equipment).should == 250
+      end
     end
   end
 end
