@@ -28,7 +28,7 @@ class Pricing
   def self.clearcut_cost_for_diameter options
     operation_cost = LoggingEquipment.operating_cost_for(diameter: options[:diameter], equipment: options[:player].logging_equipment)
 
-    time_cost = TimeManager.clearcut_cost_for_diameter(diameter: options[:diameter], equipment: options[:player].logging_equipment)
+    time_cost = TimeManager.clearcut_cost_for_diameter(diameter: options[:diameter], tile: options[:tile], player: options[:player])
 
     operation_cost * time_cost
   end
