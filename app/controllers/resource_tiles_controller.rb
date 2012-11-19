@@ -137,7 +137,7 @@ class ResourceTilesController < ApplicationController
 
 
   def clearcut_list
-    player.balance -= Pricing.clearcut_cost(harvestable_tiles)
+    player.balance -= Pricing.clearcut_cost(tiles: harvestable_tiles, player: player)
     player.time_remaining_this_turn -= TimeManager.clearcut_cost(tiles: harvestable_tiles, player: player)
 
     unless TimeManager.can_perform_action? player
