@@ -38,6 +38,19 @@ class MegatilesController < ApplicationController
     end
   end
 
+  def owned
+    world  = World.find(params[:world_id])
+    authorize! :do_things, world
+
+    player = world.player_for_user(current_user)
+    megatiles = player.megatiles
+
+    respond_to do |format|
+      format.xml  { render_for_api :megatile_with_resources, :xml  => megatiles, :root => :megatiles  }
+      format.json { render_for_api :megatile_with_resources, :json => megatiles, :root => :megatiles  }
+    end
+  end
+
   def show
     @megatile = Megatile.find(params[:id])
     authorize! :do_things, @megatile.world

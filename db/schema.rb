@@ -67,8 +67,8 @@ ActiveRecord::Schema.define(:version => 20121114230633) do
   add_index "change_requests", ["world_id"], :name => "index_change_requests_on_world_id"
 
   create_table "contract_attached_megatiles", :id => false, :force => true do |t|
-    t.integer "contract_id", :null => false
-    t.integer "megatile_id", :null => false
+    t.integer "contract_id"
+    t.integer "megatile_id"
   end
 
   create_table "contract_included_megatiles", :id => false, :force => true do |t|
@@ -225,13 +225,14 @@ ActiveRecord::Schema.define(:version => 20121114230633) do
   create_table "players", :force => true do |t|
     t.integer  "user_id"
     t.integer  "world_id"
-    t.integer  "balance",             :default => 0
+    t.integer  "balance",                  :default => 0
     t.string   "type"
-    t.integer  "last_turn_played",    :default => 0
+    t.integer  "last_turn_played",         :default => 0
     t.datetime "last_turn_played_at"
-    t.integer  "quest_points",        :default => 0
-    t.integer  "pending_balance",     :default => 0
+    t.integer  "quest_points",             :default => 0
+    t.integer  "pending_balance",          :default => 0
     t.text     "quests"
+    t.integer  "time_remaining_this_turn", :default => 0
   end
 
   create_table "resource_tiles", :force => true do |t|

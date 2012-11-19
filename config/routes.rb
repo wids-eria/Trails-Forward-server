@@ -63,6 +63,7 @@ TrailsForwardWorld::Application.routes.draw do
 
       collection do
         get 'appraise', :controller => :megatiles, :action => :appraise_list
+        get :owned
       end
     end
 
