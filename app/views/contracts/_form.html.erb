@@ -16,7 +16,12 @@
     <%= f.input :on_time %>
     <%= f.input :volume_harvested_of_required_type %>
     <%= f.input :points_earned %>
-    Number of provided megatiles: <%= contract.included_megatiles.count %>
+
+    Provided megatile IDs (<%= contract.included_megatiles.count %>):
+        <%= contract.included_megatiles.map { |mt| mt.id} %>
+    <%= label_tag :megatile_ids_to_include, "Add these megatile IDs as provided with the contract: " %>
+    <%=  text_field_tag :megatile_ids_to_include %>
+    <br>
     Number of attached megatiles: <%= contract.attached_megatiles.count %>
   </div>
 <% end %>

@@ -37,7 +37,7 @@ class Player < ActiveRecord::Base
   end
 
   def contract_points
-    contracts.map { |contract| contract.points_earned}.sum
+    contracts.map { |contract| contract.points_earned || 0 }.sum
   end
 
   def available_contracts
