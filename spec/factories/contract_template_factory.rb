@@ -19,6 +19,7 @@ FactoryGirl.define do
 
   factory :contract_template_lumberjack, parent: :contract_template do
     codename "FACTORY_LUMBERJACK_DEFAULT"
+    name "FACTORY_LUMBERJACK_DEFAULT"
     role "Lumberjack"
     volume_required 10
     wood_type "saw_timber"
@@ -26,6 +27,7 @@ FactoryGirl.define do
 
   factory :contract_template_developer, parent: :contract_template do
     codename "FACTORY_DEVELOPER_DEFAULT"
+    name "FACTORY_DEVELOPER_DEFAULT"
     role "Developer"
     home_type LandTile::Vacation
     acres_developed_required  6
