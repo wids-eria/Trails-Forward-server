@@ -71,27 +71,29 @@ class LoggingEquipment < ActiveRecord::Base
 
 
   def self.harvest_volume_for options
-    required_keys(options, [:diameter, :equipment])
+    options.required_keys! :diameter, :equipment
+
+    raise 'Player has no equipment' if options[:equipment].empty?
 
     options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }.collect(&:harvest_volume).sum
   end
 
 
   def self.operating_cost_for options
-    required_keys(options, [:diameter, :equipment])
+    options.required_keys! :diameter, :equipment
 
-    options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }.collect(&:operating_cost).sum
+    raise 'Player has no equipment' if options[:equipment].empty?
+
+    capable_equipment = options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }
+
+    # FIXME do we raise if no equipment capable?.. need to handle zeros better
+    # here and in harvest somewhere in the chain
+    capable_equipment.collect(&:operating_cost).sum
   end
 
 
 
   private
-
-  def self.required_keys(hash, keys)
-    hash.assert_valid_keys(*keys)
-    raise ArgumentError.new("Missing options #{required_keys - options.keys}") if hash.keys != keys
-  end
-
 
   def self.between(min, max)
     min + (rand * (max - min))

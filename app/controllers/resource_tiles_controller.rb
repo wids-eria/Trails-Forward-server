@@ -137,13 +137,15 @@ class ResourceTilesController < ApplicationController
 
 
   def clearcut_list
-    player.balance -= Pricing.clearcut_cost(tiles: harvestable_tiles, player: player)
-    player.time_remaining_this_turn -= TimeManager.clearcut_cost(tiles: harvestable_tiles, player: player)
+    time_cost = TimeManager.clearcut_cost(tiles: harvestable_tiles, player: player)
 
-    unless TimeManager.can_perform_action? player
+    unless TimeManager.can_perform_action? player: player, cost: time_cost
       respond_with({errors: ["Not enough time left to perform harvest"]}, status: :unprocessable_entity)
       return
     end
+
+    player.balance -= Pricing.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
+    player.time_remaining_this_turn -= time_cost
 
     begin
       ActiveRecord::Base.transaction do

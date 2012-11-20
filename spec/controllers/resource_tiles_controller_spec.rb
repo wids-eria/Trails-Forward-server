@@ -228,6 +228,21 @@ describe ResourceTilesController do
 
 
     describe '#clearcut' do
+      let(:template) { build :logging_equipment_template }
+      let(:equipment1) { LoggingEquipment.generate_from(template) }
+
+      before do
+        equipment1.world = player.world
+        equipment1.harvest_volume = 1000
+        equipment1.operating_cost = 1000
+        equipment1.diameter_range_min = 2
+        equipment1.diameter_range_max = 24
+        equipment1.save!
+
+        player.logging_equipment = [equipment1]
+        player.save!
+      end
+
       it 'transacts market, player, and tile if things go wrong' do
         player.class.any_instance.stubs(:valid? => false)
 
@@ -293,19 +308,36 @@ describe ResourceTilesController do
       end
 
 
-      # FIXME it should do partial actions maybe at a penalty
-      it 'cant be done if player is out of time' do
-        player.update_attributes! time_remaining_this_turn: 0
+      context 'concering time balance' do
+        # FIXME it should do partial actions maybe at a penalty
+        it 'cant be done if player is out of time' do
+          player.update_attributes! time_remaining_this_turn: 0
 
-        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
-        response.status.should == 422
+          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+          response.status.should == 422
 
-        json['errors'].count.should == 1
-        json['errors'].first.should =~ /Not enough time/
+          json['errors'].count.should == 1
+          json['errors'].first.should =~ /Not enough time/
 
-        world.reload.pine_sawtimber_cut_this_turn.should == old_timber_count
-        player.reload.balance.should == old_balance
-        player.reload.time_remaining_this_turn.should == 0
+          world.reload.pine_sawtimber_cut_this_turn.should == old_timber_count
+          player.reload.balance.should == old_balance
+          player.reload.time_remaining_this_turn.should == 0
+        end
+
+        it 'cant be done if costs too much time' do
+          player.update_attributes! time_remaining_this_turn: 100
+          TimeManager.stubs(clearcut_cost: 200)
+
+          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+          response.status.should == 422
+
+          json['errors'].count.should == 1
+          json['errors'].first.should =~ /Not enough time/
+
+          world.reload.pine_sawtimber_cut_this_turn.should == old_timber_count
+          player.reload.balance.should == old_balance
+          player.reload.time_remaining_this_turn.should == 100
+        end
       end
     end
 
