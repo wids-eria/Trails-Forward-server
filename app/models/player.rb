@@ -7,7 +7,11 @@ class Player < ActiveRecord::Base
     1000
   end
 
-  attr_accessible :name, :user, :world, :balance, :pending_balance, :quest_points, :quests
+  def self.default_time_remaining
+    48 # In months.
+  end
+
+  attr_accessible :name, :user, :world, :balance, :pending_balance, :time_remaining_this_turn, :quest_points, :quests
 
   has_many :megatiles, :inverse_of => :owner, :foreign_key => 'owner_id'
   has_many :resource_tiles, :through => :megatiles
@@ -25,6 +29,8 @@ class Player < ActiveRecord::Base
 
   has_many :contracts
   has_many :contract_templates, :through => :contracts
+
+  has_many :logging_equipment
 
   def selection_name
     "#{self.name}, world:#{world.id} #{world.name.truncate(15)}"
@@ -47,6 +53,10 @@ class Player < ActiveRecord::Base
   end
 
   delegate :name, to: :user, allow_nil: true
+
+  def used_too_much_time?
+    time_remaining_this_turn < 0
+  end
 
   api_accessible :id_and_name do |template|
     template.add :id

@@ -86,4 +86,6 @@ describe WorldTurn do
       world_turn.turn
     end
   end
+
+  it 'gives players time at end of turn'
 end

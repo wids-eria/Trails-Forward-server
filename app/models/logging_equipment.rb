@@ -1,20 +1,37 @@
 class LoggingEquipment < ActiveRecord::Base
   acts_as_api
+  include LoggingEquipmentApi
+
+
+  # FINDERS #############################
+  #
 
   scope :unowned, where(player_id: nil)
   scope :owned_by, lambda{|player| where(player_id: player.id)}
 
+
+  # ASSOCIATIONS #########################
+  #
+
   belongs_to :logging_equipment_template
   belongs_to :world
   belongs_to :player
+
+
+  # VALIDATIONS ##########################
+  #
 
   validates :name, :equipment_type, :market_description, :presence => true
   validates :initial_cost, :operating_cost, :maintenance_cost, :presence => true
   validates :harvest_volume, :diameter_range_min, :diameter_range_max, :yarding_volume, :transport_volume, :presence => true
   validates :condition, :reliability, :decay_rate, :scrap_value, :presence => true
   validates :world_id, :presence => true
-
   validate :player_belongs_to_world
+
+
+
+  # FACTORY ##############################
+  #
 
   def self.generate_from(template)
     equipment = self.new
@@ -43,34 +60,45 @@ class LoggingEquipment < ActiveRecord::Base
     equipment
   end
 
-  api_accessible :logging_equipment_base do |template|
-    template.add :id
-    template.add :name
-    template.add :equipment_type
-    template.add :market_description
 
-    template.add :diameter_range_min
-    template.add :diameter_range_max
 
-    template.add :initial_cost
-    template.add :operating_cost
-    template.add :maintenance_cost
+  # HARVEST CALCULATIONS #################
+  #
 
-    template.add :harvest_volume
-    template.add :yarding_volume
-    template.add :transport_volume
-
-    template.add :condition
-    template.add :reliability
-    template.add :decay_rate
-    template.add :scrap_value
+  def diameter_range
+    (diameter_range_min..diameter_range_max)
   end
+
+
+  def self.harvest_volume_for options
+    options.required_keys! :diameter, :equipment
+
+    raise 'Player has no equipment' if options[:equipment].empty?
+
+    options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }.collect(&:harvest_volume).sum
+  end
+
+
+  def self.operating_cost_for options
+    options.required_keys! :diameter, :equipment
+
+    raise 'Player has no equipment' if options[:equipment].empty?
+
+    capable_equipment = options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }
+
+    # FIXME do we raise if no equipment capable?.. need to handle zeros better
+    # here and in harvest somewhere in the chain
+    capable_equipment.collect(&:operating_cost).sum
+  end
+
+
 
   private
 
   def self.between(min, max)
     min + (rand * (max - min))
   end
+
 
   def player_belongs_to_world
     if world.present? && player.present?
