@@ -231,7 +231,8 @@ describe ResourceTilesController do
 
     describe '#clearcut' do
       let(:template) { build :logging_equipment_template }
-      let(:equipment1) { LoggingEquipment.generate_from(template) }
+      let!(:equipment1) { LoggingEquipment.generate_from(template) }
+      let(:contract) { create :contract_lumberjack, world: world }
 
       before do
         equipment1.world = player.world
@@ -260,7 +261,12 @@ describe ResourceTilesController do
 
 
       context 'with good conditions' do
-        it 'applies to a contract if present'
+        it 'applies to a contract if present' do
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), contract_id: contract.to_param)
+          response.status.should == 200
+          contract.reload.volume_harvested_of_required_type.should > 0
+          contract.reload.volume_harvested_of_required_type.should == (json['sawtimber_volume'] + json['poletimber_volume']).to_i
+        end
 
         it 'returns estimates without changing player or world' do
           sawyer_results1 = land_tile1.clearcut

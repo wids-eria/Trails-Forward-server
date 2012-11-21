@@ -162,7 +162,12 @@ class ResourceTilesController < ApplicationController
           end
         end
 
-        respond_with results_hash(results, harvestable_tiles).merge(time_cost: time_cost, money_cost: money_cost)
+        summary = results_hash(results, harvestable_tiles).merge(time_cost: time_cost, money_cost: money_cost)
+        if params[:contract_id]
+          contract = Contract.find(params[:contract_id])
+          Contract.update_counters contract.id, volume_harvested_of_required_type: (summary[:sawtimber_volume] + summary[:poletimber_volume]).to_i
+        end
+        respond_with summary
       end
     rescue ActiveRecord::RecordInvalid => e
       respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)

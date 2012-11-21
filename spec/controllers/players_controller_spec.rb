@@ -30,6 +30,7 @@ describe PlayersController do
                                         "quest_points"=>player.quest_points,
                                         "pending_balance"=>player.pending_balance,
                                         "balance"=>player.balance,
+                                        "time_remaining_this_turn"=>player.time_remaining_this_turn,
                                         "quests"=>{}} ] }
       end
     end
@@ -47,6 +48,7 @@ describe PlayersController do
                                         "quest_points"=>player.quest_points,
                                         "pending_balance"=>player.pending_balance,
                                         "balance"=>player.balance,
+                                        "time_remaining_this_turn"=>player.time_remaining_this_turn,
                                         "quests"=>{}} ] }
       end
     end

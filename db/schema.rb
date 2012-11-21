@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121114230633) do
+ActiveRecord::Schema.define(:version => 20121121192040) do
 
   create_table "agent_settings", :force => true do |t|
     t.integer "agent_id", :null => false
@@ -109,7 +109,7 @@ ActiveRecord::Schema.define(:version => 20121114230633) do
     t.boolean  "ended"
     t.boolean  "successful"
     t.boolean  "on_time"
-    t.integer  "volume_harvested_of_required_type"
+    t.integer  "volume_harvested_of_required_type", :default => 0
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "points_earned"

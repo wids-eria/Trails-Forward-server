@@ -74,6 +74,7 @@ class Player < ActiveRecord::Base
   api_accessible :player_private, :extend => :player_public do |template|
     template.add :balance
     template.add :pending_balance
+    template.add :time_remaining_this_turn
     template.add :quest_points
     template.add :quests
   end
