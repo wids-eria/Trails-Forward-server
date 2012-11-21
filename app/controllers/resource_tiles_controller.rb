@@ -137,29 +137,32 @@ class ResourceTilesController < ApplicationController
 
 
   def clearcut_list
-    time_cost = TimeManager.clearcut_cost(tiles: harvestable_tiles, player: player)
+    time_cost = TimeManager.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
+    money_cost = Pricing.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
 
     unless TimeManager.can_perform_action? player: player, cost: time_cost
       respond_with({errors: ["Not enough time left to perform harvest"]}, status: :unprocessable_entity)
       return
     end
 
-    player.balance -= Pricing.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
+    player.balance -= money_cost
     player.time_remaining_this_turn -= time_cost
+    results = harvestable_tiles.collect(&:clearcut)
 
     begin
       ActiveRecord::Base.transaction do
-        player.save!
+        unless params[:estimate] == 'true'
+          player.save!
 
-        # Do the cuts
-        results = harvestable_tiles.collect(&:clearcut!)
+          harvestable_tiles.each(&:save!)
 
-        # Update the market for viable tiles
-        harvestable_tiles.each_with_index do |tile, index|
-          tile.update_market! results[index]
+          # Update the market for viable tiles
+          harvestable_tiles.each_with_index do |tile, index|
+            tile.update_market! results[index]
+          end
         end
 
-        respond_with results_hash(results, harvestable_tiles)
+        respond_with results_hash(results, harvestable_tiles).merge(time_cost: time_cost, money_cost: money_cost)
       end
     rescue ActiveRecord::RecordInvalid => e
       respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)

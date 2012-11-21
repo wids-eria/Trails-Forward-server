@@ -200,6 +200,8 @@ describe ResourceTilesController do
     let!(:old_balance) { player.balance }
     let!(:old_time_remaining) { player.time_remaining_this_turn }
 
+    let(:shared_params) { {world_id: world.to_param, format: 'json'} }
+
     before do
       land_tile1.species_group.should == :shade_intolerant
       land_tile2.species_group.should == :shade_intolerant
@@ -210,7 +212,7 @@ describe ResourceTilesController do
         sawyer_results1 = land_tile1.diameter_limit_cut above: 12
         sawyer_results2 = land_tile2.diameter_limit_cut above: 12
 
-        post 'diameter_limit_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), above: 12.to_s, format: 'json'
+        post 'diameter_limit_cut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), above: 12.to_s)
 
         json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
@@ -246,7 +248,7 @@ describe ResourceTilesController do
       it 'transacts market, player, and tile if things go wrong' do
         player.class.any_instance.stubs(:valid? => false)
 
-        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+        post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
         response.status.should == 422
 
         json['errors'].count.should == 1
@@ -257,30 +259,58 @@ describe ResourceTilesController do
       end
 
 
-      it 'returns values, volumes, adds to world timber, and subtracts time and money costs' do
-        sawyer_results1 = land_tile1.clearcut
-        sawyer_results2 = land_tile2.clearcut
+      context 'with good conditions' do
+        it 'applies to a contract if present'
 
-        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
-        response.status.should == 200
+        it 'returns estimates without changing player or world' do
+          sawyer_results1 = land_tile1.clearcut
+          sawyer_results2 = land_tile2.clearcut
 
-        json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), estimate: 'true')
+          response.status.should == 200
 
-        json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
-        json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
+          json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
-        json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
-        json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
+          json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
+          json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
 
-        world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
-        player.reload.balance.should < old_balance
-        player.reload.time_remaining_this_turn.should < old_time_remaining
+          json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
+          json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
+          json['time_cost'].should > 0
+          json['money_cost'].should > 0
+
+          world.reload.pine_sawtimber_cut_this_turn.should == old_timber_count
+          player.reload.balance.should == old_balance
+          player.reload.time_remaining_this_turn.should == old_time_remaining
+        end
+
+        it 'returns values, volumes, adds to world timber, and subtracts time and money costs' do
+          sawyer_results1 = land_tile1.clearcut
+          sawyer_results2 = land_tile2.clearcut
+
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
+          response.status.should == 200
+
+          json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
+
+          json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
+          json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
+
+          json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
+          json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
+          json['time_cost'].should > 0
+          json['money_cost'].should > 0
+
+          world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
+          player.reload.balance.should < old_balance
+          player.reload.time_remaining_this_turn.should < old_time_remaining
+        end
       end
 
 
       it 'doesnt clearcut if not owned by you' do
         assert_raises CanCan::AccessDenied do
-          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [other_tile].map(&:to_param), format: 'json'
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: [other_tile].map(&:to_param))
         end
 
         world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count)
@@ -291,7 +321,7 @@ describe ResourceTilesController do
       it 'can clearcut if not enough money' do
         player.update_attributes! balance: 2
 
-        post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+        post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
         response.status.should == 200
 
         world.reload.pine_sawtimber_cut_this_turn.should > old_timber_count
@@ -302,7 +332,7 @@ describe ResourceTilesController do
       it 'strips out non clearcutable land' do
         bad_land_tile.update_attributes landcover_class_code: 11
         assert_nothing_raised do
-          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: [land_tile1, unharvestable_tile, bad_land_tile].map(&:to_param), format: 'json'
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: [land_tile1, unharvestable_tile, bad_land_tile].map(&:to_param))
         end
         response.should be_successful
       end
@@ -313,7 +343,7 @@ describe ResourceTilesController do
         it 'cant be done if player is out of time' do
           player.update_attributes! time_remaining_this_turn: 0
 
-          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
           response.status.should == 422
 
           json['errors'].count.should == 1
@@ -328,7 +358,7 @@ describe ResourceTilesController do
           player.update_attributes! time_remaining_this_turn: 100
           TimeManager.stubs(clearcut_cost: 200)
 
-          post 'clearcut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), format: 'json'
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
           response.status.should == 422
 
           json['errors'].count.should == 1
@@ -348,7 +378,7 @@ describe ResourceTilesController do
         sawyer_results1 = land_tile1.partial_selection_cut target_basal_area: 100, qratio: 1.5
         sawyer_results2 = land_tile2.partial_selection_cut target_basal_area: 100, qratio: 1.5
 
-        post 'partial_selection_cut_list', world_id: world.to_param, resource_tile_ids: tiles.map(&:to_param), target_basal_area: 100, qratio: 1.5, format: 'json'
+        post 'partial_selection_cut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), target_basal_area: 100, qratio: 1.5)
 
         json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
