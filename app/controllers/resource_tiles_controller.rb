@@ -140,18 +140,23 @@ class ResourceTilesController < ApplicationController
     time_cost = TimeManager.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
     money_cost = Pricing.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
 
-    unless TimeManager.can_perform_action? player: player, cost: time_cost
-      respond_with({errors: ["Not enough time left to perform harvest"]}, status: :unprocessable_entity)
-      return
+    unless params[:estimate] == 'true'
+      unless TimeManager.can_perform_action? player: player, cost: time_cost
+        respond_with({errors: ["Not enough time left to perform harvest"]}, status: :unprocessable_entity)
+        return
+      end
     end
 
     player.balance -= money_cost
     player.time_remaining_this_turn -= time_cost
     results = harvestable_tiles.collect(&:clearcut)
+    summary = results_hash(results, harvestable_tiles).merge(time_cost: time_cost, money_cost: money_cost)
 
-    begin
-      ActiveRecord::Base.transaction do
-        unless params[:estimate] == 'true'
+    if params[:estimate] == 'true'
+      respond_with summary
+    else
+      begin
+        ActiveRecord::Base.transaction do
           player.save!
 
           harvestable_tiles.each(&:save!)
@@ -160,17 +165,17 @@ class ResourceTilesController < ApplicationController
           harvestable_tiles.each_with_index do |tile, index|
             tile.update_market! results[index]
           end
-        end
 
-        summary = results_hash(results, harvestable_tiles).merge(time_cost: time_cost, money_cost: money_cost)
-        if params[:contract_id]
-          contract = Contract.find(params[:contract_id])
-          Contract.update_counters contract.id, volume_harvested_of_required_type: (summary[:sawtimber_volume] + summary[:poletimber_volume]).to_i
+          if params[:contract_id]
+            contract = Contract.find(params[:contract_id])
+            Contract.update_counters contract.id, volume_harvested_of_required_type: (summary[:sawtimber_volume] + summary[:poletimber_volume]).to_i
+          end
+
+          respond_with summary
         end
-        respond_with summary
+      rescue ActiveRecord::RecordInvalid => e
+        respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
       end
-    rescue ActiveRecord::RecordInvalid => e
-      respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
     end
   end
 
