@@ -1,5 +1,8 @@
 class TimeManager
 
+  # CLEARCUT #############################
+  #
+
   def self.clearcut_cost options
     options[:tiles].collect do |tile|
       clearcut_cost_for_tile options.except(:tiles).merge(tile: tile)
@@ -21,6 +24,11 @@ class TimeManager
     return 0.0 if harvest_ability == 0.0
     volume / harvest_ability
   end
+
+
+
+  # Time logic for performing actions
+  #
 
   def self.can_perform_action? options
     options.required_keys! :player, :cost

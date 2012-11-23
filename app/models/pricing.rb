@@ -11,8 +11,9 @@ class Pricing
 
 
 
-  # HARVESTING
+  # CLEARCUT ###########################
   #
+
   def self.clearcut_cost options
     options[:tiles].collect do |tile|
       clearcut_cost_for_tile options.except(:tiles).merge(tile: tile)
