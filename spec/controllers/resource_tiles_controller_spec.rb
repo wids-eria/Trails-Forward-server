@@ -353,49 +353,73 @@ describe ResourceTilesController do
           player.reload.time_remaining_this_turn.should == 100
         end
       end
-    end
 
 
+      describe '#diameter_limit_cut' do
+        it 'returns values and volumes of all the tiles cut' do
+          sawyer_results1 = land_tile1.diameter_limit_cut above: 12
+          sawyer_results2 = land_tile2.diameter_limit_cut above: 12
 
-    describe '#diameter_limit_cut' do
-      it 'returns values and volumes of all the tiles cut' do
-        sawyer_results1 = land_tile1.diameter_limit_cut above: 12
-        sawyer_results2 = land_tile2.diameter_limit_cut above: 12
+          post 'diameter_limit_cut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), above: 12.to_s)
 
-        post 'diameter_limit_cut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), above: 12.to_s)
+          json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
-        json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
+          json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
+          json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
 
-        json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
-        json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
+          json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
+          json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
 
-        json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
-        json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
+          world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
+          player.reload.balance.should < old_balance
+        end
+      end
 
-        world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
-        player.reload.balance.should < old_balance
+
+      describe '#partial_selection_cut' do
+        it 'returns values and volumes of all the tiles cut' do
+          sawyer_results1 = land_tile1.partial_selection_cut target_basal_area: 100, qratio: 1.5
+          sawyer_results2 = land_tile2.partial_selection_cut target_basal_area: 100, qratio: 1.5
+
+          post 'partial_selection_cut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), target_basal_area: 100, qratio: 1.5)
+
+          json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
+
+          json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
+          json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
+
+          json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
+          json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
+
+          world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
+          player.reload.balance.should < old_balance
+        end
       end
     end
 
+    context 'without equipment' do
+      describe '#clearcut_list' do
+        it 'returns values, volumes, adds to world timber, and subtracts time and money costs' do
+          sawyer_results1 = land_tile1.clearcut
+          sawyer_results2 = land_tile2.clearcut
 
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
+          response.status.should == 200
 
-    describe '#partial_selection_cut' do
-      it 'returns values and volumes of all the tiles cut' do
-        sawyer_results1 = land_tile1.partial_selection_cut target_basal_area: 100, qratio: 1.5
-        sawyer_results2 = land_tile2.partial_selection_cut target_basal_area: 100, qratio: 1.5
+          json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
 
-        post 'partial_selection_cut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), target_basal_area: 100, qratio: 1.5)
+          json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
+          json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
 
-        json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
+          json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
+          json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
+          json['time_cost'].should > 0
+          json['money_cost'].should > 0
 
-        json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
-        json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
-
-        json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
-        json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
-
-        world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
-        player.reload.balance.should < old_balance
+          world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
+          player.reload.balance.should < old_balance
+          player.reload.time_remaining_this_turn.should < old_time_remaining
+        end
       end
     end
   end

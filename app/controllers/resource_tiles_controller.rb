@@ -186,51 +186,89 @@ class ResourceTilesController < ApplicationController
 
 
   def diameter_limit_cut_list
-    player.balance -= Pricing.diameter_limit_cost(harvestable_tiles)
+    time_cost = TimeManager.diameter_limit_cost(tiles: harvestable_tiles, player: player).to_i
+    money_cost = Pricing.diameter_limit_cost(tiles: harvestable_tiles, player: player).to_i
 
-    begin
-      ActiveRecord::Base.transaction do
-        player.save!
-
-        # Do the cuts
-        results = harvestable_tiles.collect do |tile|
-          tile.diameter_limit_cut!(above: params[:above], below: params[:below])
-        end
-
-        # Update the market for viable tiles
-        harvestable_tiles.each_with_index do |tile, index|
-          tile.update_market! results[index]
-        end
-
-        respond_with results_hash(results, harvestable_tiles)
+    unless params[:estimate] == 'true'
+      unless TimeManager.can_perform_action? player: player, cost: time_cost
+        respond_with({errors: ["Not enough time left to perform harvest"]}, status: :unprocessable_entity)
+        return
       end
-    rescue ActiveRecord::RecordInvalid => e
-      respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
+    end
+
+    player.balance -= money_cost
+    player.time_remaining_this_turn -= time_cost
+    results = harvestable_tiles.collect{|tile| tile.diameter_limit_cut!(above: params[:above], below: params[:below])}
+    summary = results_hash(results, harvestable_tiles).merge(time_cost: time_cost, money_cost: money_cost)
+
+    if params[:estimate] == 'true'
+      respond_with summary
+    else
+      begin
+        ActiveRecord::Base.transaction do
+          player.save!
+
+          harvestable_tiles.each(&:save!)
+
+          # Update the market for viable tiles
+          harvestable_tiles.each_with_index do |tile, index|
+            tile.update_market! results[index]
+          end
+
+          if params[:contract_id]
+            contract = Contract.find(params[:contract_id])
+            Contract.update_counters contract.id, volume_harvested_of_required_type: (summary[:sawtimber_volume] + summary[:poletimber_volume]).to_i
+          end
+
+          respond_with summary
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
+      end
     end
   end
 
 
   def partial_selection_cut_list
-    player.balance -= Pricing.partial_selection_cost(harvestable_tiles)
+    time_cost = TimeManager.partial_selection_cost(tiles: harvestable_tiles, player: player).to_i
+    money_cost = Pricing.partial_selection_cost(tiles: harvestable_tiles, player: player).to_i
 
-    begin
-      ActiveRecord::Base.transaction do
-        player.save!
-
-        # Do the cuts
-        results = harvestable_tiles.collect do |tile|
-          tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])
-        end
-
-        # Update the market for viable tiles
-        harvestable_tiles.each_with_index do |tile, index|
-          tile.update_market! results[index]
-        end
-
-        respond_with results_hash(results, harvestable_tiles)
+    unless params[:estimate] == 'true'
+      unless TimeManager.can_perform_action? player: player, cost: time_cost
+        respond_with({errors: ["Not enough time left to perform harvest"]}, status: :unprocessable_entity)
+        return
       end
-    rescue ActiveRecord::RecordInvalid => e
-      respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
+    end
+
+    player.balance -= money_cost
+    player.time_remaining_this_turn -= time_cost
+    results = harvestable_tiles.collect{|tile| tile.partial_selection_cut!(qratio: params[:qratio], target_basal_area: params[:target_basal_area])}
+    summary = results_hash(results, harvestable_tiles).merge(time_cost: time_cost, money_cost: money_cost)
+
+    if params[:estimate] == 'true'
+      respond_with summary
+    else
+      begin
+        ActiveRecord::Base.transaction do
+          player.save!
+
+          harvestable_tiles.each(&:save!)
+
+          # Update the market for viable tiles
+          harvestable_tiles.each_with_index do |tile, index|
+            tile.update_market! results[index]
+          end
+
+          if params[:contract_id]
+            contract = Contract.find(params[:contract_id])
+            Contract.update_counters contract.id, volume_harvested_of_required_type: (summary[:sawtimber_volume] + summary[:poletimber_volume]).to_i
+          end
+
+          respond_with summary
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        respond_with({errors: ["Transaction Failed: #{e.message}"]}, status: :unprocessable_entity)
+      end
     end
   end
 
