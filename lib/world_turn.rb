@@ -9,14 +9,7 @@ class WorldTurn
   end
 
   def can_process_turn?
-    return false if world.players.empty?
-    world.players.all? do |player|
-      played_current_turn = player.last_turn_played == world.current_turn
-
-      time_has_elapsed = DateTime.now > elapse_time
-
-      played_current_turn || time_has_elapsed
-    end
+    !world.players.empty?
   end
 
   def time_left
@@ -31,6 +24,8 @@ class WorldTurn
   # A single turn, use background jobs instead if you want parallel
   def turn
     transfer_money
+    repo_man
+    replenish_player_time
     grow_trees
     marten_simulation
     land_desirability
@@ -41,6 +36,21 @@ class WorldTurn
     world.players.each do |player|
       player.balance += player.pending_balance
       player.pending_balance = 0
+      player.save!
+    end
+  end
+
+  def repo_man
+    world.players.each do |player|
+      player.balance += player.pending_balance
+      player.pending_balance = 0
+      player.save!
+    end
+  end
+
+  def replenish_player_time
+    world.players.each do |player|
+      player.time_remaining_this_turn = Player.default_time_remaining
       player.save!
     end
   end
