@@ -77,11 +77,13 @@ class Player < ActiveRecord::Base
   #
 
   def create_default_sawyer_crew_logging_equipment
-    crew = LoggingEquipment.sawyer_crew
-    if crew
-      crew.player = self
-      crew.world = self.world
-      self.logging_equipment << crew
+    unless self.logging_equipment.detect{|equipment| equipment.name == "Sawyer Crew"} # atomic
+      crew = LoggingEquipment.sawyer_crew
+      if crew
+        crew.player = self
+        crew.world = self.world
+        self.logging_equipment << crew
+      end
     end
   end
 
