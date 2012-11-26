@@ -64,4 +64,16 @@ describe LoggingEquipment do
       end
     end
   end
+
+  context 'for player' do
+    describe '#logging_equipment' do
+      let!(:sawyer_template) { create :logging_equipment_template, name: 'Sawyer Crew' }
+
+      it 'is assigned a sawyer crew from template' do
+        player = create(:player)
+        player.reload.logging_equipment.count.should == 1
+        player.reload.logging_equipment.first.name.should == "Sawyer Crew"
+      end
+    end
+  end
 end

@@ -1,5 +1,6 @@
 class Player < ActiveRecord::Base
   acts_as_api
+  include PlayerApi
 
   serialize :quests, Hash
 
@@ -13,13 +14,14 @@ class Player < ActiveRecord::Base
 
   attr_accessible :name, :user, :world, :balance, :pending_balance, :time_remaining_this_turn, :quest_points, :quests
 
+
+  # ASSOCIATIONS #########################
+  #
+
   has_many :megatiles, :inverse_of => :owner, :foreign_key => 'owner_id'
   has_many :resource_tiles, :through => :megatiles
   belongs_to :world
   belongs_to :user
-  validates_presence_of :user
-  validates :world_id, :presence => true, :uniqueness => {:scope => :user_id}
-  validates :balance, presence: true, numericality: {only_integer: true}
 
   has_many :bids_placed, :class_name => 'Bid', :inverse_of => :bidder, :foreign_key => 'bidder_id'
   has_many :bids_received, :class_name => 'Bid', :inverse_of => :current_owner, :foreign_key => 'current_owner_id'
@@ -31,6 +33,22 @@ class Player < ActiveRecord::Base
   has_many :contract_templates, :through => :contracts
 
   has_many :logging_equipment
+
+
+  # VALIDATIONS ##########################
+  #
+
+  validates_presence_of :user
+  validates :world_id, :presence => true, :uniqueness => {:scope => :user_id}
+  validates :balance, presence: true, numericality: {only_integer: true}
+
+
+  # CALLBACKS ############################
+  #
+
+  before_create :create_default_sawyer_crew_logging_equipment
+
+
 
   def selection_name
     "#{self.name}, world:#{world.id} #{world.name.truncate(15)}"
@@ -54,39 +72,17 @@ class Player < ActiveRecord::Base
 
   delegate :name, to: :user, allow_nil: true
 
-  def used_too_much_time?
-    time_remaining_this_turn < 0
+
+  # EQUIPMENT ############################
+  #
+
+  def create_default_sawyer_crew_logging_equipment
+    crew = LoggingEquipment.sawyer_crew
+    if crew
+      crew.player = self
+      crew.world = self.world
+      self.logging_equipment << crew
+    end
   end
-
-  api_accessible :id_and_name do |template|
-    template.add :id
-    template.add 'user.name', :as => :name
-    template.add 'user.id', :as => :user_id
-    template.add :type
-    template.add :world_id
-    template.add 'world.name', :as => :world_name
-  end
-
-  api_accessible :player_public, :extend => :id_and_name do |template|
-    # template.add :megatiles, :template => :id_and_name
-  end
-
-  api_accessible :player_private, :extend => :player_public do |template|
-    template.add :balance
-    template.add :pending_balance
-    template.add :time_remaining_this_turn
-    template.add :quest_points
-    template.add :quests
-  end
-
-  api_accessible :player_private_with_megatiles, :extend => :player_private do |template|
-    template.add :megatiles, :template => :id_and_name
-  end
-
-  api_accessible :player_public_with_megatiles, :extend => :player_public do |template|
-    template.add :megatiles, :template => :id_and_name
-  end
-
-
 
 end

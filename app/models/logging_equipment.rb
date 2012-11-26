@@ -61,6 +61,13 @@ class LoggingEquipment < ActiveRecord::Base
   end
 
 
+  def self.sawyer_crew
+    sawyer_crew_template = LoggingEquipmentTemplate.where(name: 'Sawyer Crew').first
+    return nil unless sawyer_crew_template
+    generate_from(sawyer_crew_template)
+  end
+
+
 
   # HARVEST CALCULATIONS #################
   #
