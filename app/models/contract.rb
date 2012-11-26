@@ -26,8 +26,8 @@ class Contract < ActiveRecord::Base
   def deliver
     if is_satisfied?
       great_success = false
+      self.successful = true
       ActiveRecord::Base.transaction do
-        successful = true
         great_success = save
         included_megatiles.each do |mt|
           mt.owner = nil

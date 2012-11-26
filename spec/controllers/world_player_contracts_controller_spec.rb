@@ -50,6 +50,8 @@ describe WorldPlayerContractsController do
       response.should be_success
       player.reload
       player.balance.should  > original_balance
+      lumberjack_contract.reload
+      lumberjack_contract.successful.should == true
     end
   end #describe index
 end
