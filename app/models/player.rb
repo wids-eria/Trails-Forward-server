@@ -5,7 +5,7 @@ class Player < ActiveRecord::Base
   serialize :quests, Hash
 
   def self.default_balance
-    1000
+    50000
   end
 
   def self.default_time_remaining
