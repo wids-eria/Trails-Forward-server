@@ -168,7 +168,13 @@ class ResourceTilesController < ApplicationController
 
           if params[:contract_id]
             contract = Contract.find(params[:contract_id])
-            Contract.update_counters contract.id, volume_harvested_of_required_type: (summary[:sawtimber_volume] + summary[:poletimber_volume]).to_i
+            if contract.contract_template.wood_type == "saw_timber"
+              Contract.update_counters contract.id, volume_harvested_of_required_type: summary[:sawtimber_volume].to_i
+            elsif contract.contract_template.wood_type == "pole_timber"
+              Contract.update_counters contract.id, volume_harvested_of_required_type: summary[:poletimber_volume].to_i
+            else
+              respond_with({errors: ["Don't know how to handle timber type: #{contract.contract_template.wood_type}"]}, status: :unprocessable_entity)
+            end
           end
 
           respond_with summary

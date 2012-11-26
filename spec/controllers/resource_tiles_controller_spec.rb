@@ -239,11 +239,22 @@ describe ResourceTilesController do
 
 
       context 'with good conditions' do
-        it 'applies to a contract if present' do
-          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), contract_id: contract.to_param)
-          response.status.should == 200
-          contract.reload.volume_harvested_of_required_type.should > 0
-          contract.reload.volume_harvested_of_required_type.should == (json['sawtimber_volume'] + json['poletimber_volume']).to_i
+        context 'and a contract id' do
+          it 'applies sawtimber volume' do
+            contract.contract_template.update_attributes wood_type: 'saw_timber'
+            post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), contract_id: contract.to_param)
+            response.status.should == 200
+            contract.reload.volume_harvested_of_required_type.should > 0
+            contract.reload.volume_harvested_of_required_type.should == json['sawtimber_volume'].to_i
+          end
+
+          it 'applies poletimber volume' do
+            contract.contract_template.update_attributes wood_type: 'pole_timber'
+            post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), contract_id: contract.to_param)
+            response.status.should == 200
+            contract.reload.volume_harvested_of_required_type.should > 0
+            contract.reload.volume_harvested_of_required_type.should == json['poletimber_volume'].to_i
+          end
         end
 
         it 'returns estimates without changing player or world' do
