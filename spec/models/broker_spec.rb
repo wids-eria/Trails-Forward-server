@@ -7,6 +7,7 @@ describe Broker do
   let!(:sellers_tile) { world.megatiles.first }
   let!(:requested_land) { create :megatile_grouping, megatiles: [sellers_tile] }
   let!(:offered_land) { create :megatile_grouping, megatiles: [sellers_tile] }
+  let!(:old_seller_balance) { seller.balance }
 
   before do
     sellers_tile.update_attributes(owner: seller)
@@ -29,8 +30,7 @@ describe Broker do
       end
 
       it "gives seller balance" do
-        seller.reload
-        seller.balance.should == 2000
+        seller.reload.balance.should == old_seller_balance + 1000
       end
     end
 
@@ -68,8 +68,7 @@ describe Broker do
       end
 
       it "gives seller balance" do
-        seller.reload
-        seller.balance.should == 2000
+        seller.reload.balance.should == old_seller_balance + 1000
       end
     end
 

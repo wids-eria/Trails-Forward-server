@@ -239,11 +239,22 @@ describe ResourceTilesController do
 
 
       context 'with good conditions' do
-        it 'applies to a contract if present' do
-          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), contract_id: contract.to_param)
-          response.status.should == 200
-          contract.reload.volume_harvested_of_required_type.should > 0
-          contract.reload.volume_harvested_of_required_type.should == (json['sawtimber_volume'] + json['poletimber_volume']).to_i
+        context 'and a contract id' do
+          it 'applies sawtimber volume' do
+            contract.contract_template.update_attributes wood_type: 'saw_timber'
+            post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), contract_id: contract.to_param)
+            response.status.should == 200
+            contract.reload.volume_harvested_of_required_type.should > 0
+            contract.reload.volume_harvested_of_required_type.should == json['sawtimber_volume'].to_i
+          end
+
+          it 'applies poletimber volume' do
+            contract.contract_template.update_attributes wood_type: 'pole_timber'
+            post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), contract_id: contract.to_param)
+            response.status.should == 200
+            contract.reload.volume_harvested_of_required_type.should > 0
+            contract.reload.volume_harvested_of_required_type.should == json['poletimber_volume'].to_i
+          end
         end
 
         it 'returns estimates without changing player or world' do
@@ -403,22 +414,9 @@ describe ResourceTilesController do
           sawyer_results1 = land_tile1.clearcut
           sawyer_results2 = land_tile2.clearcut
 
-          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
-          response.status.should == 200
-
-          json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
-
-          json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
-          json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
-
-          json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
-          json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
-          json['time_cost'].should > 0
-          json['money_cost'].should > 0
-
-          world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
-          player.reload.balance.should < old_balance
-          player.reload.time_remaining_this_turn.should < old_time_remaining
+          lambda {
+            post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
+          }.should raise_error(DatabaseSeedMissing)
         end
       end
     end
