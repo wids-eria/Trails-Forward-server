@@ -29,7 +29,7 @@ describe WorldTurn do
         player2.last_turn_played = 5
         player3.last_turn_played = 5
 
-        world_turn.can_process_turn?.should == true
+        world_turn.can_process_turn?.should == false
       end
 
       it 'doesnt allow a turn if all players are not ready' do
@@ -88,4 +88,5 @@ describe WorldTurn do
   end
 
   it 'gives players time at end of turn'
+  it 'revokes all equipment and contracts at end of turn'
 end

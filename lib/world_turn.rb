@@ -9,7 +9,9 @@ class WorldTurn
   end
 
   def can_process_turn?
-    !world.players.empty?
+    return false if world.players.empty?
+    time_has_elapsed = DateTime.now > elapse_time
+    time_has_elapsed
   end
 
   def time_left
