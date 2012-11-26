@@ -403,22 +403,9 @@ describe ResourceTilesController do
           sawyer_results1 = land_tile1.clearcut
           sawyer_results2 = land_tile2.clearcut
 
-          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
-          response.status.should == 200
-
-          json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
-
-          json['poletimber_value' ].should == sawyer_results1[:poletimber_value ] + sawyer_results2[:poletimber_value ]
-          json['poletimber_volume'].should == sawyer_results1[:poletimber_volume] + sawyer_results2[:poletimber_volume]
-
-          json['sawtimber_value' ].should == sawyer_results1[:sawtimber_value  ] + sawyer_results2[:sawtimber_value ]
-          json['sawtimber_volume'].should == sawyer_results1[:sawtimber_volume ] + sawyer_results2[:sawtimber_volume]
-          json['time_cost'].should > 0
-          json['money_cost'].should > 0
-
-          world.reload.pine_sawtimber_cut_this_turn.should be_within(0.1).of(old_timber_count + sawyer_results1[:sawtimber_volume]   + sawyer_results2[:sawtimber_volume])
-          player.reload.balance.should < old_balance
-          player.reload.time_remaining_this_turn.should < old_time_remaining
+          lambda {
+            post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param))
+          }.should raise_error(DatabaseSeedMissing)
         end
       end
     end

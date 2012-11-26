@@ -80,7 +80,7 @@ class LoggingEquipment < ActiveRecord::Base
   def self.harvest_volume_for options
     options.required_keys! :diameter, :equipment
 
-    raise 'Player has no equipment' if options[:equipment].empty?
+    raise DatabaseSeedMissing.new('No equipment, does player have a Sawyer Crew?') if options[:equipment].empty?
 
     options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }.collect(&:harvest_volume).sum
   end
@@ -89,7 +89,7 @@ class LoggingEquipment < ActiveRecord::Base
   def self.operating_cost_for options
     options.required_keys! :diameter, :equipment
 
-    raise 'Player has no equipment' if options[:equipment].empty?
+    raise DatabaseSeedMissing.new('No equipment, does player have a Sawyer Crew?') if options[:equipment].empty?
 
     capable_equipment = options[:equipment].select{|item| item.diameter_range.include? options[:diameter] }
 
