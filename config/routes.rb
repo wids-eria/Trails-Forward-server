@@ -20,9 +20,6 @@ TrailsForwardWorld::Application.routes.draw do
     
 
     resources :players, :only => [:index, :create, :destroy], :controller => :world_players do
-      collection do
-        put :submit_turn
-      end
       get :bids_placed
       get :bids_received
       resources :contracts, :only => [:index], :controller => :world_player_contracts do

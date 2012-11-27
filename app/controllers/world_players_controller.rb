@@ -67,31 +67,4 @@ class WorldPlayersController < ApplicationController
       end
     end
   end
-
-  def submit_turn
-    world = World.find params[:world_id]
-    player = world.player_for_user current_user
-    authorize! :update_player, player
-
-    player.last_turn_played = world.current_turn
-    player.last_turn_played_at = DateTime.now
-
-    respond_to do |format|
-      if player.save
-
-        manager = WorldTurn.new world: world
-        if manager.can_process_turn?
-          manager.mark_for_processing
-          world.save
-        end
-
-        format.xml  { render_for_api :player_private, :xml  => player }
-        format.json { render_for_api :player_private, :json => player }
-      else
-        format.xml  { render :xml  => player.errors, :status => :unprocessable_entity }
-        format.json { render :json => player.errors, :status => :unprocessable_entity }
-      end
-    end
-
-  end
 end
