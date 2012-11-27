@@ -115,4 +115,16 @@ describe TimeManager do
       TimeManager.can_perform_action?(player: player, cost: 5).should == true
     end
   end
+
+
+  describe '#replenish_players_time!' do
+    let(:world) { create :world, players: [player1, player2]}
+    let(:player1) { create :lumberjack, time_remaining_this_turn: 0 }
+    let(:player2) { create :lumberjack, time_remaining_this_turn: 10 }
+    it 'gives players time do players in world' do
+      TimeManager.replenish_players_time! world
+      player1.reload.time_remaining_this_turn.should == Player.default_time_remaining
+      player2.reload.time_remaining_this_turn.should == Player.default_time_remaining
+    end
+  end
 end

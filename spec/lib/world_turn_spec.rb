@@ -87,6 +87,5 @@ describe WorldTurn do
     end
   end
 
-  it 'gives players time at end of turn'
   it 'revokes all equipment and contracts at end of turn'
 end

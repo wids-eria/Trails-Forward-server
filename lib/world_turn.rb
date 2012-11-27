@@ -43,18 +43,11 @@ class WorldTurn
   end
 
   def repo_man
-    world.players.each do |player|
-      player.balance += player.pending_balance
-      player.pending_balance = 0
-      player.save!
-    end
+    RepoMan.visit_players! world
   end
 
   def replenish_player_time
-    world.players.each do |player|
-      player.time_remaining_this_turn = Player.default_time_remaining
-      player.save!
-    end
+    TimeManager.replenish_players_time! world
   end
 
   def grow_trees

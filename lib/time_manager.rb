@@ -15,6 +15,18 @@ class TimeManager
 
 
 
+  # REPLINISH ############################
+  #
+
+  def self.replenish_players_time! world
+    world.players.each do |player|
+      player.time_remaining_this_turn = Player.default_time_remaining
+      player.save!
+    end
+  end
+
+
+
   # CLEARCUT #############################
   #
 
