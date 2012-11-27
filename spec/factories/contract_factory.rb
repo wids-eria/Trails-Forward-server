@@ -9,7 +9,7 @@ FactoryGirl.define do
     ended false
     successful false
     on_time false
-    volume_harvested_of_required_type nil
+    volume_harvested_of_required_type 0
   end
 
   factory :contract_lumberjack, parent: :contract do

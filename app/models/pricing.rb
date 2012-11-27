@@ -11,20 +11,78 @@ class Pricing
 
 
 
-  # HARVESTING
+  # CLEARCUT ###########################
   #
-  # TODO expose as db level configuration with defaults.
-  def self.clearcut_cost resource_tiles
-    5 * resource_tiles.count
+
+  def self.clearcut_cost options
+    options[:tiles].collect do |tile|
+      clearcut_cost_for_tile options.except(:tiles).merge(tile: tile)
+    end.sum
+  end
+
+  def self.clearcut_cost_for_tile options
+    LandTile.tree_sizes.collect do |size|
+      clearcut_cost_for_diameter options.merge(diameter: size)
+    end.sum
+  end
+
+  def self.clearcut_cost_for_diameter options
+    operation_cost = LoggingEquipment.operating_cost_for(diameter: options[:diameter], equipment: options[:player].logging_equipment)
+
+    time_cost = TimeManager.clearcut_cost_for_diameter(diameter: options[:diameter], tile: options[:tile], player: options[:player])
+
+    operation_cost * time_cost
   end
 
 
-  def self.partial_selection_cost resource_tiles
-    5 * resource_tiles.count
+
+  # PARTIAL SELECTION ####################
+  #
+
+  def self.partial_selection_cost options
+    options[:tiles].collect do |tile|
+      partial_selection_cost_for_tile options.except(:tiles).merge(tile: tile)
+    end.sum
+  end
+
+  def self.partial_selection_cost_for_tile options
+    LandTile.tree_sizes.collect do |size|
+      partial_selection_cost_for_diameter options.merge(diameter: size)
+    end.sum
+  end
+
+  # FIXME grab sawyer info
+  def self.partial_selection_cost_for_diameter options
+    operation_cost = LoggingEquipment.operating_cost_for(diameter: options[:diameter], equipment: options[:player].logging_equipment)
+
+    time_cost = TimeManager.partial_selection_cost_for_diameter(diameter: options[:diameter], tile: options[:tile], player: options[:player])
+
+    operation_cost * time_cost
   end
 
 
-  def self.diameter_limit_cost resource_tiles
-    5 * resource_tiles.count
+
+  # DIAMETER LIMIT #######################
+  #
+
+  def self.diameter_limit_cost options
+    options[:tiles].collect do |tile|
+      diameter_limit_cost_for_tile options.except(:tiles).merge(tile: tile)
+    end.sum
+  end
+
+  def self.diameter_limit_cost_for_tile options
+    LandTile.tree_sizes.collect do |size|
+      diameter_limit_cost_for_diameter options.merge(diameter: size)
+    end.sum
+  end
+
+  # FIXME grab sawyer info
+  def self.diameter_limit_cost_for_diameter options
+    operation_cost = LoggingEquipment.operating_cost_for(diameter: options[:diameter], equipment: options[:player].logging_equipment)
+
+    time_cost = TimeManager.diameter_limit_cost_for_diameter(diameter: options[:diameter], tile: options[:tile], player: options[:player])
+
+    operation_cost * time_cost
   end
 end

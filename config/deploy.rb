@@ -47,6 +47,7 @@ namespace :deploy do
 
   task :symlink_world_images, :roles => :app do
     run "ln -nfs #{deploy_to}/shared/worlds/ #{release_path}/public/worlds"
+    run "ln -nfs #{deploy_to}/shared/asset_packages/ #{release_path}/public/images/asset_packages"
   end
 
   desc "Restarting mod_rails with restart.txt"

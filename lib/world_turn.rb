@@ -1,6 +1,8 @@
 class WorldTurn
   attr_accessor :world, :turn_duration
 
+  # add player default time here (or read it from world..
+
   def initialize options = {}
     self.world = options[:world]
     self.turn_duration = world.turn_duration.minutes
@@ -8,13 +10,8 @@ class WorldTurn
 
   def can_process_turn?
     return false if world.players.empty?
-    world.players.all? do |player|
-      played_current_turn = player.last_turn_played == world.current_turn
-
-      time_has_elapsed = DateTime.now > elapse_time
-
-      played_current_turn || time_has_elapsed
-    end
+    time_has_elapsed = DateTime.now > elapse_time
+    time_has_elapsed
   end
 
   def time_left
@@ -29,6 +26,8 @@ class WorldTurn
   # A single turn, use background jobs instead if you want parallel
   def turn
     transfer_money
+    repo_man
+    replenish_player_time
     grow_trees
     marten_simulation
     land_desirability
@@ -41,6 +40,14 @@ class WorldTurn
       player.pending_balance = 0
       player.save!
     end
+  end
+
+  def repo_man
+    RepoMan.visit_players! world
+  end
+
+  def replenish_player_time
+    TimeManager.replenish_players_time! world
   end
 
   def grow_trees

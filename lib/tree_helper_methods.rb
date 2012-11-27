@@ -2,8 +2,15 @@ module TreeHelperMethods
   def self.included(base)
     base.extend ClassMethods
   end
+
   module ClassMethods
+    def tree_sizes
+      TREE_SIZES
+    end
   end
+
+  # INSTANCE METHODS #####################
+  #
 
   def site_index
     80.0
@@ -20,9 +27,17 @@ module TreeHelperMethods
   def basal_area_for_size(tree_size)
     (tree_size) ** 2 * 0.005454154
   end
+
+  # ALL THE ACCESSORS
+  #
+
+  TREE_SIZES = [2,4,6,8,10,12,14,16,18,20,22,24]
+
+
   def tree_sizes
-    [2,4,6,8,10,12,14,16,18,20,22,24]
+    TREE_SIZES
   end
+
 
   def collect_tree_size_counts
     tree_sizes.collect {|diameter| trees_in_size diameter }

@@ -9,11 +9,13 @@ describe MegatilesController do
   let(:player)  { create :lumberjack, world: the_world }
   let(:player2) { create :lumberjack, world: the_world }
   let(:user) { player.user }
-  let(:json) { JSON.parse(response.body) }
 
   before do
     sign_in user
   end
+
+  let(:shared_params) { {world_id: the_world.to_param, format: 'json'} }
+  let(:json) { JSON.parse(response.body) }
 
   describe '#index' do
     describe 'JSON for nested resource tiles' do
@@ -23,6 +25,29 @@ describe MegatilesController do
         response.should be_success
         json['megatiles'].first.keys.should == ['id', 'x', 'y', 'updated_at']
       end
+    end
+  end
+
+  describe '#owned' do
+    let(:megatile) { the_world.megatiles.first }
+
+    it 'returns your players owned tiles for world' do
+      megatile.update_attributes owner: player
+
+      get :owned, shared_params
+
+      response.should be_success
+      json['megatiles'].count.should == 1
+      json['megatiles'].first['id'].should == megatile.id
+    end
+
+    it 'doesnt return unowned tiles for world' do
+      megatile.update_attributes owner: player2
+
+      get :owned, shared_params
+
+      response.should be_success
+      json['megatiles'].count.should == 0
     end
   end
 

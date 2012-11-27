@@ -1,0 +1,2 @@
+class DatabaseSeedMissing < Exception
+end
