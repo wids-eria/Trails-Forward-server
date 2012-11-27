@@ -1,5 +1,5 @@
 class ContractLoggerTileMatcher < LoggerTileMatcher
-  def find_candidate_megatiles(contract)
+  def find_candidate_megatiles_helper(contract)
     case contract.contract_template.wood_type
     when "pole_timber"
       type = :poletimber_volume
@@ -10,7 +10,7 @@ class ContractLoggerTileMatcher < LoggerTileMatcher
       return []
     end
     required = contract.contract_template.volume_required
-    unowned_megatiles = contract.world.megatiles.where(:owner_id => nil)
+    unowned_megatiles = contract.world.megatiles.where(:owner_id => nil).order("RAND()").limit(2000)
     candidate_megatiles = []
     unowned_megatiles.each do |mtile|
       volume = 0
@@ -36,8 +36,8 @@ class ContractLoggerTileMatcher < LoggerTileMatcher
     candidate_megatiles.sort_by! {|e| -e[:volume]}
   end
 
-  def find_and_attach_to_contract_with_player(contract)
-    mtiles = find_candidate_megatiles(contract)
+  def find_best_megatiles_for_contract(contract)
+    mtiles = find_candidate_megatiles_helper(contract)
     return [] if mtiles.count == 0
 
     required = contract.contract_template.volume_required
