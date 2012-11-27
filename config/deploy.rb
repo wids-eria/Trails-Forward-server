@@ -14,9 +14,8 @@ require 'capistrano/ext/multistage'
 set :stages, %w(production staging)
 set :default_stage, "staging"
 
-set :application, "trails_forward_bleeding"
+set :application, "trails_forward"
 set :repository,  "git@github.com:wids-eria/Trails-Forward-server.git"
-set :branch, "light_indices"
 
 set :scm, :git
 
