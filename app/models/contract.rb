@@ -38,7 +38,7 @@ class Contract < ActiveRecord::Base
     template.add 'contract_template.company_id', :as => :company_id
     template.add 'contract_template.company.codename', :as => :company_codename
     template.add 'contract_template.includes_land', :as => :includes_land
-    template.add 'contract_template.description', :as => :description
+    template.add 'contract_template.description', :as => :market_description
     template.add 'contract_template.deadline', :as => :deadline
     template.add 'contract_template.dollars', :as => :dollars_offered
     template.add 'contract_template.role', :as => :role
