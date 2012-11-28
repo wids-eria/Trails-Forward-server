@@ -141,7 +141,7 @@ class ResourceTilesController < ApplicationController
     money_cost = Pricing.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
 
     if params[:estimate] == true
-      parame[:estimate] = 'true'
+      params[:estimate] = 'true'
     end
 
     unless params[:estimate] == 'true'
@@ -200,7 +200,7 @@ class ResourceTilesController < ApplicationController
     money_cost = Pricing.diameter_limit_cost(tiles: harvestable_tiles, player: player).to_i
 
     if params[:estimate] == true
-      parame[:estimate] = 'true'
+      params[:estimate] = 'true'
     end
 
     unless params[:estimate] == 'true'
@@ -248,7 +248,7 @@ class ResourceTilesController < ApplicationController
     money_cost = Pricing.partial_selection_cost(tiles: harvestable_tiles, player: player).to_i
 
     if params[:estimate] == true
-      parame[:estimate] = 'true'
+      params[:estimate] = 'true'
     end
 
     unless params[:estimate] == 'true'
