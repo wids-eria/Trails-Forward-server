@@ -4,33 +4,31 @@ set :rvm_type, :system
 require 'bundler/capistrano'
 load 'deploy/assets'
 
-
-set :whenever_command, "bundle exec whenever"
-set :whenever_environment, defer { stage }
-require "whenever/capistrano"
-
-
 require 'capistrano/ext/multistage'
 set :stages, %w(production staging)
 set :default_stage, "staging"
 
 set :application, "trails_forward"
 set :repository,  "git@github.com:wids-eria/Trails-Forward-server.git"
-
 set :scm, :git
 
 set :user, :deploy
 ssh_options[:forward_agent] = true
-
-role :web, "eria-1.morgridge.net"
-role :app, "eria-1.morgridge.net"
-role :db,  "eria-1.morgridge.net", :primary => true # This is where Rails migrations will run
 
 set :deploy_to, "/var/www/#{application}"
 set :deploy_via, :remote_cache
 set :use_sudo, false
 
 set :normalize_asset_timestamps, false
+
+role :web, "eria-1.morgridge.net"
+role :app, "eria-1.morgridge.net"
+role :db,  "eria-1.morgridge.net", :primary => true # This is where Rails migrations will run
+
+# CRON JOBS
+set :whenever_command, "bundle exec whenever"
+set :whenever_environment, defer { stage }
+require "whenever/capistrano"
 
 # CALLBACKS #########
 
