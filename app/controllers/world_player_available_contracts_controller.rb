@@ -22,10 +22,19 @@ class WorldPlayerAvailableContractsController < ApplicationController
     authorize! :accept_contract, @contract
 
     @contract.player = @player
-
     great_success = true   # yakshemash
 
-    ActiveRecord::Base.transaction do
+    ActiveRecord::Base.transaction do  
+      #assign included land if necessary
+      if @contract.contract_template.includes_land and @contract.included_megatiles.length == 0
+        raise "Don't know how to find land for non loggers" unless @player.type == "Lumberjack"
+        matcher = ContractLoggerTileMatcher.new  #todo #fixme we need to make this more generic to handle other character classes
+        goodies = matcher.find_best_megatiles_for_contract @contract
+        raise "couldn't find suitable megatiles" if goodies.length == 0
+        ids = goodies.map { |a_hash| a_hash[:megatile_id]}
+        @contract.included_megatile_ids = ids
+      end
+      
       @contract.included_megatiles.each do |mt|
         if mt.owner == nil
           mt.owner = @player

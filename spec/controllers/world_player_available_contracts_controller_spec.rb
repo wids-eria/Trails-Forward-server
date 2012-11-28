@@ -32,13 +32,17 @@ describe WorldPlayerAvailableContractsController do
       megatile = world.megatile_at 2,2
       megatile.owner = nil
       megatile.save!
-      lumberjack_contract.included_megatiles << megatile
+      
+      template = lumberjack_contract.contract_template
+      template.includes_land = true
+      template.save!
+
       post :accept, world_id: player.world.to_param, player_id: player.to_param, available_contract_id: lumberjack_contract.to_param, format: :json
       response.should be_success
       lumberjack_contract.reload
       player.contracts.include?(lumberjack_contract).should be_true
       megatile.reload
-      megatile.owner.should == player
+      lumberjack_contract.included_megatiles.first.owner.should == player
     end
   end #describe index
 end
