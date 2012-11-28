@@ -140,6 +140,10 @@ class ResourceTilesController < ApplicationController
     time_cost = TimeManager.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
     money_cost = Pricing.clearcut_cost(tiles: harvestable_tiles, player: player).to_i
 
+    if params[:estimate] == true
+      parame[:estimate] = 'true'
+    end
+
     unless params[:estimate] == 'true'
       unless TimeManager.can_perform_action? player: player, cost: time_cost
         respond_with({errors: ["Not enough time left to perform harvest"]}, status: :unprocessable_entity)
@@ -195,6 +199,10 @@ class ResourceTilesController < ApplicationController
     time_cost = TimeManager.diameter_limit_cost(tiles: harvestable_tiles, player: player).to_i
     money_cost = Pricing.diameter_limit_cost(tiles: harvestable_tiles, player: player).to_i
 
+    if params[:estimate] == true
+      parame[:estimate] = 'true'
+    end
+
     unless params[:estimate] == 'true'
       unless TimeManager.can_perform_action? player: player, cost: time_cost
         respond_with({errors: ["Not enough time left to perform harvest"]}, status: :unprocessable_entity)
@@ -238,6 +246,10 @@ class ResourceTilesController < ApplicationController
   def partial_selection_cut_list
     time_cost = TimeManager.partial_selection_cost(tiles: harvestable_tiles, player: player).to_i
     money_cost = Pricing.partial_selection_cost(tiles: harvestable_tiles, player: player).to_i
+
+    if params[:estimate] == true
+      parame[:estimate] = 'true'
+    end
 
     unless params[:estimate] == 'true'
       unless TimeManager.can_perform_action? player: player, cost: time_cost
