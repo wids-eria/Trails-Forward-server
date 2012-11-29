@@ -261,7 +261,7 @@ describe ResourceTilesController do
           sawyer_results1 = land_tile1.clearcut
           sawyer_results2 = land_tile2.clearcut
 
-          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), estimate: 'true')
+          post 'clearcut_list', shared_params.merge(resource_tile_ids: tiles.map(&:to_param), estimate: true)
           response.status.should == 200
 
           json['resource_tiles'].collect{|rt| rt['id']}.should == [land_tile1.id, land_tile2.id]
