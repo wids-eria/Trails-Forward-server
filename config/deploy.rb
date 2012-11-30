@@ -25,10 +25,6 @@ role :web, "eria-1.morgridge.net"
 role :app, "eria-1.morgridge.net"
 role :db,  "eria-1.morgridge.net", :primary => true # This is where Rails migrations will run
 
-# CRON JOBS
-set :whenever_command, "bundle exec whenever"
-set :whenever_environment, defer { stage }
-require "whenever/capistrano"
 
 # CALLBACKS #########
 
@@ -45,13 +41,6 @@ namespace :deploy do
   task :symlink_world_images, :roles => :app do
     run "ln -nfs #{deploy_to}/shared/worlds/ #{release_path}/public/worlds"
     run "ln -nfs #{deploy_to}/shared/asset_packages/ #{release_path}/public/images/asset_packages"
-  end
-
-  desc "Restarting mod_rails with restart.txt"
-  task :restart, :roles => :app, :except => { :no_release => true } do
-    run "touch #{current_path}/tmp/restart.txt"
-    run "god restart trails_forward"
-    run "god restart trails_forward_staging"
   end
 
   [:start, :stop].each do |t|

@@ -4,6 +4,7 @@ module LoggingEquipmentApi
     api_accessible :logging_equipment_base do |template|
       template.add :id
       template.add :name
+      template.add :player_id
       template.add :equipment_type
       template.add :market_description
 
