@@ -41,15 +41,18 @@ class ContractLoggerTileMatcher < LoggerTileMatcher
     return [] if mtiles.count == 0
 
     required = contract.contract_template.volume_required
+    # TODO abstract access to difficulty to contract
     case contract.contract_template.difficulty
     when "easy"
       required_num_tiles = 1
-    when "normal", "medium"
+    when "medium"
       required_num_tiles = 2
     when "hard"
       required_num_tiles = 3
-    when "pro", "professional"
+    when "professional"
       required_num_tiles = 4
+    else
+      raise 'Unknown difficulty'
     end
 
     mtiles.each do |m|
