@@ -44,11 +44,11 @@ class ContractLoggerTileMatcher < LoggerTileMatcher
     case contract.contract_template.difficulty
     when "easy"
       required_num_tiles = 1
-    when "normal"
+    when "normal", "medium"
       required_num_tiles = 2
     when "hard"
       required_num_tiles = 3
-    when "pro"
+    when "pro", "professional"
       required_num_tiles = 4
     end
 
