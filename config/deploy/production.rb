@@ -1,5 +1,5 @@
 set :rails_env, :staging
-set :branch, "magenta_mastadon"
+set :branch, "armored_armadillo"
 set :deploy_to, "/var/www/#{application}"
 
 # CRON JOBS
