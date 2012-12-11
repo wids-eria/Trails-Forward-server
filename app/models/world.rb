@@ -123,7 +123,7 @@ class World < ActiveRecord::Base
   end
 
   def grow_trees!
-    land_tiles = self.resource_tiles.where(type: 'LandTile')
+    land_tiles = self.resource_tiles.harvestable
 
     land_tiles.each do |land|
       land.grow_trees

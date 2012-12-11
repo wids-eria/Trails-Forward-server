@@ -83,7 +83,7 @@ module TreeHelperMethods
     when 42
       :shade_intolerant
     else
-      raise 'No Trees'
+      raise "Invalid species group with landcover class code #{self.landcover_class_code} on tile #{self.id}"
     end
   end
 
