@@ -14,6 +14,8 @@ Each acre has properties describing its characteristics, such as whether it is l
 
 Saleable parcels of the landscape are exclusively 3x3 acres, though each square acre can be operated on (e.g., clearcut) individually by the player.
 
+Political Capital
+=================
 Some uses of land (e.g., building apartments) require that the land be zoned appropriately. Players can lobby using Political Capital for zoning changes that enable them to do what they want, and can also lobby against others' proposed changes. [Vilas County's zoning regulations](http://www.vilascountyzoning.com/forms/Zoning%20District%20Use%20Table.pdf) are very loose, so zoning is only a minor impediment to changes to the landscape. *All players gain two Political Capital points per turn*, but these *expire after 3 turns*. Some player actions can generate more Political Capital. In the case of a zoning dispute, the state (i.e., the game) will take whatever action has the most Political Capital committed. 
 
 Non-Player Characters
